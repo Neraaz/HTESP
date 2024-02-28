@@ -40,43 +40,65 @@ def properties_string(dict_param):
     """
     criteria = ""
     search = dict_param['aflow']
-    for key in search:
-        if key == 'elm':
-            if len(tuple(search[key])) == 1:
-                criteria += "species({}),".format(tuple(search[key])[0])
-            else:
-                criteria += "species{},".format(tuple(search[key]))
-        elif key == 'nelm':
-            criteria += "nspecies(1*,*{}),".format(search[key])
-        elif key == 'nsites':
-            criteria += "natoms(1*,*{}),".format(search[key])
-        elif key == 'metal':
-            if search[key]:
-                criteria += "Egap(0),"
-            else:
-                criteria += "Egap(0*,*{}),".format(20)
-        elif key == 'FE':
-            if search[key]:
-                criteria += "enthalpy_formation_atom(-100*,*0),"
-            else:
-                criteria += "enthalpy_formation_atom(*),"
-        elif key == 'spacegroup':
-            if search[key] is None:
-                criteria += "spacegroup_relax(*),"
-            else:
-                criteria += "spacegroup_relax({}),".format(search[key])
-        elif key == 'limit':
-            criteria += '$paging(1,{}),'.format(search[key])
-        elif key == 'prop':
-            prop_string = ""
-            for i,prop1 in enumerate(search[key]):
-                if i < len(search[key]) - 1:
-                    prop_string += search[key][i] + ","
+    apply_filter = search['filter']
+    print(search,apply_filter)
+    if apply_filter:
+        for key in search:
+            if key == 'elm':
+                if len(tuple(search[key])) == 1:
+                    criteria += "species({}),".format(tuple(search[key])[0])
                 else:
-                    prop_string += search[key][i]
-        else:
-            print("Invalid key provided\n")
+                    criteria += "species{},".format(tuple(search[key]))
+            elif key == 'nelm':
+                criteria += "nspecies(1*,*{}),".format(search[key])
+            elif key == 'nsites':
+                criteria += "natoms(1*,*{}),".format(search[key])
+            elif key == 'metal':
+                if search[key]:
+                    criteria += "Egap(0),"
+                else:
+                    criteria += "Egap(*),"
+            elif key == 'FE':
+                if search[key]:
+                    criteria += "enthalpy_formation_atom(-100*,*0),"
+                else:
+                    criteria += "enthalpy_formation_atom(*),"
+            elif key == 'spacegroup':
+                if search[key] is None:
+                    criteria += "spacegroup_relax(*),"
+                else:
+                    criteria += "spacegroup_relax({}),".format(search[key])
+            elif key == 'limit':
+                criteria += "$paging(1,{}),".format(search[key])
+            elif key == 'prop':
+                prop_string = ""
+                for i,prop1 in enumerate(search[key]):
+                    if i < len(search[key]) - 1:
+                        prop_string += search[key][i] + ","
+                    else:
+                        prop_string += search[key][i]
+            else:
+                print("Invalid key provided\n")
+    else:
+        for key in search:
+            if key == 'elm':
+                if len(tuple(search[key])) == 1:
+                    criteria += "species({}),".format(tuple(search[key])[0])
+                else:
+                    criteria += "species{},".format(tuple(search[key]))
+            elif key == 'nelm':
+                criteria += "nspecies(1*,*{}),".format(search[key])
+            elif key == 'prop':
+                prop_string = ""
+                for i,prop1 in enumerate(search[key]):
+                    if i < len(search[key]) - 1:
+                        prop_string += search[key][i] + ","
+                    else:
+                        prop_string += search[key][i]
+            else:
+                print("Invalid key provided\n")
     criteria = criteria + prop_string
+    criteria = criteria.replace(" ","")
     return criteria
 def search(dict_param):
     """
@@ -95,6 +117,7 @@ def search(dict_param):
     """
     aflow_url = "http://www.aflowlib.org/API/aflux/"
     criteria = properties_string(dict_param)
+    #print(criteria)
     search_url = aflow_url + "?" + criteria
     success = False
     while not success:
@@ -106,10 +129,11 @@ def search(dict_param):
             continue
     data_processed = ast.literal_eval(data)
     data_processed = pd.DataFrame(data_processed)
+    #print(data_processed)
     if not os.path.isdir("download"):
         os.mkdir("download")
-    if not os.path.isfile("download/download.csv"):
-        data_processed.to_csv("download/download.csv",index=False)
+    if not os.path.isfile("download/download-aflow.csv"):
+        data_processed.to_csv("download/download-aflow.csv",index=False)
     if not os.path.isfile("mpid-list.in"):
         with open("mpid-list.in","w") as write_mpid:
             for i in range(data_processed.shape[0]):

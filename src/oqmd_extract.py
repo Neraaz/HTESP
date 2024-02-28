@@ -194,7 +194,7 @@ def search(kwargs,properties):
     ind = 1
     if not os.path.isdir("download"):
         os.mkdir("download")
-    with open("download/download.csv", "w") as write_download:
+    with open("download/download-oqmd.csv", "w") as write_download:
         write_download.write("ID,")
         for i,prop in enumerate(properties):
             if prop == 'composition':
@@ -217,7 +217,7 @@ def search(kwargs,properties):
             if not exists_in_string:
                 write_mpid.write("v{}".format(ind) + " " + "oqmd-"+str(subdata['entry_id']) + " " + subdata['name'] + "\n")
                 ind += 1
-                with open("download/download.csv", "a") as write_download:
+                with open("download/download-oqmd.csv", "a") as write_download:
                     write_download.write("oqmd-" + str(subdata['entry_id']) + ",")
                     for i,prop in enumerate(properties):
                         if prop == 'composition':
