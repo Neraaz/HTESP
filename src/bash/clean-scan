@@ -1,0 +1,61 @@
+#! /bin/bash
+# Writen by Niraj K. Nepal, Ph.D.
+# This script check and delete unnecessary wavefunction files from
+# calcualtions. For QE, it checks whether el-ph coupling calculations is finished and
+# has lambda.out file (obtained from lambda-scan) with data in it.
+# For vasp, it deletes those files inside corresponding folder, while for QE, 
+# It copies the folders to a new 'completed' folder. Also 2 tracking files are created
+# mpid-finished.in and mpid-notfinished.in
+# Runs for 'mainprogram 20'
+
+kk=$(echo 0 | bc)
+ll=$(echo 0 | bc)
+
+file=$(find * -name $3 | tail -n 1)
+dft=$(grep "DFT" input.in | awk '{ print $3 }')
+
+if [[ ! -d completed ]]; then
+  echo "completed folder not present. Creating ..."
+  mkdir completed
+fi
+echo "---------------------------------------------------------------------------------------------------------------"
+echo "Cleaning heavy files and copying to 'completed' folder"
+echo "---------------------------------------------------------------------------------------------------------------"
+for ((ii=$1; ii<$2; ++ii)); do
+  A=$(grep "v$ii\ " $file | awk '{print $2}')
+  B=$(grep "v$ii\ " $file | awk '{print $3}')
+  echo "$A $B"
+  if [ $dft == 'vasp' ] || [ $dft == 'VASP' ]; then
+   cd R$A-$B/relax/
+    rm CHG CONTCAR DOSCAR EIGENVAL ELFCAR IBZKPT LOCPOT OSZICAR OUTCAR PCDAT PROCAR PROOUT XDATCAR REPORT
+   cd ../../
+  else
+      cd R$A-$B/relax/
+       rm -r $B.save $B.xml slurm*
+      cd ../../
+      if [[ -f R$A-$B/calc/lambda.out ]] ; then
+       lc=$(wc -l R$A-$B/calc/lambda.out | awk '{print $1}')
+      else
+       lc=$(echo 0 | bc)
+      fi
+      if [[ -d R$A-$B/calc ]] ; then
+        if [ $lc -gt 0 ]; then
+         echo "lambda.out: $lc"
+         cd R$A-$B/calc
+           rm -r $B.wfc* $B.save $B.xml _ph0 slurm*
+         cd ../../
+         cp -r R$A-$B* completed/
+         ll=$(echo $ll+1 | bc)
+         echo "Creating mpid-finished.in file for finished calculations"
+         echo "v$ll $A $B" >> mpid-finished.in
+        else
+           echo "$A-$B: not finished"
+           kk=$(echo $kk+1 | bc)
+           echo "Creating mpid-notfinished.in file for unfinished calculations"
+           echo "v$kk $A $B" >> mpid-notfinished.in
+        fi
+      fi
+  fi
+done
+echo "all done"
+

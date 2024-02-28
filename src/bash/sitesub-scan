@@ -1,0 +1,29 @@
+#! /bin/bash
+# Writen by Niraj K. Nepal, Ph.D.
+# Script to create input files for substitution process.
+# Runs for 'mainprogram 29'
+
+echo "---------------------------------------------------------------------------------------------------------------"
+echo "Preparing input files for site substitutions. Make sure, you have 'bsym' package installed."
+echo "---------------------------------------------------------------------------------------------------------------"
+file=$(find * -name $3 | tail -n 1)
+dft=$(grep "DFT" input.in | awk '{ print $3 }')
+echo $dft
+#if [[ ! -f substitute.py ]]; then
+#  echo "No substitute.py file found. Exiting ......."
+#  site_subs.py help
+#fi
+for ((ii=$1; ii<$2; ++ii)); do
+  A=$(grep "v$ii\ " $file | awk '{print $2}')
+  B=$(grep "v$ii\ " $file | awk '{print $3}')
+  if [ $dft == 'VASP' ] || [ $dft == 'vasp' ]; then
+   if [[ ! -d R$A-$B ]]; then
+     vasp_input.py $A $B
+   fi
+   site_subs.py $A $dft $B
+  else
+   site_subs.py $A $dft $B
+  fi 
+done
+echo "all done"
+

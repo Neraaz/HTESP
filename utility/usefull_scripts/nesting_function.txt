@@ -1,0 +1,24 @@
+1. relax the structure
+2. Get eigen values for different bands and k-vector.
+   For denser mesh, can use wannier function 
+   1. For SrAl4, 120x120x100 k-mesh is used.
+   2. plot normal band structure and orbital projected DOS ( to choose projectors ) for different atoms
+   3. chose frozen windows (1 eV above and below Ef) and disentanglement windows to include all the
+      wannier projections.
+   4. With this, we will get eigenvalues in .eig file
+   5. Real part of the nesting function or suceptibility function is
+     Re chi (q) = sum_k=1_to_Nband fkn - fk'm/(e_nk - e_mk'), 	 q = k-k'
+
+     fkn and fk'm are occupation number, 2 for valence band, and 0 for conduction band
+     and forbit the transition within condunction or valence regions. m and n are band indices
+
+   6. Imaginary part of the nesting function is
+    for k-k' = q
+    Im chi (q) = sum_k=1_to_Nband delta(enk-Ef)delta(emk'-Ef)
+
+
+# Supercell for CDW
+1. find unstable modes and eigenvectors.
+2. create supercell depending on 1/q_i . if instability is on q = (0.5,0.5,0.5) then use 2x2x2 supercell
+3. Displace ion only one part of the supercell (out of 8 part) according to eigenvectors
+4. Relax the systems

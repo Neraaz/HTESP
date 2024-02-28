@@ -1,0 +1,14 @@
+#!/bin/bash
+
+#SBATCH --partition=dense --ntasks=1 --cpus-per-task=12 --time=1-0
+
+# record start date and host
+date
+hostname
+
+
+source /shared/intel/bin/compilervars.sh intel64
+source /shared/intel/impi/2019.0.117/intel64/bin/mpivars.sh
+submission here
+# record end date
+date

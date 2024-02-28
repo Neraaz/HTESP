@@ -1,0 +1,36 @@
+#! /bin/bash
+# Writen by Niraj K. Nepal, Ph.D.
+# Script to $folderulate phonon bandstructure along high-symmetry q-mesh sampling
+# Runs for 'mainprogram 9'
+source jobscript.sh
+
+echo "---------------------------------------------------------------------------------------------------------------"
+echo "Computing phonon bandstructure"
+echo "---------------------------------------------------------------------------------------------------------------"
+file=$(find * -name $3 | tail -n 1)
+for ((ii=$1; ii<$2; ++ii)); do
+  A=$(grep "v$ii\ " $file | awk '{print $2}')
+  B=$(grep "v$ii\ " $file | awk '{print $3}')
+  echo "$A $B"
+  if [[ -d R$A-$B/phonon ]]; then
+    folder="phonon"
+  else
+    folder="calc"
+  fi
+  if [[ -d R$A-$B ]] ; then
+   if [ "$folder" == "phonon" ]; then
+     sed '/la2F/d' matdyn_dir/matdyn-$A-$B.in > R$A-$B/$folder/matdyn.in
+   else
+     cp matdyn_dir/matdyn-$A-$B.in R$A-$B/$folder/matdyn.in
+   fi
+    cp run-matdyn.sh R$A-$B/$folder/
+
+     echo " submitting jobs in R$A-$B "
+     cd R$A-$B/$folder
+        qerun "$A" "$B" "matdyn"
+        sleep 1s
+     cd ../../
+  fi
+done
+echo "all done"
+

@@ -1,0 +1,34 @@
+#! /bin/bash
+#
+#Usage: ./extract_for_bm_fit-scan 1 12
+  
+workd=`pwd`
+Rytoev=`echo "scale=6;13.605698" | bc`
+au2ang=`echo "scale=8;0.14818453" | bc`
+#for ((ii=$1; ii<$2; ++ii)); do
+for ii in -150 -100 -50 50 100 150 200 250 300 350 400; do
+ echo $ii
+
+ ion_step=$(grep ! R$ii/scf.out | wc -l)
+ el_step=$(grep 'total energy' R$ii/scf.out | wc -l)
+ en=`grep ! R$ii/scf.out | tail -n 1 | awk '{print $5}'`
+ vol=`grep volume R$ii/scf.out | tail -n 1 | awk '{print $4}'`
+ press=`grep "P=" R$ii/scf.out | tail -n 1 | awk '{print $6}'`
+ v=`echo "scale=10; $vol * $au2ang " | bc`
+ e=`echo "scale=10; $en * $Rytoev " | bc`
+ p=`echo "scale=10; $press * 0.1 " | bc`
+ epv=`echo "scale=10; $p*$v*0.00624151 " | bc`
+ enthalpy=`echo "scale=10; $e+$epv " | bc`
+ echo "$ion_step $el_step $v $e $p $epv $enthalpy" >> energy-volume
+ #echo "$p $enthalpy" >> energy-volume
+
+#  cp scf-$A-$B-fit.in R$A-$B/calc/scf.in
+#  cp run.sh R$A-$B/calc/$B.sh
+#  cp POTCAR/POTCAR_$T$X R$T$X/POTCAR
+#  cp KPOINTS-$2 R$T$X/KPOINTS
+################
+## SUBMIT JOB ##
+################
+done
+echo all done
+

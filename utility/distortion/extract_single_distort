@@ -1,0 +1,14 @@
+#! /bin/bash
+#
+workd=`pwd`
+file=`find * -name $3 | tail -n 1`
+for ((ii=$1; ii<$2; ++ii)); do
+  A=`grep "v$ii\ " $file | awk '{print $2}'`
+  B=`grep "v$ii\ " $file | awk '{print $3}'`
+  echo "$A $B"
+  if [[ -f R$A-$B/Energy-mode.csv ]]; then
+     python distort_extract.py $A $B   
+  fi
+done
+echo all done
+

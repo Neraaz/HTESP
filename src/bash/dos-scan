@@ -1,0 +1,73 @@
+#! /bin/bash
+# Writen by Niraj K. Nepal, Ph.D.
+# Submit calculations for DOS
+# Runs for 'mainprogram 16'
+source jobscript.sh
+
+file=$(find * -name $3 | tail -n 1)
+dft=$(grep "DFT" input.in | awk '{ print $3 }')
+echo "---------------------------------------------------------------------------------------------------------------"
+echo "Submitting DOS calculations"
+echo "---------------------------------------------------------------------------------------------------------------"
+for ((ii=$1; ii<$2; ++ii)); do
+  A=$(grep "v$ii\ " $file | awk '{print $2}')
+  B=$(grep "v$ii\ " $file | awk '{print $3}')
+  echo "$A $B"
+  if [[ ! -d R$A-$B/dos ]] ; then
+      mkdir R$A-$B/dos
+  fi
+     if [[ -f vdw_kernel.bindat ]] && [[ ! -f R$A-$B/dos/vdw_kernel.bindat ]]; then
+       cp vdw_kernel.bindat R$A-$B/dos/vdw_kernel.bindat
+     fi
+################
+## SUBMIT JOB ##
+################
+  if [ $dft == 'vasp' ] || [ $dft == 'VASP' ]; then
+     cp run-vasp.sh R$A-$B/dos/run.sh
+     if [[ -f R$A-$B/relax/CONTCAR ]]; then
+      cp R$A-$B/relax/CONTCAR R$A-$B/dos/POSCAR
+     else
+      cp R$A-$B/relax/POSCAR R$A-$B/dos/POSCAR
+     fi
+     cp R$A-$B/relax/POTCAR R$A-$B/dos/POTCAR
+     cp R$A-$B/relax/INCAR R$A-$B/dos/INCAR
+     cp R$A-$B/relax/KPOINTS R$A-$B/dos/KPOINTS
+     cd R$A-$B/dos/
+       if [[ ! -f vasp.in ]]; then
+         echo "vasp.in file not present inside R$A-$B/dos/, creating one"
+         echo "LORBIT 11" > vasp.in
+         echo "LCHARG .True." >> vasp.in
+         echo "LWAVE .True." >> vasp.in
+         echo "NSW 0" >> vasp.in
+         echo "NELM 200" >> vasp.in
+         echo "ISIF 2" >> vasp.in
+         echo "ISMEAR -5" >> vasp.in
+         echo "NEDOS 3000" >> vasp.in
+         echo "EDIFFG" >> vasp.in
+         echo "SIGMA" >> vasp.in
+       fi
+        vasp_process.py POSCAR
+       nk1=$(sed -n '4p' KPOINTS | awk '{print $1}')
+       nk2=$(sed -n '4p' KPOINTS | awk '{print $2}')
+       nk3=$(sed -n '4p' KPOINTS | awk '{print $3}')
+       ok1=$(echo $nk1*2 | bc)
+       ok2=$(echo $nk2*2 | bc)
+       ok3=$(echo $nk3*2 | bc)
+       sed -i "s/$nk1 $nk2 $nk3/$ok1 $ok2 $ok3/" KPOINTS
+        echo " submitting jobs in R$A-$B "
+        vasprun "$A" "$B"
+     cd ../../
+  else
+    #sed '/degauss/d' R$A-$B/bands/scf.in | sed '/gauss/d' | sed "s/smearing/tetrahedra/" > R$A-$B/bands/scf-1.in 
+    cp scf_dir/scf-$A-$B-dos.in R$A-$B/dos/scf-dos.in
+    cp scf_dir/dos-$A-$B.in R$A-$B/dos/dos.in
+    cp scf_dir/pdos-$A-$B.in R$A-$B/dos/pdos.in
+    cp run-dos.sh R$A-$B/dos/
+       echo " submitting jobs in R$A-$B "
+       cd R$A-$B/dos
+          qerun "$A" "$B" "dos"
+          sleep 1s
+       cd ../../
+  fi
+done
+echo "all done"

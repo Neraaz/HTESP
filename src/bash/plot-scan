@@ -1,0 +1,118 @@
+#! /bin/bash
+# Writen by Niraj K. Nepal, Ph.D.
+# Script to produce quick plots (electronic band (eband), phonon band (phband)
+# lambda projected band (gammaband)
+# Runs for 'mainprogram 19'
+
+file=$(find * -name $3 | tail -n 1)
+plot=$5
+for ((ii=$1; ii<$2; ++ii)); do
+  A=$(grep "v$ii\ " $file | awk '{print $2}')
+  B=$(grep "v$ii\ " $file | awk '{print $3}')
+  echo "$A $B"
+  if [[ ! -d plots ]] ; then
+      mkdir plots
+  fi
+  x=$(awk '{if(NR==3) print $2}' input.in)
+  
+  if [ $plot == 'eband' ]; then
+   echo "---------------------------------------------------------------------------------------------------------------"
+   echo "Plotting electronic bandstructure"
+   echo "A band_stat.csv inside R$A-$B/bands is saved with band indices with maxima and minima"
+   echo "It can be helpful to chose energy windows for wannierization"
+   echo "---------------------------------------------------------------------------------------------------------------"
+    if [[ -d R$A-$B/bands ]]; then
+    cd R$A-$B/bands
+      plot.py band $A $B $4 $x
+      mv $B-band.pdf $A-$B-band.pdf
+      cp $A-$B-band.pdf ../../plots
+    cd ../../
+    fi
+
+  elif [ $plot == 'vasp-line' ]; then
+   echo "---------------------------------------------------------------------------------------------------------------"
+   echo "Plotting electronic bandstructure in vasp for line-mode reciprocal vectors"
+   echo "---------------------------------------------------------------------------------------------------------------"
+   cd R$A-$B/bands/
+      plot.py band $A $B $4 $x
+      #plot.py line $A $B
+      mv $B-band.pdf $A-$B-band.pdf
+      cp $A-$B-band.pdf ../../plots
+   cd ../../
+  elif [ $plot == 'phband' ]; then
+   echo "---------------------------------------------------------------------------------------------------------------"
+   echo "Plotting phonon bandstructure"
+   echo "---------------------------------------------------------------------------------------------------------------"
+   if [[ -d R$A-$B/phonon ]]; then
+     cd R$A-$B/phonon
+      freq_process.py $B
+      plot.py phonband $A $B $4 $x
+      mv $B-phonon.pdf ../../plots/$A-$B-phonon.pdf
+      #continue
+     cd ../../
+   fi
+    if [[ -d R$A-$B/calc/ ]]; then
+    cd R$A-$B/calc/
+      plot.py phonband $A $B $4 $x
+      plot.py a2f $A $B
+      mv $B-phonon.pdf $A-$B-phonon.pdf
+      mv $B-a2f.pdf $A-$B-a2f.pdf
+      cp $A-$B-phonon.pdf $A-$B-a2f.pdf ../../plots
+    cd ../../
+    fi
+  elif [ $plot == 'gammaband' ]; then
+    echo "---------------------------------------------------------------------------------------------------------------"
+    echo "Plotting phonon band with lambda-projection"
+    echo "---------------------------------------------------------------------------------------------------------------"
+    if [[ -d R$A-$B/calc/ ]]; then
+      cd R$A-$B/calc/
+      plot.py gammaband $A $B $4 $x
+      plot.py a2f $A $B
+      mv $B-gamma.pdf $A-$B-gamma.pdf
+      mv $B-a2f.pdf $A-$B-a2f.pdf
+      cp $A-$B-gamma.pdf $A-$B-a2f.pdf ../../plots
+      cd ../../
+    fi 
+  elif [ $plot == 'pdos' ]; then
+   echo "---------------------------------------------------------------------------------------------------------------"
+   echo "Plotting density of states (DOS) and partial DOS (pDOS)"
+   echo "Looking for filedos.in file with 'ion name followed by orbital's name' in different line"
+   echo "---------------------------------------------------------------------------------------------------------------"
+    if [[ -d R$A-$B/dos/ ]]; then
+     cd R$A-$B/dos
+     plot.py pdos $A $B $x
+     mv pdos-$B.pdf ../../plots/plot-pdos-$A-$B.pdf
+     cd ../../
+    fi
+  elif [ $plot == 'wann_band' ]; then
+   echo "---------------------------------------------------------------------------------------------------------------"
+   echo "Plotting wannier-interpolated bandstructure"
+   echo "---------------------------------------------------------------------------------------------------------------"
+    if [[ -d R$A-$B/bands/ ]]; then
+     cd R$A-$B/epw/
+     plot.py wann_band $A $B $x
+     mv plot.pdf ../../plots/plot-band-wann-$A-$B.pdf
+     cd ../../
+    fi
+  elif [ $plot == 'phonproj' ]; then
+   echo "---------------------------------------------------------------------------------------------------------------"
+   echo "Processing atom projected phonon bandstructure data ==> phonon-$B.freq.gp of size (nat,(nkpoint,3*nat)) "
+   echo "---------------------------------------------------------------------------------------------------------------"
+   if [[ -d R$A-$B/phonon ]]; then
+     cd R$A-$B/phonon
+     projection_phband.py $B $4
+     plot.py phonproj $A $B $4
+     mv plot-proj-$A-$B.pdf ../../plots/
+      continue
+     cd ../../
+   fi
+    if [[ -d R$A-$B/calc/ ]]; then
+     cd R$A-$B/calc/
+     projection_phband.py $B $4
+     plot.py phonproj $A $B $4
+     mv plot-proj-$A-$B.pdf ../../plots/
+     cd ../../
+    fi
+  fi
+done
+echo "all done. Check inside plots/ folder for output pdf"

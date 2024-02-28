@@ -1,0 +1,40 @@
+#! /bin/bash
+# Writen by Niraj K. Nepal, Ph.D.
+# Script to read QE scf.in file, obtain displacement of ions from dynmat.axsf file, create
+# QE scf.in file for different modes, and submit/resubmit the calculations.
+# Requires qe_axsf2cellpos.py,scf-header.in (scf.in without crystal structure information), dynmat.axsf for any q-point
+# , and run-scf.sh batch script for job submission.
+# Run inside distortion-relax-scan script for 'mainprogram 24'.
+
+for ((ii=$1; ii<$2; ++ii)); do
+  if [[ ! -d R$ii ]] ; then
+      mkdir R$ii
+  fi
+relaxed=$(grep "Final scf calculation at the relaxed structure." R$ii/scf.out | wc -l)
+if [[ -f R$ii/scf.out ]] && [[ $relaxed -gt 0 ]]; then
+  echo "Calculation resubmitting..."
+  sed -n '/Begin final coordinates/,/End final coordinates/p' R$ii/scf.out | sed '$d' | sed '1,4d'| sed '5d' > R$ii/$ii.dat
+  cat scf-header.in R$ii/$ii.dat > R$ii/scf.in
+elif [[ -f R$ii/scf.out ]] && [[ $relaxed -lt 1 ]]; then
+  echo "time out" 
+  grep -A 26 'CELL_PARAMETERS (angstrom)' R$ii/scf.out | tail -n 27 | sed '$d' > R$ii/cell.dat
+  mv R$ii/scf.in R$ii/scf-initial.in
+  mv R$ii/scf.out R$ii/scf-initial.out
+  cat scf-header.in R$ii/cell.dat > R$ii/scf.in
+else
+  qe_axsf2cellpos.py dynmat.axsf $ii 1.0 > cell.dat
+  cat scf-header.in cell.dat > R$ii/scf.in
+  rm cell.dat
+################
+## SUBMIT JOB ##
+################
+fi
+  cp run-scf.sh R$ii/
+  echo " submitting jobs in mode $ii "
+  cd R$ii
+     sbatch run-scf.sh
+     sleep 1s
+  cd ../
+done
+echo "all done"
+

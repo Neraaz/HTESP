@@ -1,0 +1,17 @@
+#! /bin/bash
+#
+echo "---------------------------------------------------------------------------------------------------------------"
+echo "Removing pressure folder"
+echo "---------------------------------------------------------------------------------------------------------------"
+file=$(find * -name $3 | tail -n 1)
+for ((ii=$1; ii<$2; ++ii)); do
+  A=$(grep "v$ii\ " $file | awk '{print $2}')
+  B=$(grep "v$ii\ " $file | awk '{print $3}')
+  echo "$A $B"
+  if [[ -d R$A-$B ]]; then
+    rm -r R$A-$B/pressure
+  fi
+################
+done
+echo "all done"
+

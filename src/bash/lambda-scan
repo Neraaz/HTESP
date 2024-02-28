@@ -1,0 +1,40 @@
+#! /bin/bash
+# Writen by Niraj K. Nepal, Ph.D.
+# Script to calculate superconducting properties.
+# Requires 'qe_lambda.pl' script.
+# Runs for 'mainprogram 11'
+
+echo "---------------------------------------------------------------------------------------------------------------"
+echo "Running lambda.x command"
+echo "---------------------------------------------------------------------------------------------------------------"
+file=$(find * -name $3 | tail -n 1)
+Rytoev=$(echo "scale=6;13.605698" | bc)
+eVtoTHz=$(echo "scale=8;241.79905043" | bc)
+k=$(echo 0 | bc)
+for ((ii=$1; ii<$2; ++ii)); do
+  A=$(grep "v$ii\ " $file | awk '{print $2}')
+  B=$(grep "v$ii\ " $file | awk '{print $3}')
+  echo "$A $B"
+  if [[ ! -d R$A-$B/calc ]] ; then
+    echo " No R$A-$B/calc directory "
+  fi
+  if [[ -d R$A-$B ]] ; then
+  em=$(grep THz R$A-$B/calc/elph.out | tail -n 1 | awk '{print $5}')
+  emax=$(echo $em+5 | bc)
+  echo "Max phonon freq: $emax"
+################
+## SUBMIT JOB ##
+################
+   cd R$A-$B/calc/
+     lambda_in.py $B $emax 0.12 0 0.16
+     lambda.x < lambda.in > lambda.out
+   cd ../../
+  fi
+done
+echo "all done"
+echo "************* Other parameters used *****************"
+echo "Smearing for q-mesh: 0.12"
+echo "Smearing type: 0 (gauss, 1 for MP)"
+echo "Coloumb potential (mu_star): 0.16"
+echo "Change these parameters inside src/bash/lambda-scan according to your need !"
+echo "*****************************************************"

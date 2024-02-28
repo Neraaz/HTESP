@@ -1,0 +1,63 @@
+#! /bin/bash
+# Writen by Niraj K. Nepal, Ph.D.
+# Script to create input files for wanniertools calculations.
+# Runs for 'mainprogram wti', i=1 or 2.
+
+echo "---------------------------------------------------------------------------------------------------------------"
+echo "WANNIERTOOLS CALCULATION INPUTS"
+echo "---------------------------------------------------------------------------------------------------------------"
+file=$(find * -name $3 | tail -n 1)
+for ((ii=$1; ii<$2; ++ii)); do
+  A=$(grep "v$ii\ " $file | awk '{print $2}')
+  B=$(grep "v$ii\ " $file | awk '{print $3}')
+  process=$4
+  echo "____________________________________________________________________________________________________________________________________"
+  echo "$A $B"
+  if [[ -f scf_dir/scf-$A.in ]]; then
+    prefix=$(grep "prefix = " scf_dir/scf-$A.in | awk '{print $3}' | sed 's/.$//' | sed "s/'//g" )
+  else
+    exit
+  fi
+  if [[ -d R$A-$B ]] ; then
+    if [[ -f R$A-$B/relax/scf.out ]]; then
+      scfcheck=$(sed -n '/Begin final coordinates/,/End final coordinates/p' R$A-$B/relax/scf.out | sed '$d' | sed '1,4d'| sed '5d' | wc -l)
+    fi
+    if [[ $scfcheck -gt 0 ]]; then
+      if [[ ! -d WT_dir ]]; then
+        echo "creating WT_dir directory"
+        mkdir WT_dir
+      fi
+       if [ $process == 'wt1-b' ]; then
+         echo "wannier tools step 1: Generating inputs for wannier tools inputs"
+         prefix=$(grep "prefix = " scf_dir/scf-$A.in | awk '{print $3}' | sed 's/.$//')
+         nk=$(awk '{if(NR==3) print $1}' input.in)
+         kcut=$(awk '{if(NR==3) print $2}' input.in)
+         create_wt_inputs.py $A $B $prefix "initialize"
+         create_wt_inputs.py $A $B $prefix "kpathwan" $nk $kcut 
+         create_wt_inputs.py $A $B $prefix "body" "F"
+         mv wt-$A-$B.in WT_dir
+ 
+      elif [ $process == 'wt1-s' ]; then
+         echo "wannier tools step 1: Generating inputs for wannier tools inputs including surface"
+         prefix=$(grep "prefix = " scf_dir/scf-$A.in | awk '{print $3}' | sed 's/.$//')
+         nk=$(awk '{if(NR==3) print $1}' input.in)
+         kcut=$(awk '{if(NR==3) print $2}' input.in)
+         if [[ -f R$A-$B/epw/POSCAR-slab ]] ; then
+            cp R$A-$B/epw/POSCAR-slab .
+         fi
+         create_wt_inputs.py $A $B $prefix "kpathwan" $nk $kcut 
+         create_wt_inputs.py $A $B $prefix "body" "T" 
+         mv wt-$A-$B.in WT_dir
+         rm POSCAR-slab
+      fi
+    else
+        echo "Perform relaxation using 'mainprogram process' with process=1 to 4"
+        exit
+     fi
+  
+  else
+     echo "R$A-$B folder doesn't exist"
+  fi
+  echo "____________________________________________________________________________________________________________________________________"
+done
+echo "all done"

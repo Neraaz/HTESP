@@ -1,0 +1,34 @@
+#! /bin/bash
+# Writen by Niraj K. Nepal, Ph.D.
+# Script to submit calculations for phonon dos and phonon linewidth
+# Runs for 'mainprogram 10'
+source jobscript.sh
+echo "---------------------------------------------------------------------------------------------------------------"
+echo "Submitting phonon dos and phonon linewidth calculations"
+echo "---------------------------------------------------------------------------------------------------------------"
+file=$(find * -name $3 | tail -n 1)
+for ((ii=$1; ii<$2; ++ii)); do
+  A=$(grep "v$ii\ " $file | awk '{print $2}')
+  B=$(grep "v$ii\ " $file | awk '{print $3}')
+  echo "$A $B"
+  if [[ -d R$A-$B/phonon ]]; then
+    folder="phonon"
+  else
+    folder="calc"
+  fi
+  if [[ -d R$A-$B ]] ; then
+   if [ "$folder" == "phonon" ]; then
+     sed '/la2F/d' matdyn_dir/matdyn-$A-$B-dos.in > R$A-$B/$folder/matdyn-dos.in
+   else
+     cp matdyn_dir/matdyn-$A-$B-dos.in R$A-$B/$folder/matdyn-dos.in
+   fi
+     cp run-matdyn-dos.sh R$A-$B/$folder/
+     echo " submitting jobs in R$A-$B "
+     cd R$A-$B/$folder
+       qerun "$A" "$B" "matdyn-dos"
+       sleep 1s
+     cd ../../
+  fi
+done
+echo "all done"
+

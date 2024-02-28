@@ -1,0 +1,54 @@
+#! /bin/bash
+#
+echo "---------------------------------------------------------------------------------------------------------------"
+echo "---------------------------------------------------------------------------------------------------------------"
+Rytoev=$(echo "scale=6;13.605698" | bc)
+echo "mode,a,b,c,alpha,beta,gamma,kmesh,Energy(eV),iteration" > Energy-mode.csv
+if [[ -f scf.in ]]; then
+  nat=$(grep "nat" scf.in | awk '{print $3}' | sed 's/,//')
+else
+  nat=$(grep "number of atoms/cell" relax/scf.out | tail -n 1 | awk '{print $5}')
+fi
+for ((ii=$1; ii<$2; ++ii)); do
+  if [[  -d R$ii ]] ; then
+   nk=$(grep "number of k points=" R$ii/scf.out | tail -n 1 | awk '{print $5}')
+  iter=$(grep ! R$ii/scf.out | wc -l)
+  #echo "total ground state energy of mode $ii "
+
+  relaxed=$(grep "Final scf calculation at the relaxed structure." R$ii/scf.out | wc -l)
+  if [ $relaxed -gt 0 ] ; then
+  sed -n '/Begin final coordinates/,/End final coordinates/p' R$ii/scf.out | sed '$d' | sed '1,4d'| sed '5d' > $ii.dat
+  if [[ ! -d cif ]]; then
+      mkdir cif
+  fi
+  cat scf-header.in $ii.dat > scf.in
+  scftocif.py
+  a=$(cat cellpar.in | awk '{print $1}')
+  b=$(cat cellpar.in | awk '{print $2}') 
+  c=$(cat cellpar.in | awk '{print $3}')
+  alp=$(cat cellpar.in | awk '{print $4}') 
+  bet=$(cat cellpar.in | awk '{print $5}')
+  gam=$(cat cellpar.in | awk '{print $6}')
+  rm cellpar.in 
+  mv relax.cif cif/$ii.cif
+  en=$(grep "!    total energy              =   " R$ii/scf.out | tail -n1 | awk '{print $5}')
+  e=$(echo "scale=8; $en * $Rytoev / $nat " | bc)
+  echo "$ii,$a,$b,$c,$alp,$bet,$gam,$nk,$e,$iter" >> Energy-mode.csv
+  echo "$ii: relaxed, iteration: $iter"
+  #rm -r R$ii/*.save
+  else
+     iter=$(grep ! R$ii/scf.out | wc -l)
+     echo "$ii: Not relaxed, iteration: $iter"
+     #cd R$ii/
+     #
+     #cd ../
+  fi
+#  cp run.sh R$A-$B/calc/$B.sh
+#  cp POTCAR/POTCAR_$T$X R$T$X/POTCAR
+#  cp KPOINTS-$2 R$T$X/KPOINTS
+################
+## SUBMIT JOB ##
+################
+  fi
+done
+echo "all done"

@@ -1,0 +1,10 @@
+scipy
+numpy
+pandas
+pymatgen
+mp_api
+ase
+bsym
+lmfit
+qmpy-rester
+ifermi

@@ -1,0 +1,199 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
+    <title>Welcome to HTEPC’s documentation! &#8212; HTEPC 0.0.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Requirements" href="usage.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="usage.html" title="Requirements"
+             accesskey="N">next</a> |</li>
+        <li class="nav-item nav-item-0"><a href="#">HTEPC 0.0.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Welcome to HTEPC’s documentation!</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="welcome-to-htepc-s-documentation">
+<h1>Welcome to HTEPC’s documentation!<a class="headerlink" href="#welcome-to-htepc-s-documentation" title="Permalink to this headline">¶</a></h1>
+<a class="reference internal image-reference" href="_images/HTEPC.jpeg"><img alt="_images/HTEPC.jpeg" src="_images/HTEPC.jpeg" style="width: 600px; height: 600px;" /></a>
+<p>Introducing HTEPC, the High Throughput Electronic Structure Package, designed for Quantum Espresso (QE) and VASP simulations. HTEPC streamlines input file preparation from the Materials Project database and offers a wide range of functionalities, from basic ground-state calculations to advanced electron-phonon studies and superconductivity analyses. With seamless integration with QE and VASP, HTEPC empowers researchers to explore complex material landscapes, automate calculations, and investigate material electronic structures efficiently.</p>
+<p>To Do ……</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>Include oqmd and aflow database (Done).</p></li>
+<li><p>Include elastic constant calculations (Done).</p></li>
+<li><p>include info process for vasp.</p></li>
+<li><p>Finish Documentation.</p></li>
+<li><p>Put a separate section for process and its utility.</p></li>
+<li><p>Put a process to group compounds from different database. May be using pymatgen structure matcher.</p></li>
+<li><p>Make code free of documentation text other than the code.</p></li>
+<li><p>Include plot variables in htepc.json file.</p></li>
+</ol>
+</div></blockquote>
+<ul class="simple">
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html#extra-packages">Extra packages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html#package-structure">Package structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html#conda-environment">Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html#download-software">Download software</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html#install-htepc-package">Install HTEPC package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html#check-executable">check executable</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html#after-installation">After installation,</a></li>
+</ul>
+</div>
+</section>
+<section id="inputs-and-parameters">
+<h2>Inputs and Parameters<a class="headerlink" href="#inputs-and-parameters" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="param.html">htepc.json</a></li>
+<li class="toctree-l1"><a class="reference internal" href="param.html#mpi-key">mpi_key</a></li>
+<li class="toctree-l1"><a class="reference internal" href="param.html#download">download</a></li>
+<li class="toctree-l1"><a class="reference internal" href="param.html#magmom">magmom</a></li>
+<li class="toctree-l1"><a class="reference internal" href="param.html#pseudo">pseudo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="param.html#substitute">substitute</a></li>
+<li class="toctree-l1"><a class="reference internal" href="param.html#pwscf-in">pwscf_in</a></li>
+<li class="toctree-l1"><a class="reference internal" href="param.html#strain">strain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="param.html#wanniertools-input">wanniertools_input</a></li>
+<li class="toctree-l1"><a class="reference internal" href="param.html#kptden">kptden</a></li>
+<li class="toctree-l1"><a class="reference internal" href="param.html#bgw-input">bgw_input</a></li>
+<li class="toctree-l1"><a class="reference internal" href="param.html#input-in">input.in</a></li>
+<li class="toctree-l1"><a class="reference internal" href="param.html#mpid-list-in">mpid-list.in</a></li>
+<li class="toctree-l1"><a class="reference internal" href="param.html#mpid-in">mpid.in</a></li>
+</ul>
+</div>
+</section>
+<section id="command-line-interface">
+<h2>Command-line interface<a class="headerlink" href="#command-line-interface" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="command.html">Commands</a></li>
+</ul>
+</div>
+</section>
+<section id="tutorials">
+<h2>Tutorials<a class="headerlink" href="#tutorials" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Preparing folder for calculations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html#setting-qe-calculations">Setting QE calculations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html#submission-scripts-generation">Submission scripts generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html#electron-phonon-coupling-from-qe">Electron-phonon coupling from QE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html#atom-projected-phonon-dispersion">Atom-projected phonon dispersion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html#band-structure-and-dos-calculation">Band structure and DOS calculation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html#some-other-processes">Some other processes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html#pressure-calculation">Pressure calculation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html#epw-for-anisotropic-superconductivity-calculations">EPW for anisotropic superconductivity calculations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html#substitution-calculations">Substitution calculations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html#setting-vasp-calculations">Setting VASP calculations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html#vasp-and-phonopy-calculations">VASP and Phonopy Calculations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html#convex-hull-using-pymatgen">Convex Hull using Pymatgen</a></li>
+</ul>
+</div>
+</section>
+<section id="license">
+<h2>License<a class="headerlink" href="#license" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="license.html">Contributers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html#citing-htepc">Citing HTEPC</a></li>
+</ul>
+</div>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Welcome to HTEPC’s documentation!</a><ul>
+<li><a class="reference internal" href="#installation">Installation</a></li>
+<li><a class="reference internal" href="#inputs-and-parameters">Inputs and Parameters</a></li>
+<li><a class="reference internal" href="#command-line-interface">Command-line interface</a></li>
+<li><a class="reference internal" href="#tutorials">Tutorials</a></li>
+<li><a class="reference internal" href="#license">License</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Next topic</h4>
+  <p class="topless"><a href="usage.html"
+                        title="next chapter">Requirements</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/index.rst.txt"
+           rel="nofollow">Show Source</a></li>
+    <li><a href="https://github.com/Neraaz/HTEPC/blob/main/index.rst"
+           rel="nofollow">Show on GitHub</a></li>
+    <li><a href="https://github.com/Neraaz/HTEPC/edit/main/index.rst"
+           rel="nofollow">Edit on GitHub</a></li>
+  </ul>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="usage.html" title="Requirements"
+             >next</a> |</li>
+        <li class="nav-item nav-item-0"><a href="#">HTEPC 0.0.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Welcome to HTEPC’s documentation!</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2024, Niraj K Nepal, Lin-Lin Wang.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
+    </div>
+  </body>
+</html>

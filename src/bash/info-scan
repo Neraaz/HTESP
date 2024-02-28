@@ -1,0 +1,101 @@
+#! /bin/bash
+# Writen by Niraj K. Nepal, Ph.D.
+# Scripts to print various information about compounds from QE scf calculations.
+# Runs for 'mainprogram compound'
+
+echo "---------------------------------------------------------------------------------------------------------------"
+echo "Printing info about compounds. Do 'mainprogram compound > compound.txt' to save in 'compound.txt' file"
+echo "---------------------------------------------------------------------------------------------------------------"
+file=$(find * -name $3 | tail -n 1)
+dft=$(grep "DFT" input.in | awk '{ print $3 }')
+for ((ii=$1; ii<$2; ++ii)); do
+  A=$(grep "v$ii\ " $file | awk '{print $2}')
+  B=$(grep "v$ii\ " $file | awk '{print $3}')
+  if [ $dft == 'vasp' ] || [ $dft == 'VASP' ]; then
+      echo "vasp"
+    echo "******************************************************"
+    echo "*               Compound: $B                         "
+    echo "******************************************************"
+    echo "----------------------------------------------------------------------"
+    echo "Structural parameters before relaxation"
+    echo "----------------------------------------------------------------------"
+    if [[ -f R$A-$B/relax/POSCAR1 ]]; then
+      crystal.py R$A-$B/relax/POSCAR1
+    else
+      crystal.py R$A-$B/relax/POSCAR
+    fi
+    if [[ -f R$A-$B/relax/CONTCAR ]]; then
+      echo "----------------------------------------------------------------------"
+      echo "Structural parameters after relaxation"
+      echo "----------------------------------------------------------------------"
+      crystal.py R$A-$B/relax/CONTCAR
+    fi
+    if [[ -f R$A-$B/relax/OUTCAR ]]; then
+      NELECT=$(grep NELECT R$A-$B/relax/OUTCAR | awk '{print $3}')
+      EFERMI=$(grep "Fermi energy" R$A-$B/relax/OUTCAR | tail -n 1 | awk '{print $3}')
+      ENCUT=$(grep ENCUT R$A-$B/relax/OUTCAR | awk '{print $3}' | head -n 1)
+      KMESH=$(sed -n '3,4p' R$A-$B/relax/KPOINTS)
+      echo "*         Valence Electrons: $NELECT                    "
+      echo "*         Fermi Energy: $EFERMI eV                    "
+      echo "*         K-mesh info: $KMESH                         "
+    fi
+  else
+    if [[ ! -f scf_dir/scf-$A.in ]]; then
+      qe_input.py $A
+    fi
+    comp=$(find scf_dir -name scf-$A.in | tail -n 1)
+    if [[ -f scf_dir/scf-relax-$A-$B.in ]]; then
+    comp1=$(find scf_dir -name scf-relax-$A-$B.in | tail -n 1)
+    fi
+    echo "******************************************************"
+    echo "*               Compound: $B                         "
+    echo "******************************************************"
+    if [[ -f $comp ]]; then
+    echo "----------------------------------------------------------------------"
+    echo "Looking for scf-$A.in file. Structural parameters before relaxation"
+    echo "----------------------------------------------------------------------"
+    crystal.py $comp
+    fi
+    if [[ -f $comp1 ]]; then
+    echo "----------------------------------------------------------------------"
+    echo "Looking for scf-relax-$A-$B.in file. Structural parameters after relaxation"
+    echo "----------------------------------------------------------------------"
+    crystal.py $comp1
+    fi
+    if [[ -f R$A-$B/calc/scf.out ]]; then
+      elm=$(grep "number of electrons       =        " R$A-$B/calc/scf.out | tail -n 1 | awk '{print $5}')
+      nel=${nelm%.*}
+      fermi=$(grep Fermi R$A-$B/calc/scf.out | awk '{print $5}')
+      echo "*         Valence Electrons: $elm                    "
+      echo "*         Fermi Energy: $fermi eV                    "
+    fi
+    ecut=$(grep ecutwfc $comp | awk '{print $3}')
+    echo "*         KEcutoff: $ecut Ry                         "
+    check=$(grep "(angstrom)" $comp1 | wc -l)
+    if [[ $check -eq 1 ]]; then
+      kpt=$(sed -n '/K_POINTS automatic/,/CELL_PARAMETERS (angstrom)/p' $comp1 | sed '$d' | sed '1d')
+      kptname=$(sed -n '/K_POINTS automatic/,/CELL_PARAMETERS (angstrom)/p' $comp1 | sed '$d' | sed '$d' | awk '{print $2}')
+    else
+      kpt=$(sed -n '/K_POINTS automatic/,/CELL_PARAMETERS angstrom/p' $comp1 | sed '$d' | sed '1d')
+      kptname=$(sed -n '/K_POINTS automatic/,/CELL_PARAMETERS angstrom/p' $comp1 | sed '$d' | sed '$d' | awk '{print $2}')
+    fi
+    echo "*         K-mesh info: ($kptname) $kpt                          "
+    if [[ -f elph_dir/elph-$A-$B.in ]]; then
+      nqpt=$(grep nq elph_dir/elph-$A-$B.in)
+      echo "*         q-mesh info: [$nqpt]                                  "
+    fi
+    echo "*                                                    "
+    echo "******************************************************"
+    #if [[ -f R$A-$B/relax/scf.out ]] ; then
+    #echo "*           Relaxed Structure                         "
+    #  sed -n '/K_POINTS/,$p' scf_dir/scf-relax-$A-$B.in | sed '1,2d'
+    #  sed -n '/ATOMIC_POSITIONS/,/K_POINTS/p' scf_dir/scf-relax-$A-$B.in | sed '$d'
+    #else
+    # echo "*           Materials Project Structure               "
+    #  sed -n '/K_POINTS/,$p' scf_dir/scf-$A.in | sed '1,2d'
+    #  sed -n '/ATOMIC_POSITIONS/,/K_POINTS/p' scf_dir/scf-$A.in | sed '$d'
+    #fi
+    #echo "*******************************************************"
+  fi
+done
+echo "all done"

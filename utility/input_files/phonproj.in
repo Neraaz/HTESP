@@ -1,0 +1,7 @@
+B3Ca5N6.eig    #Eigenval file
+3 200       #number of atom type and number of kpoints.
+*
+Ca 0 1 2 3 4       # first ion and its position in input file
+B 5 6 7
+N 8 9 10 11 12 13
+*

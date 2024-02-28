@@ -1,0 +1,94 @@
+#! /bin/bash
+# Writen by Niraj K. Nepal, Ph.D.
+# Submit phonon calculations for different pressure using QE.
+# Runs for 'mainprogram 27'
+
+echo "---------------------------------------------------------------------------------------------------------------"
+echo "Submitting phonon calculations for different pressure"
+echo "---------------------------------------------------------------------------------------------------------------"
+file=$(find * -name $3 | tail -n 1)
+for ((ii=$1; ii<$2; ++ii)); do
+  A=$(grep "v$ii\ " $file | awk '{print $2}')
+  B=$(grep "v$ii\ " $file | awk '{print $3}')
+  echo "$A $B"
+  if [[ -d R$A-$B/pressure ]] ; then
+    NP=$(wc -l pressure.in | awk '{print $1}')
+    NP=$(echo $NP+1 | bc)
+    for ((kk=1; kk<$NP; ++kk)); do 
+      sed "s/'vc-relax'/'scf'/g" R$A-$B/pressure/R$kk/scf.in | sed "/&IONS/,+6d" | sed '1,/CELL_PARAMETERS (angstrom)/!d' | sed '$d' > R$A-$B/pressure/R$kk/scf-header.in
+      sed -n '/Begin final coordinates/,/End final coordinates/p' R$A-$B/pressure/R$kk/scf.out | sed '$d' | sed '1,4d'| sed '5d' > R$A-$B/pressure/R$kk/relax_structure.dat
+      cat R$A-$B/pressure/R$kk/scf-header.in R$A-$B/pressure/R$kk/relax_structure.dat > R$A-$B/pressure/R$kk/scf.in
+      convg=$(grep "Convergence has been achieved" R$A-$B/pressure/R$kk/elph.out | wc -l)
+      check=$(grep "No convergence has been achieved" R$A-$B/pressure/R$kk/elph.out | wc -l)
+  
+  if [[ $convg -gt 0 ]] ; then
+      echo "el-ph calculation completed, do nothing"
+  elif [[ -f R$A-$B/pressure/R$KK/elph.in ]] && [[ $check -lt 1 ]] && [[ $convg -lt 1 ]] ; then
+      echo "calculation not completed due to walltime"
+      sed "/&inputph/a   recover=.true.," R$A-$B/pressure/R$kk/elph.in > R$A-$B/pressure/R$kk/elph-2.in
+      mv R$A-$B/pressure/R$kk/elph-2.in R$A-$B/pressure/R$kk/elph.in
+      cp run-elph.sh R$A-$B/pressure/R$kk/
+      cd R$A-$B/pressure/R$kk/
+       if [[ -f ../../../CALC_VISIBLE_WITH_ID ]]; then 
+         cp run-elph.sh $A-elph.sh
+         sbatch $A-elph.sh
+       elif [[ -f ../../../CALC_VISIBLE_WITH_NAME ]]; then 
+         cp run-elph.sh $B-elph.sh
+         sbatch $B-elph.sh
+       elif [[ -f ../../../CALC_VISIBLE_WITH_ID-NAME ]]; then 
+         cp run-elph.sh $A-$B-elph.sh
+         sbatch $A-$B-elph.sh
+       else
+         sbatch run-elph.sh
+       fi
+        sleep 1s
+      cd ../../../
+ elif [[ ! -f R$A-$B/pressure/R$kk/elph.in ]] ; then
+    cp elph_dir/ph-$A-$B.in R$A-$B/pressure/R$kk/elph.in
+    cp run-elph.sh R$A-$B/pressure/R$kk/
+     cd R$A-$B/pressure/R$kk/
+       if [[ -f ../../../CALC_VISIBLE_WITH_ID ]]; then 
+         cp run-elph.sh $A-elph.sh
+         sbatch $A-elph.sh
+       elif [[ -f ../../../CALC_VISIBLE_WITH_NAME ]]; then 
+         cp run-elph.sh $B-elph.sh
+         sbatch $B-elph.sh
+       elif [[ -f ../../../CALC_VISIBLE_WITH_ID-NAME ]]; then 
+         cp run-elph.sh $A-$B-elph.sh
+         sbatch $A-$B-elph.sh
+       else
+         sbatch run-elph.sh
+       fi
+       sleep 1s
+     cd ../../../
+ else
+     echo "not converged restarting"
+     isalpha_mix=$(grep alpha_mix R$A-$B/pressure/R$kk/elph.in | wc -l)
+     if [[ $isalpha_mix -gt 0 ]]; then
+       sed '/alpha_mix/d' elph_dir/ph-$A-$B.in > elph_dir/ph-$A-$B-2.in
+       mv elph_dir/ph-$A-$B-2.in elph_dir/ph-$A-$B.in
+       sed "/&inputph/a   alpha_mix=0.3, nmix_ph=8," elph_dir/ph-$A-$B.in > R$A-$B/pressure/R$kk/elph.in
+  else
+   sed "/&inputph/a   alpha_mix=0.3," elph_dir/ph-$A-$B.in > R$A-$B/pressure/R$kk/elph.in
+  fi  
+ echo " submitting not converged jobs in R$A-$B "
+    cd R$A-$B/pressure/R$kk/
+       if [[ -f ../../../CALC_VISIBLE_WITH_ID ]]; then 
+         cp run-elph.sh $A-elph.sh
+         sbatch $A-elph.sh
+       elif [[ -f ../../../CALC_VISIBLE_WITH_NAME ]]; then 
+         cp run-elph.sh $B-elph.sh
+         sbatch $B-elph.sh
+       elif [[ -f ../../../CALC_VISIBLE_WITH_ID-NAME ]]; then 
+         cp run-elph.sh $A-$B-elph.sh
+         sbatch $A-$B-elph.sh
+       else
+         sbatch run-elph.sh
+       fi
+       sleep 1s
+    cd ../../../
+  fi
+  done
+  fi
+done
+echo "all done"

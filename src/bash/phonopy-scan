@@ -1,0 +1,424 @@
+#! /bin/bash
+# Writen by Niraj K. Nepal, Ph.D.
+# Script to submit vasp-phonon calculations.
+# Runs for 'mainprogram vp-phi', i = 1 - 7
+
+file=$(find * -name $3 | tail -n 1)
+step=$4
+dft=$(grep "DFT" input.in | awk '{ print $3 }')
+#nqpt=$(awk '{if(NR==3) print $1}' input.in)
+Rytoev=$(echo "scale=6;13.605698" | bc)
+au2ang=`echo "scale=8;0.14818453" | bc`
+#vasp-phonopy.in file format
+#PREC Accurate
+#IBRION -1
+#ISMEAR 0
+#SIGMA 0.01
+#IALGO 38
+#LREAL .FALSE.
+#LWAVE .FALSE.
+#LCHARG .FALSE.
+#NSW 0
+#ALGO
+#ISIF
+#LASPH
+#LORBIT
+#EDIFFG
+#MAGMOM
+echo "---------------------------------------------------------------------------------------------------------------"
+echo "Phonopy calculations"
+echo "---------------------------------------------------------------------------------------------------------------"
+echo "***************************************"
+if [[ -f setting.conf ]]; then
+  dimension=$(sed '/#/d' setting.conf | grep DIM)
+else
+  dimension="DIM = 2 2 2"
+fi
+echo "ID,comp,NIONS,energy,niteration" > econv_vasp.csv
+for ((ii=$1; ii<$2; ++ii)); do
+  A=$(grep "v$ii\ " $file | awk '{print $2}')
+  B=$(grep "v$ii\ " $file | awk '{print $3}')
+  echo "$A $B"
+  if [ $step == 1 ]; then
+  echo "---------------------------------------------------------------------------------------------------------------"
+  echo "Submitting scf calculations with different displacement"
+  echo "---------------------------------------------------------------------------------------------------------------"
+    if [[ -d R$A-$B ]]; then
+       if [[ ! -d R$A-$B/phonopy ]]; then
+          mkdir R$A-$B/phonopy
+       fi
+       if [[ -f setting.conf ]]; then
+          cp setting.conf R$A-$B/phonopy/
+       fi
+      if [ $dft == 'QE' ] || [ $dft == 'qe' ]; then
+       if [[ -f run-scf.sh ]]; then
+         cp run-scf.sh R$A-$B/phonopy/run-scf.sh
+       else
+         cp R$A-$B/relax/run-scf.sh R$A-$B/phonopy/run-scf.sh
+       fi
+       
+       cd R$A-$B/phonopy
+        cp ../relax/scf.in scf.in
+        if [[ -f setting.conf ]]; then
+          phonopy --qe -d setting.conf -c scf.in
+        else
+          phonopy --qe -d --dim="2 2 2" -c scf.in
+        fi
+        N=$(ls supercell* | wc -l)
+        bohrtoang=$(echo "scale=8; 0.52917725" | bc)
+        sed -n '/ATOMIC_POSITIONS/,$p' supercell.in > position.dat
+        nat=$(wc -l position.dat | awk '{ print $1 }')
+        nat=$(echo $nat | bc)
+        rm position.dat
+        sed -n '/&CONTROL/,/ATOMIC_POSITIONS/p' scf.in | sed '$d' | sed "s/'vc-relax'/'scf'/" | sed '/nat/d' | sed '/pseudo_dir/d' | sed "/calculation = 'scf',/a pseudo_dir = '../../../pp/'," | sed '/&IONS/,$d' | sed "/ibrav = 0,/a nat = $nat," > scf-header.in
+        sed -n '/ATOMIC_SPECIES/,/ATOMIC_POSITIONS crystal/p' scf.in | sed '$d' > species.in
+        sed -n '/K_POINTS/,/CELL_PARAMETERS/p' scf.in | sed '$d' | sed '1d' > kpoint.dat
+        mk1=$(cat kpoint.dat | awk '{print $1}')
+        mk2=$(cat kpoint.dat | awk '{print $2}')
+        mk3=$(cat kpoint.dat | awk '{print $3}')
+        nk1=$(echo $mk1/2 | bc)
+        nk2=$(echo $mk2/2 | bc)
+        nk3=$(echo $mk3/2 | bc)
+        echo "K_POINTS automatic" > kpoint.dat
+        echo "$nk1 $nk2 $nk3 0 0 0" >> kpoint.dat
+        sed -n '/CELL_PARAMETERS/,/ATOMIC_SPECIES/p' supercell.in | sed '$d' | sed '1d' > cellpar.dat
+        # Specify the file containing the matrix
+        file_name="cellpar.dat"
+        mapfile -t lines < "$file_name"
+        echo "CELL_PARAMETERS angstrom" > newcellpar.dat
+        # Loop through each line to split it into elements and add 2 to each element
+        for i in "${!lines[@]}"; do
+            read -ra elements <<< "${lines[$i]}"
+            string=''
+            for j in "${!elements[@]}"; do
+                elem=${elements[j]}
+                array=$(echo "scale=8;$elem * $bohrtoang" | bc -l)
+                string="$string$array "
+            done
+            echo "$string" >> newcellpar.dat
+        done
+        for ((kk=1; kk<$N; ++kk)); do
+         if [[ ! -d R$kk ]]; then
+          mkdir R$kk
+         fi
+         cp run-scf.sh R$kk/run-scf.sh
+         if [[ $kk -lt 10 ]]; then
+          sed -i '1d' supercell-00$kk.in
+          sed -n '/ATOMIC_POSITIONS/,$p' supercell-00$kk.in > position.dat
+          nat=$(wc -l position.dat | awk '{ print $1 }')
+          nat=$(echo $nat - 1 | bc)
+         elif [[ $kk -ge 10 ]] && [[ $kk -lt 100 ]]; then
+          sed -i '1d' supercell-0$kk.in
+          sed -n '/ATOMIC_POSITIONS/,$p' supercell-0$kk.in > position.dat
+         else
+          sed -i '1d' supercell-$kk.in
+          sed -n '/ATOMIC_POSITIONS/,$p' supercell-$kk.in > position.dat
+         fi
+          echo  >> position.dat
+          cat scf-header.in species.in position.dat kpoint.dat newcellpar.dat > R$kk/scf.in
+          rm position.dat
+          cd R$kk/
+           sbatch run-scf.sh
+           sleep 1s
+          cd ../
+        done
+          rm species.in newcellpar.dat kpoint.dat cellpar.dat
+       cd ../../ 
+       continue
+      fi
+     
+      if [[  -f run-vasp.sh ]]; then
+        cp run-vasp.sh R$A-$B/phonopy/run.sh
+      else
+        cp R$A-$B/relax/run.sh R$A-$B/phonopy/run.sh
+      fi 
+      if [[ ! -f vasp-phonopy.in ]]; then
+         vasp-phonopy.sh
+      fi
+      cp vasp-phonopy.in R$A-$B/phonopy/vasp.in
+      cd R$A-$B/phonopy
+       cp ../relax/INCAR .
+       cp ../relax/POSCAR .
+       cp ../relax/POTCAR .
+       cp ../relax/KPOINTS .
+       vasp_process.py symmetrize
+       if [[ -f setting.conf ]]; then
+         phonopy -d setting.conf
+       else
+         phonopy -d --dim='2 2 2'
+       fi
+       #vasp_process.py POSCAR
+       N=$(ls POSCAR* | wc -l)
+       ncalc=$(echo $N - 1 | bc)
+       echo "Number of supercells: $ncalc"
+       for ((kk=1; kk<$N; ++kk)); do
+         if [ ! -d R$kk ]; then
+          mkdir R$kk
+         fi
+         cp INCAR R$kk/ 
+         cp KPOINTS R$kk/
+         cp POTCAR R$kk/
+         cp vasp.in R$kk/
+        if [ $kk -lt 10 ]; then
+           cp POSCAR-00$kk R$kk/POSCAR
+        else
+           cp POSCAR-0$kk R$kk/POSCAR
+        fi
+        cp run.sh R$kk/run-$kk.sh
+        cd R$kk/
+         vasp_process.py POSCAR
+         sbatch run-$kk.sh
+         sleep 1s
+        cd ../
+
+       done
+        
+      cd ../../
+
+   
+    fi
+
+   elif [ $step == 2 ]; then
+     echo "$step"
+     echo "---------------------------------------------------------------------------------------------------------------"
+     echo "Computing force constant"
+     echo "---------------------------------------------------------------------------------------------------------------"
+     cd R$A-$B/phonopy
+     if [ $dft == 'QE' ] || [ $dft == 'qe' ]; then
+       phonopy -f R*/scf.out
+     else
+       NP=$(ls POSCAR* | wc -l)
+       N=$(echo $NP-1 | bc)
+       echo "Number of calc: $N"
+       phonopy -f R*/vasprun.xml
+     fi
+     cd ../../
+
+   elif [ $step == 3 ]; then
+    echo "$step"
+    echo "---------------------------------------------------------------------------------------------------------------"
+    echo "Computing Thermodynamic properties"
+    echo "---------------------------------------------------------------------------------------------------------------"
+    cd R$A-$B/phonopy
+     if [ $dft == 'QE' ] || [ $dft == 'qe' ]; then
+       sed -n '/ATOMIC_SPECIES/,/ATOMIC_POSITIONS crystal/p' scf.in | sed '$d' > species.in
+       sum_string=""
+       while IFS= read -r line; do
+           first_column=$(echo "$line" | awk '{print $1}')
+           sum_string="${sum_string}${first_column} "
+       done < "species.in"
+       atom="${sum_string% }"
+       rm species.in
+     else
+       atom=$(sed -n '6p' POSCAR)
+     fi
+     echo "ATOM_NAME = $atom" > mesh.conf
+     if [[ -f setting.conf ]]; then
+       echo "$dimension" >> mesh.conf
+     else
+       echo "DIM = 2 2 2" >> mesh.conf
+     fi
+     echo "MP = 48 48 48" >> mesh.conf
+     echo "TPROP = .TRUE." >> mesh.conf
+     echo "TMAX = 2100" >> mesh.conf
+     #phonopy -p -s mesh.conf
+     #phonopy -t -s mesh.conf
+     phonopy -t -p -s mesh.conf
+    cd ../../
+   elif [ $step == 4 ]; then
+   echo "---------------------------------------------------------------------------------------------------------------"
+   echo "Phonon bandstructure calculation"
+   echo "---------------------------------------------------------------------------------------------------------------"
+     echo "$step"
+     cd R$A-$B/phonopy
+     if [ $dft == 'QE' ] || [ $dft == 'qe' ]; then
+       vasp_process.py scf.in
+       sed -n '/ATOMIC_SPECIES/,/ATOMIC_POSITIONS crystal/p' scf.in | sed '$d' | sed '1d' > species.in
+       sum_string=""
+       while IFS= read -r line; do
+           first_column=$(echo "$line" | awk '{print $1}')
+           sum_string="${sum_string}${first_column} "
+       done < "species.in"
+       atom="${sum_string% }"
+       rm species.in
+     else
+       vasp_process.py POSCAR
+       atom=$(sed -n '6p' POSCAR)
+     fi
+       echo "ATOM_NAME = $atom" > temp.conf
+       if [[ -f setting.conf ]]; then
+         echo "$dimension" >> temp.conf
+       else
+         echo "DIM = 2 2 2" >> temp.conf
+       fi
+       echo "FC_SYMMETRY = .TRUE." >> temp.conf
+       echo "PRIMITIVE_AXES = AUTO" >> temp.conf
+       echo "EIGENVECTORS=.TRUE." >> temp.conf
+       echo "BAND_POINTS = 50" >> temp.conf
+       cat temp.conf band_phonopy.in > band.conf
+       rm temp.conf
+       phonopy -p -s band.conf
+     cd ../../ 
+
+    elif [ $step == 0 ]; then
+     echo "---------------------------------------------------------------------------------------------------------------"
+     echo "Extracting total energies, and stored in 'econv_vasp.csv'"
+     echo "---------------------------------------------------------------------------------------------------------------"
+     if [ $dft == 'QE' ] || [ $dft == 'qe' ]; then
+       e0=`grep ! R$A-$B/relax/scf.out | tail -n 1 | awk '{print $5}'`
+       nat=$(grep "number of atoms/cell" R$A-$B/relax/scf.out | tail -n 1 | awk '{ print $5 }')
+       niter=$(grep ! R$A-$B/relax/scf.out | wc -l)
+       e=`echo "scale=10; $e0 * $Rytoev / $nat " | bc`
+       echo "$A,$B,$nat,$e,$niter" >> econv_vasp.csv
+     else
+       conv=$(grep "reached required accuracy - stopping structural energy minimisation" R$A-$B/relax/OUTCAR | wc -l)
+       nsw_check=$(grep "NSW = 0" R$A-$B/relax/INCAR | wc -l)
+       if [[ $conv -gt 0 ]] || [[ $nsw_check -gt 0 ]]; then
+       e0=$(grep TOTEN R$A-$B/relax/OUTCAR | tail -n 1 | awk '{ print $5 }')
+       nat=$(grep -a "NIONS" R$A-$B/relax/OUTCAR | awk '{ print $12}')
+       e=$(echo "scale=6; $e0/$nat" | bc)
+       niter=$(grep "y  w" R$A-$B/relax/OUTCAR | wc -l)
+       echo "$A,$B,$nat,$e,$niter" >> econv_vasp.csv
+       else
+         echo "not converged: $A $B"
+         continue
+       fi
+     fi
+    elif [ $step == 5 ]; then
+      echo "---------------------------------------------------------------------------------------------------------------"
+      echo "Phonon symmetry analysis"
+      echo "---------------------------------------------------------------------------------------------------------------"
+       cd R$A-$B/phonopy
+       touch symmetry_analysis.in
+       input="high_symm.in"
+       while read -r line
+       do
+          echo "$line"
+          if [[ -f setting.conf ]]; then
+            #echo "$dimension" >> mesh.conf
+            phonopy setting.conf --irreps="$line" >> symmetry_analysis.in
+          else
+            #echo "DIM = 2 2 2" >> mesh.conf
+            phonopy --dim="2 2 2" --irreps="$line" >> symmetry_analysis.in
+          fi
+        done < "$input"
+       cd ../../
+    elif [ $step == 'vp-ph-qha' ]; then
+      echo "---------------------------------------------------------------------------------------------------------------"
+      echo "Running phonopy-qha command for temperature-dependent equilibrium properties"
+      echo "---------------------------------------------------------------------------------------------------------------"
+          if [[ ! -f thermo_out.txt ]]; then
+            touch thermo_out.txt
+          fi
+          cd R$A-$B/pressure
+           phonopy-qha --tmax 2000 e-v.dat R*/phonopy/thermal_properties.yaml >> thermo_qha.dat
+          cd ../../
+    #elif [ $step == 'qha-prepare' ]; then
+    #    phonopy-vasp-efe --tmax=1500 R*/phonopy/R*
+    elif [ $step == 'ev-collect' ]; then
+       echo "-------------------------------------------------------------------------------------------------"
+       echo "Extracting energy-volume data in e-v.dat file"
+       echo "-------------------------------------------------------------------------------------------------"
+       cd R$A-$B/pressure/
+         if [ $dft == 'VASP' ] || [ $dft == 'vasp' ]; then
+          NP=$(wc -l mpid-pressure.in | awk '{ print $1 }')
+          NP=$(echo $NP+1 | bc)
+         else
+          NP=$(wc -l ../../pressure.in | awk '{ print $1 }')
+         fi
+         echo "$NP"
+         if [[ -f e-v.dat ]]; then
+          rm e-v.dat
+          touch e-v.dat
+         fi
+         if [[ -f e_p_v.csv ]]; then
+           rm e_p_v.csv
+           touch e_p_v.csv
+         fi
+         for ((pp=1; pp<$NP; ++pp)); do
+            col1=$(grep "v$pp\ " mpid-pressure.in | awk '{print $2}')
+            col2=$(grep "v$pp\ " mpid-pressure.in | awk '{print $3}')
+            pv_unit_conv=$(echo "scale=8; 0.00062415" | bc)
+            if [ $dft == 'QE' ] || [ $dft == 'qe' ]; then
+               en=`grep ! R$col1-$col2/relax/scf.out | tail -n 1 | awk '{print $5}'`
+               vol=`grep volume R$col1-$col2/relax/scf.out | tail -n 1 | awk '{print $4}'`
+               Volume=`echo "scale=10; $vol * $au2ang " | bc`
+               Energy=`echo "scale=10; $en * $Rytoev " | bc`
+               press=$(grep "(kbar)     P=" R$col1-$col2/relax/scf.out | tail -n 1 | awk '{ print $6 }')
+               pv=$(echo "scale=10; $Volume * $press * $pv_unit_conv" | bc)
+               press=$(echo "scale=3; $press * 0.1" | bc)
+            else
+              Energy=$(grep "free  energy   TOTEN  =" R$col1-$col2/relax/OUTCAR | tail -1 | awk '{ print $5 }')
+              Volume=$(grep "  volume of cell :" R$col1-$col2/relax/OUTCAR | tail -1 | awk '{print $5 }')
+            fi
+            echo "$Volume $Energy" >> e-v.dat
+            echo "$press,$Volume,$pv,$Energy" >> e_p_v.csv
+         done
+       cd ../../
+    elif [ $step == 'eos-bm' ]; then
+       echo "-------------------------------------------------------------------------------------------------"
+       echo "Birch-Murnaghan EOS fit"
+       echo "-------------------------------------------------------------------------------------------------"
+      if [[ ! -f eos-fit.dat ]]; then
+        touch eos-fit.dat
+      fi
+      cd R$A-$B/pressure/
+        line_init=$(cat e-v.dat | wc -l)
+        awk 'NF == 2' e-v.dat > temp.dat
+        mv temp.dat e-v.dat
+        line_final=$(cat e-v.dat | wc -l)
+        removed=$(echo $line_init - $line_final | bc)
+        echo "$removed calculations not converged. removing them"
+        echo "Materials id: $A, Compound: $B" >> ../../eos-fit.dat
+        phonopy-qha --eos='birch_murnaghan' -b e-v.dat >> ../../eos-fit.dat
+        echo "------------------------------------------" >> ../../eos-fit.dat
+      cd ../../
+    elif [ $step == 'eos-vinet' ]; then
+       echo "-------------------------------------------------------------------------------------------------"
+       echo "Vinet EOS fit"
+       echo "-------------------------------------------------------------------------------------------------"
+      if [[ ! -f eos-fit.dat ]]; then
+        touch eos-fit.dat
+      fi
+      cd R$A-$B/pressure/
+        line_init=$(cat e-v.dat | wc -l)
+        awk 'NF == 2' e-v.dat > temp.dat
+        mv temp.dat e-v.dat
+        line_final=$(cat e-v.dat | wc -l)
+        removed=$(echo $line_init - $line_final | bc)
+        echo "$removed calculations not converged. removing them"
+        echo "Materials id: $A, Compound: $B" >> ../../eos-fit.dat
+        phonopy-qha --eos='vinet' -b e-v.dat >> ../../eos-fit.dat
+        echo "------------------------------------------" >> ../../eos-fit.dat
+      cd ../../
+    elif [ $step == 'vp-ph2-pressure' ]; then
+      echo "---------------------------------------------------------------------------------------------------------------"
+      echo "Performing vp-ph2 calculations for different isotropic pressures"
+      echo "---------------------------------------------------------------------------------------------------------------"
+      cd R$A-$B/pressure/
+        mainprogram vp-ph2
+      cd ../../
+    elif [ $step == 'vp-ph3-pressure' ]; then
+      echo "---------------------------------------------------------------------------------------------------------------"
+      echo "Performing vp-ph3 calculations for different isotropic pressures"
+      echo "---------------------------------------------------------------------------------------------------------------"
+      cd R$A-$B/pressure/
+        mainprogram vp-ph3
+      cd ../../
+    elif [ $step == 'vp-ph4-pressure' ]; then
+      echo "---------------------------------------------------------------------------------------------------------------"
+      echo "Performing vp-ph4 calculations for different isotropic pressures"
+      echo "---------------------------------------------------------------------------------------------------------------"
+      cd R$A-$B/pressure/
+        mainprogram vp-ph4
+      cd ../../
+    elif [ $step == 'vp-ph5-pressure' ]; then
+      echo "---------------------------------------------------------------------------------------------------------------"
+      echo "Performing vp-ph5 calculations for different isotropic pressures"
+      echo "---------------------------------------------------------------------------------------------------------------"
+      cd R$A-$B/pressure/
+        mainprogram vp-ph5
+      cd ../../
+    fi
+done
+echo "all done"

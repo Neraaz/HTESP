@@ -1,0 +1,118 @@
+#! /bin/bash
+# Writen by Niraj K. Nepal, Ph.D.
+# This script copy all the necessary files required for process=13-18
+# from scf_dir directory to bands folder, and submit calculation for process 13.
+# Requires scf-mpid-compound-prop.in file inside scf_dir, where mpid, compound, and prop
+# are materials id, compound name, and properties ('band', 'dos', nothing for scf calculation)
+# Also run-prop.sh submissiton scripts in working directory.
+# Runs for 'mainprogram 13'
+source jobscript.sh
+echo "---------------------------------------------------------------------------------------------------------------"
+echo "Preparing input files for BAND and DOS calculations"
+echo "Submitting QE scf.in calculations"
+echo "---------------------------------------------------------------------------------------------------------------"
+file=$(find * -name $3 | tail -n 1)
+dft=$(grep "DFT" input.in | awk '{ print $3 }')
+for ((ii=$1; ii<$2; ++ii)); do
+  A=$(grep "v$ii\ " $file | awk '{print $2}')
+  B=$(grep "v$ii\ " $file | awk '{print $3}')
+  echo "$A $B"
+  if [[ ! -d R$A-$B/bands ]] ; then
+      mkdir R$A-$B/bands
+  fi
+  if [ $dft == 'vasp' ] || [ $dft == 'VASP' ]; then
+     cp run-vasp.sh R$A-$B/bands/run.sh
+     if [[ -f R$A-$B/relax/CONTCAR ]]; then
+      cp R$A-$B/relax/CONTCAR R$A-$B/bands/POSCAR
+     else
+      cp R$A-$B/relax/POSCAR R$A-$B/bands/POSCAR
+     fi
+     cp R$A-$B/relax/POTCAR R$A-$B/bands/POTCAR
+     cp R$A-$B/relax/INCAR R$A-$B/bands/INCAR
+     if [[ -f vdw_kernel.bindat ]] && [[ ! -f R$A-$B/bands/vdw_kernel.bindat ]]; then
+       cp vdw_kernel.bindat R$A-$B/bands/vdw_kernel.bindat
+     fi
+     cd R$A-$B/bands/
+       echo "Creating soft links to CHGCAR and WAVECAR of R$A-$B/relax/"
+       ln -s ../relax/CHGCAR CHGCAR
+       ln -s ../relax/WAVECAR WAVECAR
+       nel=$(grep "NELECT" ../relax/OUTCAR | awk '{ print $3 }')
+       nel=$(echo $nel/1 | bc)
+       soc=$(grep "LSORBIT = .TRUE." INCAR | wc -l)
+       if [ $soc -gt 0 ]; then
+           nbnd=$(echo $nel+20 | bc)
+           echo "Number of band used in electronic bandstructure calculation [number of electrons ($nel) + 20]: $nbnd"
+       else
+         if [ $nel -lt 30 ]; then
+           nbnd=$(echo $nel+10 | bc)
+           echo "Number of band used in electronic bandstructure calculation [number of electrons ($nel) + 10]: $nbnd"
+         else
+           nbnd=$(echo $nel*1.50/2 | bc)
+           echo "Number of band used in electronic bandstructure calculation [number of electrons ($nel)*1.5/2]: $nbnd"
+         fi
+       fi
+       if [[  -f ../../vasp-band.in ]]; then
+         cp ../../vasp-band.in vasp.in
+       else
+         echo "vasp-band.in file not present, creating vasp.in inside R$A-$B/bands/"
+         echo "LORBIT 11" > vasp.in
+         echo "LCHARG .False." >> vasp.in
+         echo "LWAVE .False." >> vasp.in
+         echo "NSW 0" >> vasp.in
+         echo "ISIF 2" >> vasp.in
+         echo "ICHARG 11" >> vasp.in
+         echo "NBANDS $nbnd" >> vasp.in
+         echo "EDIFFG" >> vasp.in
+         echo "IBRION" >> vasp.in
+         echo "NELM" >> vasp.in
+       fi
+       vasp_process.py POSCAR
+       cp ../../input.in .
+       cp ../relax/IBZKPT KPOINTS
+       metagga_check=$(grep METAGGA vasp.in | wc -l)
+       hybrid_check=$(grep LHFCALC vasp.in | wc -l)
+       if [[ $metagga_check -gt 0 ]]; then
+         echo "METAGGA tag detected in vasp-band.in"
+       elif [[ $hybrid_check -gt 0 ]]; then
+         echo "LHFCALC tag detected in vasp-band.in"
+       else
+         echo "GGA or LDA band calculations" 
+       fi
+       kcut=$(awk '{if(NR==3) print $2}' input.in)
+       nkpt=$(awk '{if(NR==3) print $1}' input.in)
+       oldkpt=$(sed -n '2p' KPOINTS)
+       newkpt=$(echo $nkpt + $oldkpt | bc)
+       if [[ $metagga_check -gt 0 ]] || [[ $hybrid_check -gt 0 ]]; then
+          echo "---------------------------------------------------"
+          echo " Turn on LASPH = .True. in GGA calculations ......."
+          echo "---------------------------------------------------"
+          
+          kpath.py point POSCAR $nkpt $kcut 0
+       sed '1,2d' scf_dir/kpathlines.dat > kpathtemp.in
+          cat KPOINTS kpathtemp.in | sed '2d' > KPOINTS_temp
+          rm kpathtemp.in KPOINTS input.in
+          sed "1 a $newkpt" KPOINTS_temp > KPOINTS
+          rm KPOINTS_temp
+       else
+          kpath.py line 100
+       fi
+       echo " submitting jobs in R$A-$B "
+       vasprun "$A" "$B"
+     cd ../../
+  else
+     cp scf_dir/scf-$A-$B.in R$A-$B/bands/scf.in
+     cp scf_dir/scf-$A-$B-band.in R$A-$B/bands/scf-band.in
+     cp scf_dir/band-$A-$B.in R$A-$B/bands/band.in
+     cp run-band.sh R$A-$B/bands/
+     cp run-scf.sh R$A-$B/bands/
+       cd R$A-$B/bands
+          qerun "$A" "$B" "scf"
+         sleep 1s
+       cd ../../
+  fi
+################
+## SUBMIT JOB ##
+################
+done
+echo "all done"
+

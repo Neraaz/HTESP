@@ -1,0 +1,100 @@
+#! /bin/bash
+# Writen by Niraj K. Nepal, Ph.D.
+# Script to extract the data after calculating superconducting Tc. (.i.e. after 'mainprogram 12')
+# Runs for 'mainprogram 21'
+
+echo "---------------------------------------------------------------------------------------------------------------"
+echo "Extracting superconducting critical temperatures, stored in result.csv"
+echo "---------------------------------------------------------------------------------------------------------------"
+echo "ID,compound,degauss,lambda,logomega,Tc,Phonon_freq,qbreasym,fft_check" > result.csv
+mainprogram checkph
+mainprogram checkfreq
+file=$(find * -name $3 | tail -n 1)
+for ((ii=$1; ii<$2; ++ii)); do
+  A=$(grep "v$ii\ " $file | awk '{print $2}')
+  B=$(grep "v$ii\ " $file | awk '{print $3}')
+  echo "$A $B"
+  degauss=$(sed 's/=//g' R$A-$B/calc/scf.in | grep "degauss" | awk '{print $2}' | sed 's/,//')
+  if [[ -f elph_dir/$A-$B-freq.dat ]]; then
+   ng="negative_freq"
+  else
+   ng="nonegative_freq"
+  fi
+ 
+  if [[ -f scf_dir/$A-qbreaksym ]] ; then
+   qb="qbreaksymerror"
+  else
+   qb="noqbreaksymerror"
+  fi
+
+  if [[ -f scf_dir/$A-fft-grid ]] ; then
+   fft="FFTcompatibleerror"
+  else
+   fft="noFFTerror"
+  fi
+
+  lambda=$(sed -n '13'p R$A-$B/calc/lambda.out | awk '{print $1}')
+  logom=$(sed -n '13'p R$A-$B/calc/lambda.out | awk '{print $2}')
+  Tc=$(sed -n '13'p R$A-$B/calc/lambda.out | awk '{print $3}')
+
+  if [[ $lambda =~ ^[+-]?[0-9]+\.?[0-9]*$ ]]; then
+    echo "$lambda is number"
+  else
+    lambda="NaN"
+  fi
+
+  if [[ $logom =~ ^[+-]?[0-9]+\.?[0-9]*$ ]]; then
+    echo "$logom is number"
+  else
+    logom="NaN"
+  fi
+  if [[ $Tc =~ ^[+-]?[0-9]+\.?[0-9]*$ ]]; then
+    echo "$Tc is number"
+  else
+    Tc="NaN"
+  fi
+
+  if [[ -f R$A-$B/calc/lambda.out ]]; then
+   echo "$A,$B,$degauss,$lambda,$logom,$Tc,$ng,$qb,$fft" >> result.csv
+  fi
+  if [[ ! -d cif ]]; then
+    mkdir cif
+  fi
+ if [[ -f R$A-$B/relax/scf.out ]]; then
+  cp scf_dir/scf-relax-$A-$B.in R$A-$B/relax/scf.in
+  cd R$A-$B/relax/
+   scftocif.py
+   cp relax.cif ../../cif/$A.cif
+  cd ../../
+ else
+   continue
+ fi
+done
+if [[ -f result.csv ]]; then
+  echo "---------------------------------------------------------------------------------------------------------------"
+  echo "---------------------------------------------------------------------------------------------------------------"
+  echo "Checking convergence according to recipe, described in Nepal et. al., ML paper"
+  echo "---------------------------------------------------------------------------------------------------------------"
+  echo "---------------------------------------------------------------------------------------------------------------"
+  echo "python fitting_elph_smearing.py result.csv mgb2_cutoff smearing_start number_of_smearing"
+  echo "Default: mgb2_cutoff = 13, smearing_start = 0.005 (Ry), and number_of_smearing = 10"
+  echo "Following files created ..."
+  echo "---------------------------------------------------------------------------------------------------------------"
+  echo "fitting_params_Tc_zero.csv: Non superconductors"
+  echo "fitting_params_Tc_nonzero_noconv.csv: unconverged calculations with A > mgb2_cutoff"
+  echo "fitting_params_Tc_nonzero_conv.csv: converged calculations with A < mgb2_cutoff"
+  echo "plots_fit : folder with fitting plots"
+  echo "result_negative.csv : data for dynamically unstable phonon modes with phonon energy less than -1 THz"
+  echo "result_non_negative.csv : data for dynamically stable phonon modes with phonon energy larger than -1 THz"
+  echo "---------------------------------------------------------------------------------------------------------------"
+  fit_check=$(ls fitting_params_Tc_* | wc -l)
+  if [[ $fit_check -gt 0 ]]; then
+   rm fitting_params_Tc_*
+  fi
+  if [[ -f problem_in_fit.in ]]; then
+   rm problem_in_fit.in
+  fi
+  fitting_elph_smearing.py result.csv 13 0.005 10
+fi
+echo "all done"
+echo "Use ML_processing.py script (can be found in HTEPC/utility/postprocessing) to further process the result file 'result.csv'"

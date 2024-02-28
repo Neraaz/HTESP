@@ -1,0 +1,30 @@
+#! /bin/bash
+# Writen by Niraj K. Nepal, Ph.D.
+# Script to run fine k-mesh grid QE scf calculations (with twice the size of coarse grid)
+# Runs for 'mainprogram 5'
+source jobscript.sh
+
+echo "---------------------------------------------------------------------------------------------------------------"
+echo "Submitting QE scf calculations with fine k-mesh, required for interpolating el-ph coupling (EPC) matrices"
+echo "---------------------------------------------------------------------------------------------------------------"
+file=$(find * -name $3 | tail -n 1)
+for ((ii=$1; ii<$2; ++ii)); do
+  A=$(grep "v$ii\ " $file | awk '{print $2}')
+  B=$(grep "v$ii\ " $file | awk '{print $3}')
+  echo "$A $B"
+  if [[ -d R$A-$B ]] ; then
+  if [[ ! -d R$A-$B/calc ]] ; then
+    echo " making R$A-$B/calc directory "
+    mkdir R$A-$B/calc
+  fi
+
+  cp scf_dir/scf-$A-$B-fit.in R$A-$B/calc/scf.in
+    cp run-scf.sh R$A-$B/calc/
+       echo " submitting jobs in R$A-$B "
+       cd R$A-$B/calc
+         qerun "$A" "$B" "scf"
+          sleep 1s
+       cd ../../
+ fi
+done
+echo "all done"

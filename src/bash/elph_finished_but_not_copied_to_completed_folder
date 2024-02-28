@@ -1,0 +1,18 @@
+#! /bin/bash
+# Writen by Niraj K. Nepal, Ph.D.
+# Script to identify finished 'mainprogram 9' calculations, but not superconductivity up to
+# 'mainprogram 14'. 
+
+file=$(find * -name $3 | tail -n 1)
+for ((ii=$1; ii<$2; ++ii)); do
+  A=$(grep "v$ii\ " $file | awk '{print $2}')
+  B=$(grep "v$ii\ " $file | awk '{print $3}')
+  mainprogram checkph >> log
+  x=$(grep "$A-$B: el-ph calculation completed" log | tail -n 1 | wc -l)
+  if [[ $x -gt 0 ]] && [[ ! -d completed/R$A-$B ]] ; then
+   echo "lambda.out: $lc"
+   echo "$A"
+ fi
+done
+echo "all done"
+

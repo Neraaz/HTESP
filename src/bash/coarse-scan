@@ -1,0 +1,26 @@
+#! /bin/bash
+# Writen by Niraj K. Nepal, Ph.D.
+# Submit QE scf calculation with coarse k-grid.
+# Runs for 'mainprogram 6'.
+source jobscript.sh
+file=$(find * -name $3 | tail -n 1)
+echo "---------------------------------------------------------------------------------------------------------------"
+echo "Submitting QE scf calculation with coarse grid"
+echo "---------------------------------------------------------------------------------------------------------------"
+for ((ii=$1; ii<$2; ++ii)); do
+  A=$(grep "v$ii\ " $file | awk '{print $2}')
+  B=$(grep "v$ii\ " $file | awk '{print $3}')
+  echo "$A $B"
+  if [[ -d R$A-$B ]] ; then
+    cp R$A-$B/calc/scf.in R$A-$B/calc/scf-fit.in
+    cp R$A-$B/calc/scf.out R$A-$B/calc/scf-fit.out
+    cp scf_dir/scf-$A-$B.in R$A-$B/calc/scf.in
+    cp run-scf.sh R$A-$B/calc/
+       echo " submitting jobs in R$A-$B "
+       cd R$A-$B/calc
+          qerun "$A" "$B" "scf"
+          sleep 1s
+       cd ../../
+  fi
+done
+echo "all done"

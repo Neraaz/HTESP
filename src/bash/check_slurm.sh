@@ -1,0 +1,12 @@
+#!/bin/bash
+queue_command=$1
+account_id=$2
+
+ncalc=$($queue_command | grep "$account_id" | awk '{ print $1 }')
+
+#ncalc=$(echo $ncalc + 1 | bc)
+
+for id in $ncalc; do
+ echo $id
+ find . -name slurm* | grep $id
+done

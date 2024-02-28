@@ -1,0 +1,19 @@
+Utility folder contains subfolders that has some extra scripts to perform various tasks
+
+1. distortion contains the scripts to extract unique ground-state energies among relaxing various structures corresponding to different modes.
+
+2. input_files: htepc.json file (main input file), and other secondary input "*.in" files
+
+3. useful_scripts: Some useful python scripts. 
+
+4. sample_pp contains pseudopotentials from SSSP PBE dataset.
+
+Read the descriptions inside the scripts to learn more.
+
+5. Relaxation
+   check whether instability arises in electronic or ionic iteration.
+   if ionic, consider using small ionic step and resubmit relaxation with updated 
+   structure, change cell optimization parameters
+
+   if electronic,
+   consider changing scf optimization parameters

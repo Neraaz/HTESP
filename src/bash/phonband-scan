@@ -1,0 +1,33 @@
+#! /bin/bash
+# Writen by Niraj K. Nepal, Ph.D.
+# Script to process phonon bandstructure and mode-resolved EPC strength (lambda)
+# Runs for 'mainprogram 12'
+
+echo "---------------------------------------------------------------------------------------------------------------"
+echo "Processing phonon bandstructure"
+echo "---------------------------------------------------------------------------------------------------------------"
+file=$(find * -name $3 | tail -n 1)
+for ((ii=$1; ii<$2; ++ii)); do
+  A=$(grep "v$ii\ " $file | awk '{print $2}')
+  B=$(grep "v$ii\ " $file | awk '{print $3}')
+  echo "$A $B"
+  if [[ -d R$A-$B ]] ; then
+  cp scf_dir/phonband-$A-$B.in R$A-$B/calc/phonband.in
+################
+## SUBMIT JOB ##
+################
+  echo " submitting jobs in R$A-$B "
+  cd R$A-$B/calc
+     freq_process.py $B
+     echo "elph.gamma.2" > gammaband.in
+     echo "0 5000" >> gammaband.in
+     echo "gamma.plot" >> gammaband.in
+     echo "gamma.ps" >> gammaband.in
+     echo "0.0" >> gammaband.in
+     echo "100 0" >> gammaband.in
+     plotband.x < gammaband.in > gammaband.out
+     sleep 1s
+  cd ../../
+ fi
+done
+echo "all done"

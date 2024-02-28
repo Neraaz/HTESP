@@ -1,0 +1,119 @@
+#! /bin/bash
+# Writen by Niraj K. Nepal, Ph.D. (tug11655@temple.edu)
+# Script to submit all the EPW related calculations
+# Runs for 'mainprogram.py epwj", j runs from 1 to 8.
+
+file=$(find * -name $3 | tail -n 1)
+echo "---------------------------------------------------------------------------------------------------------------"
+echo "BerkeleyGW calculations"
+echo "---------------------------------------------------------------------------------------------------------------"
+for ((ii=$1; ii<$2; ++ii)); do
+  A=$(grep "v$ii\ " $file | awk '{print $2}')
+  B=$(grep "v$ii\ " $file | awk '{print $3}')
+  if [[ ! -f scf_dir/scf-$A.in ]]; then
+    qe_input.py $A
+  fi
+  process=$4
+  echo "____________________________________________________________________________________________________________________________________"
+  echo "$A $B"
+  if [[ -f scf_dir/scf-$A.in ]]; then
+    prefix=$(grep "prefix = " scf_dir/scf-$A.in | awk '{print $3}' | sed 's/.$//' | sed "s/'//g")
+  else
+    exit
+  fi
+  if [[ -d R$A-$B ]] ; then
+    if [[ -f R$A-$B/relax/scf.out ]]; then
+      scfcheck=$(sed -n '/Begin final coordinates/,/End final coordinates/p' R$A-$B/relax/scf.out | sed '$d' | sed '1,4d'| sed '5d' | wc -l)
+    fi
+    if [[ $scfcheck -gt 0 ]]; then
+          if [ $process == 'bgw1' ]; then
+           echo "-----------------------------------------------------------------------------------------------"
+           echo "BGW step 1: Generating inputs to use by kgrid.x utility to create different k-mesh grids,"
+           echo "-----------------------------------------------------------------------------------------------"
+           python berkeley_gw.py $A $B 'kgrid'
+          elif [ $process == 'bgw2' ]; then
+           echo "-----------------------------------------------------------------------------------------------"
+           echo "BGW step 2: Generating QE scf inputs with different k-mesh grids, required by BerkeleyGW calculations"
+           echo "-----------------------------------------------------------------------------------------------"
+               if [[ ! -d R$A-$B/bgw ]]; then
+                 mkdir R$A-$B/bgw
+               fi
+               if [[ ! -d R$A-$B/bgw/01-scf ]]; then
+                 mkdir R$A-$B/bgw/01-scf
+               fi
+               if [[ ! -d R$A-$B/bgw/02-wfn ]]; then
+                 mkdir R$A-$B/bgw/02-wfn
+               fi
+               if [[ ! -d R$A-$B/bgw/03-wfnq ]]; then
+                 mkdir R$A-$B/bgw/03-wfnq
+               fi
+               if [[ ! -d R$A-$B/bgw/04-wfn_co ]]; then
+                 mkdir R$A-$B/bgw/04-wfn_co
+               fi
+               if [[ ! -d R$A-$B/bgw/05-wfn_fi ]]; then
+                 mkdir R$A-$B/bgw/05-wfn_fi
+               fi
+               if [[ ! -d R$A-$B/bgw/06-wfnq_fi ]]; then
+                 mkdir R$A-$B/bgw/06-wfnq_fi
+               fi
+               if [[ ! -d R$A-$B/bgw/07-path ]]; then
+                 mkdir R$A-$B/bgw/07-path
+               fi
+               sed '/pseudo_dir/d' R$A-$B/relax/scf.in | sed "s/'vc-relax'/'scf'/" | sed "/&CONTROL/a wf_collect=.false.," | sed "/&ELECTRONS/a diago_full_acc = .true.," | sed '/K_POINTS/,+1d' | sed '/&IONS/,+6d' | sed "/&CONTROL/a pseudo_dir = '../../../pp'"> R$A-$B/bgw/scf-header.in
+               cat R$A-$B/bgw/scf-header.in R$A-$B/bgw/00-kgrid/kpt.in > R$A-$B/bgw/01-scf/scf.in
+               #sed -n '/&CONTROL/,/ATOMIC_POSITIONS crystal/p' scf_dir/scf-$A.in | sed "s/'vc-relax'/'scf'/" | sed '$d' | sed '/&IONS/,$d' > scf_dir/$A-$B-header.in
+               #sed -n '/&CONTROL/,/ATOMIC_POSITIONS crystal/p' scf_dir/scf-$A.in | sed "s/'vc-relax'/'nscf'/" | sed '$d' | sed '/&IONS/,$d' | sed "/&SYSTEM/a   nbnd=$nbnd," | sed '/conv_thr/d' | sed "/&ELECTRONS/a conv_thr = 1d-10,"  > scf_dir/$A-$B-header-band.in
+          elif [ $process == 'bgw3' ]; then
+           echo "-----------------------------------------------------------------------------------------------"
+           echo "BGW step 3: Submitting scf calculations to obtain converged charge density and wavefunction"
+           echo "-----------------------------------------------------------------------------------------------"
+                cp run.sh R$A-$B/bgw/01-scf/
+                cd R$A-$B/bgw/01-scf/
+                  sbatch run.sh
+                cd ../../
+          elif [ $process == 'bgw4' ]; then
+            if [[ -f bgw_band.in ]]; then
+              nbnd1=$(cat bgw_band.in | awk '{ print $1 }')
+            else
+              echo "bgw_band.in file not available, please provide them."
+              echo "Alternatively, executing 
+            fi
+            sed "s/'scf'/'bands'/" R$A-$B/bgw/scf-header.in | sed "s/wf_collect=.false./wf_collect=.true./" | sed "/&ELECTRONS/a startingwfc = 'random',"
+           echo "-----------------------------------------------------------------------------------------------"
+           echo "BGW step 4: Submitting all other nonscf calculations to obtain wavefunctions"
+           echo "-----------------------------------------------------------------------------------------------"
+          elif [ $process == 'bgw5' ]; then
+           echo "-----------------------------------------------------------------------------------------------"
+           echo "BGW step 5: Prepare all other input files for sigma, epsilon calculations"
+           echo "-----------------------------------------------------------------------------------------------"
+          elif [ $process == 'bgw6' ]; then
+           continue
+          elif [ $process == 'bgw7' ]; then
+           continue
+          elif [ $process == 'bgw8' ]; then
+           continue
+          elif [ $process == 'bgw9' ]; then
+           continue
+          elif [ $process == 'bgw10' ]; then
+           continue
+          elif [ $process == 'bgw11' ]; then
+           continue
+          else
+           continue
+          fi
+       else
+         echo "Perform relaxation using 'mainprogram.py process' with process=1 to 4"
+         exit
+       fi
+   else
+     echo "R$A-$B folder doesn't exist"
+  fi
+  if [[ -f qpoint.dat ]]; then
+   rm qpoint.dat
+  fi
+  if [[ -f kpoint.dat ]]; then
+   rm kpoint.dat
+  fi
+  echo "____________________________________________________________________________________________________________________________________"
+done
+echo "all done"

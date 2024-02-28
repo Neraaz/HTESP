@@ -1,0 +1,61 @@
+#! /bin/bash
+# Writen by Niraj K. Nepal, Ph.D.
+# Script that will extract and download the input files from materials project database
+# Runs for 'mainprogram download'
+echo "---------------------------------------------------------------------------------------------------------------"
+echo " INPUTS DOWNLOADING .......... "
+echo "---------------------------------------------------------------------------------------------------------------"
+file=$(find * -name $3 | tail -n 1)
+dft=$(grep "DFT" input.in | awk '{ print $3 }')
+begin=$(sed -n '1p' input.in)
+last=$(sed -n '2p' input.in)
+file=$(sed -n '4p' input.in)
+if [[ ! -f $file ]]; then
+ echo "$file not found, execute 'mainprogram search'"
+ echo " "
+ exit
+fi
+echo "$dft $begin $last"
+if [ $dft == 'VASP' ] || [ $dft == 'vasp' ]; then
+  if [[ -f vasp.in ]]; then
+   echo "vasp.in file present"
+  else
+   echo "---------------------------------------------------------------------------------------------------------------"
+   echo "vasp.in file not present"
+   echo "****** Format of vasp.in ********"
+   echo "vasp_keyword corresponding_value ==> replace values INCAR from materials project (MP)"
+   echo "vasp_keyword (no value given)    ==> remove keyword from INCAR from MP"
+   echo "---------------------------------------------------------------------------------------------------------------"
+   echo " First list vasp keywords need to replace, followed by keywords to remove"
+   echo "---------------------------------------------------------------------------------------------------------------"
+  fi
+fi
+for ((ii=$begin; ii<$last; ++ii)); do
+  A=$(grep "v$ii\ " $file | awk '{print $2}')
+  B=$(grep "v$ii\ " $file | awk '{print $3}')
+  if [ $dft == 'VASP' ] || [ $dft == 'vasp' ]; then
+   if [[ ! -f R$A-$B/relax/INCAR ]];then
+     vasp_input.py $A $B
+   else
+     echo "R$A-$B/relax/INCAR already present"
+   fi
+   if [[ -f vasp.in ]]; then
+    cp vasp.in R$A-$B/relax/
+   fi
+   if [[ -f htepc.json ]]; then
+    cp htepc.json R$A-$B/relax/
+   fi
+   if [[ -f R$A-$B/relax/EIGENVAL ]]; then
+     rm R$A-$B/relax/EIGENVAL
+   fi
+   cd R$A-$B/relax/
+    vasp_process.py POSCAR
+   cd ../../
+  else
+   qe_input.py $A
+  if [[ -f $A.cif ]] ; then
+    mv $A.cif input_cif/
+  fi
+  fi 
+done
+echo "all done"

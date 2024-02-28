@@ -1,0 +1,8 @@
+# define functions with lots of test using "assert" command.
+# write scripts inside tests folder with test_*.py format
+#
+
+To run the test, install pytest
+pip install pytest
+
+# run the package test using "pytest" command.

@@ -1,0 +1,35 @@
+#! /bin/bash
+# Writen by Niraj K. Nepal, Ph.D.
+# This script submits job for bandstructure calculations. It requires
+# scf-mpid-compound-band.in file inside scf_dir and run-band.sh submission
+# script in working directory. It creates a folder named 'bands'.
+# Runs for 'mainprogram 14'
+source jobscript.sh
+echo "---------------------------------------------------------------------------------------------------------------"
+echo "Submitting electronic bandstructure calculations"
+echo "---------------------------------------------------------------------------------------------------------------"
+file=$(find * -name $3 | tail -n 1)
+dft=$(grep "DFT" input.in | awk '{ print $3 }')
+for ((ii=$1; ii<$2; ++ii)); do
+  A=$(grep "v$ii\ " $file | awk '{print $2}')
+  B=$(grep "v$ii\ " $file | awk '{print $3}')
+  echo "$A $B"
+  if [[ ! -d R$A-$B/bands ]] ; then
+      mkdir R$A-$B/bands
+  fi
+################
+## SUBMIT JOB ##
+################
+  if [ $dft == 'vasp' ] || [ $dft == 'VASP' ]; then
+    continue
+  else
+    echo " submitting jobs in R$A-$B "
+       cp run-band.sh R$A-$B/bands/
+       cd R$A-$B/bands
+         qerun "$A" "$B" "band"
+         sleep 1s
+       cd ../../
+  fi
+done
+echo "all done"
+

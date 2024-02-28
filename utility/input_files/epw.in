@@ -1,0 +1,59 @@
+--
+&inputepw
+prefix='C12Y8'
+outdir = './'
+dvscf_dir = '../phonon/save'
+ep_coupling = .false.
+elph = .false.
+epwwrite = .false.
+epwread = .true.
+etf_mem = 1
+
+wannierize = .false.
+nbndsub = 20
+dis_froz_min = 10.0
+dis_win_min = 9.0
+dis_froz_max = 13.0
+dis_win_max = 19.5
+!proj(1) = 'Y:pz'
+!proj(2) = 'C:pz'
+bands_skipped = 'exclude_bands = 1:62'
+num_iter = 2000
+wdata(1) = 'fermi_surface_plot = .true.'
+max_memlt = 64.0
+
+iverbosity = 2
+fsthick = 0.2
+degaussw = 0.05
+ephwrite = .false.
+eliashberg = .true.
+
+laniso = .true.
+limag = .true.
+lpade = .true.
+lacon = .false.
+
+nsiter = 300 
+conv_thr_iaxis = 1.0d-3
+wscut = 0.8
+muc = 0.1
+nstemp = 2
+temps = 10 15
+
+nk1 = 4
+nk2 = 4
+nk3 = 4
+
+nq1 = 2
+nq2 = 2
+nq3 = 2
+
+mp_mesh_k = .true.
+nkf1 = 60
+nkf2 = 60
+nkf3 = 60
+
+nqf1 = 30
+nqf2 = 30
+nqf3 = 30
+/

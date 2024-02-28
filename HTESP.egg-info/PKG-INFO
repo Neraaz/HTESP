@@ -1,0 +1,24 @@
+Metadata-Version: 2.1
+Name: HTESP
+Version: 0.0.1
+Summary: Package to perform high-throughput QE and VASP calculations
+Home-page: https://github.com/Neraaz/HTESP
+Author: Niraj K. Nepal
+Author-email: nnepal@ameslab.gov, niraj.nepal@temple.edu
+License: MIT
+Keywords: Superconductivity,QE,VASP,WANNIER90,WannierTools,Phonopy,EPW,el-ph coupling
+Classifier: Programming Language :: Python :: 3 + Bash Scripting
+Classifier: Operating System :: UNIX
+Classifier: License :: OSI Approved :: MIT License
+Requires-Python: >=3.7
+License-File: LICENSE
+Requires-Dist: scipy
+Requires-Dist: numpy
+Requires-Dist: pandas
+Requires-Dist: pymatgen
+Requires-Dist: mp_api
+Requires-Dist: ase
+Requires-Dist: bsym
+Requires-Dist: lmfit
+Requires-Dist: qmpy-rester
+Requires-Dist: ifermi

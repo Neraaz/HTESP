@@ -1,0 +1,111 @@
+#! /bin/bash
+# Writen by Niraj K. Nepal, Ph.D.
+# Change K-mesh grid according to kpoint.in file
+# kpoint.in either has fraction (that divides the existing k-grid)
+# or has grid numbers as '3 3 3'.
+# Default is to create the k-grid, twice the size of existing ones.
+# Runs for 'mainprogram change_k'
+
+file=$(find * -name $3 | tail -n 1)
+dft=$(grep "DFT" input.in | awk '{ print $3 }')
+echo "---------------------------------------------------------------------------------------------------------------"
+echo "Modifying K-point mesh"
+echo "---------------------------------------------------------------------------------------------------------------"
+for ((ii=$1; ii<$2; ++ii)); do
+  A=$(grep "v$ii\ " $file | awk '{print $2}')
+  B=$(grep "v$ii\ " $file | awk '{print $3}')
+
+  echo "$A $B"
+
+  if [ $dft == 'vasp' ] || [ $dft == 'VASP' ]; then
+   nk1=$(sed -n '4p' R$A-$B/relax/KPOINTS | awk '{print $1}')
+   nk2=$(sed -n '4p' R$A-$B/relax/KPOINTS | awk '{print $2}')
+   nk3=$(sed -n '4p' R$A-$B/relax/KPOINTS | awk '{print $3}')
+    if [[ -f kpoint.in ]]; then
+      qn=$(wc kpoint.in | awk '{print $2}')
+      if [[ qn -eq 3 ]]; then
+       echo "Reading kpoint.in"
+       ok1=$(cat kpoint.in | awk '{print $1}')
+       ok2=$(cat kpoint.in | awk '{print $2}')
+       ok3=$(cat kpoint.in | awk '{print $3}')
+      elif [[ qn -eq 1 ]]; then
+       frac=$(cat kpoint.in | awk '{print $1}')
+       echo "Reading fraction ($frac) from kpoint.in, dividing k-mesh by $frac"
+       ok1=$(echo $nk1/$frac | bc)
+       ok2=$(echo $nk2/$frac | bc)
+       ok3=$(echo $nk3/$frac | bc)
+      else
+        echo "provide either factor such that [q-mesh = k-mesh/factor] or q mesh"
+      fi
+    else
+      echo "kpoint.in not present. Default 2*k-mesh along each direction"
+      ok1=$(echo $nk1*2 | bc)
+      ok2=$(echo $nk2*2 | bc)
+      ok3=$(echo $nk3*2 | bc)
+    fi
+   sed "s/$nk1 $nk2 $nk3/$ok1 $ok2 $ok3/" R$A-$B/relax/KPOINTS  > R$A-$B/relax/KPOINTS_temp
+   mv R$A-$B/relax/KPOINTS R$A-$B/relax/KPOINTS_old
+   mv R$A-$B/relax/KPOINTS_temp R$A-$B/relax/KPOINTS
+  else
+    if [[ -f scf_dir/scf-$A.in ]]; then
+      sed -n '/K_POINTS automatic/,/CELL_PARAMETERS angstrom/p' scf_dir/scf-$A.in | sed '$d' > scf_dir/kpoint-$A-$B.dat
+      nk1=$(tail -n 1 scf_dir/kpoint-$A-$B.dat | awk '{print $1}')
+      nk2=$(tail -n 1 scf_dir/kpoint-$A-$B.dat | awk '{print $2}')
+      nk3=$(tail -n 1 scf_dir/kpoint-$A-$B.dat | awk '{print $3}')
+      dk1=$(tail -n 1 scf_dir/kpoint-$A-$B.dat | awk '{print $4}')
+      dk2=$(tail -n 1 scf_dir/kpoint-$A-$B.dat | awk '{print $5}')
+      dk3=$(tail -n 1 scf_dir/kpoint-$A-$B.dat | awk '{print $6}')
+    if [[ -f kpoint.in ]]; then
+      qn=$(wc kpoint.in | awk '{print $2}')
+      if [[ qn -eq 3 ]]; then
+       echo "Reading kpoint.in"
+       ok1=$(cat kpoint.in | awk '{print $1}')
+       ok2=$(cat kpoint.in | awk '{print $2}')
+       ok3=$(cat kpoint.in | awk '{print $3}')
+       ek1=$(echo 0 | bc)
+       ek2=$(echo 0 | bc)
+       ek3=$(echo 0 | bc)
+      elif [[ qn -eq 1 ]]; then
+       frac=$(cat kpoint.in | awk '{print $1}')
+       ek1=$(echo 0 | bc)
+       ek2=$(echo 0 | bc)
+       ek3=$(echo 0 | bc)
+       echo "Reading fraction ($frac) from kpoint.in, dividing k-mesh by $frac"
+       ok1=$(echo $nk1/$frac | bc)
+       ok2=$(echo $nk2/$frac | bc)
+       ok3=$(echo $nk3/$frac | bc)
+      elif [[ qn -eq 6 ]]; then
+       echo "Reading kpoint.in"
+       ok1=$(cat kpoint.in | awk '{print $1}')
+       ok2=$(cat kpoint.in | awk '{print $2}')
+       ok3=$(cat kpoint.in | awk '{print $3}')
+       ek1=$(cat kpoint.in | awk '{print $4}')
+       ek2=$(cat kpoint.in | awk '{print $5}')
+       ek3=$(cat kpoint.in | awk '{print $6}')
+      elif [[ qn -eq 4 ]]; then
+       frac=$(cat kpoint.in | awk '{print $1}')
+       ek1=$(cat kpoint.in | awk '{print $2}')
+       ek2=$(cat kpoint.in | awk '{print $3}')
+       ek3=$(cat kpoint.in | awk '{print $4}')
+       echo "Reading fraction ($frac) from kpoint.in, dividing k-mesh by $frac"
+       ok1=$(echo $nk1/$frac | bc)
+       ok2=$(echo $nk2/$frac | bc)
+       ok3=$(echo $nk3/$frac | bc)
+      else
+        echo "provide either factor such that [q-mesh = k-mesh/factor] or q mesh"
+      fi
+    else
+      echo "kpoint.in not present. Default 2*k-mesh along each direction"
+      ok1=$(echo $nk1*2 | bc)
+      ok2=$(echo $nk2*2 | bc)
+      ok3=$(echo $nk3*2 | bc)
+    fi
+      sed "s/$nk1 $nk2 $nk3 $dk1 $dk2 $dk3/$ok1 $ok2 $ok3 $ek1 $ek2 $ek3/" scf_dir/scf-$A.in  > scf_dir/scf-$A-new.in
+      mv scf_dir/scf-$A.in scf_dir/scf-$A-old.in
+      mv scf_dir/scf-$A-new.in scf_dir/scf-$A.in
+    else
+     echo "scf_dir/scf-$A.in not present"
+    fi
+  fi
+done
+echo "all done"

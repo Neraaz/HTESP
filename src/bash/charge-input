@@ -1,0 +1,69 @@
+#! /bin/bash
+# Writen by Niraj K. Nepal, Ph.D.
+# Script to produce input files for different total charge.
+# Runs for 'mainprogram charge-input'
+
+echo "---------------------------------------------------------------------------------------------------------------"
+echo "Generating input files for systems with non-zero net charge"
+echo "---------------------------------------------------------------------------------------------------------------"
+file=$(find * -name $3 | tail -n 1)
+dft=$(grep "DFT" input.in | awk '{ print $3 }')
+jj=$(echo 1 | bc)
+if [[ ! -f mpid-charge.in ]]; then
+ touch mpid-charge.in
+else
+ mv mpid-charge.in mpid-charge-2.in
+fi
+for ((ii=$1; ii<$2; ++ii)); do
+  A=$(grep "v$ii\ " $file | awk '{print $2}')
+  B=$(grep "v$ii\ " $file | awk '{print $3}')
+  echo "$A $B"
+    if [[ -f R$A-$B/relax/OUTCAR ]]; then
+      nelm=$(grep "NELECT" R$A-$B/relax/OUTCAR | awk '{ print $3 }')
+      nelect=${nelm%.*}
+    fi
+    if [[ -f charge.in ]]; then
+      ND=$(wc -l charge.in | awk '{print $1}')
+      ND=$(echo $ND + 1 | bc)
+    else
+      echo "'charge.in' file not found, To create one system with an additional electron and another system with a hole"
+      echo "v1 1" > charge.in
+      echo "v2 -1" >> charge.in
+      ND=$(wc -l charge.in | awk '{print $1}')
+      ND=$(echo $ND + 1 | bc)
+    fi
+  for ((kk=1; kk<$ND; ++kk)); do 
+      if [ $dft == 'QE' ] || [ $dft == 'qe' ]; then
+      D=$(grep "v$kk\ " charge.in | awk '{print $2}')
+      echo $D
+      if [[ -f scf_dir/scf-relax-$A-$B.in ]]; then
+        echo "Utilizing relaxed structure"
+        sed "/&SYSTEM/a   tot_charge = $D," scf_dir/scf-relax-$A-$B.in > scf_dir/scf-$A-$D.in
+        echo "v$kk $A-$D $B" >> mpid-charge.in
+      else
+        echo "Utilizing unrelaxed structure"
+        sed "/&SYSTEM/a   tot_charge = $D," scf_dir/scf-$A.in > scf_dir/scf-$A-$D.in
+        echo "v$kk $A-$D $B" >> mpid-charge.in
+      fi
+     else
+         D=$(grep "v$kk\ " charge.in | awk '{print $2}')
+         D=$(echo $nelect + $D | bc -l)
+         echo $D
+         if [[ ! -d R$A-$D-$B ]] ; then
+            mkdir R$A-$D-$B
+         fi
+         if [[ ! -d R$A-$D-$B/relax ]] ; then
+            mkdir R$A-$D-$B/relax
+         fi
+         cp R$A-$B/relax/KPOINTS R$A-$D-$B/relax/
+         cp R$A-$B/relax/POTCAR R$A-$D-$B/relax/
+         cp R$A-$B/relax/run.sh R$A-$D-$B/relax/
+         sed "1i NELECT = $D" R$A-$B/relax/INCAR > R$A-$D-$B/relax/INCAR
+         cp R$A-$B/relax/POSCAR R$A-$D-$B/relax/
+        echo "v$jj $A-$D $B" >> mpid-charge.in
+        jj=$(echo $jj + 1 | bc)
+     fi
+done
+done
+echo "**************************************************************************************************"
+echo "Update 'input.in' file with mpid-charge.in and run 'mainprogram 1'"

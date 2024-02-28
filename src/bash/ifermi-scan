@@ -1,0 +1,50 @@
+#! /bin/bash
+# Writen by Niraj K. Nepal, Ph.D.
+# Script to submit calculations using ifermi package and create Fermisurface plots
+# Runs for 'mainprogram fermisurface'
+
+echo "---------------------------------------------------------------------------------------------------------------"
+echo "Submitting Fermisurface calculations. Make sure, you have 'ifermi' package installed."
+echo "---------------------------------------------------------------------------------------------------------------"
+file=$(find * -name $3 | tail -n 1)
+dft=$(grep "DFT" input.in | awk '{ print $3 }')
+for ((ii=$1; ii<$2; ++ii)); do
+  A=$(grep "v$ii\ " $file | awk '{print $2}')
+  B=$(grep "v$ii\ " $file | awk '{print $3}')
+
+  echo "$A $B"
+  if [ $dft == 'vasp' ] || [ $dft == 'VASP' ]; then
+    if [[ ! -d IFERMI ]]; then
+      mkdir IFERMI
+    fi
+    cp run-ifermi.sh R$A-$B/relax/
+    cd R$A-$B/relax/
+      ifermi info --property velocity > fermi_info.dat
+      cmax=$(grep "Avg velocity" fermi_info.dat | awk '{ print $3 }')
+      cmax=${cmax%.*}
+      echo "$cmax"
+      cm=$(echo $cmax*2 | bc)
+      echo "$cm"
+      # Change various arguments of 'ifermi' command for your convenience.
+      echo "ifermi plot --property velocity -a 90 --interpolation-factor 10 --output fermi-surface.jpg --property-colormap bwr --hide-labels" >> run-ifermi.sh
+      echo "cp fermi-surface.html ../../IFERMI/$A-$B-fs.html" >> run-ifermi.sh
+      echo "cp fermi_info.dat ../../IFERMI/$A-$B-fs.dat" >> run-ifermi.sh
+      echo "cp fermi-surface.jpg ../../IFERMI/$A-$B-fs.jpg" >> run-ifermi.sh
+      if [[ -f ../../CALC_VISIBLE_WITH_ID ]]; then 
+        mv run-ifermi.sh $A-ifermi.sh
+        sbatch $A-ifermi.sh
+      elif [[ -f ../../CALC_VISIBLE_WITH_NAME ]]; then 
+        mv run-ifermi.sh $B-ifermi.sh
+        sbatch $B-ifermi.sh
+      elif [[ -f ../../CALC_VISIBLE_WITH_ID-NAME ]]; then 
+        mv run-ifermi.sh $A-$B-ifermi.sh
+        sbatch $A-$B-ifermi.sh
+      else
+        sbatch run-ifermi.sh
+      fi
+    cd ../../
+  else
+      echo "ifermi plot works only for DFT = vasp or DFT = VASP"
+  fi
+done
+echo "all done"

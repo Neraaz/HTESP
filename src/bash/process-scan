@@ -1,0 +1,109 @@
+#! /bin/bash
+
+touch $3
+file=$(find * -name $3 | tail -n 1)
+echo $file
+if [[ -f $file ]] ; then
+    k=$(wc -l $file | awk '{print $1}')
+else
+    k=0
+fi
+jj=$(echo 1 | bc)
+kk=$(echo 1 | bc)
+for ((ii=$1; ii<$2; ++ii)); do
+  A=$(grep "v$ii\ " input.in | awk '{print $2}')
+  B=$(grep "$A " input.in | awk '{print $3}')
+  echo "material_id: $A, compound: $B"
+  if [[ -f scale_sym_ops/$A-scale_sym_ops ]]; then
+     rm -r R$A-$B
+     rm scf_dir/scf-$A.in
+     echo "$A: scale_sym_ops error. mpid-sym.in file created."
+     echo "v$kk $A $B" >> mpid-sym.in
+     kk=$(echo $kk+1 | bc)
+  fi
+  
+  if [[ -f elph_dir/$A-$B-freq.dat ]] ; then
+      echo "Negative frequencies was found earlier. Need to perform calculation again with larger degauss"
+      degauss=$(grep degauss scf_dir/scf-$A.in | awk '{print $3}' | sed "s/,//")
+      newdg=$(echo $degauss + 0.06 | bc)
+      echo "New gaussian smearing will be $newdg. mpid-repeat.in file created."
+      sed '/degauss/d' scf_dir/scf-$A.in | sed "/&SYSTEM/a   degauss = $newdg," > scf_dir/scf-$A-2.in
+      mv scf_dir/scf-$A-2.in scf_dir/scf-$A.in
+      echo "v$jj $A $B" >> mpid-repeat.in
+      jj=$(echo $jj+1 | bc)
+      continue
+  fi
+  if [[ -f scf_dir/$A-qbreaksym ]] ; then
+      echo "Change k mesh. mpid-repeat.in created."
+      echo "v$jj $A $B" >> mpid-repeat.in
+      jj=$(echo $jj+1 | bc)
+      continue
+  fi
+
+  if [[ -f scf_dir/$A-fft-grid ]] && [[ ! -f scale_sym_ops/$A-scale_sym_ops ]] ; then
+     echo "Increasing ecutwfc and ecutrho. mpid-repeat.in file created."
+      echo "v$jj $A $B" >> mpid-repeat.in
+      ecutwfc=$(grep ecutwfc scf_dir/scf-$A.in | awk '{print $3}' | sed 's/,//')
+      ecutwfc=$(echo $ecutwfc + 5 | bc)
+      ecutrho=$(echo $ecutwfc*8 | bc)
+      echo "$ecutwfc, $ecutrho"
+      sed '/ecutwfc/d' scf_dir/scf-$A.in | sed '/ecutrho/d' | sed "/&SYSTEM/a   ecutwfc = $ecutwfc, ecutrho = $ecutrho," > scf_dir/scf-$A-2.in
+      mv scf_dir/scf-$A-2.in scf_dir/scf-$A.in
+      jj=$(echo $jj+1 | bc)
+      continue
+  fi
+  if [[ -f $file ]] ; then
+      nw=$(grep -c "$A " $file)
+  else
+      echo "Adding info about $B with material id $A in $file"
+      nw=0
+  fi
+  if [[ ! -d R$A-$B ]]; then
+        k=$(echo $k+1 | bc)
+        echo $k
+        if [ $nw -lt 1 ]; then
+             echo "v$k  $A  $B $Z $SG $SYM $FE" >> $file
+        else
+             k=$(echo $k-1 | bc)
+        fi
+  fi
+  comp=$(find inputs/* -name scf-$A.in | tail -n 1)
+  if [[ -f $comp ]] ; then
+     echo "QE input file scf-$A.in present inside inputs/ folder"
+     cp $comp scf_dir
+  else
+     echo "QE input file not present inside inputs/ folder"
+     iscif=$(find inputs/* -name $A.cif | tail -n 1)
+     if [[ -f $iscif ]] ; then
+       echo "cif file present inside inputs/ folder. Creating QE input file"
+       ciftoscf.py $A $B
+     else
+       echo "Neither QE input file or cif file present inside inputs/ folder, please include either of them"
+       k=$(echo $k-1 | bc)
+       continue
+     fi
+     
+  fi
+#  comp=`find inputs/* -name scf-$A.in | tail -n 1`
+#  #if [[ ! -d R$A-$B ]] ; then
+#  if [[ ! -d R$A-$B ]] ; then
+#        sed "s/'.true.'/.true./" $comp > scf_dir/scf-$A.in
+#        sed -n '/K_POINTS automatic/,/CELL_PARAMETERS angstrom/p' scf_dir/scf-$A.in | sed '$d' > scf_dir/kpoint-$A.dat
+#        standard.py $comp $A $B
+#        chk=`wc -l hexagon.dat | awk '{print $1}'`
+#        #echo $chk
+#        if [ $chk -lt 2 ]; then
+#            continue
+#        else
+#            sed "s/'.true.'/.true./" $comp > scf_dir/scf-$A.in
+#            prefix=`grep "prefix = " scf_dir/scf-$A.in | awk '{print $3}' | sed 's/.$//'`
+#            sed -n '/&CONTROL/,/ATOMIC_SPECIES/p' scf_dir/scf-$A.in | sed '$d' > scf_dir/$A-$B-header.in
+#            sed -n '/ATOMIC_SPECIES/,/ATOMIC_POSITIONS crystal/p' scf_dir/scf-$A.in | sed '$d' > scf_dir/species-$A-$B.in
+#            cat scf_dir/$A-$B-header.in scf_dir/species-$A-$B.in scf_dir/temp.dat > scf_dir/scf-$A.in
+#            rm scf_dir/$A-$B-header.in scf_dir/species-$A-$B.in scf_dir/kpoint-$A.dat scf_dir/temp.dat
+#        fi
+#  fi
+echo "Copying scf-$A.in inside scf_dir after processing"
+echo "--------------------------------------------------------------------------------"
+echo " "
+done

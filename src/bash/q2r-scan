@@ -1,0 +1,48 @@
+#! /bin/bash
+# Writen by Niraj K. Nepal, Ph.D.
+# Script to submit q2r.x command
+# Runs for 'mainprogram 10'
+source jobscript.sh
+
+echo "---------------------------------------------------------------------------------------------------------------"
+echo "Submitting q2r.x $folderulations for force constant in real space"
+echo "---------------------------------------------------------------------------------------------------------------"
+file=$(find * -name $3 | tail -n 1)
+for ((ii=$1; ii<$2; ++ii)); do
+  A=$(grep "v$ii\ " $file | awk '{print $2}')
+  B=$(grep "v$ii\ " $file | awk '{print $3}')
+  echo "$A $B"
+  if [[ -d R$A-$B/phonon ]]; then
+    folder="phonon"
+  else
+    folder="calc"
+  fi
+  dynfile=$(find R$A-$B/$folder/ -name "*.dyn*" | wc -l)
+  netdyn=$(sed -n '2'p R$A-$B/$folder/$B.dyn0)
+  dync=$(echo $dynfile - 1 | bc)
+  echo "$check $dync $netdyn"
+
+  dync=$(echo 1 | bc)
+  netdyn=$(echo 1 | bc)
+  if [[ -d R$A-$B ]] && [[ $dync -eq $netdyn ]] ; then
+   if [ "$folder" == "phonon" ]; then
+     sed '/la2F/d' q2r_dir/q2r-$A-$B.in > R$A-$B/$folder/q2r.in     
+   else
+     cp q2r_dir/q2r-$A-$B.in R$A-$B/$folder/q2r.in
+   fi
+  cp run-q2r.sh R$A-$B/$folder/
+
+################
+## SUBMIT JOB ##
+################
+  echo " submitting jobs in R$A-$B "
+  cd R$A-$B/$folder
+     qerun "$A" "$B" "q2r"
+     sleep 1s
+  cd ../../
+  else
+     echo "electron-phonon $folderulation not finished"
+  fi
+done
+echo "all done"
+

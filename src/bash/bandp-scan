@@ -1,0 +1,42 @@
+#! /bin/bash
+# Writen by Niraj K. Nepal, Ph.D.
+# This script submits the band processing from QE calculations, using bands.x script.
+# Requires band-mpid-compound.in file inside scf_dir folder,
+# and run-bandp.sh script (generate from generate_submission_file.sh)
+# Runs for 'mainprogram 15'
+source jobscript.sh
+echo "---------------------------------------------------------------------------------------------------------------"
+echo "Band structure processing"
+echo "---------------------------------------------------------------------------------------------------------------"
+file=$(find * -name $3 | tail -n 1)
+dft=$(grep "DFT" input.in | awk '{ print $3 }')
+for ((ii=$1; ii<$2; ++ii)); do
+  A=$(grep "v$ii\ " $file | awk '{print $2}')
+  B=$(grep "v$ii\ " $file | awk '{print $3}')
+  echo "$A $B"
+  if [[ ! -d R$A-$B/bands ]] ; then
+      mkdir R$A-$B/bands
+  fi
+  if [ $dft == 'vasp' ] || [ $dft == 'VASP' ]; then
+    cd R$A-$B/bands/
+     if [[ -f vasp.in ]]; then
+       mv vasp.in vasp-old.in
+     fi
+     echo "NSW 0" > vasp.in
+     #cp KPOINTS KPOINTS_band
+     vasp_process.py POSCAR
+     vasp_process.py eigen
+     
+     mv band.dat.gnu $B.dat.gnu
+    cd ../../
+  else
+       echo " submitting jobs in R$A-$B "
+       cp run-bandp.sh R$A-$B/bands/
+       cd R$A-$B/bands
+          qerun "$A" "$B" "bandp"
+          sleep 1s
+       cd ../../
+    fi
+done
+echo "all done"
+

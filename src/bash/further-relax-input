@@ -1,0 +1,122 @@
+#!/bin/bash
+# Writen by Niraj K. Nepal, Ph.D.
+# Script to extract relax structure from scf.out file, and update the scf.in input file
+# Runs for 'mainprogram 2'
+
+file=$(find * -name $3 | tail -n 1)
+dft=$(grep "DFT" input.in | awk '{ print $3 }')
+echo "---------------------------------------------------------------------------------------------------------------"
+echo "Extracting relaxed structure, and updating $dft input file"
+echo "---------------------------------------------------------------------------------------------------------------"
+touch mpid-list-not-relaxed.in
+nr=$(echo 1 | bc)
+for ((ii=$1; ii<$2; ++ii)); do
+  A=$(grep "v$ii\ " $file | awk '{print $2}')
+  B=$(grep "v$ii\ " $file | awk '{print $3}')
+  echo "$A $B $3"
+  if [ $dft == 'vasp' ] || [ $dft == 'VASP' ]; then
+    cd R$A-$B/relax
+      conv=$(grep "reached required accuracy - stopping structural energy minimisation" OUTCAR | wc -l)
+      niter=$(grep "y  w" OUTCAR | wc -l) 
+      ispin2=$(grep "ISPIN = 2" INCAR | wc -l)
+      lorbit=$(grep LORBIT INCAR | wc -l)
+      isoutcar=$(ls OUTCAR | wc -l)
+      #if [[ $ispin2 -gt 0 ]] && [[ $lorbit -gt 0 ]] && [[ $isoutcar -gt 0 ]]; then
+      #   echo "ISPIN = 2 and LORBIT tag is found in INCAR"
+      #   echo "Finding and updating MAGMOM from OUTCAR"
+      #   nion=$(grep NIONS OUTCAR | awk '{print $12}')
+      #   nionplus3=$(echo $nion + 3 | bc)
+      #   grep -A $nionplus3 'magnetization (x)' OUTCAR | tail -n $nion | awk '{print $5}' > magmom.txt
+      #   magmom=$(tr '\n' ' ' < magmom.txt)
+      #   rm magmom.txt
+      #   sed -i "/MAGMOM/d" INCAR
+      #   echo "MAGMOM = $magmom" >> INCAR
+      #fi
+      is_nsw_0=$(grep "NSW = 0" INCAR | wc -l)
+      if [[ $conv -gt 0 ]]; then
+       nposcar=$(ls POSCAR* | wc -l)
+       noutcar=$(ls OUTCAR* | wc -l)
+       echo "$nposcar POSCARs found"
+       cp POSCAR POSCAR$nposcar
+       cp OUTCAR OUTCAR$noutcar
+       if [[ -f CONTCAR ]]; then
+         cp CONTCAR POSCAR
+       fi
+       if [[ -f CHGCAR ]]; then
+         rm CHG* WAVECAR
+       fi
+       if [[ $niter -lt 2 ]]; then
+        #echo "$niter"
+        #touch NSW_0_DETECTED
+        if [[ ! -f vasp.in ]] && [[ -f ../../vasp.in ]]; then
+          cp ../../vasp.in .
+          nsw=$(grep "NSW" vasp.in)
+          sed -i "s/$nsw/NSW 0/" vasp.in 
+        else
+          echo "NSW 0" > vasp.in
+        fi
+        if [[ -f EIGENVAL ]]; then
+         rm EIGENVAL
+        fi
+        if [[ -f vasp.in ]]; then
+         vasp_process.py POSCAR
+        fi
+       fi
+      else
+       #noutcar=$(ls OUTCAR* | wc -l)
+       #nsw=$(grep "NSW = 0" INCAR | wc -l)
+       #if [[ $noutcar -gt 4 ]] || [[ $nsw -gt 0 ]]; then
+       #  echo "4 OUTCAR presents, structure not updating...."
+       #else
+         if [[ -f CONTCAR ]]; then
+           cp CONTCAR POSCAR
+         fi
+       #fi
+         if [[ -f CHGCAR ]]; then
+           rm CHG* WAVECAR
+         fi
+         if [[ $is_nsw_0 -gt 0 ]]; then
+           touch NSW_0_DETECTED
+         fi
+      fi
+    cd ../../
+  else
+  if [[ -d R$A-$B ]]; then
+    if [[ -f R$A-$B/relax/scf.out ]]; then
+     relaxed=$(grep "Final scf calculation at the relaxed structure." R$A-$B/relax/scf.out | wc -l)
+    else
+     relaxed=$(echo 0 | bc)
+    fi
+    if [[ $relaxed -gt 0 ]]; then
+      echo "Relaxed structure found for $A $B"
+      nscf=$(ls R$A-$B/relax/scf.out* | wc -l)
+      echo "$nscf scf.in and scf.out files found"
+      cp R$A-$B/relax/scf.out R$A-$B/relax/scf.out$nscf
+      cp R$A-$B/relax/scf.in R$A-$B/relax/scf.in$nscf
+      sed -n '/Begin final coordinates/,/End final coordinates/p' R$A-$B/relax/scf.out | sed '$d' | sed '1,4d'| sed '5d' > scf_dir/$A-$B-relax.dat 
+      sed -n '/CELL_PARAMETERS (angstrom)/,/ATOMIC_POSITIONS (crystal)/p' scf_dir/$A-$B-relax.dat | sed '1d' | sed '$d' > scf_dir/cell-$A.dat
+      sed -i '1 i\CELL_PARAMETERS angstrom' scf_dir/cell-$A.dat
+      sed -n '/ATOMIC_POSITIONS (crystal)/,$p' scf_dir/$A-$B-relax.dat | sed '1d' > scf_dir/pos-$A.dat
+      sed -i '1 i\ATOMIC_POSITIONS crystal' scf_dir/pos-$A.dat 
+      sed -n '/K_POINTS automatic/,/CELL_PARAMETERS angstrom/p' scf_dir/scf-$A.in | sed '$d' > scf_dir/kpoint-$A-$B.dat
+      sed -n '/&CONTROL/,/ATOMIC_POSITIONS crystal/p' scf_dir/scf-$A.in | sed '$d'  > scf_dir/$A-$B-header.in
+      cat scf_dir/$A-$B-header.in scf_dir/pos-$A.dat scf_dir/kpoint-$A-$B.dat scf_dir/cell-$A.dat > scf_dir/scf-relax-$A-$B.in
+      rm scf_dir/$A-$B-header.in scf_dir/pos-$A.dat scf_dir/cell-$A.dat scf_dir/kpoint-$A-$B* scf_dir/$A-$B-relax.dat
+    else
+      echo "Not relaxed: $A $B. Creating mpid-list-not-relaxed.in"
+      echo "time out" 
+      sed -n '/&/,/ATOMIC_POSITIONS/p' R$A-$B/relax/scf.in | sed '$d' > R$A-$B/relax/scf-header.in
+      sed -n '/K_POINTS automatic/,/CELL_PARAMETERS angstrom/p' R$A-$B/relax/scf.in | sed '$d' > R$A-$B/relax/kpoint.dat
+      nat=$(grep "number of atoms/cell" R$A-$B/relax/scf.out | tail -n 1 | awk '{ print $5 }')
+      nat=$(echo $nat + 6 | bc)
+      grep -A $nat 'CELL_PARAMETERS (angstrom)' R$A-$B/relax/scf.out | tail -n 27 | sed '$d' > R$A-$B/relax/cell_norelax.dat
+      cp R$A-$B/relax/scf.in R$A-$B/relax/scf-initial.in
+      cp R$A-$B/relax/scf.out R$A-$B/relax/scf-initial.out
+      cat R$A-$B/relax/scf-header.in R$A-$B/relax/cell_norelax.dat > R$A-$B/relax/scf.in
+      echo "v$nr $A $B" >> mpid-list-not-relaxed.in
+      nr=$(echo $nr + 1 | bc)
+    fi
+  fi
+  fi
+done
+echo "complete"

@@ -1,0 +1,386 @@
+#! /bin/bash
+# Writen by Niraj K. Nepal, Ph.D.
+# Script to submit all the EPW related calculations
+# Runs for 'mainprogram epwj", j runs from 1 to 8.
+source jobscript.sh
+
+file=$(find * -name $3 | tail -n 1)
+dft=$(grep "DFT" input.in | awk '{ print $3 }')
+echo "---------------------------------------------------------------------------------------------------------------"
+echo "EPW and WANNIER90 calculations"
+echo "---------------------------------------------------------------------------------------------------------------"
+for ((ii=$1; ii<$2; ++ii)); do
+  A=$(grep "v$ii\ " $file | awk '{print $2}')
+  B=$(grep "v$ii\ " $file | awk '{print $3}')
+  if [[ ! -f scf_dir/scf-$A.in ]]; then
+    qe_input.py $A
+  fi
+  process=$4
+  echo "____________________________________________________________________________________________________________________________________"
+  echo "$A $B"
+  if [[ -f scf_dir/scf-$A.in ]]; then
+    prefix=$(grep "prefix = " scf_dir/scf-$A.in | awk '{print $3}' | sed 's/.$//' | sed "s/'//g")
+  else
+    exit
+  fi
+  if [ $dft == 'vasp' ] || [ $dft == 'VASP' ]; then
+    scfcheck=$(echo 1 | bc)
+  fi
+  echo $scfcheck
+  if [[ -d R$A-$B ]] ; then
+    if [[ -f R$A-$B/relax/scf.out ]]; then
+      scfcheck=$(sed -n '/Begin final coordinates/,/End final coordinates/p' R$A-$B/relax/scf.out | sed '$d' | sed '1,4d'| sed '5d' | wc -l)
+    fi
+    if [[ $scfcheck -gt 0 ]]; then
+       if [ $process == 'epw1' ]; then
+       echo "-----------------------------------------------------------------------------------------------"
+       echo "epw step 1: Generating inputs for qe inputs for scf, nscf, and phonon calculations for WANNIER90,"
+       echo "EPW, and WANNIERTOOLS"
+       echo "-----------------------------------------------------------------------------------------------"
+         if [ $dft == 'vasp' ] || [ $dft == 'VASP' ]; then
+            if [[ ! -d R$A-$B/epw ]]; then
+               echo "making epw directory inside R$A-$B"
+               mkdir R$A-$B/epw
+            fi
+            cd R$A-$B/epw/
+              nel=$(grep "NELECT" ../relax/OUTCAR | awk '{ print $3 }')
+              nel=$(echo $nel/1 | bc)
+              soc=$(grep "ISPIN = 2" INCAR | wc -l)
+              if [ $soc -gt 0 ]; then
+                  nbnd=$(echo $nel+20 | bc)
+                  echo "Number of band used in electronic bandstructure calculation [number of electrons ($nel) + 20]: $nbnd"
+              else
+                if [ $nel -lt 30 ]; then
+                  nbnd=$(echo $nel+10 | bc)
+                  echo "Number of band used in electronic bandstructure calculation [number of electrons ($nel) + 10]: $nbnd"
+                else
+                  nbnd=$(echo $nel*1.50/2 | bc)
+                  echo "Number of band used in electronic bandstructure calculation [number of electrons ($nel)*1.5/2]: $nbnd"
+                fi
+              fi
+              cp ../relax/KPOINTS .
+              if [[ -f R$A-$B/relax/CONTCAR ]]; then
+                cp ../relax/CONTCAR POSCAR
+              else
+                cp ../relax/POSCAR .
+              fi
+              cp ../relax/POTCAR .
+              cp ../relax/INCAR .
+              if [[ -f ../relax/run.sh ]]; then
+                cp ../relax/run.sh .
+              else
+                cp ../../run-vasp.sh R$A-$B/relax/run.sh
+              fi
+              if [[ -f EIGENVAL ]]; then
+                rm EIGENVAL
+              fi
+              if [[ ! -f vasp.in ]]; then
+                echo "vasp.in file not present inside R$A-$B/epw/, creating one"
+                echo "LWAVE .True." >> vasp.in
+                echo "NSW 0" >> vasp.in
+                echo "NELM 200" >> vasp.in
+                echo "ISIF 2" >> vasp.in
+                echo "ISMEAR -5" >> vasp.in
+                echo "NBANDS $nbnd" >> vasp.in
+                echo "EDIFFG" >> vasp.in
+                echo "LORBIT" >> vasp.in
+              fi
+              vasp_process.py POSCAR
+              echo "Submitting vasp scf calculation"
+              vasprun "$A" "$B"
+            cd ../../
+         else
+            sed -n '/Begin final coordinates/,/End final coordinates/p' R$A-$B/relax/scf.out | sed '$d' | sed '1,4d'| sed '5d' > scf_dir/$A-$B-relax.dat 
+            prefix=$(grep "prefix = " scf_dir/scf-$A.in | awk '{print $3}' | sed 's/.$//')
+            nelm=$(grep "number of electrons       =     " R$A-$B/relax/scf.out | tail -n 1 | awk '{print $5}')
+            nel=${nelm%.*}
+            soc=$(grep "lspinorb = .true." R$A-$B/relax/scf.in | wc -l)
+            #echo "$soc, $nel"
+            if [ $soc -gt 0 ]; then
+               nbnd=$(echo $nel*2 | bc)
+               nbnd_proj=$(echo $nel*2 + 120 | bc)
+            else
+               nbnd=$(echo $nel+10 | bc)
+               nbnd_proj=$(echo $nel + 120 | bc)
+            fi
+            
+            sed -n '/K_POINTS automatic/,/CELL_PARAMETERS angstrom/p' scf_dir/scf-$A.in | sed '$d' > scf_dir/kpoint-$A-$B.dat
+            nk1=$(tail -n 1 scf_dir/kpoint-$A-$B.dat | awk '{print $1}')
+            nk2=$(tail -n 1 scf_dir/kpoint-$A-$B.dat | awk '{print $2}')
+            nk3=$(tail -n 1 scf_dir/kpoint-$A-$B.dat | awk '{print $3}')
+            if [[ -f qpoint.in ]]; then
+              qn=$(wc qpoint.in | awk '{print $2}')
+              if [[ qn -eq 3 ]]; then
+               echo "Reading qpoint.in"
+               ok1=$(cat qpoint.in | awk '{print $1}')
+               ok2=$(cat qpoint.in | awk '{print $2}')
+               ok3=$(cat qpoint.in | awk '{print $3}')
+              elif [[ qn -eq 1 ]]; then
+               frac=$(cat qpoint.in | awk '{print $1}')
+               echo "Reading fraction ($frac) from qpoint.in, dividing k-mesh by $frac"
+               ok1=$(echo $nk1/$frac | bc)
+               ok2=$(echo $nk2/$frac | bc)
+               ok3=$(echo $nk3/$frac | bc)
+              else
+                echo "provide either factor such that [q-mesh = k-mesh/factor] or q mesh"
+              fi
+            else
+              echo "qpoint.in not present. Default q-mesh=k-mesh/2 along each direction"
+              ok1=$(echo $nk1/2 | bc)
+              ok2=$(echo $nk2/2 | bc)
+              ok3=$(echo $nk3/2 | bc)
+            fi
+            echo "$ok1 $ok2 $ok3" >> qpoint.dat
+            echo "$nk1 $nk2 $nk3" >> kpoint.dat
+            sed -n '/&CONTROL/,/ATOMIC_POSITIONS crystal/p' scf_dir/scf-$A.in | sed "s/'vc-relax'/'scf'/" | sed '$d' | sed '/&IONS/,$d' > scf_dir/$A-$B-header.in
+            sed -n '/&CONTROL/,/ATOMIC_POSITIONS crystal/p' scf_dir/scf-$A.in | sed "s/'vc-relax'/'nscf'/" | sed '$d' | sed '/&IONS/,$d' | sed "/&SYSTEM/a   nbnd=$nbnd," | sed '/conv_thr/d' | sed "/&ELECTRONS/a conv_thr = 1d-10,"  > scf_dir/$A-$B-header-band.in
+            sed -n '/&CONTROL/,/ATOMIC_POSITIONS crystal/p' scf_dir/scf-$A.in | sed "s/'vc-relax'/'nscf'/" | sed '$d' | sed '/&IONS/,$d' | sed "/&SYSTEM/a   nbnd=$nbnd_proj," | sed '/conv_thr/d' | sed "/&ELECTRONS/a conv_thr = 1d-10," | sed "s/smearing = 'gauss'/smearing = 'cold'/" > scf_dir/$A-$B-header-band-proj.in
+            sed -n '/ATOMIC_SPECIES/,/ATOMIC_POSITIONS crystal/p' scf_dir/scf-$A.in | sed '$d' > scf_dir/species-$A-$B.in
+            cat scf_dir/$A-$B-header.in scf_dir/species-$A-$B.in scf_dir/kpoint-$A-$B.dat scf_dir/$A-$B-relax.dat > scf_dir/scf-$A-$B.in
+            cp qpoint.dat kmesh.grid
+            create_epw_inputs.py $A $B $prefix "nscf"
+            cat scf_dir/$A-$B-header-band.in scf_dir/species-$A-$B.in nscf_grid.out scf_dir/$A-$B-relax.dat > scf_dir/epw-$A-$B-nscf.in
+            echo "$nk1 $nk2 $nk3" > kmesh.grid
+            create_epw_inputs.py $A $B $prefix "nscf"
+            cat scf_dir/$A-$B-header-band.in scf_dir/species-$A-$B.in nscf_grid.out scf_dir/$A-$B-relax.dat > scf_dir/scf-$A-$B-nscf.in
+            cat scf_dir/$A-$B-header-band-proj.in scf_dir/species-$A-$B.in nscf_grid.out scf_dir/$A-$B-relax.dat > scf_dir/scf-$A-$B-nscf-proj.in
+            
+            cat scf_dir/species-$A-$B.in | awk '{print $2}' > mass.dat
+            create_epw_inputs.py $A $B $prefix "ph"
+            mv ph-$A-$B.in elph_dir/
+            rm scf_dir/$A-$B-header.in scf_dir/$A-$B-header-band.in scf_dir/species-$A-$B.in scf_dir/kpoint-$A-$B* scf_dir/$A-$B-relax.dat
+            rm mass.dat
+        fi 
+      elif [ $process == 'epw2' ]; then
+       echo "-----------------------------------------------------------------------------------------------"
+        echo "epw step 2: Performing scf and phonon calculations"
+        echo "generate job submission scripts using generate_submission_file.sh help"
+        echo "adjust number of processor, nodes, and so on"
+       echo "-----------------------------------------------------------------------------------------------"
+        if [[ ! -d R$A-$B/phonon ]] ; then
+           mkdir R$A-$B/phonon
+        fi
+         echo "*****************************************************************"
+        cp scf_dir/scf-$A-$B.in R$A-$B/phonon/scf.in
+        cp elph_dir/ph-$A-$B.in R$A-$B/phonon/elph.in
+        cp run-ph.sh R$A-$B/phonon/
+          cd R$A-$B/phonon
+            qerun "$A" "$B" "ph"
+          cd ../../
+
+      elif [ $process == 'epw3' ]; then
+       echo "-----------------------------------------------------------------------------------------------"
+         echo "epw step 3: Copying necessary file for epw calculations to 'save' folder"
+       echo "-----------------------------------------------------------------------------------------------"
+         prefix=$(grep "prefix = " scf_dir/scf-$A.in | awk '{print $3}' | sed 's/.$//' | sed "s/'//g" )
+         cd R$A-$B/phonon
+           pp.py $prefix
+         cd ../../
+      elif [ $process == 'cpcharge' ]; then
+         echo "Saving charge density for nscf calculations"
+         if [[ ! -d R$A-$B/epw ]]; then
+            mkdir R$A-$B/epw
+         fi
+         
+         prefix=$(grep "prefix = " scf_dir/scf-$A.in | awk '{print $3}' | sed 's/.$//' | sed "s/'//g" )
+         cd R$A-$B/epw
+           dir1=$prefix.save
+           mkdir $dir1
+           echo $dir1
+           cp ../phonon/$dir1/charge-density.dat $dir1/
+           cp ../phonon/$dir1/data-file-schema.xml $dir1/
+           
+         cd ../../
+
+      elif [ $process == 'ciftoxsf' ]; then
+           prefix=$(grep "prefix = " scf_dir/scf-$A.in | awk '{print $3}' | sed 's/.$//')
+           create_epw_inputs.py $A $B $prefix "ciftoxsf"
+
+      elif [ $process == 'epw4' ]; then
+       echo "-----------------------------------------------------------------------------------------------"
+         echo "Performing projectability calculations to determine SCDM parameters for automated wannierization"
+       echo "-----------------------------------------------------------------------------------------------"
+         prefix=$(grep "prefix = " scf_dir/scf-$A.in | awk '{print $3}' | sed 's/.$//')
+         if [[ ! -d R$A-$B/epw ]]; then
+            mkdir R$A-$B/epw
+         fi
+         cp scf_dir/scf-$A-$B-nscf-proj.in R$A-$B/epw/nscf-proj.in
+         sed "s/smearing = 'gauss'/smearing = 'cold'/" scf_dir/scf-$A-$B.in > R$A-$B/epw/scf.in
+         create_epw_inputs.py $A $B $prefix "projection"
+         mv projwfc-$A-$B.in R$A-$B/epw/projwfc.in
+         cp run-proj.sh R$A-$B/epw/
+           echo "*****************************************************************"
+           cd R$A-$B/epw
+             qerun "$A" "$B" "proj"
+           cd ../../
+         echo "epw input created"
+         if [[ ! -d epw_dir ]]; then
+           mkdir epw_dir
+         fi
+     elif [ $process == 'proj' ]; then
+       echo "-----------------------------------------------------------------------------------------------"
+         echo "Extracting projections"
+       echo "-----------------------------------------------------------------------------------------------"
+         prefix=$(grep "prefix = " scf_dir/scf-$A.in | awk '{print $3}' | sed 's/.$//')
+         cd R$A-$B/epw/
+             rm -f e.dat
+             rm -f p.dat
+             rm -f tmp.dat
+             rm -f p_vs_e.dat
+
+             # Check projwfc.out exists
+             [[ -f "projwfc.out" ]] || { echo "projwfc.out not found!"; echo "Aborting!"; exit 1; }
+
+             # Get energies and projectability in the correct order
+             cat projwfc.out |grep '=='|awk '{print $5}' > e.dat
+             cat projwfc.out |grep '|psi|^2'|awk '{print $3}' > p.dat
+             paste e.dat p.dat > tmp.dat
+
+             sort -k1n tmp.dat > p_vs_e.dat
+
+             # Clean workspace
+             rm e.dat p.dat tmp.dat
+         cd ../../
+         echo "Install lmfit to use scdm method to automate wannier initialization: conda install -c conda-forge lmfit"
+         fermi=$(grep Fermi R$A-$B/epw/scf.out | awk '{print $5}')
+         create_epw_inputs.py $A $B $prefix "scdm" $fermi
+         if [[ ! -d scdm_dir ]]; then
+            mkdir scdm_dir
+         fi
+         mv scdm-$A-$B scdm-proj-$A-$B.png scdm_dir
+         mv p_vs_e_fit* scdm_dir/
+
+      elif [ $process == 'band_wann' ]; then
+       echo "-----------------------------------------------------------------------------------------------"
+         echo "Preparing files for WANNIER90 calculations"
+       echo "-----------------------------------------------------------------------------------------------"
+         if [[ ! -d R$A-$B/epw ]]; then
+            mkdir R$A-$B/epw
+         fi
+         if [ $dft == 'vasp' ] || [ $dft == 'VASP' ]; then
+           cd R$A-$B/epw
+            checkwann=$(grep 'LWANNIER90' INCAR | wc -l)
+            cp INCAR INCAR-scf
+            if [ $checkwann -lt 1 ]; then 
+             sed -i '$a LWANNIER90 = .TRUE.' INCAR
+            fi
+            sed -i '/NPAR/d' INCAR
+            vasprun "$A" "$B"
+           cd ../../
+         else
+           prefix=$(grep "prefix = " scf_dir/scf-$A.in | awk '{print $3}' | sed 's/.$//')
+           nk=$(awk '{if(NR==3) print $1}' input.in)
+           kcut=$(awk '{if(NR==3) print $2}' input.in)
+           nband=$(grep nbnd scf_dir/scf-$A-$B-band.in)
+           echo "$nband" > band.dat
+           create_epw_inputs.py $A $B $prefix "pw2wan" $5
+           create_epw_inputs.py $A $B $prefix "kpathwan" $nk $kcut
+           create_epw_inputs.py $A $B $prefix "wankmesh"
+           create_epw_inputs.py $A $B $prefix "epw_band" $5
+           cp scf_dir/scf-$A-$B.in R$A-$B/epw/scf.in
+           cp scf_dir/scf-$A-$B-nscf.in R$A-$B/epw/nscf.in
+           cp epw_dir/pw2wan-$A-$B.in R$A-$B/epw/pw2wan.in 
+           cp epw_dir/ex-$A-$B.win R$A-$B/epw/ex.win
+           cp run-wannier_band.sh R$A-$B/epw/
+           echo "run sbatch run-wannier_band.sh inside R$A-$B/epw/ folder"
+         fi 
+      elif [ $process == 'band_wann2' ]; then
+         echo "run after obtaining wannier band structure, need _band.kpt file from wannierization"
+         prefix=$(grep "prefix = " scf_dir/scf-$A.in | awk '{print $3}' | sed 's/.$//')
+         create_epw_inputs.py $A $B $prefix "band"
+         sed -i '/K_POINTS crystal/,/CELL_PARAMETERS/{//!d}' scf_dir/$A-$B-band.in
+         sed -i '/K_POINTS crystal/d' scf_dir/$A-$B-band.in
+         echo "K_POINTS crystal" >> scf_dir/$A-$B-band.in
+         cp wannier_band2.sh R$A-$B/epw/ 
+         cat scf_dir/$A-$B-band.in R$A-$B/epw/*_band.kpt > R$A-$B/epw/scf-band.in
+         cp scf_dir/band-$A-$B.in R$A-$B/epw/band.in
+         echo "run sbatch wannier_band2.sh inside R$A-$B/epw folder"
+         
+     elif [ $process == 'epw' ]; then
+       echo "-----------------------------------------------------------------------------------------------"
+       echo "Preparing input files for EPW calculations"
+       echo "-----------------------------------------------------------------------------------------------"
+         prefix=$(grep "prefix = " scf_dir/scf-$A.in | awk '{print $3}' | sed 's/.$//')
+         sed -n '/K_POINTS automatic/,/CELL_PARAMETERS angstrom/p' scf_dir/scf-$A.in | sed '$d' > scf_dir/kpoint-$A-$B.dat
+         nk1=$(tail -n 1 scf_dir/kpoint-$A-$B.dat | awk '{print $1}')
+         nk2=$(tail -n 1 scf_dir/kpoint-$A-$B.dat | awk '{print $2}')
+         nk3=$(tail -n 1 scf_dir/kpoint-$A-$B.dat | awk '{print $3}')
+         if [[ -f qpoint.in ]]; then
+           qn=$(wc qpoint.in | awk '{print $2}')
+           if [[ qn -eq 3 ]]; then
+            echo "Reading qpoint.in"
+            ok1=$(cat qpoint.in | awk '{print $1}')
+            ok2=$(cat qpoint.in | awk '{print $2}')
+            ok3=$(cat qpoint.in | awk '{print $3}')
+           elif [[ qn -eq 1 ]]; then
+            frac=$(cat qpoint.in | awk '{print $1}')
+            echo "Reading fraction ($frac) from qpoint.in, dividing k-mesh by $frac"
+            ok1=$(echo $nk1/$frac | bc)
+            ok2=$(echo $nk2/$frac | bc)
+            ok3=$(echo $nk3/$frac | bc)
+           else
+             echo "provide either factor such that [q-mesh = k-mesh/factor] or q mesh"
+           fi
+         else
+           echo "qpoint.in not present. Default q-mesh=k-mesh/2 along each direction"
+           ok1=$(echo $nk1/2 | bc)
+           ok2=$(echo $nk2/2 | bc)
+           ok3=$(echo $nk3/2 | bc)
+         fi
+         echo "$ok1 $ok2 $ok3" >> qpoint.dat
+         echo "$nk1 $nk2 $nk3" >> kpoint.dat
+         
+        nelm=$(grep "number of electrons       =     " R$A-$B/phonon/scf.out | tail -n 1 | awk '{print $5}')
+        nel=${nelm%.*}
+        nband=$(echo $nel*1.5/2 | bc)
+
+
+         create_epw_inputs.py $A $B $prefix "epw" $nband $5
+         mv epw.in epw_dir/epw-$A-$B.in
+         echo "After performing epw2, epw3, epw4,and proj steps, Performing remaining nscf, and epw calculations"
+        if [[ ! -d R$A-$B/EPW ]] ; then
+           mkdir R$A-$B/EPW
+        fi
+         echo "*****************************************************************"
+        if [[ -f CALC_VISIBLE_WITH_ID ]]; then 
+          cp run-epw.sh R$A-$B/EPW/$A-epw.sh
+          echo "run sbatch $A-epw.sh inside R$A-$B/EPW folder"
+        elif [[ -f CALC_VISIBLE_WITH_NAME ]]; then 
+          cp run-epw.sh R$A-$B/EPW/$B-epw.sh
+           echo "run sbatch $B-epw.sh inside R$A-$B/EPW folder"
+        elif [[ -f CALC_VISIBLE_WITH_ID-NAME ]]; then 
+          cp run-epw.sh R$A-$B/EPW/$A-$B-epw.sh
+           echo "run sbatch $A-$B-epw.sh inside R$A-$B/EPW folder"
+        else
+          cp run-epw.sh R$A-$B/EPW/
+           echo "run sbatch run-epw.sh inside R$A-$B/EPW folder"
+        fi
+        cp scf_dir/scf-$A-$B-nscf.in R$A-$B/EPW/nscf_epw.in
+        cp epw_dir/epw-$A-$B.in R$A-$B/EPW/epw.in
+        prefix=$(grep "prefix = " scf_dir/scf-$A.in | awk '{print $3}' | sed 's/.$//' | sed "s/'//g" )
+
+        cd R$A-$B/EPW
+           dir1=$prefix.save
+           mkdir $dir1
+           echo $dir1
+           cp ../phonon/$dir1/charge-density.dat $dir1/
+           cp ../phonon/$dir1/data-file-schema.xml $dir1/
+        cd ../../
+
+      fi
+    else
+        echo "Perform relaxation using 'mainprogram process' with process=1 to 4"
+        exit
+     fi
+  else
+     echo "R$A-$B folder doesn't exist"
+  fi
+  if [[ -f qpoint.dat ]]; then
+   rm qpoint.dat
+  fi
+  if [[ -f kpoint.dat ]]; then
+   rm kpoint.dat
+  fi
+  echo "____________________________________________________________________________________________________________________________________"
+done
+echo "all done"

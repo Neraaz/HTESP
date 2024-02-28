@@ -1,0 +1,820 @@
+#!/usr/bin/env python
+"""Writen by Niraj K. Nepal, Ph.D."""
+import os
+import json
+import numpy as np
+import scipy.linalg as alg
+from ase.io import espresso,cif
+from ase.cell import Cell
+from pymatgen.io.cif import CifWriter
+from pymatgen.io.vasp.sets import MPRelaxSet
+from pymatgen.io import pwscf
+from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
+from mp_api.client import MPRester
+from kpath import kpath
+try:
+    PWD = os.getcwd()
+    if os.path.isfile(PWD+"/htepc.json"):
+        JSONFILE = PWD+"/htepc.json"
+    else:
+        JSONFILE = "../../htepc.json"
+    with open(JSONFILE, "r") as readjson:
+        input_data = json.load(readjson)
+except FileNotFoundError:
+    print("htepc.json file not found\n")
+#connect to materials project and extract various informations. including QE inputs.
+def pos_to_kpt(structure_filename,kpoint_density):
+    """
+    Obtain k-point mesh from a structure file.
+
+    Parameters:
+    ----------------------
+    structure_filename : str
+        Structure file (e.g., QE scf.in or VASP POSCAR).
+    kpoint_density : float
+        K-point density.
+
+    Returns:
+    ----------------------
+    kmesh : list
+        K-point mesh according to the k-point density.
+    """
+    kptsp = kpoint_density
+    with open(structure_filename,"r") as read_struc:
+        lines = read_struc.readlines()
+    # Get cell vectors
+    line = lines[1].split()
+    latscl = float(line[0])
+    ain = np.zeros((3, 3))
+    amat = np.zeros((3, 3))
+    bmat = np.zeros((3, 3))
+    anorm = np.zeros(3)
+    for i in range(3):
+        line = lines[2 + i].split()
+        for j in range(3):
+            ain[i][j] = float(line[j]) * latscl
+            amat[j][i] = ain[i][j]
+        anorm[i] = np.sqrt(ain[i][0] ** 2 + ain[i][1] ** 2 + ain[i][2] ** 2)
+    bmat = alg.inv(amat)
+    bnorm = np.zeros(3)
+    bnorm = alg.norm(bmat,axis=1)
+    kratio = [bnorm[i] / bnorm[0] for i in range(3)]
+    klat = bnorm[0] / kptsp
+    kmesh = [int(kratio[i] * klat + 0.5) if int(kratio[i] * klat + 0.5) != 0 else 1 for i in range(3)]
+    kratio = [bnorm[i] / bnorm[0] for i in range(3)]
+    klat = bnorm[0] / kptsp
+    kmesh = [int(kratio[i] * klat + 0.5) if int(kratio[i] * klat + 0.5) != 0 else 1 for i in range(3)]
+    return kmesh
+class MpConnect:
+    """
+    Class for connecting to Materials Project (MP) via MP API, extracting properties,
+    and preparing input files for Quantum Espresso (QE) calculations.
+
+    Parameters:
+    --------------
+    key : str, optional
+        MP API KEY. Use your own key. If not provided, it should be available in htepc.json
+        or ../../htepc.json file.
+
+    Attributes:
+    --------------
+    prop : list
+        List of available properties.
+    mpid : str
+        Materials ID.
+    comp : str
+        Compound name.
+    data : dict
+        Dictionary containing materials data.
+    prefix : str
+        Prefix for the compound.
+    ecutwfc : float
+        Kinetic energy cutoff for wavefunction.
+    ecutrho : float
+        Kinetic energy cutoff for charge density.
+    kpt : list
+        K-point grid.
+    structure : Structure
+        Structure object.
+    pseudo_dir : str
+        Path to pseudopotential files.
+    outdir : str
+        Directory for output files.
+    evenkpt : tuple
+        K-grid with an even number of points in all directions.
+    kpshift : list
+        K-point grid shifts.
+    kptype : str
+        K-point grid type.
+    calc : str
+        Type of calculation.
+    smear : float
+        Degauss value for smearing.
+    smear_type : str
+        Type of smearing.
+    etot_conv_thr : float
+        Total energy convergence threshold.
+    forc_conv_thr : float
+        Force convergence threshold.
+    conv_thr : float
+        Convergence threshold.
+    dict_element : dict
+        Dictionary containing kinetic energy cutoffs for different elements.
+    comp_list : list
+        List of elements in the compound.
+    """
+    #def __init__(self,key="J5fFknl84LrMvXi3"):
+    def __init__(self):
+        if os.path.isfile("htepc.json") or os.path.isfile("../../htepc.json"):
+            key = input_data["mpi_key"]["API_KEY"]
+        else:
+            print("htepc.json file not found. Please provide with your materials project api key\n")
+        #try:
+        #    from mpi_key import API_KEY as key
+        #    print("mpi_key.py found with API to materials project database\n")
+        #except ModuleNotFoundError:
+        #    print("mpi_key.py file not found. One is created. Please, replace the XXX with your key\n")
+        #    with open("mpi_key.py", "w") as key_write:
+        #        api = {'key':"XXX"}
+        #        key_write.write("API_KEY={}".format(api) + "\n")
+        #    from mpi_key import API_KEY as key
+        try:
+            self.key = key['key']
+            self.mpr = MPRester(self.key)
+        except:
+            self.key = None
+        self.prop = None
+        self.mpid = None
+        self.comp = None
+        self.data = None
+        self.prefix = None
+        self.ecutwfc = 0
+        self.ecutrho = 0
+        self.kpt = None
+        self.structure = None
+        self.pseudo_dir = ""
+        self.outdir = ""
+        self.evenkpt = None
+        self.kpshift = None
+        self.kptype = ""
+        self.calc = ""
+        self.smear = None
+        self.smear_type = ""
+        self.etot_conv_thr = None
+        self.forc_conv_thr = None
+        self.conv_thr = None
+        self.dict_element = {}
+        self.comp_list = None
+    def setting(self,comp):
+        """
+        Initialize the process with a Materials ID.
+
+        Parameters:
+        ---------------------
+        comp : str
+            Materials ID.
+
+        Returns:
+        ---------------------
+        comp : str
+            Materials ID.
+
+        Notes:
+        ---------------------
+        This function initializes the process with a Materials ID. It retrieves the data related to the given ID from the Materials Project (MP) database, sets up necessary parameters, and prepares the structure for further calculations.
+        """
+        self.comp=comp
+        #self.data = self.mpr.get_data(self.comp)[0]
+        #self.data = self.mpr.summary.get_data_by_id(self.comp).dict()
+        #self.data = self.mpr.materials.get_data_by_id(self.comp).dict()
+        self.prop = self.mpr.materials.summary.available_fields[:-29]
+        if os.path.isfile("htepc.json") or os.path.isfile("../../htepc.json"):
+            d = input_data["download"]
+        for prop in d['info']['prop']:
+            if prop not in self.prop:
+                self.prop.append(prop)
+        #self.data = self.mpr.materials.summary.get_data_by_id(self.comp,fields=self.prop).dict()
+        self.data = self.mpr.materials.summary.search(material_ids=[self.comp],fields=self.prop)[0]
+        self.structure = self.data.structure
+        self.data = self.data.dict()
+        self.mpid = self.data['material_id']
+        symbol_comp = ""
+        elm = list(self.data['composition'].keys())
+        count = list(self.data['composition'].values())
+        for i,_ in enumerate(elm):
+            symbol_comp += elm[i]+str(int(count[i]))
+        self.prefix = symbol_comp
+        #self.prefix = self.data['composition'].alphabetical_formula.replace(" ", "")
+        #self.structure = self.mpr.get_structure_by_material_id(self.mpid)
+        #self.structure = self.mpr.materials.summary.search(material_ids=[self.comp],fields=['structure'])[0].structure
+        #print("******************************************\n")
+        #print("Use property method to extract the following info\n")
+        #print("property('name') or get_properties(['name1', 'name2', ..])\n")
+        #print("******************************************\n")
+        return comp
+    def get_prop_list(self):
+        """
+        Print the list of properties available when downloading the data.
+
+        Returns:
+        ---------------------
+        prop_list : dict_keys
+            A list of keys representing the available properties.
+
+        Notes:
+        ---------------------
+        This function retrieves the list of properties available for download from the Materials Project (MP) database for the current Materials ID (mpid). It returns a list of keys that represent the available properties that can be downloaded and accessed for analysis or further processing.
+        """
+        #return self.mpr.summary.get_data_by_id(self.mpid).dict().keys()
+        return self.prop
+        #return self.mpr.materials.summary.search(material_ids=[self.mpid],fields=self.prop).dict().keys()
+    def download(self,filetype='cif'):
+        """
+        Download the structure file.
+
+        Parameters:
+        ---------------
+        filetype : str, optional
+            File format for downloading. Default is 'cif'.
+
+        Notes:
+        ---------------
+        This function downloads the structure file for the current Materials ID (mpid) from the Materials Project (MP) database. It saves the file in the specified format, with the default format being CIF ('.cif'). Other supported formats may be specified as needed.
+        """
+        if filetype == 'cif':
+            unsym_struc = self.structure
+            #unsym_struc = self.mpr.get_structure_by_material_id(self.mpid)
+            CifWriter(unsym_struc, symprec=0.1).write_file('{}.cif'.format(self.mpid))
+    def property(self,name):
+        """
+         Extract a particular property.
+
+         Parameters:
+         ------------------
+         name : str
+             The name of the property available from the list obtained from the get_prop_list() function.
+
+         Returns:
+         ------------------
+         value
+             The value of the specified property.
+
+         Notes:
+         ------------------
+         This function extracts the value of a specific property identified by its name from the data retrieved for the current Materials ID (mpid). The property name should be one of the properties listed in the output of the get_prop_list() function.
+        """
+        return self.data[name]
+    def getkpt(self):
+        """
+        Compute k-points based on k-point density.
+
+        Returns:
+        ---------------------
+        kpt : list
+            The k-point grid.
+        kptype : str
+            The type of k-point grid.
+        kptshift : list
+            The shifts in the k-point grid, returns [0,0,0].
+
+        Notes:
+        ---------------------
+        This function computes the k-point grid based on a specified k-point density,
+        defaulting to 0.05 if unspecified. It returns the k-point grid, type, and shifts.
+        """
+        struc = SpacegroupAnalyzer(self.structure,symprec=0.1).get_primitive_standard_structure()
+        relax_set = MPRelaxSet(structure=struc)
+        relax_set.poscar.write_file('POSCAR')
+        try:
+            kptden = input_data['kptden']
+        except:
+            print("Default kptden of 0.05 being utilized\n")
+            kptden = 0.05
+        self.kpt = pos_to_kpt("POSCAR",kptden)
+        #kpoints3=MPHSERelaxSet(self.structure).kpoints
+        #kpoints3=MPRelaxSet(self.structure).kpoints
+        #kpoint_dict=kpoints3.as_dict()
+        self.kptype = "automatic"
+        self.kpshift = [0, 0, 0]
+        os.system("rm POSCAR")
+        #kptden = input_data['kptden']
+        #self.kpt = kpoint_dict['kpoints'][0]
+        print("*********************************\n")
+        print("KPOINT with kpoint density of {} \n".format(kptden))
+        print("*********************************\n")
+        return self.kpt,self.kptype,self.kpshift
+
+    def getevenkpt(self):
+        """
+        Make the k-point mesh even.
+
+        Returns:
+        ---------------
+        evenkpt : tuple
+            K-grid with an even number of points in all directions.
+
+        Notes:
+        ---------------
+        Ensures the generated k-point grid has even points in each dimension
+        by incrementing odd components to the next even number.
+        Returns the resulting even k-point grid as a tuple.
+        """
+        kptsize = len(self.kpt)
+        kpoint_list = self.kpt
+        for i in range(kptsize):
+            if kpoint_list[i]%2 == 0:
+                kpoint_list[i] = kpoint_list[i]
+            else:
+                kpoint_list[i] = kpoint_list[i] + 1
+        self.evenkpt = tuple(kpoint_list)
+        return self.evenkpt
+
+    def getecut_sssp(self,element):
+        """
+        Obtain the kinetic energy cutoff for a specific element.
+
+        Parameters:
+        ---------------------
+        element : str
+            The type of element for which the kinetic energy cutoff is required.
+
+        Returns:
+        ----------------------
+        float
+            Kinetic energy cutoff for the particular element.
+
+        Notes:
+        ----------------------
+        Gets cutoff values for elements from htepc.json or defaults from SSSP efficiency set if not found.
+        """
+        if os.path.isfile("htepc.json") or os.path.isfile("../../htpec.json"):
+            psd_data = input_data["pseudo"]
+            self.dict_element = psd_data['PSEUDO']
+        else:
+            print("pseudo.py file not found\n")
+            print("Creating one with default values from SSSP efficiency set\n")
+            print("https://www.materialscloud.org/discover/sssp/table/efficiency\n")
+            self.dict_element = {'H': 60, 'Li': 40, 'Be': 40, 'N': 60, 'F': 45, 'Na': 40, 'Mg': 30, 'Al': 30, 'Si': 30, 'P': 30, 'S': 35, 'Cl': 40, 'K': 60, 'Ca': 30, 'Sc': 40, 'Ti': 35, 'V': 35, 'Cr': 40, 'Mn': 65, 'Fe': 90, 'Co': 45, 'Ni': 45, 'Cu': 55, 'Zn': 40, 'Ga': 70, 'Ge': 40, 'As': 35, 'Br': 30, 'Rb': 30, 'Sr': 30, 'Y': 35, 'Zr': 30, 'Nb': 40, 'Mo': 35, 'Tc': 30, 'Ru': 35, 'Rh': 35, 'Pd': 45, 'Ag': 50, 'Cd': 60, 'In': 50, 'Sn': 60, 'Sb': 40, 'Te': 30, 'I': 35, 'Cs': 30, 'Ba': 30, 'La': 40, 'Hf': 50, 'Ta': 45, 'W': 30, 'Re': 30, 'Os': 40, 'Ir': 55, 'Pt': 35, 'Hg': 50, 'Tl': 50, 'Pb': 40, 'Bi': 45, 'B': 35, 'C': 45, 'Au': 45, 'Se': 30, 'O': 60}
+            #with open("pseudo.py", "w") as write_pseudo:
+            #    write_pseudo.write("PSEUDO={}".format(self.dict_element))
+        return self.dict_element[element]
+    def maxecut_sssp(self):
+        """
+        Choose the maximum kinetic energy cutoff among elements in a compound.
+
+        Returns:
+        -----------------
+        tuple
+            A tuple containing the maximum kinetic energy cutoff for waveFunction (ecutwfc)
+            and the maximum kinetic energy cutoff for charge density (ecutrho).
+
+        Notes:
+        -----------------
+        This function finds the maximum kinetic energy cutoff for compound elements,
+        then prints tested cutoffs for waveFunction and density.
+        """
+        try:
+            self.comp_list = self.data['elements']
+            cutoff_list = [self.getecut_sssp(el) for el in self.comp_list]
+        except:
+            self.comp_list = [str(el) for el in self.structure.elements]
+            cutoff_list = [self.getecut_sssp(el) for el in self.comp_list]
+        self.ecutwfc= max(cutoff_list)
+        self.ecutrho = 8 * self.ecutwfc
+        print("******************************************\n")
+        print("SSSP tested K.E. cutoffs for waveFunction and density\n")
+        print("******************************************\n")
+        return self.ecutwfc,self.ecutrho
+    def maxecut_sssp_for_subs(self):
+        """
+        Determine the maximum kinetic energy cutoff among elements in a compound during the substitution process.
+
+        Returns:
+        -----------------
+        tuple
+            A tuple containing the maximum kinetic energy cutoff for waveFunction (ecutwfc)
+            and the maximum kinetic energy cutoff for charge density (ecutrho).
+
+        Notes:
+        -----------------
+        Similar to maxecut_sssp but for substitution process.
+        """
+        cutoff_list = [self.getecut_sssp(el) for el in self.comp_list]
+        self.ecutwfc= max(cutoff_list)
+        self.ecutrho = 8 * self.ecutwfc
+        return self.ecutwfc,self.ecutrho
+
+    def ecut_set(self,ecutwfc=50.0,ecutrho=400.0):
+        """
+        Function to set kinetic energy cutoffs
+        """
+        self.ecutrho=ecutrho
+        self.ecutwfc=ecutwfc
+
+    def get_properties(self,property_name):
+        """
+        Function to extract multiple properties from MP.
+        parameters
+        -------------------
+        property_name : list of properties: Default: ['material_id']
+        Returns
+        -------------------
+        property_list : list of properties extracted.
+        """
+        property_list = []
+        for prop in property_name:
+            property_list.append(self.data[prop])
+        property_list.insert(0,self.data['material_id'])
+        with open('mpid.csv', 'a') as data:
+            for prop in property_list:
+                data.write(str(prop) + ",")
+            data.write("\n")
+        return property_list
+    def setting_qeinput(self,calculation='vc-relax',occupations='smearing',restart_mode='from_scratch',pseudo_dir='./',smearing=0.02,smearing_type='gauss',etot_conv_thr=1e-05,forc_conv_thr=1e-04,conv_thr=1e-16,ion_dynamics='bfgs',cell_dynamics='bfgs'):
+        """
+        Function to create input file for QE ground-state calculations.
+
+        Parameters:
+        - calculation (str): Type of calculation. Default: 'vc-relax'. Other options are 'relax' (ionic only), 'bands' for band structure, 'scf' for SCF calculations.
+        - occupations (str): Occupation. Default: 'smearing'. Other options could be 'tetrahedra' and so on.
+        - restart_mode (str): How to start the calculations.
+        - pseudo_dir (str): Path to pseudopotential files. Default: './' (current directory).
+        - smearing (float): Degauss value. Default: 0.02.
+        - smearing_type (str): Type of smearing. Default: 'gauss'.
+        - etot_conv_thr, forc_conv_thr, conv_thr (float): Convergence parameters of QE calculations.
+        - ion_dynamics, cell_dynamics (str): Algorithm to perform relaxation. Default: 'bfgs'.
+
+        Returns:
+        Creates input files in scf-mpid.in format inside scf_dir/.
+        """
+        pseudo1 = {el:el+'.upf' for el in self.comp_list}
+        #try:
+        #    prefix = self.data['composition'].alphabetical_formula
+        #except:
+        #    prefix = self.data['pretty_formula']
+        prefix = self.prefix
+        if os.path.isfile("htepc.json") or os.path.isfile("../../htpec.json"):
+            pwscf_in = input_data["pwscf_in"]
+            control = pwscf_in['control']
+            system = pwscf_in['system']
+            electrons = pwscf_in['electrons']
+        else:
+            control = {'calculation':calculation, 'nstep':300, 'restart_mode':restart_mode, 'pseudo_dir':pseudo_dir, 'outdir':'./', 'tprnfor':'.true.','tstress':'.true.', 'etot_conv_thr':etot_conv_thr, 'forc_conv_thr':forc_conv_thr}
+            system = {'smearing':smearing_type, 'occupations':occupations, 'degauss':smearing}
+            electrons = {'diagonalization':'david', 'mixing_mode':'plain', 'mixing_beta':0.7, 'conv_thr': conv_thr, 'electron_maxstep':300}
+            #with open("pwscf_in.py", "w") as pw_in:
+            #    pw_in.write("control={}".format(control) + "\n")
+            #    pw_in.write("system={}".format(system) + "\n")
+            #    pw_in.write("electrons={}".format(electrons) + "\n")
+        system['ecutwfc'] = self.ecutwfc
+        system['ecutrho'] = self.ecutrho
+        control['prefix'] = prefix
+        # lW  2010_SC has monoclinic conventional cell with alpha<90, beta=gamma=90, different from international beta=90
+        tmpanalyzer = SpacegroupAnalyzer(self.structure)
+        tmpstructure = tmpanalyzer.get_primitive_standard_structure(international_monoclinic=False)
+        #print(tmpstructure)
+        self.structure = tmpstructure
+        if calculation == 'vc-relax':
+            filename = pwscf.PWInput(self.structure, pseudo=pseudo1, control=control, system=system,electrons=electrons, kpoints_grid=self.kpt, ions={'ion_dynamics':ion_dynamics}, cell={'cell_dynamics':cell_dynamics,'press_conv_thr':0.05})
+        elif calculation == 'relax':
+            filename = pwscf.PWInput(self.structure, pseudo=pseudo1, control=control, system=system,electrons=electrons, kpoints_grid=self.kpt, ions={'ion_dynamics':ion_dynamics})
+        else:
+            filename = pwscf.PWInput(self.structure, pseudo=pseudo1, control=control, system=system,electrons=electrons, kpoints_grid=self.kpt)
+        filename.write_file("temp.in")
+        os.system("""sed "s/'.true.'/.true./" {} > {}""".format("temp.in","scf-{}.in".format(self.mpid)))
+        os.system("sed -n '/K_POINTS automatic/,/CELL_PARAMETERS angstrom/p' scf-{}.in | sed '$d' > kpoint-{}.dat".format(self.mpid,self.mpid))
+        obj = INPUTscf("scf-{}.in".format(self.mpid))
+        obj.standardize(self.mpid,output="temp.dat")
+        os.system("sed -n '/&CONTROL/,/ATOMIC_SPECIES/p' scf-{}.in | sed '$d' > scf.header".format(self.mpid))
+        os.system("sed -n '/ATOMIC_SPECIES/,/ATOMIC_POSITIONS crystal/p' scf-{}.in | sed '$d' > species".format(self.mpid))
+        os.system("rm temp.in")
+        if calculation == 'bands':
+            os.system("sed -i '/K_POINTS/{N;d;}' temp.dat")
+            obj = INPUTscf(filename="scf-{}.in".format(self.mpid))
+            obj.generate_kpath(nqpoint=200,kcut=0,out="kpoint.dat")
+            os.system("cat kpoint.dat temp.dat > temp2.dat")
+            os.system("mv temp2.dat temp.dat")
+            os.system("cat scf.header species temp.dat > scf-{}.in".format(self.mpid))
+            print("Input for band calculation. Provide nband = <n> within SYSTEM section. Use sufficient <n>.")
+        else:
+            os.system("cat scf.header species temp.dat > scf-{}.in".format(self.mpid))
+        os.system("rm scf.header species temp.dat kpoint*")
+#Basic info about compounds with QE scf input file.
+class INPUTscf:
+    """
+    class to process QE input files
+    parameters
+    ------------------
+    filename: (str) QE input file
+    """
+    def __init__(self,filename='scf.in'):
+        self.filename = filename
+        self.file2 = espresso.read_espresso_in(self.filename)
+        self.cell = self.file2.cell
+        self.volume = self.file2.get_volume()
+        self.braiv_latt = Cell.get_bravais_lattice(self.cell)
+        self.lattice = self.braiv_latt.lattice_system
+        self.mpid = None
+        self.comp = None
+        self.prefix = None
+        self.qpoint = []
+        self.mass = []
+
+    def scftocif(self,output='file.cif'):
+        """
+        Function to convert QE input file to structure file in .cif format
+        parameters
+        ---------------
+        output : (str) name of the output file
+        Returns
+        ---------------
+        file2 : output file object
+        """
+        cif.write_cif(output,self.file2)
+        return self.file2
+
+    def cellpar(self):
+        """
+        Function to calculate cell lengths and angles
+        Returns
+        -----------------------
+        list of lenghts and angles
+        """
+        return self.file2.get_cell_lengths_and_angles()
+
+    def standardize(self,mpid,output="standard.in"):
+        """
+        Function to get closest bravais lattice parameters.
+        parameters
+        -----------------
+        mpid : (str) materials project ID
+        output : (str) output file. Default: 'standard.in'
+        """
+        finalpos = self.file2.get_scaled_positions()
+        finalcell = self.braiv_latt.tocell()
+        #finalcell = self.cell
+        specieslist = self.file2.symbols
+        with open("kpoint-{}.dat".format(mpid), "r") as kpoint:
+            kplines = kpoint.readlines()
+        with open(output, "w") as struc:
+            struc.write("ATOMIC_POSITIONS crystal\n")
+            #for i in range(len(specieslist)):
+            for i,_ in enumerate(specieslist):
+                struc.write(specieslist[i] + " " + str(finalpos[i][0])+ " ")
+                struc.write(str(finalpos[i][1]) + " " + str(finalpos[i][2]) + "\n")
+            for i in range(2):
+                struc.write(kplines[i])
+            struc.write("CELL_PARAMETERS angstrom\n")
+            for i in range(3):
+                struc.write(str(finalcell[i][0]) + " " + str(finalcell[i][1]) + " " + str(finalcell[i][2]) + "\n")
+
+    def generate_kpath(self,nqpoint=200,kcut=0,out='kpath.in'):
+        """
+        Function to generate and write k-point mesh for bandstructure calculation to a file
+        parameters
+        --------------------
+        nqpoint : (int) size of the k-point mesh. Default: 200
+        kcut : (int) cutoff to the high-symmetry path of the Brillouin zone. Default: 0 for full Brillouin zone
+        out : (str) output file. Default: 'kpath.in'
+        Returns
+        --------------------
+        kpts : numpy array of kpoints in linear axis after processing
+        n : (int) size of kpts
+        """
+        kpts,_,_,_,_,_ = kpath(self.filename,nqpoint,kcut)
+        nkpt = kpts.shape[0]
+        with open(out, 'w') as kmesh:
+            kmesh.write('K_POINTS\n')
+            kmesh.write(str(nkpt) + '\n')
+            for i in range(nkpt):
+                kmesh.write(str(round(kpts[i][0],8)) + " " + str(round(kpts[i][1],8)) + " " + str(round(kpts[i][2],8)) + " " + str(0.0) + "\n")
+        return nkpt,kpts
+
+    def setting_input(self,comp,mass,qpoint):
+        """
+        Function to setup input
+        parameters
+        -------------
+        comp : compound name
+        mass: List of masses of elements
+        qpoint : List of qpoint
+        """
+        self.comp=comp
+        self.mass=mass
+        self.qpoint=qpoint
+        obj=MpConnect()
+        obj.setting(self.comp)
+        self.mpid = obj.mpid
+        self.prefix = obj.prefix
+
+    def create_elph(self,output='elph.in',tol=0.00000000000001,sigma=0.005):
+        """
+         Function similar to elph.py file inside src/
+        """
+        dynmat = self.prefix.replace("'", "") + ".dyn"
+        nat = len(self.mass)
+        with open(output, 'w') as elph:
+            elph.write("electron phonon coupling \n")
+            elph.write("&inputph" + "\n")
+            elph.write("tr2_ph={},".format(tol) + "\n")
+            elph.write("prefix={},".format(self.prefix) + "\n")
+            elph.write("fildvscf='aldv'," + "\n")
+            for i in range(1,nat+1):
+                elph.write("amass({})={},".format(i,self.mass[i-1]) + "\n")
+            elph.write("outdir='./'," + "\n")
+            elph.write("fildyn='{}',".format(dynmat) + "\n")
+            elph.write("electron_phonon='interpolated'," + "\n")
+            elph.write("el_ph_sigma={},".format(sigma) + "\n")
+            elph.write("el_ph_nsigma=10," + "\n")
+            elph.write("trans=.true.," + "\n")
+            elph.write("ldisp=.true." + "\n")
+            elph.write("nq1={},nq2={},nq3={}".format(int(self.qpoint[0]),int(self.qpoint[1]),int(self.qpoint[2])) + "\n")
+            elph.write("/" + "\n")
+
+    def create_q2r(self,output='q2r.in'):
+        """
+         Function similar to q2r.py file inside src/
+        """
+        dynmat = self.prefix.replace("'", "") + ".dyn"
+        frc = self.prefix.replace("'", "") + ".fc"
+        with open(output, 'w') as q2r_write:
+            q2r_write.write("&input" + "\n")
+            q2r_write.write("zasr='simple'," + "\n")
+            q2r_write.write("fildyn='{}',".format(dynmat) + "\n")
+            q2r_write.write("flfrc='{}',".format(frc) + "\n")
+            q2r_write.write("la2F=.true." + "\n")
+            q2r_write.write("/" + "\n")
+
+    def create_matdyn(self,out='matdyn.in',nqpt=60,kcut=0):
+        """
+         Function similar to matdyn.py file inside src/
+        """
+        freq = self.prefix.replace("'", "") + ".freq"
+        frc = self.prefix.replace("'", "") + ".fc"
+        eig = self.prefix.replace("'", "") + ".eig"
+        nat = len(self.mass)
+        nkpt,kpts = self.generate_kpath(nqpoint=nqpt,kcut=kcut)
+        with open(out, 'w') as matdyn_write:
+            matdyn_write.write("&input" + "\n")
+            matdyn_write.write("asr='simple'," + "\n")
+            for i in range(1,nat+1):
+                matdyn_write.write("amass({})={},".format(i,self.mass[i-1]) + "\n")
+            matdyn_write.write("flfrc='{}',".format(frc) + "\n")
+            matdyn_write.write("flfrq='{}',".format(freq) + "\n")
+            matdyn_write.write("fleig='{}',".format(eig) + "\n")
+            matdyn_write.write("la2F=.true.," + "\n")
+            matdyn_write.write("dos=.false." + "\n")
+            matdyn_write.write("/" + "\n")
+            matdyn_write.write(str(nkpt) + "\n")
+            for i in range(nkpt):
+                matdyn_write.write(str(round(kpts[i][0],8)) + " " + str(round(kpts[i][1],8)) + " ")
+                matdyn_write.write(str(round(kpts[i][2],8)) + " " + str(0.0) + "\n")
+    def create_phdos(self,kpts,out='phdos.in',ndos=200):
+        """
+         Function similar to matdyn.dos.py file inside src/
+        """
+        freq = self.prefix.replace("'", "") + "-dos.freq"
+        frc = self.prefix.replace("'", "") + ".fc"
+        nat = len(self.mass)
+        with open(out, 'w') as phdos:
+            phdos.write("&input" + "\n")
+            phdos.write("asr='simple'," + "\n")
+            for i in range(1,nat+1):
+                phdos.write("amass({})={},".format(i,self.mass[i-1]) + "\n")
+            phdos.write("flfrc='{}',".format(frc) + "\n")
+            phdos.write("flfrq='{}',".format(freq) + "\n")
+            phdos.write("la2F=.true.," + "\n")
+            phdos.write("dos=.true.," + "\n")
+            phdos.write("fldos='phonon.dos'," + "\n")
+            phdos.write("nk1={},nk2={},nk3={},ndos={},".format(kpts[0],kpts[1],kpts[2],ndos) + "\n")
+            phdos.write("/" + "\n")
+
+    def create_dos(self,out1='dos.in',out2='pdos.in'):
+        """
+         Function similar to dos.py file inside src/
+        """
+        dynmat = self.prefix.replace("'", "") + ".dos"
+        dynmat1 = self.prefix.replace("'", "") + ".pdos"
+        with open(out1, 'w') as dos:
+            dos.write("&dos" + "\n")
+            dos.write("prefix={},".format(self.prefix) + "\n")
+            dos.write("outdir='./'," + "\n")
+            dos.write("fildos='{}',".format(dynmat) + "\n")
+            dos.write("DeltaE=0.01" + "\n")
+            dos.write("/" + "\n")
+        with open(out2, 'w') as pdos:
+            pdos.write("&projwfc" + "\n")
+            pdos.write("prefix={},".format(self.prefix) + "\n")
+            pdos.write("outdir='./'," + "\n")
+            pdos.write("pfildos='{}',".format(dynmat1) + "\n")
+            pdos.write("DeltaE=0.01" + "\n")
+            pdos.write("/" + "\n")
+
+    def post_band(self,out='band.in'):
+        """
+         Function similar to band.py file inside src/
+        """
+        dynmat = self.prefix.replace("'", "") + ".dat"
+        with open(out, 'w') as band:
+            band.write("&BANDS" + "\n")
+            band.write("prefix={},".format(self.prefix) + "\n")
+            band.write("outdir='./'," + "\n")
+            band.write("filband='{}',".format(dynmat) + "\n")
+            band.write("lsym=.true." + "\n")
+            band.write("/" + "\n")
+
+    def post_phband(self,out='phonband.in'):
+        """
+         Function similar to phonband.py file inside src/
+        """
+        freq = self.prefix.replace("'", "") + ".freq"
+        with open(out, 'w') as phband:
+            phband.write(freq + "\n")
+            phband.write("0 5000" + "\n")
+            phband.write("freq.plot" + "\n")
+            phband.write("freq.ps" + "\n")
+            phband.write("0.0" + "\n")
+            phband.write("100.0 0.0" + "\n")
+
+def scf_to_dos_scf(input_file='scf.in',out='scf-dos.in'):
+    """
+    Function to change QE input file from using smearing to 'tetrahedra' method, mainly for DOS calculation
+
+    parameters
+    ----------------------
+    input_file : (str) input file for QE scf calculation
+    out : (str) output file after modification
+
+    """
+    os.system("""sed -i '/calculation/d' {} """.format(input_file))
+    insert(input_file=input_file,output='temp',keyword='&CONTROL',what="calculation = 'nscf',")
+    os.system("""cat {} | sed "s/'smearing'/'tetrahedra'/" | sed '/degaus/d' | sed '/smearing/d' > {}""".format('temp',out))
+    os.system("""rm temp""")
+    print("Use denser k-mesh for dos calculations")
+
+def insert(input_file='scf.in',output='scf-new.in',keyword=None,where="after",what=""):
+    """
+    Function to insert keyword in input file
+    parameters
+    -----------------------
+    input_file : (str) input file. Default: 'scf.in'
+    output : (str) output file. Default: 'scf-new.in'
+    keyword : (str) keyword to look after
+    where : (str) where to insert. Default: 'after', otherwise 'before'
+    what : (str) what to insert. Default: ''
+    """
+    if where == "after":
+        os.system("""sed "/{}/a   {}" {} > {}""".format(keyword,what,input_file,output))
+    else:
+        os.system("""sed "/{}/i   {}" {} > {}""".format(keyword,what,input_file,output))
+# Extract relaxed structure and update QE input.
+class OUTPUTscf:
+    """
+    class to extract relax structure from QE output file and update input file
+    parameters
+    ---------------------
+    filename : (str) QE output file. Default: 'scf.out'
+    """
+    def __init__(self,filename='scf.out'):
+        self.filename = filename
+
+    def extract_relax(self,output='relax.dat'):
+        """
+        Function to extract cell and positions of crystal structures from scf output file and write to a file
+        parameters
+        ----------------
+        filename : (str) output file. Default: 'relax.dat'
+        """
+        os.system("sed -n '/Begin final coordinates/,/End final coordinates/p' {} | sed '$d' | sed '1,4d'| sed '5d' > {}".format(self.filename,output))
+    def update_scf(self,input_file='scf.in',output='scf-new.in',what='structure'):
+        """
+        Function to update QE input file and update with new structure
+        parameters
+        ------------
+        input_file : (str) QE scf input file to update. Default: 'scf.in'
+        output : (str) QE scf output file, updated with new structure. Default: 'scf-new.in'
+        what : (str) what to update. Default: 'structure'. Other, not implemented yet !
+        """
+        os.system("sed -n '/K_POINTS automatic/,/CELL_PARAMETERS angstrom/p' {} | sed '$d' > kpoint.dat".format(input_file))
+        os.system("sed -n '/&CONTROL/,/ATOMIC_POSITIONS crystal/p' {} | sed '$d'  > scf.header".format(input_file))
+        os.system("sed -n '/ATOMIC_SPECIES/,/ATOMIC_POSITIONS crystal/p' {} | sed '$d' > species".format(input_file))
+        if what == 'structure':
+            self.extract_relax('relax.in')
+            os.system("cat scf.header kpoint.dat relax.in > {}".format(output))
+        else:
+            print('do nothing\n')
+        os.system("rm scf.header species kpoint.dat relax.in")
+
+#def extract_energy(self,input='scf.out'):
+#    os.system("""Rytoev=`echo "scale=6;13.605698" | bc`""")
+#    os.system("""en=`grep "!    total energy              =   " {} | tail -n1 | awk '{print $5}'` """.format(input))
+#    os.system("""e=`echo "scale=6; $en * $Rytoev  " | bc`""")
+#    os.system("""echo "the total energy: $e" """)
+#    return
+#class for calculations. In progress........
+#class calculation:
+#    def __init__(self,batch_header='batch.header'):
+#        self.batch_header = batch_header
+#def create_submission_scripts(self):
+#def relax_structure(self,input='scf.in',out='scf.out'):
+#def calculate_Tc(self,mu=0.16,degaussq=0.12,ngaussq=0,phfile='elph.out',phsigma=0.005):

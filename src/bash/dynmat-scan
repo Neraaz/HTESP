@@ -1,0 +1,32 @@
+#! /bin/bash
+# Writen by Niraj K. Nepal, Ph.D.
+# submit calculations to diagonalize phonon dynamical matrices and create dynmat.axsf file.
+# Runs for 'mainprogram 23'
+source jobscript.sh
+
+file=$(find * -name $3 | tail -n 1)
+echo "---------------------------------------------------------------------------------------------------------------"
+echo "Diagonalizing phonon dynamical matrices"
+echo "---------------------------------------------------------------------------------------------------------------"
+for ((ii=$1; ii<$2; ++ii)); do
+  A=$(grep "v$ii\ " $file | awk '{print $2}')
+  B=$(grep "v$ii\ " $file | awk '{print $3}')
+  echo "$A $B"
+  
+  prefix=$(grep "prefix = " R$A-$B/relax/scf.in | awk '{print $3}' | sed 's/.$//')
+  if [[ -f R$A-$B/calc/$B.dyn1 ]] || [[ -f R$A-$B/calc/$B.dyn ]] ; then
+  
+  q2r.py $A $B $prefix
+  mv dynmat-$A-$B.in R$A-$B/calc/dynmat.in
+  cp run-dynmat.sh R$A-$B/calc/
+    echo " submitting jobs in R$A-$B "
+    cd R$A-$B/calc
+       cp $B.dyn1 $B.dyn
+       qerun "$A" "$B" "dynmat"
+       sleep 1s
+    cd ../../
+  else
+     echo "electron-phonon calculation not finished"
+  fi
+done
+echo "all done"

@@ -1,0 +1,37 @@
+&CONTROL
+  calculation = 'vc-relax',
+  etot_conv_thr = 1d-05,
+  forc_conv_thr = 0.0001,
+  outdir = './',
+  prefix = 'B12Y1',
+  pseudo_dir = '../../pp/',
+  restart_mode = 'from_scratch',
+  tprnfor = .true.,
+  tstress = .true.,
+/
+&SYSTEM
+  degauss = 0.02,
+  ecutrho = 280,
+  ecutwfc = 35,
+  occupations = 'smearing',
+  smearing = 'gauss',
+  ibrav = 0,
+  nat = 13,
+  ntyp = 2,
+/
+&ELECTRONS
+  conv_thr = 1d-09,
+  diagonalization = 'david',
+  electron_maxstep = 300,
+  mixing_beta = 0.7,
+  mixing_mode = 'plain',
+/
+&IONS
+  ion_dynamics = 'bfgs',
+/
+&CELL
+  cell_dynamics = 'bfgs',
+/
+ATOMIC_SPECIES
+  B  10.8110 B.upf
+  Y  88.9059 Y.upf

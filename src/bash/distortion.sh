@@ -1,0 +1,18 @@
+#!/bin/bash
+cat > heredocfile.txt <<_EOF_
+Tutorial: http://www.fisica.uniud.it/~giannozz/QE-Tutorial/handson_phon.html
+1. First perform normal ground state calculations (ionic and electronic relaxation)
+2. Phonon calculation at single q point such as Gamma point (q=0,0,0)
+3. Diagonalize dynamical matrix using dynmat.x that produces dynmat.axsf file.
+4. Write a header file "scf-header.in" without any lattice parameters.
+5. To perform further relaxation on these different modes. Use command: "band-distort-scan start end" (starting mode to ending mode). Total mode = 3*N(number of ions).
+6. Perform calculation with 'scf' to check whether modes having same symmetry have the same total energies. Once it is okay.
+7. We can performed full relaxation using 'vc-relax' in scf-header.in.
+8. Use command: "energy-distort-scan start end" to collect the results (relaxed structure in cif/ folder and total energies
+in Energy_mode.csv file.
+9. Use a job submission script with name "run.sh" along with all the necessary files in  working directory.
+_EOF_
+
+cat heredocfile.txt
+
+exit 0

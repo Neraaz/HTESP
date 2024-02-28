@@ -1,0 +1,11 @@
+numpy
+scipy
+pandas
+matplotlib
+ase
+pymatgen
+bsym
+lmfit
+ifermi
+mp_api
+qmpy-rester

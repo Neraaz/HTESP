@@ -1,0 +1,39 @@
+#! /bin/bash
+# Writen by Niraj K. Nepal, Ph.D.
+# Script to submit relaxation of updated scf.in file.
+# Runs for 'mainprogram 3'
+source jobscript.sh
+echo "---------------------------------------------------------------------------------------------------------------"
+echo "Resubmitting crystal relaxation calculations."
+echo "---------------------------------------------------------------------------------------------------------------"
+file=$(find * -name $3 | tail -n 1)
+dft=$(grep "DFT" input.in | awk '{ print $3 }')
+for ((ii=$1; ii<$2; ++ii)); do
+  A=$(grep "v$ii\ " $file | awk '{print $2}')
+  B=$(grep "v$ii\ " $file | awk '{print $3}')
+
+  echo "$A $B"
+  if [ $dft == 'vasp' ] || [ $dft == 'VASP' ]; then
+    cp run-vasp.sh R$A-$B/relax/run.sh
+      cd R$A-$B/relax/
+          if [[ ! -f NSW_0_DETECTED ]]; then
+             vasprun "$A" "$B"
+             sleep 1s
+          else
+             echo "Already NSW = 0 found"
+          fi
+      cd ../../
+  else
+  if [[ -d R$A-$B ]] ; then
+
+  cp scf_dir/scf-relax-$A-$B.in R$A-$B/relax/scf.in
+   cp run-scf.sh R$A-$B/relax/
+      echo " submitting jobs in R$A-$B/relax "
+      cd R$A-$B/relax
+         qerun "$A" "$B" "scf"
+         sleep 1s
+      cd ../../
+  fi
+  fi
+done
+echo "all done"

@@ -1,0 +1,140 @@
+#! /bin/bash
+# Writen by Niraj K. Nepal, Ph.D.
+# Process the QE scf.out file and creates inputs for further el-ph coupling calculations
+# and superconductivity using isotropic Eliashberg's approximation.
+# Runs for 'mainprogram 4'
+
+file=$(find * -name $3 | tail -n 1)
+if [[ ! -d kpath ]]; then
+   mkdir kpath
+fi
+if [[ ! -d elph_dir ]]; then
+  mkdir elph_dir
+fi
+if [[ ! -d scf_dir ]]; then
+  mkdir scf_dir
+fi
+if [[ ! -d matdyn_dir ]]; then
+  mkdir matdyn_dir
+fi
+if [[ ! -d q2r_dir ]]; then
+ mkdir q2r_dir
+fi
+echo "---------------------------------------------------------------------------------------------------------------"
+echo "Creating input files for 'mainprogram process' with process = 5 - 18"
+echo "---------------------------------------------------------------------------------------------------------------"
+for ((ii=$1; ii<$2; ++ii)); do
+  A=$(grep "v$ii\ " $file | awk '{print $2}')
+  B=$(grep "v$ii\ " $file | awk '{print $3}')
+
+  if [[ ! -f scf_dir/scf-$A.in ]]; then
+    qe_input.py $A
+  fi
+  echo "material_id = $A, compound = $B"
+  if [[ -d R$A-$B ]] ; then
+
+################
+## SUBMIT JOB ##
+################
+    x=$(awk '{if(NR==3) print $2}' input.in)
+    sed -n '/Begin final coordinates/,/End final coordinates/p' R$A-$B/relax/scf.out | sed '$d' | sed '1,4d'| sed '5d' > scf_dir/$A-$B-relax.dat 
+    prefix=$(grep "prefix = " R$A-$B/relax/scf.in | awk '{print $3}' | sed 's/.$//')
+    nelm=$(grep "number of electrons       =     " R$A-$B/relax/scf.out | tail -n 1 | awk '{print $5}')
+    nel=${nelm%.*}
+    soc=$(grep "lspinorb = .true." R$A-$B/relax/scf.in | wc -l)
+    spin=$(grep "nspin = 2" R$A-$B/relax/scf.in | wc -l)
+    if [ $soc -gt 0 ] || [ $spin -gt 0 ]; then
+        nbnd=$(echo $nel+20 | bc)
+        echo "Number of band used in electronic bandstructure calculation [number of electrons ($nel) + 20]: $nbnd"
+    else
+      if [ $nel -lt 30 ]; then
+        nbnd=$(echo $nel+10 | bc)
+        echo "Number of band used in electronic bandstructure calculation [number of electrons ($nel) + 10]: $nbnd"
+      else
+        nbnd=$(echo $nel | bc)
+        #nbnd=$(echo $nel*1.50/2 | bc)
+        echo "Number of band used in electronic bandstructure calculation [number of electrons ($nel)*1.5/2]: $nbnd"
+      fi
+    fi
+    #nbnd1=`echo $nel*1.40/1 | bc`
+    sed -n '/K_POINTS automatic/,/CELL_PARAMETERS angstrom/p' scf_dir/scf-$A.in | sed '$d' > scf_dir/kpoint-$A-$B.dat
+    nk1=$(tail -n 1 scf_dir/kpoint-$A-$B.dat | awk '{print $1}')
+    nk2=$(tail -n 1 scf_dir/kpoint-$A-$B.dat | awk '{print $2}')
+    nk3=$(tail -n 1 scf_dir/kpoint-$A-$B.dat | awk '{print $3}')
+    mk1=$(echo $nk1*2 | bc)
+    mk2=$(echo $nk2*2 | bc)
+    mk3=$(echo $nk3*2 | bc)
+    if [[ -f qpoint.in ]]; then
+      qn=$(wc qpoint.in | awk '{print $2}')
+      if [[ qn -eq 3 ]]; then
+       echo "Reading qpoint.in"
+       ok1=$(cat qpoint.in | awk '{print $1}')
+       ok2=$(cat qpoint.in | awk '{print $2}')
+       ok3=$(cat qpoint.in | awk '{print $3}')
+      elif [[ qn -eq 1 ]]; then
+       frac=$(cat qpoint.in | awk '{print $1}')
+       echo "Reading fraction ($frac) from qpoint.in, dividing k-mesh by $frac"
+       ok1=$(echo $nk1/$frac | bc)
+       ok2=$(echo $nk2/$frac | bc)
+       ok3=$(echo $nk3/$frac | bc)
+      else
+        echo "provide either factor such that [q-mesh = k-mesh/factor] or q mesh"
+      fi
+    else
+      echo "qpoint.in not present. Default q-mesh=k-mesh/2 along each direction"
+      ok1=$(echo $nk1/2 | bc)
+      ok2=$(echo $nk2/2 | bc)
+      ok3=$(echo $nk3/2 | bc)
+    fi
+    ecut=$(grep ecutwfc scf_dir/scf-$A.in | awk '{print $3}' | sed "s/,//")
+    echo "Ecut: $ecut Ry, K-mesh: [$nk1,$nk2,$nk3]"
+    echo "K_POINTS automatic" > scf_dir/kpoint-$A-$B-fit.dat
+    echo "$mk1 $mk2 $mk3 0 0 0" >> scf_dir/kpoint-$A-$B-fit.dat
+    sed -n '/&CONTROL/,/ATOMIC_POSITIONS crystal/p' scf_dir/scf-$A.in | sed "s/'vc-relax'/'scf'/" | sed '$d' | sed '/&IONS/,$d'  > scf_dir/$A-$B-header.in
+    sed -n '/&CONTROL/,/ATOMIC_POSITIONS crystal/p' scf_dir/scf-$A.in | sed "s/'vc-relax'/'bands'/" | sed '$d' | sed '/&IONS/,$d' | sed '/conv_thr/d' | sed "/&SYSTEM/a   nbnd=$nbnd," | sed "/&ELECTRONS/a conv_thr = 1d-10,"  > scf_dir/$A-$B-header-band.in
+    sed "/occupations = 'smearing',/a   la2F = .true.," scf_dir/$A-$B-header.in > scf_dir/$A-$B-header-fit.in
+    sed "/occupations = 'smearing'/a   la2F = .true." scf_dir/$A-$B-header.in > scf_dir/$A-$B-header-fit.in
+    sed -n '/ATOMIC_SPECIES/,/ATOMIC_POSITIONS crystal/p' scf_dir/scf-$A.in | sed '$d' > scf_dir/species-$A-$B.in
+    cat scf_dir/$A-$B-header.in scf_dir/species-$A-$B.in scf_dir/kpoint-$A-$B.dat scf_dir/$A-$B-relax.dat > scf_dir/scf-$A-$B.in
+    if [ $x -gt 0 ]; then
+      echo "Partial k-path mesh will be used to plot phonon bandstructure"
+      kpath.py point scf_dir/scf-$A-$B.in $4 $x 0
+    else
+      y=$(echo 0 | bc)
+      echo "Full k-path mesh will be used to plot phonon bandstructure"
+      kpath.py point scf_dir/scf-$A-$B.in $4 $x 0
+    fi 
+    mv BZ.pdf kpath/BZ-$A-$B.pdf
+    cp scf_dir/kspecial-points.dat kpath/kspecial-$A-$B.dat 
+    cat scf_dir/$A-$B-header-band.in scf_dir/species-$A-$B.in scf_dir/kpathlines.dat scf_dir/$A-$B-relax.dat > scf_dir/scf-$A-$B-band.in
+    cat scf_dir/$A-$B-header-fit.in scf_dir/species-$A-$B.in scf_dir/kpoint-$A-$B-fit.dat scf_dir/$A-$B-relax.dat > scf_dir/scf-$A-$B-fit.in
+    sed "s/'scf'/'nscf'/" scf_dir/scf-$A-$B-fit.in | sed "s/'smearing'/'tetrahedra'/" | sed '/la2F/d' | sed '/degaus/d' | sed '/smearing/d' | sed '/conv_thr/d' | sed "/&ELECTRONS/a conv_thr = 1d-10," > scf_dir/scf-$A-$B-dos.in
+    ntype=$(cat scf_dir/species-$A-$B.in | sed '1d' | wc -l)
+    cat scf_dir/species-$A-$B.in | awk '{print $2}' > mass.dat
+    echo "$ok1 $ok2 $ok3" >> qpoint.dat
+    echo "v$ii $A $B $prefix $ok1 $ok2 $ok3 $ntype" >> kpoint.dat
+    elph.py $A $B $prefix
+    band.py $A $B $prefix
+    phonband.py $A $B $prefix
+    dos.py $A $B $prefix
+    mv elph-$A-$B.in elph_dir/
+    rm qpoint.dat
+    rm scf_dir/$A-$B-header.in scf_dir/$A-$B-header-fit.in scf_dir/species-$A-$B.in scf_dir/kpoint-$A-$B* scf_dir/$A-$B-relax.dat
+    q2r.py $A $B $prefix
+    mv q2r-$A-$B.in q2r_dir/
+    mv dynmat-$A-$B.in q2r_dir/
+    matdyn.py $A $B $prefix
+    cp scf_dir/kpathlines.dat kpath/kpath-$A-$B.dat
+    rm scf_dir/kpathlines.dat scf_dir/kspecial-points.dat
+    mv matdyn-$A-$B.in matdyn_dir/
+    matdyn.dos.py $A $B $prefix
+    mv matdyn-$A-$B-dos.in matdyn_dir
+    rm mass.dat kpoint.dat
+
+  else
+    echo "R$A-$B folder not found"
+  fi
+echo "---------------------------------------------------------------------------------------------------------------"
+echo " "
+done
+echo "all done"

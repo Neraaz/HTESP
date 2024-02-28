@@ -1,0 +1,283 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
+    <title>htepc.json &#8212; HTEPC 0.0.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Commands" href="command.html" />
+    <link rel="prev" title="Requirements" href="usage.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="command.html" title="Commands"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="usage.html" title="Requirements"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">HTEPC 0.0.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">htepc.json</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <p>This section has descriptions of files and parameters, required for the package.</p>
+<section id="htepc-json">
+<h1>htepc.json<a class="headerlink" href="#htepc-json" title="Permalink to this headline">¶</a></h1>
+<p>This json file serves as the main input file of the package. It has dictionary with following keys,</p>
+<blockquote>
+<div><p>‘mpi_key’ ==&gt; materials project API key</p>
+<p>‘download’ ==&gt; information required for downloading and preparing inputs</p>
+<p>‘magmom’   ==&gt; magnetic moment for VASP calculations</p>
+<p>‘pseudo’   ==&gt; pseudopotential file, has 2 subkeys. ‘pot’ for VASP, and ‘PSEUDO’ for QE.</p>
+<p>‘substitute’ ==&gt; parameters for preparing input files with substitution</p>
+<p>‘pwscf_in’ ==&gt; input parameters for QE</p>
+<p>‘bgw_input’ ==&gt; input parameters for QE+BerkeleyGW calculations</p>
+<p>‘strain_inp’ ==&gt; strain inputs</p>
+<p>‘wanniertools_input’ ==&gt; input parameters for wanniertools</p>
+<p>‘kptden ==&gt; kpoint density</p>
+</div></blockquote>
+</section>
+<section id="mpi-key">
+<h1>mpi_key<a class="headerlink" href="#mpi-key" title="Permalink to this headline">¶</a></h1>
+<p>Find your materials project key here, under API key section.</p>
+<p><a class="reference external" href="https://next-gen.materialsproject.org/api#api-key">https://next-gen.materialsproject.org/api#api-key</a></p>
+</section>
+<section id="download">
+<h1>download<a class="headerlink" href="#download" title="Permalink to this headline">¶</a></h1>
+<p>It has a dictionary of the form.</p>
+<dl class="simple">
+<dt>“download”: {</dt><dd><dl class="simple">
+<dt>“info”: {</dt><dd><p>“mode”: “element”,
+“metal”: false,
+“FE”: false,
+“thermo_stable”: false,
+“exclude”: [“Lu”],
+“ntype”: [1, 2],
+“elm”: [“B”],
+“prop”: [“material_id”, “formula_pretty”, “structure”, “formation_energy_per_atom”, “band_gap”, “energy_above_hull”, “total_magnetization”, “ordering”, “total_magnetization_normalized_formula_units”, “num_magnetic_sites”, “theoretical”, “nsites”],
+“ordering”: “NM”,
+“nsites”: 10,
+“spacegroup”: None},</p>
+</dd>
+<dt>“inp”: {</dt><dd><p>“start”: 1,
+“end”: 2,
+“nkpt”: 200,
+“evenkpt”: false,
+“plot”: “phband”,
+“calc”: “QE”},</p>
+</dd>
+<dt>“chemsys”: {</dt><dd><p>“entries”: [“Fe”, “Pd”, “I”],
+“size_constraint”: 60,
+“ntype_constraint”: 4,
+“must_include”: [“Fe”,”Pd”,”I”],
+“form_en”: false,
+“metal”: false,
+“magnetic”: true,
+“spacegroup”: null},</p>
+</dd>
+<dt>“oqmd”: {</dt><dd><p>“limit”: 400,
+“entries”: [“Mg”, “B”],
+“size_constraint”: 60,
+“ntype_constraint”: 4,
+“must_include”: [],
+“form_en”: true,
+“metal”: false,
+“magnetic”: true,
+“spacegroup”: null,
+“thermo_stable”: true,
+“FE”: true,
+“prop”: [“composition”, “spacegroup”, “volume”, “band_gap”, “stability”]
+},</p>
+</dd>
+<dt>“aflow”: {</dt><dd><p>“elm”: [“B”],
+“nelm”: 5,
+“nsites”: 10,
+“metal”: true,
+“FE”: true,
+“spacegroup”: null,
+“limit”: 5000,
+“prop”: [“Bravais_lattice_orig”, “Bravais_lattice_relax”, “composition”, “density”, “dft_type”, “eentropy_cell”, “enthalpy_cell”, “enthalpy_atom”,”enthalpy_formation_cell”, “enthalpy_formation_atom”, “entropic_temperature”,”kpoints”, “volume_cell”, “volume_atom”]}}</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>Here, the keyword ‘info’ is to control the preparing input files.</p>
+<blockquote>
+<div><ol class="loweralpha">
+<li><p>There are 4 ‘modes’ for preparing input files.</p>
+<p>element ==&gt; Extract data from MP database using element based search method</p>
+<p>chemsys ==&gt; Extract data from MP database using chemsys (eg. Mg-O) based search method</p>
+<p>fromcif ==&gt; Convert .cif files into QE and VASP input files</p>
+<p>fromvasp ==&gt; Convert poscar files in .vasp format into VASP input files</p>
+</li>
+<li><p>metal:True selects zero bandgap systems.</p></li>
+<li><p>FE;True selects compounds with negative formation energy.</p></li>
+<li><p>thermo_stable:True selects the compounds on convex hull.</p></li>
+<li><p>exclude list of the elements to exclude from the search.</p></li>
+<li><p>ntype number of different types of elements in compounds.</p></li>
+<li><p>elm is the element to search in compounds. Can use upto 2 elements. For example, [‘B’,’C’] to search boron and/or carbon containing compounds.</p></li>
+<li><p>‘prop’ is list of the properties to extract.</p></li>
+<li><p>‘ordering’ magnetic ordering to search. “NM” for nonmagnetic, “FM” for ferro, and “AFM” for antiferromagnetic, and so on.</p></li>
+<li><p>‘nsites’ total number of ions in the compound.</p></li>
+<li><p>‘spacegroup’, spacegroup symbol to chose. If None, then the code doesn’t select based on spacegroup.</p></li>
+</ol>
+</div></blockquote>
+<p>The keyword ‘inp’ controls the calculations, and also writes input.in file. It’s keywords are</p>
+<blockquote>
+<div><ol class="loweralpha simple">
+<li><p>“start”</p></li>
+<li><p>end</p></li>
+<li><p>nkpt</p></li>
+<li><p>evenkpt</p></li>
+<li><p>plot</p></li>
+<li><p>calc</p></li>
+</ol>
+</div></blockquote>
+</section>
+<section id="magmom">
+<h1>magmom<a class="headerlink" href="#magmom" title="Permalink to this headline">¶</a></h1>
+</section>
+<section id="pseudo">
+<h1>pseudo<a class="headerlink" href="#pseudo" title="Permalink to this headline">¶</a></h1>
+</section>
+<section id="substitute">
+<h1>substitute<a class="headerlink" href="#substitute" title="Permalink to this headline">¶</a></h1>
+</section>
+<section id="pwscf-in">
+<h1>pwscf_in<a class="headerlink" href="#pwscf-in" title="Permalink to this headline">¶</a></h1>
+</section>
+<section id="strain">
+<h1>strain<a class="headerlink" href="#strain" title="Permalink to this headline">¶</a></h1>
+</section>
+<section id="wanniertools-input">
+<h1>wanniertools_input<a class="headerlink" href="#wanniertools-input" title="Permalink to this headline">¶</a></h1>
+</section>
+<section id="kptden">
+<h1>kptden<a class="headerlink" href="#kptden" title="Permalink to this headline">¶</a></h1>
+</section>
+<section id="bgw-input">
+<h1>bgw_input<a class="headerlink" href="#bgw-input" title="Permalink to this headline">¶</a></h1>
+</section>
+<section id="input-in">
+<h1>input.in<a class="headerlink" href="#input-in" title="Permalink to this headline">¶</a></h1>
+<blockquote>
+<div><p>1    #Starting index</p>
+<p>2    #Ending index (not included)</p>
+<p>400 0  #number of kpoints for band calculations and cutoff of Brillouin-zone high-symmetry path, counting from last point.</p>
+<p>mpid-list.in  #filename with materials id and compound name to work with.</p>
+<p>phband   #type of plot</p>
+<p>DFT = QE   #DFT calculation</p>
+</div></blockquote>
+</section>
+<section id="mpid-list-in">
+<h1>mpid-list.in<a class="headerlink" href="#mpid-list-in" title="Permalink to this headline">¶</a></h1>
+<blockquote>
+<div><p>v1 mp-763 B2Mg1</p>
+<p>v2 mp-944 B2Al1</p>
+</div></blockquote>
+<p>First column is just the identifier, second column is material id, and the third column is compound name.</p>
+</section>
+<section id="mpid-in">
+<h1>mpid.in<a class="headerlink" href="#mpid-in" title="Permalink to this headline">¶</a></h1>
+<p>Similar file as of mpid-list.in. But only written after executing “mainprogram download” command. This simply
+checks duplication and only updated for new materials id, and acts as the tracking file.</p>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">htepc.json</a></li>
+<li><a class="reference internal" href="#mpi-key">mpi_key</a></li>
+<li><a class="reference internal" href="#download">download</a></li>
+<li><a class="reference internal" href="#magmom">magmom</a></li>
+<li><a class="reference internal" href="#pseudo">pseudo</a></li>
+<li><a class="reference internal" href="#substitute">substitute</a></li>
+<li><a class="reference internal" href="#pwscf-in">pwscf_in</a></li>
+<li><a class="reference internal" href="#strain">strain</a></li>
+<li><a class="reference internal" href="#wanniertools-input">wanniertools_input</a></li>
+<li><a class="reference internal" href="#kptden">kptden</a></li>
+<li><a class="reference internal" href="#bgw-input">bgw_input</a></li>
+<li><a class="reference internal" href="#input-in">input.in</a></li>
+<li><a class="reference internal" href="#mpid-list-in">mpid-list.in</a></li>
+<li><a class="reference internal" href="#mpid-in">mpid.in</a></li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="usage.html"
+                        title="previous chapter">Requirements</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="command.html"
+                        title="next chapter">Commands</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/param.rst.txt"
+           rel="nofollow">Show Source</a></li>
+    <li><a href="https://github.com/Neraaz/HTEPC/blob/main/param.rst"
+           rel="nofollow">Show on GitHub</a></li>
+    <li><a href="https://github.com/Neraaz/HTEPC/edit/main/param.rst"
+           rel="nofollow">Edit on GitHub</a></li>
+  </ul>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="command.html" title="Commands"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="usage.html" title="Requirements"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">HTEPC 0.0.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">htepc.json</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2024, Niraj K Nepal, Lin-Lin Wang.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
+    </div>
+  </body>
+</html>

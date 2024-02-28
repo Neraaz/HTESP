@@ -1,0 +1,87 @@
+#! /bin/bash
+# Writen by Niraj K. Nepal, Ph.D.
+# Script to submit/resubmit el-ph coupling calculations using QE.
+# Runs for 'mainprogram 7'
+source jobscript.sh
+
+echo "---------------------------------------------------------------------------------------------------------------"
+echo "Submitting/resubmitting el-ph coupling calculations"
+echo "---------------------------------------------------------------------------------------------------------------"
+file=$(find * -name $3 | tail -n 1)
+for ((ii=$1; ii<$2; ++ii)); do
+  A=$(grep "v$ii\ " $file | awk '{print $2}')
+  B=$(grep "v$ii\ " $file | awk '{print $3}')
+  echo "$A $B"
+  if [[ -d R$A-$B ]] ; then
+    if [[ -f R$A-$B/calc/elph.out ]] ; then
+      check=$(grep "No convergence has been achieved" R$A-$B/calc/elph.out | wc -l)
+      echo "elph.out present, old job is restarting"
+    else
+      check=$(echo 0 | bc)
+      echo "New job is submitting"
+    fi
+    dynfile=$(find R$A-$B/calc/ -name "*.dyn*" | wc -l)
+    if [[ -f R$A-$B/calc/$B.dyn0 ]] ; then
+        netdyn=$(sed -n '2'p R$A-$B/calc/$B.dyn0)
+    else
+        netdyn=$(echo 0 | bc)
+    fi
+    dync=$(echo $dynfile - 1 | bc)
+    
+    if [[ -f elph_dir/$A-$B-freq.dat ]]; then
+       echo "submitting job with increasing smearing"
+      cp elph_dir/elph-$A-$B.in R$A-$B/calc/elph.in
+      cp run-elph.sh R$A-$B/calc/
+       continue
+    fi
+    if [[ $dync -eq $netdyn ]] ; then
+        echo "el-ph calculation completed, do nothing"
+    elif [[ $check -lt 1 ]] && [[ $dync -lt $netdyn ]] && [[ $dync -gt 0 ]] ; then
+        echo "calculation not completed due to walltime"
+        sed "/&inputph/a   recover=.true.," R$A-$B/calc/elph.in > R$A-$B/calc/elph-2.in
+        mv R$A-$B/calc/elph-2.in R$A-$B/calc/elph.in
+        cp run-elph.sh R$A-$B/calc/
+  ################
+  ## SUBMIT JOB ##
+  ################
+   cd R$A-$B/calc
+       nelph=$(ls elph.out* | wc -l)
+       cp elph.out elph.out$nelph
+       qerun "$A" "$B" "elph"
+      sleep 1s
+   cd ../../
+   elif [[ $check -lt 1 ]] && [[ $dync -lt 0 ]] ; then
+      cp elph_dir/elph-$A-$B.in R$A-$B/calc/elph.in
+      cp run-elph.sh R$A-$B/calc/
+   echo " submitting fresh jobs in R$A-$B "
+  ################
+  ## SUBMIT JOB ##
+  ################
+   cd R$A-$B/calc
+       qerun "$A" "$B" "elph"
+      sleep 1s
+   cd ../../
+   else
+    echo "restarting old unconverged job"
+    isalpha_mix=$(grep alpha_mix R$A-$B/calc/elph.in | wc -l)
+    if [[ $isalpha_mix -gt 0 ]]; then
+     echo "Change nmix_ph in ~path_to_QE/PHonon/PH/phq_readin.f90"
+     echo "Comment out the 'if statement', '(nmix_ph.LT.1.OR.nmix_ph.GT.5)'"
+     sed '/alpha_mix/d' elph_dir/elph-$A-$B.in > elph_dir/elph-$A-$B-2.in
+     mv elph_dir/elph-$A-$B-2.in elph_dir/elph-$A-$B.in
+     sed "/&inputph/a   alpha_mix=0.3, nmix_ph=8," elph_dir/elph-$A-$B.in > R$A-$B/calc/elph.in
+    else
+     sed "/&inputph/a   alpha_mix=0.3," elph_dir/elph-$A-$B.in > R$A-$B/calc/elph.in
+    fi  
+   echo " submitting unconverged jobs in R$A-$B "
+  ################
+  ## SUBMIT JOB ##
+  ################
+   cd R$A-$B/calc
+       qerun "$A" "$B" "elph"
+       sleep 1s
+    cd ../../
+    fi
+  fi
+done
+echo "all done"

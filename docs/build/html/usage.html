@@ -1,0 +1,192 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
+    <title>Requirements &#8212; HTEPC 0.0.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="htepc.json" href="param.html" />
+    <link rel="prev" title="Welcome to HTEPC’s documentation!" href="index.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="param.html" title="htepc.json"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to HTEPC’s documentation!"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">HTEPC 0.0.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Requirements</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="requirements">
+<h1>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h1>
+<p>Current package is tested only for Linux Distribution, with Python and Bash languages.</p>
+<p>Basic requirements</p>
+<p>Numpy, Scipy, Pandas, Matplotlib, etc.</p>
+<p>ASE: <a class="reference external" href="https://wiki.fysik.dtu.dk/ase/">https://wiki.fysik.dtu.dk/ase/</a>. pip install ase</p>
+<p>Pymatgen: <a class="reference external" href="https://pymatgen.org/">https://pymatgen.org/</a>. pip install pymatgen</p>
+<p>mp_api: <a class="reference external" href="https://next-gen.materialsproject.org/api">https://next-gen.materialsproject.org/api</a></p>
+<p>qmpy-rester: <a class="reference external" href="https://github.com/mohanliu/qmpy_rester">https://github.com/mohanliu/qmpy_rester</a></p>
+</section>
+<section id="extra-packages">
+<h1>Extra packages<a class="headerlink" href="#extra-packages" title="Permalink to this headline">¶</a></h1>
+<p>lmfit: <a class="reference external" href="https://lmfit.github.io/lmfit-py/">https://lmfit.github.io/lmfit-py/</a>. conda install -c conda-forge lmfit. This is needed for SCDM fit to calculate initial projections for wannierization.</p>
+<p>IFERMI: <a class="reference external" href="https://fermisurfaces.github.io/IFermi/introduction.html#installation">https://fermisurfaces.github.io/IFermi/introduction.html#installation</a>. Required for Fermi surface generation.</p>
+<p>bsym: <a class="reference external" href="https://bsym.readthedocs.io/en/latest/index.html">https://bsym.readthedocs.io/en/latest/index.html</a>. Required for substitutions of elements in crystal.</p>
+<p>Phonopy: <a class="reference external" href="https://phonopy.github.io/phonopy/">https://phonopy.github.io/phonopy/</a></p>
+</section>
+<section id="package-structure">
+<h1>Package structure<a class="headerlink" href="#package-structure" title="Permalink to this headline">¶</a></h1>
+<blockquote>
+<div><p>Parent folder: HTEPC</p>
+<p>Sub folders: docs (Documentation), examples, src, utility (various additional scripts)</p>
+<p>installation script: setup.py</p>
+<p>License file: LICENSE</p>
+<p>Readme file: README.md</p>
+<p>Inside src, there is a “bash” folder that has bash scripts for running calculations</p>
+</div></blockquote>
+</section>
+<section id="conda-environment">
+<h1>Conda environment<a class="headerlink" href="#conda-environment" title="Permalink to this headline">¶</a></h1>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda create --name myenv <span class="nv">python</span><span class="o">==</span><span class="m">3</span>.9.12
+
+<span class="nb">source</span> activate myenv
+
+pip install -r requirements.txt
+</pre></div>
+</div>
+<p>Also install phonopy in the conda environment</p>
+</section>
+<section id="download-software">
+<h1>Download software<a class="headerlink" href="#download-software" title="Permalink to this headline">¶</a></h1>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/Neraaz/HTEPC.git
+</pre></div>
+</div>
+<p>Go to the directory,</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> HTEPC
+</pre></div>
+</div>
+</section>
+<section id="install-htepc-package">
+<h1>Install HTEPC package<a class="headerlink" href="#install-htepc-package" title="Permalink to this headline">¶</a></h1>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install .
+</pre></div>
+</div>
+</section>
+<section id="check-executable">
+<h1>check executable<a class="headerlink" href="#check-executable" title="Permalink to this headline">¶</a></h1>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>which mainprogram
+</pre></div>
+</div>
+<p>Do “mainprogram basicinfo” to begin.</p>
+<p>Install phonopy to perform phonopy calculations</p>
+<p>#Alternatively, install using following command, and use mainprogram.py instead of mainprogram.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">setup</span><span class="o">.</span><span class="n">py</span> <span class="n">develop</span>
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>which mainprogram.py
+</pre></div>
+</div>
+</section>
+<section id="after-installation">
+<h1>After installation,<a class="headerlink" href="#after-installation" title="Permalink to this headline">¶</a></h1>
+<p>Provide path to ~/src/bash folder in ~/.bashrc</p>
+<p>export PATH=”path_to_HTEPC/src/bash:$PATH”</p>
+<p>Provide path to src file</p>
+<p>export PYTHONPATH=”path_to_HTEPC/src:$PYTHONPATH”</p>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Requirements</a></li>
+<li><a class="reference internal" href="#extra-packages">Extra packages</a></li>
+<li><a class="reference internal" href="#package-structure">Package structure</a></li>
+<li><a class="reference internal" href="#conda-environment">Conda environment</a></li>
+<li><a class="reference internal" href="#download-software">Download software</a></li>
+<li><a class="reference internal" href="#install-htepc-package">Install HTEPC package</a></li>
+<li><a class="reference internal" href="#check-executable">check executable</a></li>
+<li><a class="reference internal" href="#after-installation">After installation,</a></li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Welcome to HTEPC’s documentation!</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="param.html"
+                        title="next chapter">htepc.json</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/usage.rst.txt"
+           rel="nofollow">Show Source</a></li>
+    <li><a href="https://github.com/Neraaz/HTEPC/blob/main/usage.rst"
+           rel="nofollow">Show on GitHub</a></li>
+    <li><a href="https://github.com/Neraaz/HTEPC/edit/main/usage.rst"
+           rel="nofollow">Edit on GitHub</a></li>
+  </ul>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="param.html" title="htepc.json"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to HTEPC’s documentation!"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">HTEPC 0.0.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Requirements</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2024, Niraj K Nepal, Lin-Lin Wang.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
+    </div>
+  </body>
+</html>

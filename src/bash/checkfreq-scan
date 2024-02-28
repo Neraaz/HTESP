@@ -1,0 +1,32 @@
+#! /bin/bash
+# Writen by Niraj K. Nepal, Ph.D.
+# This script check if there is negative phonon frequencies (less than -1 THz) in 
+# .freq.gp file obtained from QE phonon calculation.
+# It runs checkfreq.py python script. It creates freq.dat file, which is used to check
+# during property extraction using "extract-scan" for 'mainprogram 21'
+echo "---------------------------------------------------------------------------------------------------------------"
+echo "Checking imaginary frequencies"
+echo "---------------------------------------------------------------------------------------------------------------"
+file=$(find * -name $3 | tail -n 1)
+for ((ii=$1; ii<$2; ++ii)); do
+  A=$(grep "v$ii\ " $file | awk '{print $2}')
+  B=$(grep "v$ii\ " $file | awk '{print $3}')
+  if [[ -f R$A-$B/calc/$B.freq.gp ]] ; then
+  checkfreq.py R$A-$B/calc/$B.freq.gp
+################
+## SUBMIT JOB ##
+################
+  else
+     echo "$A: $B.freq.gp not present"
+  echo " "
+  fi
+  if [[ -f R$A-$B/calc/lambda.out ]] && [[ ! -f R$A-$B/calc/freq.plot ]]; then
+     echo "0 -100" > freq.dat
+  fi
+  if [[ -f freq.dat ]] ; then
+  echo " "
+  mv freq.dat elph_dir/$A-$B-freq.dat
+  fi
+done
+echo "all done"
+

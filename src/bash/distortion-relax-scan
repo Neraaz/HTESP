@@ -1,0 +1,47 @@
+#! /bin/bash
+# Writen by Niraj K. Nepal, Ph.D.
+# Submit QE scf calculations for distorted structure of different modes at q
+# for different systems
+# Runs for 'mainprogram 24'
+
+file=$(find * -name $3 | tail -n 1)
+echo "---------------------------------------------------------------------------------------------------------------"
+echo "Submitting relaxation of structures corresponding to different mode displacement."
+echo "---------------------------------------------------------------------------------------------------------------"
+
+for ((ii=$1; ii<$2; ++ii)); do
+  A=$(grep "v$ii\ " $file | awk '{print $2}')
+  B=$(grep "v$ii\ " $file | awk '{print $3}')
+  echo "$A $B"
+  if [[ ! -d R$A-$B ]]; then
+    continue
+  fi
+  if [[ -f R$A-$B/relax/scf.in ]]; then
+   nat=$(grep nat R$A-$B/relax/scf.in | awk '{print $3}')
+   Nt=${nat%,*}
+   nmode=$(echo $Nt*3+1 | bc)
+   sed -n '/&/,/ATOMIC_POSITIONS/p' R$A-$B/relax/scf.in | sed '$d' > R$A-$B/temp1.in
+   sed -n '/K_POINTS/,/CELL_PARAMETERS/p' R$A-$B/relax/scf.in | sed '$d' > R$A-$B/temp2.in
+   cat R$A-$B/temp1.in R$A-$B/temp2.in > R$A-$B/temp.in
+   rm R$A-$B/temp2.in
+   sed "/calculation = 'vc-relax',/a   disk_io = 'nowf'," R$A-$B/temp.in > R$A-$B/temp2.in
+   sed "/calculation = 'vc-relax',/a   nstep = 300," R$A-$B/temp2.in > R$A-$B/scf-header.in
+  else
+   echo "scf.in not present inside R$A-$B/relax"
+  fi
+  if [[ -f R$A-$B/calc/dynmat.axsf ]]; then
+    mv R$A-$B/calc/dynmat.axsf R$A-$B/
+  else
+    echo "dynmat.axsf not present"
+  fi
+
+  cp run-scf.sh R$A-$B/run-scf.sh
+################
+## SUBMIT JOB ##
+################
+echo "Submitting distortion calculation for $A $B"
+  cd R$A-$B/
+    band-distort-scan 1 $nmode
+  cd ../
+done
+

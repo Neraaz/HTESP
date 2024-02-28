@@ -1,0 +1,44 @@
+#! /bin/bash
+# Writen by Niraj K. Nepal, Ph.D.
+# Scripts to submit atomic calculations for QE with 23x24x25 rectangular box
+# Simply changing QE scf.in file of any elemental bulk solid
+# QE scf input files are created inside scf_dir/scf-mpid-atom-el.in format, 
+# and a tracking file 'mpid-atom-list.in' is created. Here, mpid and el is
+# materials id and name of the elements, respectively.
+# Requires scf-mpid.in file inside scf_dir folder corresponding to elemental solid.
+
+file=$(find * -name $3 | tail -n 1)
+#Loop over tracking file
+echo "---------------------------------------------------------------------------------------------------------------"
+echo "Creating QE input for isolated ion"
+echo "---------------------------------------------------------------------------------------------------------------"
+for ((ii=$1; ii<$2; ++ii)); do
+  A=$(grep "v$ii\ " $file | awk '{print $2}')
+  B=$(grep "v$ii\ " $file | awk '{print $3}')
+  echo "$A $B"
+  sed -n '/&CONTROL/,/&IONS/p' scf_dir/scf-$A.in | sed '$d' > temp.in
+  sed -n '/ATOMIC_SPECIES/,/ATOMIC_POSITIONS crystal/p' scf_dir/scf-$A.in | sed '$d' > species.in
+  cat temp.in species.in > temp1.in
+  elm=$(tail -n 1 species.in | awk '{ print $1 }')
+  sed -i '/nat/d' temp1.in 
+  sed -i '/prefix/d' temp1.in
+  sed "/&SYSTEM/a nat = 1" temp1.in > temp2.in
+  sed "/&CONTROL/a prefix = '$elm'" temp2.in > temp3.in
+  echo "K_POINTS automatic" >> temp3.in
+  echo "1 1 1 0 0 0" >> temp3.in
+  echo "CELL_PARAMETERS (angstrom)" >> temp3.in
+  echo "23 0 0" >> temp3.in
+  echo "0 24 0" >> temp3.in
+  echo "0 0 25" >> temp3.in
+  echo "ATOMIC_POSITIONS (crystal)" >> temp3.in
+  echo "$elm 0 0 0" >> temp3.in
+  sed -i '/calculation/d' temp3.in
+  mv temp3.in scf_dir/scf-$A-atom-$elm.in
+  echo "v$ii $A-atom $elm" >> mpid-atom-list.in
+  rm species.in temp*
+
+################
+## SUBMIT JOB ##
+################
+done
+echo "all done"
