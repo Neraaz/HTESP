@@ -3,7 +3,7 @@
 import os
 import glob
 import json
-
+from ifermi_plot import ifermi
 
 def generate_submission_files(which_calc, parallel_command, nproc, command_list):
     """
@@ -59,7 +59,7 @@ def generate_submission_files(which_calc, parallel_command, nproc, command_list)
         for command_name, command_info in command_list.items():
             x_command, input_file, output_file = command_info
             if command_name == 'ifermi':
-                submission_files[command_name] = "ifermi plot --property velocity --interpolation-factor 10 --property-colormap bwr"
+                submission_files[command_name] = ifermi("plot")
             else:
                 submission_files[command_name] = f"{parallel_command} -np {npscf} {x_command}"
     else:

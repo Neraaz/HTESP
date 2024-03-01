@@ -123,6 +123,8 @@ def main():
             os.system("aflow_extract.py search")
         elif process == 'aflow-download':
             os.system("aflow_extract.py download")
+        elif process == 'data-combine':
+            os.system("structure_group.py")
         elif process == 'elastic-input':
             os.system("elastic.py input")
         elif process == 'compute-elastic':
@@ -160,10 +162,12 @@ def main():
             print("Look for htepc.json file in utility/input_files/ and copy that to the working directory\n")
             print("process = jobscript generates the job scripts for the calculations\n")
             print("process = search, search for data in materials project database\n")
-            print("For process = download, download QE and VASP input file")
+            print("For process = download, download QE and VASP input files")
             print("process = oqmd-search, search for data in oqmd database\n")
-            print("For process = oqmd-download, download QE and VASP input file\n")
+            print("For process = oqmd-download, download QE and VASP input files\n")
             print("process = aflow-search, search for data in aflow database\n")
+            print("process = aflow-download, download QE and VASP input files\n")
+            print("process = data-combine, combining and eliminating duplicate inputs for different database\n")
             print("For information about QE+VASP calculations, process = process-info\n")
             print("process = epw-info for EPW calculations \n")
             print("process = wt-info for wanniertools calculations \n")
@@ -424,7 +428,6 @@ def main():
         if process == 0:
             if not os.path.isdir('scf_dir') or not os.path.isdir("elph_dir") or not os.path.isdir("matdyn_dir") or not os.path.isdir("q2r_dir"):
                 os.system("mkdir scf_dir elph_dir matdyn_dir q2r_dir")
-            os.system("process-scan" + " " + str(start) + " " + str(end) + " " + element)
         elif process == 1:
             os.system("relax-scan" + " " + str(start) + " " + str(end) + " " + element)
         elif process == 2:

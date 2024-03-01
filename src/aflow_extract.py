@@ -155,12 +155,15 @@ def poscar_create(data):
     """
     lattice = Cell.fromcellpar(data['geometry']).array
     comp = Composition(data['compound'])
+    aflow_id = data['auid']
     species = []
     comp = comp.as_dict()
     for key in comp:
         for i in range(int(comp[key])):
             species.append(key)
     struc = IStructure(lattice,species=species,coords=data['positions_fractional'],to_unit_cell=True)
+    site_prop = [aflow_id] * len(struc.sites)
+    struc.add_site_property("auid",site_prop)
     #poscar = struc.to("POSCAR")
     #with open("POSCAR","w") as write_poscar:
     #    write_poscar.write(poscar)
@@ -198,8 +201,10 @@ def download(calc_type,start,end):
         try:
             subd = subd[0]
             #print(subd)
-            aflow_id = "aflow-{}".format(index+1)
             #aflow_id = subd['id']
+            aflow_id = subd.site_properties['auid'][0]
+            aflow_id = "aflow-" + aflow_id.split(":")[1]
+            #aflow_id = "aflow-{}".format(index+1)
             #oqmd_id = "aflow-" + str(oqmd_id)
             #print(oqmd_id + "\n")
             poscar = subd.to("POSCAR")

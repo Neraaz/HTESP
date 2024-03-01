@@ -63,7 +63,10 @@ def vasp_process():
     Returns:
         None
     """
+    magenum = input_data['magmom']['type']
     if os.path.isfile("vasp.in"):
+        if magenum == 'anisotropy':
+            os.system("""sed -i '/NSW/d' vasp.in""")
         with open("vasp.in", 'r') as read_vasp:
             lines = read_vasp.readlines()
         #len_l = len(lines)
@@ -98,9 +101,10 @@ def vasp_process():
                 backupkey['MAGMOM'] = True
             else:
                 backupkey = backupkey
-        magenum = input_data['magmom']['type']
         if backupkey['MAGMOM'] and magenum != 'anisotropy':
             os.system("""sed -i '/MAGMOM/d' INCAR""")
+        if magenum == 'anisotropy':
+            os.system("""sed -i '/NSW/d' INCAR""")
         if backupkey['LORBIT']:
             os.system("""sed -i '/LORBIT/d' INCAR""")
         with open("INCAR", "a") as change_incar:
@@ -132,6 +136,7 @@ def vasp_process():
                             change_incar.write("LORBIT = 11\n")
                         else:
                             print("type is anisotropy, therefore doesn't update MAGMOM keyword\n")
+                            change_incar.write("NSW = 0\n")
                     else:
                         print("magmom values not provided in htepc.json\n")
                         print("Provide magnetic moment values as dictionary magmom={'A':2, 'B':3}\n")
@@ -142,6 +147,7 @@ def vasp_process():
                         continue
                 if key[i] == "METAGGA":
                     change_incar.write("LMIXTAU = .TRUE.\n")
+                    change_incar.write("LASPH = .TRUE.\n")
     encut_check()
 def eigen_process():
     """

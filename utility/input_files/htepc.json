@@ -29,7 +29,7 @@
     },
     "inp": {
       "start": 1,
-      "end": 20,
+      "end": 65,
       "nkpt": 200,
       "evenkpt": false,
       "plot": "phband",
@@ -37,20 +37,20 @@
       "use_cif2cell": false
     },
     "chemsys": {
-      "entries": ["Fe", "Pd", "I"],
+      "entries": ["Mg", "B"],
       "size_constraint": 60,
-      "ntype_constraint": 4,
-      "must_include": ["Fe","Pd","I"],
+      "ntype_constraint": 3,
+      "must_include": ["Mg","B"],
       "form_en": false,
       "metal": false,
       "magnetic": true,
       "spacegroup": null
     },
     "oqmd": {
-      "limit": 400,
+      "limit": 1000,
       "entries": ["Mg", "B"],
       "size_constraint": 60,
-      "ntype_constraint": 4,
+      "ntype_constraint": 3,
       "must_include": [],
       "form_en": true,
       "metal": false,
@@ -61,18 +61,16 @@
       "prop": ["composition", "spacegroup", "volume", "band_gap", "stability"]
       },
     "aflow": {
-        "elm": ["B"],
-        "nelm": 5,
-        "nsites": 10,
-        "metal": true,
-        "FE": true,
+        "elm": ["Mg","B"],
+        "nelm": 2,
+        "nsites": 60,
+        "metal": false,
+        "FE": false,
         "spacegroup": null,
+        "filter": false,
         "limit": 5000,
         "prop": [
-            "Bravais_lattice_orig", "Bravais_lattice_relax", "composition",
-            "density", "dft_type", "eentropy_cell", "enthalpy_cell", "enthalpy_atom",
-            "enthalpy_formation_cell", "enthalpy_formation_atom", "entropic_temperature",
-            "kpoints", "volume_cell", "volume_atom"
+            "spacegroup_relax", "Pearson_symbol_relax"
         ]
     }
   },
