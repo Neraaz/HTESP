@@ -646,13 +646,13 @@ def dos_plot_vasp(outfile="pdos.pdf"):
         spin = list(dos.densities.keys())
         dos_spin_up = dos.densities[spin[0]]
         dos_spin_down = -1*dos.densities[spin[1]]
-        plt.plot(energies, dos_spin_up, label="Spin Up", color='b')
-        plt.plot(energies, dos_spin_down, label="Spin Down", color='r')
+        plt.plot(energies, dos_spin_up, label="Up", color='b')
+        plt.plot(energies, dos_spin_down, label="Down", color='r')
         plt.axhline(0, color='black', linestyle='--', linewidth=0.5)
         plt.axvline(0, color='black', linestyle='--', linewidth=0.5)
-        plt.legend(loc="upper right",frameon=False)
-        plt.ylabel("Density of States (states/eV)",fontweight='bold',fontsize=15)
-        plt.xlabel(r"Energy - E$_F$ (eV)",fontweight='bold',fontsize=15)
+        plt.legend(bbox_to_anchor=(1.05, 1),loc="upper right",frameon=False)
+        plt.ylabel("DOS",fontweight='bold',fontsize=15)
+        plt.xlabel(r"E - E$_F$ (eV)",fontweight='bold',fontsize=15)
         if xlim1 is not None:
             plt.xlim(xmin,xmax)
         else:

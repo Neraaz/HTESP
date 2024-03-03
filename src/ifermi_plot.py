@@ -3,7 +3,7 @@
 import os
 import json
 
-def ifermi(command):
+def ifermi(command,input_file='ifermi.json'):
     """
     Construct a command string for the ifermi command based on the provided command
     and parameters from a JSON file.
@@ -22,8 +22,8 @@ def ifermi(command):
     of the file.
     """
     # Read parameters from JSON file
-    if os.path.isfile('ifermi.json'):
-        with open('ifermi.json') as jsonfile:
+    if os.path.isfile(input_file):
+        with open(input_file) as jsonfile:
             json_data = json.load(jsonfile)
             command_params = json_data.get(command, {})
     else:

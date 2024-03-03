@@ -45,33 +45,15 @@ for ((ii=$1; ii<$2; ++ii)); do
        if [[ -f CHGCAR ]]; then
          rm CHG* WAVECAR
        fi
+       lsorbit=$(grep "LSORBIT" INCAR | wc -l)
        if [[ $niter -lt 2 ]]; then
-        #echo "$niter"
-        #touch NSW_0_DETECTED
-        if [[ ! -f vasp.in ]] && [[ -f ../../vasp.in ]]; then
-          cp ../../vasp.in .
-          nsw=$(grep "NSW" vasp.in)
-          sed -i "s/$nsw/NSW 0/" vasp.in 
-        else
-          echo "NSW 0" > vasp.in
-        fi
-        if [[ -f EIGENVAL ]]; then
-         rm EIGENVAL
-        fi
-        if [[ -f vasp.in ]]; then
-         vasp_process.py POSCAR
-        fi
+          nsw=$(grep "NSW" INCAR)
+          sed -i "s/$nsw/NSW = 0/" INCAR 
        fi
       else
-       #noutcar=$(ls OUTCAR* | wc -l)
-       #nsw=$(grep "NSW = 0" INCAR | wc -l)
-       #if [[ $noutcar -gt 4 ]] || [[ $nsw -gt 0 ]]; then
-       #  echo "4 OUTCAR presents, structure not updating...."
-       #else
          if [[ -f CONTCAR ]]; then
            cp CONTCAR POSCAR
          fi
-       #fi
          if [[ -f CHGCAR ]]; then
            rm CHG* WAVECAR
          fi

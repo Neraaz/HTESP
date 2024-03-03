@@ -221,29 +221,29 @@ def main():
             print(",useful for vasp+phonopy calculations\n")
             print("process = vp-pd, computing thermodynamic stability")
             print(" using pymatgen with 'econv_vasp.csv' file\n")
-            print("process = vp-ph2, to make 2x2x2 supercell")
+            print("process = phono1, to make supercell")
             print(" and submit scf calculations for different displacement\n")
-            print("process = vp-ph3, computing force constant\n")
-            print("process = vp-ph4, computing and plotting thermodynamic properties\n")
-            print("process = vp-ph5, computing and plotting phonon band\n")
-            print("process = vp-ph6, printing symmetry analysis\n")
-            print("process = vp-ph-qha,")
+            print("process = phono2, computing force constant\n")
+            print("process = phono3, computing and plotting thermodynamic properties\n")
+            print("process = phono4, computing and plotting phonon band\n")
+            print("process = phono5, printing symmetry analysis\n")
+            print("process = phono-qha,")
             print(" Computing temperature and pressure dependent thermal properties\n")
             print("process = ev-collect, extracting the total energies")
             print(" for different isotropic volumes from VASP calculations\n")
             print("Do 'mainprogram 26' calculation before process = ev-collect\n")
-            print("process = vp-ph2-pressure,")
-            print(" submit vp-ph2 calculations for different isotropic volumes\n")
-            print("process = vp-ph3-pressure,")
-            print(" submit vp-ph3 calculations for different isotropic volumes\n")
-            print("process = vp-ph4-pressure,")
-            print(" submit vp-ph4 calculations for different isotropic volumes\n")
-            print("process = vp-ph5-pressure,")
-            print(" submit vp-ph5 calculations for different isotropic volumes\n")
+            print("process = phono1-pressure,")
+            print(" submit phono1 calculations for different isotropic volumes\n")
+            print("process = phono2-pressure,")
+            print(" submit phono2 calculations for different isotropic volumes\n")
+            print("process = phono3-pressure,")
+            print(" submit phono3 calculations for different isotropic volumes\n")
+            print("process = phono4-pressure,")
+            print(" submit phono4 calculations for different isotropic volumes\n")
             print("process = eos-bm, equation of state fitting using Birch-Murnaghan fit\n")
             print("process = eos-vinet, equation of state fitting using vinet fit\n")
             print("process = vp-ph-help, printing help page\n")
-        elif process == 'vp-ph-qha':
+        elif process == 'phono-qha':
             os.system("phonopy-scan" + " " + str(start) + " " + str(end) + " " + element + " " + "vp-ph-qha")
         elif process == 'eos-bm':
             os.system("phonopy-scan" + " " + str(start) + " " + str(end) + " " + element + " " + "eos-bm")
@@ -269,25 +269,23 @@ def main():
                 os.chdir("../../")
         elif process == 'e0':
             os.system("phonopy-scan" + " " + str(start) + " " + str(end) + " " + element + " " + str(0))
-        elif process == 'vp-ph2':
+        elif process == 'phono1':
             os.system("phonopy-scan" + " " + str(start) + " " + str(end) + " " + element + " " + str(1))
-        elif process == 'vp-ph3':
+        elif process == 'phono2':
             os.system("phonopy-scan" + " " + str(start) + " " + str(end) + " " + element + " " + str(2))
-        elif process == 'vp-ph4':
+        elif process == 'phono3':
             os.system("phonopy-scan" + " " + str(start) + " " + str(end) + " " + element + " " + str(3))
-        elif process == 'vp-ph5':
+        elif process == 'phono4':
             os.system("phonopy-scan" + " " + str(start) + " " + str(end) + " " + element + " " + str(4))
-        elif process == 'vp-ph6':
+        elif process == 'phono5':
             os.system("phonopy-scan" + " " + str(start) + " " + str(end) + " " + element + " " + str(5))
-        elif process == 'vp-ph-help':
-            os.system("phonopy-scan" + " " + str(start) + " " + str(end) + " " + element + " " + "h")
-        elif process == 'vp-ph2-pressure':
+        elif process == 'phono1-pressure':
             os.system("phonopy-scan" + " " + str(start) + " " + str(end) + " " + element + " " + "vp-ph2-pressure")
-        elif process == 'vp-ph3-pressure':
+        elif process == 'phono2-pressure':
             os.system("phonopy-scan" + " " + str(start) + " " + str(end) + " " + element + " " + "vp-ph3-pressure")
-        elif process == 'vp-ph4-pressure':
+        elif process == 'phono3-pressure':
             os.system("phonopy-scan" + " " + str(start) + " " + str(end) + " " + element + " " + "vp-ph4-pressure")
-        elif process == 'vp-ph5-pressure':
+        elif process == 'phono4-pressure':
             os.system("phonopy-scan" + " " + str(start) + " " + str(end) + " " + element + " " + "vp-ph5-pressure")
         elif process == "history":
             os.system("history.sh")

@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# Check if the number of arguments is correct
+if [ "$#" -ne 3 ]; then
+    echo "Usage: $0 <start_number> <num_points> <job_cancel_command>"
+    exit 1
+fi
+
+# Store the start number and number of points
+start_number=$1
+num_points=$2
+cancel_command=$3
+
+# Check if arguments are non-negative integers
+if ! [[ "$start_number" =~ ^[0-9]+$ ]]; then
+    echo "Error: Start number must be a non-negative integer."
+    exit 1
+fi
+
+if ! [[ "$num_points" =~ ^[0-9]+$ ]]; then
+    echo "Error: Number of points must be a non-negative integer."
+    exit 1
+fi
+
+$cancel_command $start_number
+
+# Loop through the specified number of points, incrementing the start number each time
+for (( i=0; i<$num_points; i++ )); do
+    (( start_number++ ))
+    $cancel_command $start_number
+done

@@ -136,7 +136,7 @@ def vasp_process():
                             change_incar.write("LORBIT = 11\n")
                         else:
                             print("type is anisotropy, therefore doesn't update MAGMOM keyword\n")
-                            change_incar.write("NSW = 0\n")
+                            #change_incar.write("NSW = 0\n")
                     else:
                         print("magmom values not provided in htepc.json\n")
                         print("Provide magnetic moment values as dictionary magmom={'A':2, 'B':3}\n")

@@ -1,0 +1,87 @@
+#! /bin/bash
+# Writen by Niraj K. Nepal, Ph.D.
+# Script to run first relaxation
+# Runs for 'mainprogram 1'
+source jobscript.sh
+
+echo "---------------------------------------------------------------------------------------------------------------"
+echo "Submitting crystal structure relaxation"
+echo "---------------------------------------------------------------------------------------------------------------"
+relax_1() {
+    # Assign parameters to local variables
+    ii=$1
+    dft=$2
+    file=$3
+      A=$(grep "v$ii\ " $file | awk '{print $2}')
+      B=$(grep "v$ii\ " $file | awk '{print $3}')
+      echo "$A $B"
+      if [ $dft == 'vasp' ] || [ $dft == 'VASP' ]; then
+        if [[ -d R$A-$B ]]; then
+          if [[ -f vdw_kernel.bindat ]] && [[ ! -f R$A-$B/relax/vdw_kernel.bindat ]]; then
+            cp vdw_kernel.bindat R$A-$B/relax/vdw_kernel.bindat
+          fi
+          cp run-vasp.sh R$A-$B/relax/run.sh
+          cd R$A-$B/relax/
+           vasprun "$A" "$B"
+           sleep 1s
+          cd ../../
+        fi
+    
+    
+      else 
+        if [[ ! -f scf_dir/scf-$A.in ]]; then
+          qe_input.py $A
+        fi
+        echo "$A $B"
+        if [[ ! -d R$A-$B ]] ; then
+          echo " making R$A-$B directory "
+          mkdir R$A-$B
+        fi
+        if [[ ! -d R$A-$B/relax ]] ; then
+          echo " making R$A-$B/relax directory "
+          mkdir R$A-$B/relax
+        fi
+    
+        if [[ -d R$A-$B ]] ; then
+          cp scf_dir/scf-$A.in R$A-$B/relax/temp.in
+          sed '/pseudo_dir/d' R$A-$B/relax/temp.in > R$A-$B/relax/temp1.in
+          sed "/calculation = 'vc-relax',/a pseudo_dir = '../../pp/'," R$A-$B/relax/temp1.in > R$A-$B/relax/scf.in
+          rm R$A-$B/relax/temp*
+          cp run-scf.sh R$A-$B/relax/
+        fi
+    ##  ##############
+    ##   SUBMIT JOB ##
+    ##  ##############
+        echo " submitting jobs in R$A-$B/relax "
+      cd R$A-$B/relax
+         qerun "$A" "$B" "scf"
+         sleep 1s
+      cd ../../
+      fi
+}
+# Main section of the script
+echo "---------------------------------------------------------------------------------------------------------------"
+echo "Submitting crystal structure relaxation"
+echo "---------------------------------------------------------------------------------------------------------------"
+file=$(find * -name $3 | tail -n 1)
+dft=$(grep "DFT" input.in | awk '{ print $3 }')
+# Check if parallel command is available
+if command -v parallel &>/dev/null; then
+  NUM_CORES=$(grep -c '^processor' /proc/cpuinfo)
+  NUM_PROCESSES=$((NUM_CORES + 1))
+
+  # Export functions for parallel execution
+  export -f vasprun
+  export -f qerun
+  export -f relax_1
+
+  # Execute relaxation tasks in parallel
+  parallel -j "$NUM_PROCESSES" relax_1 ::: $(seq "$1" "$2") ::: "$dft" ::: "$file"
+else
+  # Parallel command not found, run relaxation tasks in serial mode
+  echo "Parallel command not found. Running in serial mode."
+  for ii in $(seq "$1" "$2"); do
+    relax_1 "$ii" "$dft" "$file"
+  done
+fi
+echo "all done"
