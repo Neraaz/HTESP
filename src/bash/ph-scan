@@ -48,7 +48,7 @@ for ((ii=$1; ii<$2; ++ii)); do
        nelph=$(ls elph.out* | wc -l)
        cp elph.out elph.out$nelph
        qerun "$A" "$B" "elph"
-      sleep 1s
+      sleep $SLEEP
    cd ../../
    elif [[ $check -lt 1 ]] && [[ $dync -lt 0 ]] ; then
       cp elph_dir/elph-$A-$B.in R$A-$B/calc/elph.in
@@ -59,7 +59,7 @@ for ((ii=$1; ii<$2; ++ii)); do
   ################
    cd R$A-$B/calc
        qerun "$A" "$B" "elph"
-      sleep 1s
+      sleep $SLEEP
    cd ../../
    else
     echo "restarting old unconverged job"
@@ -79,7 +79,7 @@ for ((ii=$1; ii<$2; ++ii)); do
   ################
    cd R$A-$B/calc
        qerun "$A" "$B" "elph"
-       sleep 1s
+       sleep $SLEEP
     cd ../../
     fi
   fi

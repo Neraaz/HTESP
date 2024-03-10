@@ -66,6 +66,7 @@ def vasp_process():
     magenum = input_data['magmom']['type']
     if os.path.isfile("vasp.in"):
         if magenum == 'anisotropy':
+            print("anisotropy type found in magmom dictionary\n")
             os.system("""sed -i '/NSW/d' vasp.in""")
         with open("vasp.in", 'r') as read_vasp:
             lines = read_vasp.readlines()

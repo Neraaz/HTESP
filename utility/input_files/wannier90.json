@@ -1,0 +1,15 @@
+{
+  "config_settings": {
+    "use_ws_distance": ".true.",
+    "dis_num_iter": 200,
+    "write_hr": ".true.",
+    "iprint": 2,
+    "spinors": ".false."
+  },
+  "plot_settings": {
+    "fermi_surface_plot": ".true.",
+    "bands_plot": ".true.",
+    "wannier_plot": ".true.",
+    "wannier_plot_supercell": 3
+  }
+}

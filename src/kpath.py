@@ -28,16 +28,16 @@ def kpath(filename,npoint,kcutoff):
     - sym (list): Naming for spt.
     """
     try:
-        filename = espresso.read_espresso_in(filename)
+        file_name = espresso.read_espresso_in(filename)
     except:
-        filename = vasp.read_vasp(filename)
-    bandpath = filename.cell.bandpath()
+        file_name = vasp.read_vasp(filename)
+    bandpath = file_name.cell.bandpath()
     if kcutoff > 0:
         path=bandpath.path[:kcutoff]
     else:
         path=bandpath.path[:None]
-    bandpath = filename.cell.bandpath(path,npoints=npoint)
-    filename.cell.bandpath().plot()
+    bandpath = file_name.cell.bandpath(path,npoints=npoint)
+    file_name.cell.bandpath().plot()
     pylab.savefig("BZ.pdf", format='pdf', bbox_inches='tight')
     kpoints = bandpath.kpts
     sympoint = bandpath.get_linear_kpoint_axis()[1]

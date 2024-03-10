@@ -2,6 +2,7 @@
 """Writen by Niraj K. Nepal, Ph.D."""
 import sys
 import os
+import glob
 import warnings
 import json
 import matplotlib
@@ -417,7 +418,7 @@ def dos_plot(filedos,out='pdos.pdf'):
         ax_p[0].set_xlim(-8,4)
         ax_p[1].set_xlim(-8,4)
     plt.savefig(out)
-def band_wann_plot(fileband='ex_band.dat',fileout='plot.pdf'):
+def band_wann_plot(fileout='plot.pdf'):
     """
     Function to plot Wannier interpolated bandstructure.
 
@@ -438,12 +439,19 @@ def band_wann_plot(fileband='ex_band.dat',fileout='plot.pdf'):
 
     """
     print("plotting wannier band\n")
-    os.system("cat ex_band.labelinfo.dat | awk '{ print $2 }' | tail -n 1 > n.dat")
+    fileband = glob.glob("*_band.dat")[0]
+    print(fileband)
+    os.system("cat *_band.labelinfo.dat | awk '{ print $2 }' | tail -n 1 > n.dat")
     os.system("cat *_band.labelinfo.dat | awk '{ print $1 }' > label")
     os.system("cat *_band.labelinfo.dat | awk '{ print $3 }' > lbpoint")
     sympt = np.loadtxt('lbpoint')
     nkpt = int(np.loadtxt("n.dat"))
-    os.system("grep Fermi scf.out | awk '{ print $5 }' > fermi.dat")
+    if os.path.isfile("scf.out"):
+        os.system("grep Fermi scf.out | awk '{ print $5 }' > fermi.dat")
+    elif os.path.isfile("OUTCAR"):
+        os.system("""grep "Fermi energy:" OUTCAR | awk '{ print $3 }' > fermi.dat""")
+    else:
+        print("No scf.out or OUTCAR found\n")
     with open("fermi.dat", "r") as read_fermi:
         fermi = float(read_fermi.readlines()[0].split("\n")[0])
     with open("label", "r") as label:

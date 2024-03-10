@@ -119,7 +119,7 @@ for ((ii=$1; ii<$2; ++ii)); do
           rm position.dat
           cd R$kk/
            sbatch run-scf.sh
-           sleep 1s
+           sleep $SLEEP
           cd ../
         done
           rm species.in newcellpar.dat kpoint.dat cellpar.dat
@@ -168,7 +168,7 @@ for ((ii=$1; ii<$2; ++ii)); do
         cd R$kk/
          vasp_process.py POSCAR
          sbatch run-$kk.sh
-         sleep 1s
+         sleep $SLEEP
         cd ../
 
        done

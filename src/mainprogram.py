@@ -175,6 +175,7 @@ def main():
             print("process = elastic-input, to create vasp input files with deformations\n")
             print("process = compute-elastic, to compute elastic properties\n")
             print("process = magenum, to create vasp input files for different magnetic state\n")
+            print("process = magmom_extract, extract magnetic moment\n")
             print("process = fermisurface to plot fermi surface from vasprun.xml\n")
             print("process = charge-input for creating input files for system with non-zero net charge\n")
             print("process = pressure-input for creating input files for different pressure")
@@ -295,48 +296,51 @@ def main():
             os.system("checkfreq-scan" + " " + str(start) + " " + str(end) + " " + element)
         elif process == 'change_k':
             os.system("double-kmesh" + " " + str(start) + " " + str(end) + " " + element)
+        elif process == 'magmom_extract':
+            os.system("magmom-extract" + " " + str(start) + " " + str(end) + " " + element)
         elif process == "epw1":
             os.system("epw-bash-scripts" + " " + str(start) + " " + str(end) + " " + element + " " + "epw1")
-        elif process == "epw2":
+        elif process == "qe-ph":
             os.system("epw-bash-scripts" + " " + str(start) + " " + str(end) + " " + element + " " + "epw2")
-        elif process == "epw3":
+        elif process == "epw2":
             os.system("epw-bash-scripts" + " " + str(start) + " " + str(end) + " " + element + " " + "epw3")
-        elif process == "epw4":
+        elif process == "epw3":
             os.system("epw-bash-scripts" + " " + str(start) + " " + str(end) + " " + element + " " + "epw4")
-        elif process == "epw5":
+        elif process == "epw4":
             os.system("epw-bash-scripts" + " " + str(start) + " " + str(end) + " " + element + " " + "proj")
-        elif process == "epw6-scdm":
+        elif process == "wann-scdm":
             os.system("epw-bash-scripts" + " " + str(start) + " " + str(end) + " " + element + " " + "band_wann" + " " + "scdm")
-        elif process == "epw6-file":
+        elif process == "wann-file":
             os.system("epw-bash-scripts" + " " + str(start) + " " + str(end) + " " + element + " " + "band_wann" + " " + "fromfile")
-        elif process == "epw6-random":
+        elif process == "wann-random":
             os.system("epw-bash-scripts" + " " + str(start) + " " + str(end) + " " + element + " " + "band_wann" + " " + "random")
-        elif process == "epw7":
+        elif process == "epw5":
             os.system("epw-bash-scripts" + " " + str(start) + " " + str(end) + " " + element + " " + "band_wann2")
-        elif process == "epw8-scdm":
+        elif process == "epw-scdm":
             os.system("epw-bash-scripts" + " " + str(start) + " " + str(end) + " " + element + " " + "epw" + " " + "scdm")
-        elif process == "epw8-file":
+        elif process == "epw-file":
             os.system("epw-bash-scripts" + " " + str(start) + " " + str(end) + " " + element + " " + "epw" + " " + "fromfile")
-        elif process == "epw8-random":
+        elif process == "epw-random":
             os.system("epw-bash-scripts" + " " + str(start) + " " + str(end) + " " + element + " " + "epw" + " " + "random")
         elif process == "epw-info":
             print("perform relaxation and ground-state calculations with process from 1 - 4\n")
+            print("Locate wannier90.json file in utility/input_files, copy to working directory, and adjust parameters\n")
             print("mainprogram epw1 ==> preparing input files for scf, non-scf, phonon calculations \n")
-            print("mainprogram epw2 ==> scf and phonon calculations\n")
-            print("mainprogram epw3 ==> copy phonon files in save directory\n")
-            print("mainprogram epw4 ==> projection calculations for scdm projection\n")
-            print("mainprogram epw5 ==> fitting procedure to obtain scdm parameters\n")
-            print("mainprogram epw6-scdm ==> preparing input files")
+            print("mainprogram qe-ph ==> scf and phonon calculations\n")
+            print("mainprogram epw2 ==> copy phonon files in save directory\n")
+            print("mainprogram epw3 ==> projection calculations for scdm projection\n")
+            print("mainprogram epw4 ==> fitting procedure to obtain scdm parameters\n")
+            print("mainprogram wann-scdm ==> preparing input files")
             print(" for wannierization using scdm projections\n")
-            print("mainprogram epw6-file ==> preparing input files")
+            print("mainprogram wann-file ==> preparing input files")
             print(" for wannierization taking projections from projection.in file\n")
-            print("mainprogram epw6-random ==> preparing input files")
+            print("mainprogram wann-random ==> preparing input files")
             print(" for wannierization using random projections\n")
             print("mainprogram 13-18 for bandstructure and DOS calculations")
             print(" for analyzing and determining different windows\n")
-            print("mainprogram epw7 ==> preparing inputfiles for QE bandstructure")
+            print("mainprogram epw5 ==> preparing inputfiles for QE bandstructure")
             print(" calculation using kpoints from wannier calculation (to obtain bands on same k-points)\n")
-            print("mainprogram epw8-scdm, epw8-file, epw8-random ==> preparing input")
+            print("mainprogram epw-scdm, epw-file, epw-random ==> preparing input")
             print(" files for epw calculations (anisotropic Eliashberg-Migdel approximations)")
             print(" with different projection schemes \n")
         elif process == "wt-info":

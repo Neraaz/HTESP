@@ -88,12 +88,12 @@ for ((ii=$1; ii<$2; ++ii)); do
    echo "---------------------------------------------------------------------------------------------------------------"
    echo "Plotting wannier-interpolated bandstructure"
    echo "---------------------------------------------------------------------------------------------------------------"
-    if [[ -d R$A-$B/bands/ ]]; then
+    #if [[ -d R$A-$B/bands/ ]]; then
      cd R$A-$B/epw/
      plot.py wann_band $A $B $x
      mv plot.pdf ../../plots/plot-band-wann-$A-$B.pdf
      cd ../../
-    fi
+    #fi
   elif [ $plot == 'phonproj' ]; then
    echo "---------------------------------------------------------------------------------------------------------------"
    echo "Processing atom projected phonon bandstructure data ==> phonon-$B.freq.gp of size (nat,(nkpoint,3*nat)) "

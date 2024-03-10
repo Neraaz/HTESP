@@ -2,6 +2,7 @@
 # Writen by Niraj K. Nepal, Ph.D.
 # Perform QE scf relaxation for different pressure.
 # Runs for 'mainprogram 26'
+source jobscript.sh
 
 echo "---------------------------------------------------------------------------------------------------------------"
 echo "Performing relaxation of systems under pressure"
@@ -115,7 +116,7 @@ for ((ii=$1; ii<$2; ++ii)); do
                   else
                     sbatch run-scf.sh
                   fi
-                    sleep 1s
+                    sleep $SLEEP
                 cd ../../../../
             else
                 continue

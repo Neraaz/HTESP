@@ -1,0 +1,39 @@
+#! /bin/bash
+# Writen by Niraj K. Nepal, Ph.D.
+# Script to submit relaxation of updated scf.in file.
+# Runs for 'mainprogram 3'
+source jobscript.sh
+echo "---------------------------------------------------------------------------------------------------------------"
+echo "Resubmitting crystal relaxation calculations."
+echo "---------------------------------------------------------------------------------------------------------------"
+file=$(find * -name $3 | tail -n 1)
+dft=$(grep "DFT" input.in | awk '{ print $3 }')
+for ((ii=$1; ii<$2; ++ii)); do
+  A=$(grep "v$ii\ " $file | awk '{print $2}')
+  B=$(grep "v$ii\ " $file | awk '{print $3}')
+
+  echo "$A $B"
+  if [ $dft == 'vasp' ] || [ $dft == 'VASP' ]; then
+   echo "Extracting magnetic moments"
+   if [[ ! -d magmom_file ]]; then
+     mkdir magmom_file
+   fi
+   cd R$A-$B/relax/
+      ispin2=$(grep "ISPIN = 2" INCAR | wc -l)
+      lorbit=$(grep LORBIT INCAR | wc -l)
+      isoutcar=$(ls OUTCAR | wc -l)
+      if [[ $ispin2 -gt 0 ]] && [[ $lorbit -gt 0 ]] && [[ $isoutcar -gt 0 ]]; then
+         echo "ISPIN = 2 and LORBIT tag is found in INCAR"
+         echo "Finding and updating MAGMOM from OUTCAR"
+         nion=$(grep NIONS OUTCAR | awk '{print $12}')
+         nionplus3=$(echo $nion + 3 | bc)
+         grep -A $nionplus3 'magnetization (x)' OUTCAR | tail -n $nionplus3  > magmom.txt
+         cp magmom.txt ../../magmom_file/magmom-$A-$B.txt
+         echo "---------------------------------------------------------------------------------------------------------------"
+      fi
+   cd ../../
+  else
+   echo "Available only for VASP"
+  fi
+done
+echo "all done"

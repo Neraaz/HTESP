@@ -6,12 +6,11 @@ import glob
 import json
 import math as m
 import numpy as np
-from ase.io import espresso, read
-from ase.cell import Cell
 from lmfit import Model
 from scipy.special import erfc
 import matplotlib.pyplot as plt
-from kpath import kpath
+from kpoint_path import kpoint_path
+from wannier90 import epw_bandcheck
 
 def phonon_input(mass_file, qpoint_file, mpid, compound, prefix):
     """
@@ -241,115 +240,94 @@ def pw2wan_input(mpid,compound,prefix,proj=" "):
             pw2wan_write.write("scdm_sigma = {}".format(sigma_scdm) + "\n")
         pw2wan_write.write("/" + "\n")
 
-def kpoint_path(file_name):
-    """
-    Function to print Kpoint_path section in wannier input.
-    parameters
-    ----------------
-    file_name : QE scf.in file
-    """
-    _,_,_,_,sym,_ = kpath(file_name,1,0)
-    data = espresso.read_espresso_in(file_name)
-    band = Cell.bandpath(data.cell)
-    band_dict = band.special_points
-    key = []
-    value = []
-    for i,subsym in enumerate(sym):
-        key.append(subsym)
-        value.append(band_dict[subsym])
-    with open('wannier_kpath.in', 'w') as wan_kpath_write:
-        for i,_ in enumerate(key):
-            if i < len(key) - 1:
-                wan_kpath_write.write("{} {} {} {} \t".format(key[i],round(value[i][0],5),round(value[i][1],5),round(value[i][2],5)))
-                wan_kpath_write.write("{} {} {} {}".format(key[i+1],round(value[i+1][0],5),round(value[i+1][1],5),round(value[i+1][2],5)) + "\n")
-def epw_bandcheck(infile='scf.in',out="ex.win",proj=" ",num_iter=300,dis_num_iter=200):
-    """
-    function to write input file for wannier90 calculations. Default: 'ex.win'
-
-    parameters
-    -------------
-    infile : input file for scf calculation
-    out : output file. Default: 'ex.win'
-    proj : 'scdm' if used SCDM projection, '' otherwise
-    num_iter : number of iteration for wannierization
-    dis_num_iter : number of iteration for disentanglement process
-
-
-    """
-    if os.path.isfile("scf_dir/{}".format(infile)):
-        data = espresso.read_espresso_in("scf_dir/{}".format(infile))
-    else:
-        print("No {} inside scf_dir".format(infile) + "\n")
-    #l=data.cell.get_bravais_lattice()
-    cell=data.cell
-    symbol=data.get_chemical_symbols()
-    pos=data.get_scaled_positions()
-    kmesh = np.loadtxt('kmesh.grid')
-
-    with open(out, 'w') as epw_write:
-        epw_write.write("use_ws_distance = .true.\n")
-        epw_write.write("dis_num_iter = {}".format(dis_num_iter) + "\n")
-        epw_write.write("write_hr = .true.\n")
-        epw_write.write("iprint = 2\n")
-        epw_write.write("spinors = .false.\n")
-        if proj == 'scdm':
-            epw_write.write("auto_projections = .true.\n")
-        elif proj == "fromfile":
-            if os.path.isfile("projection.in"):
-                with open("projection.in", "r") as gfile:
-                    lines = gfile.readlines()
-                len_l = len(lines)
-                epw_write.write("begin projections\n")
-                for i in range(len_l):
-                    #f.write("proj({})".format(i+1) + "=" + "'{}'".format(lines[i].split("\n")[0]) + "\n")
-                    epw_write.write("{}".format(lines[i].split("\n")[0]) + "\n")
-                epw_write.write("end projections\n")
-            else:
-                print("projection.in file not found\n")
-                print("write projections in different line, 'X:s', 'Y:pz', ... so on\n")
-        else:
-            epw_write.write("begin projections\n")
-            epw_write.write("random\n")
-            epw_write.write("end projections\n")
-        epw_write.write("\n")
-        epw_write.write("num_bands = XXX\n")
-        epw_write.write("num_wann = XXX\n")
-        epw_write.write("num_iter = {}".format(num_iter) + "\n")
-        epw_write.write("dis_froz_min = XXX ! obtain from electronic bandstructure\n")
-        epw_write.write("dis_froz_max = XXX\n")
-        epw_write.write("dis_win_min = XXX\n")
-        epw_write.write("dis_win_max = XXX\n")
-        epw_write.write("\n")
-        epw_write.write("Begin Kpoint_Path\n")
-        with open("wannier_kpath.in", "r") as gfile:
-            lines = gfile.readlines()
-        for i,line in enumerate(lines):
-            epw_write.write(line)
-        epw_write.write("End Kpoint_Path\n")
-        epw_write.write("\n")
-        epw_write.write("fermi_surface_plot = .true.\n")
-        epw_write.write("bands_plot = .true.\n")
-        epw_write.write("wannier_plot = .true.\n")
-        epw_write.write("wannier_plot_supercell = 3\n")
-        epw_write.write("\n")
-        epw_write.write("begin unit_cell_cart\n")
-        epw_write.write("Ang\n")
-        for lat in cell:
-            epw_write.write(str(lat[0]) + " " + str(lat[1]) + " " + str(lat[2]) + "\n")
-        epw_write.write("end unit_cell_cart\n")
-        epw_write.write("\n")
-        epw_write.write("begin atoms_frac\n")
-        for sym,pos in zip(symbol,pos):
-            epw_write.write(sym + " " + str(pos[0]) + " " + str(pos[1]) + " " + str(pos[2]) + "\n")
-        epw_write.write("end atoms_frac\n")
-        epw_write.write("\n")
-        epw_write.write("mp_grid : {} {} {}".format(int(kmesh[0]),int(kmesh[1]),int(kmesh[2])) + "\n")
-        epw_write.write("begin kpoints\n")
-        with open('wann_grid.out', 'r') as gfile:
-            lines = gfile.readlines()
-        for line in lines:
-            epw_write.write(line)
-        epw_write.write("end kpoints\n")
+#def epw_bandcheck(infile='scf.in',out="ex.win",proj=" ",num_iter=300,dis_num_iter=200):
+#    """
+#    function to write input file for wannier90 calculations. Default: 'ex.win'
+#
+#    parameters
+#    -------------
+#    infile : input file for scf calculation
+#    out : output file. Default: 'ex.win'
+#    proj : 'scdm' if used SCDM projection, '' otherwise
+#    num_iter : number of iteration for wannierization
+#    dis_num_iter : number of iteration for disentanglement process
+#
+#
+#    """
+#    if os.path.isfile("scf_dir/{}".format(infile)):
+#        data = espresso.read_espresso_in("scf_dir/{}".format(infile))
+#    else:
+#        print("No {} inside scf_dir".format(infile) + "\n")
+#    #l=data.cell.get_bravais_lattice()
+#    cell=data.cell
+#    symbol=data.get_chemical_symbols()
+#    pos=data.get_scaled_positions()
+#    kmesh = np.loadtxt('kmesh.grid')
+#
+#    with open(out, 'w') as epw_write:
+#        epw_write.write("use_ws_distance = .true.\n")
+#        epw_write.write("dis_num_iter = {}".format(dis_num_iter) + "\n")
+#        epw_write.write("write_hr = .true.\n")
+#        epw_write.write("iprint = 2\n")
+#        epw_write.write("spinors = .false.\n")
+#        if proj == 'scdm':
+#            epw_write.write("auto_projections = .true.\n")
+#        elif proj == "fromfile":
+#            if os.path.isfile("projection.in"):
+#                with open("projection.in", "r") as gfile:
+#                    lines = gfile.readlines()
+#                len_l = len(lines)
+#                epw_write.write("begin projections\n")
+#                for i in range(len_l):
+#                    #f.write("proj({})".format(i+1) + "=" + "'{}'".format(lines[i].split("\n")[0]) + "\n")
+#                    epw_write.write("{}".format(lines[i].split("\n")[0]) + "\n")
+#                epw_write.write("end projections\n")
+#            else:
+#                print("projection.in file not found\n")
+#                print("write projections in different line, 'X:s', 'Y:pz', ... so on\n")
+#        else:
+#            epw_write.write("begin projections\n")
+#            epw_write.write("random\n")
+#            epw_write.write("end projections\n")
+#        epw_write.write("\n")
+#        epw_write.write("num_bands = XXX\n")
+#        epw_write.write("num_wann = XXX\n")
+#        epw_write.write("num_iter = {}".format(num_iter) + "\n")
+#        epw_write.write("dis_froz_min = XXX ! obtain from electronic bandstructure\n")
+#        epw_write.write("dis_froz_max = XXX\n")
+#        epw_write.write("dis_win_min = XXX\n")
+#        epw_write.write("dis_win_max = XXX\n")
+#        epw_write.write("\n")
+#        epw_write.write("Begin Kpoint_Path\n")
+#        with open("wannier_kpath.in", "r") as gfile:
+#            lines = gfile.readlines()
+#        for i,line in enumerate(lines):
+#            epw_write.write(line)
+#        epw_write.write("End Kpoint_Path\n")
+#        epw_write.write("\n")
+#        epw_write.write("fermi_surface_plot = .true.\n")
+#        epw_write.write("bands_plot = .true.\n")
+#        epw_write.write("wannier_plot = .true.\n")
+#        epw_write.write("wannier_plot_supercell = 3\n")
+#        epw_write.write("\n")
+#        epw_write.write("begin unit_cell_cart\n")
+#        epw_write.write("Ang\n")
+#        for lat in cell:
+#            epw_write.write(str(lat[0]) + " " + str(lat[1]) + " " + str(lat[2]) + "\n")
+#        epw_write.write("end unit_cell_cart\n")
+#        epw_write.write("\n")
+#        epw_write.write("begin atoms_frac\n")
+#        for sym,pos in zip(symbol,pos):
+#            epw_write.write(sym + " " + str(pos[0]) + " " + str(pos[1]) + " " + str(pos[2]) + "\n")
+#        epw_write.write("end atoms_frac\n")
+#        epw_write.write("\n")
+#        epw_write.write("mp_grid : {} {} {}".format(int(kmesh[0]),int(kmesh[1]),int(kmesh[2])) + "\n")
+#        epw_write.write("begin kpoints\n")
+#        with open('wann_grid.out', 'r') as gfile:
+#            lines = gfile.readlines()
+#        for line in lines:
+#            epw_write.write(line)
+#        epw_write.write("end kpoints\n")
 
 
 def epw_sc_from_json(json_file, out="epw.in"):
@@ -383,7 +361,7 @@ def epw_sc_from_json(json_file, out="epw.in"):
                 epw_write.write("{} = {}\n".format(key, ' '.join(map(str, value))))
 
 
-def epw_sc(mpid,compound,prefix,qpoint_file,kpoint_file,out="epw.in",proj=" ",elphtype="laniso",nbndsub=1,band_skip=1,num_iter=500,dis_num_iter=2000):
+def epw_sc(mpid,compound,prefix,qpoint_file,kpoint_file,proj=" ",out="epw.in"):
     """
     function to write input file for EPW calculations. Default: 'epw.in'
 
@@ -394,12 +372,8 @@ def epw_sc(mpid,compound,prefix,qpoint_file,kpoint_file,out="epw.in",proj=" ",el
     prefix : prefix used in QE calculations
     qpoint_file : 'qpoint.in' file for q-mesh
     kpoint_file : 'kpoint.in' file for k-mesh
+    proj: projection types
     out : epw input file
-    elphtype : type of EPW calculations
-    nbndsub : number of wannier functions
-    band_skip : number of bands to skip
-    num_iter : number of iteration for wannierization process
-    dis_num_iter: number of iteration for disentanglement process
 
     """
     qpt=np.loadtxt(qpoint_file)
@@ -520,10 +494,22 @@ def main():
     """
     main function
     """
+    try:
+        pwd = os.getcwd()
+        if os.path.isfile(pwd+"/htepc.json"):
+            jsonfile = pwd+"/htepc.json"
+        else:
+            jsonfile = "../../htepc.json"
+        with open(jsonfile, "r") as readjson:
+            input_data = json.load(readjson)
+    except FileNotFoundError:
+        print("htepc.json file not found\n")
+    dft = input_data['download']['inp']['calc']
     mpid = sys.argv[1]
     compound = sys.argv[2]
     prefix = sys.argv[3]
-    projwfc(prefix,mpid,compound)
+    if dft in ("QE","qe"):
+        projwfc(prefix,mpid,compound)
     condition = sys.argv[4]
     if condition == "ph":
         phonon_input('mass.dat', 'qpoint.dat', mpid, compound, prefix)
@@ -572,17 +558,17 @@ def main():
         #    lines = file.readlines()
         #num_bands = int(lines[0].split("\n")[0].split("=")[1].split(",")[0])
         projection = sys.argv[5]
-        epw_bandcheck("scf-{}-{}.in".format(mpid,compound),proj=projection,out="ex.win")
-        os.system("mv ex.win epw_dir/ex-{}-{}.win".format(mpid,compound))
+        if dft in ('QE', 'qe'):
+            epw_bandcheck("scf-{}-{}.in".format(mpid,compound),proj=projection,out="ex.win",dft=dft)
+            os.system("mv ex.win epw_dir/ex-{}-{}.win".format(mpid,compound))
+        else:
+            epw_bandcheck("POSCAR",proj=projection,out="ex.win",dft=dft)
     elif condition == "epw":
         print("creating epw inputs for superconductivity\n")
         #with open("band.dat", "r") as file1:
         #    lines = file1.readlines()
-        num_bands = int(sys.argv[5])
-        projection = sys.argv[6]
-        band_skip = int(num_bands*0.7)
-        num_wann = int(num_bands - band_skip)
-        epw_sc(mpid,compound,prefix,'qpoint.dat','kpoint.dat',proj=projection,out="epw.in",elphtype="laniso",nbndsub=num_wann, band_skip=band_skip,num_iter=500,dis_num_iter=2000)
+        projection = sys.argv[5]
+        epw_sc(mpid,compound,prefix,'qpoint.dat','kpoint.dat',proj=projection,out="epw.in")
     else:
         print("bad inputs")
 if __name__ == "__main__":

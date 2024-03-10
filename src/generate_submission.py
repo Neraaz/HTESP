@@ -63,6 +63,8 @@ def generate_submission_files(which_calc, parallel_command, nproc, command_list)
                     submission_files[command_name] = ifermi("plot","htepc.json")
                 except FileNotFoundError:
                     print("htepc.json not found\n")
+            elif command_name == 'wannier':
+                submission_files[command_name] = "wannier90.x wannier90"
             else:
                 submission_files[command_name] = f"{parallel_command} -np {npscf} {x_command}"
     else:
@@ -125,7 +127,8 @@ def main():
 
     vasp_commands = {
         'vasp': ('vasp_std', '', ''),
-        'ifermi': ('ifermi', '', '')
+        'ifermi': ('ifermi', '', ''),
+        'wannier': ('wannier','','')
     }
 
 

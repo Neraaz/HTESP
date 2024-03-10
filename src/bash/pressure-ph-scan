@@ -2,6 +2,7 @@
 # Writen by Niraj K. Nepal, Ph.D.
 # Submit phonon calculations for different pressure using QE.
 # Runs for 'mainprogram 27'
+source jobscript.sh
 
 echo "---------------------------------------------------------------------------------------------------------------"
 echo "Submitting phonon calculations for different pressure"
@@ -41,7 +42,7 @@ for ((ii=$1; ii<$2; ++ii)); do
        else
          sbatch run-elph.sh
        fi
-        sleep 1s
+        sleep $SLEEP
       cd ../../../
  elif [[ ! -f R$A-$B/pressure/R$kk/elph.in ]] ; then
     cp elph_dir/ph-$A-$B.in R$A-$B/pressure/R$kk/elph.in
@@ -59,7 +60,7 @@ for ((ii=$1; ii<$2; ++ii)); do
        else
          sbatch run-elph.sh
        fi
-       sleep 1s
+       sleep $SLEEP
      cd ../../../
  else
      echo "not converged restarting"
@@ -85,7 +86,7 @@ for ((ii=$1; ii<$2; ++ii)); do
        else
          sbatch run-elph.sh
        fi
-       sleep 1s
+       sleep $SLEEP
     cd ../../../
   fi
   done

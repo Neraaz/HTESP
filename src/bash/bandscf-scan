@@ -98,6 +98,7 @@ for ((ii=$1; ii<$2; ++ii)); do
        fi
        echo " submitting jobs in R$A-$B "
        vasprun "$A" "$B"
+       sleep $SLEEP
      cd ../../
   else
      cp scf_dir/scf-$A-$B.in R$A-$B/bands/scf.in
@@ -107,7 +108,7 @@ for ((ii=$1; ii<$2; ++ii)); do
      cp run-scf.sh R$A-$B/bands/
        cd R$A-$B/bands
           qerun "$A" "$B" "scf"
-         sleep 1s
+          sleep $SLEEP
        cd ../../
   fi
 ################

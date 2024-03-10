@@ -23,7 +23,7 @@ for ((ii=$1; ii<$2; ++ii)); do
     cd R$A-$B/calc
        cp $B.dyn1 $B.dyn
        qerun "$A" "$B" "dynmat"
-       sleep 1s
+       sleep $SLEEP
     cd ../../
   else
      echo "electron-phonon calculation not finished"

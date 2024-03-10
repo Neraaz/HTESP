@@ -19,7 +19,7 @@ for ((ii=$1; ii<$2; ++ii)); do
        echo " submitting jobs in R$A-$B "
        cd R$A-$B/calc
           qerun "$A" "$B" "scf"
-          sleep 1s
+          sleep $SLEEP
        cd ../../
   fi
 done

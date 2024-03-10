@@ -18,7 +18,7 @@ for ((ii=$1; ii<$2; ++ii)); do
       cd R$A-$B/relax/
           if [[ ! -f NSW_0_DETECTED ]]; then
              vasprun "$A" "$B"
-             sleep 1s
+             sleep $SLEEP
           else
              echo "Already NSW = 0 found"
           fi
@@ -31,7 +31,7 @@ for ((ii=$1; ii<$2; ++ii)); do
       echo " submitting jobs in R$A-$B/relax "
       cd R$A-$B/relax
          qerun "$A" "$B" "scf"
-         sleep 1s
+         sleep $SLEEP
       cd ../../
   fi
   fi

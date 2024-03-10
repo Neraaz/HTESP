@@ -304,23 +304,25 @@
     }
   },
   "bgw_input": {
+    "kpt":[10,10,10],
+    "koffset":[0.5,0.5,0.5],
     "fft": [24, 24, 24],
-    "random_kshift": [0.47, 0.37, 0.31],
+    "random_kshift": [0.5, 0.5, 0.5],
     "qshift": {
       "qshift": 0.001,
       "index": 2
-    },
+    },  
     "time_rev": ".false.",
     "nband": {
-      "nbnd": 30,
+      "nbnd": 30, 
       "vbnd": 6,
       "vbnd_fi": 4,
-      "cbnd_fi": 11,
+      "cbnd_fi": 11, 
       "plotband": 15
-    },
+    },  
     "vxc_diag": [1, 14],
     "vxc_offdiag": [0, 0]
-  },
+  },  
   "strain": [-0.01, -0.005, 0.005, 0.01],
   "wanniertools_input": {
     "tb_file": {

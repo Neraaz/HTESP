@@ -27,7 +27,7 @@ for ((ii=$1; ii<$2; ++ii)); do
        cp run-band.sh R$A-$B/bands/
        cd R$A-$B/bands
          qerun "$A" "$B" "band"
-         sleep 1s
+         sleep $SLEEP
        cd ../../
   fi
 done

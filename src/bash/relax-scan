@@ -21,7 +21,7 @@ for ((ii=$1; ii<$2; ++ii)); do
       cp run-vasp.sh R$A-$B/relax/run.sh
       cd R$A-$B/relax/
        vasprun "$A" "$B"
-       sleep 1s
+       sleep $SLEEP
       cd ../../
     fi
 
@@ -53,7 +53,7 @@ for ((ii=$1; ii<$2; ++ii)); do
     echo " submitting jobs in R$A-$B/relax "
   cd R$A-$B/relax
      qerun "$A" "$B" "scf"
-     sleep 1s
+     sleep $SLEEP
   cd ../../
   fi
 done

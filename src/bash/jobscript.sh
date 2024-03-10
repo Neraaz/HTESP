@@ -1,5 +1,5 @@
 #!/bin/bash
-
+SLEEP=$(echo "scale=2; 0.01" | bc)
 vasprun() {
     A="$1"
     B="$2"

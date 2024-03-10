@@ -5,11 +5,14 @@ Script is run within 'download-input' bash script."""
 import os
 import sys
 import json
+import warnings
 from pymatgen.io.vasp.sets import MPRelaxSet
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 from cif_to_gsinput import pos_to_kpt
 from write_potcar import poscar2potcar
 from htepc import MpConnect
+# To ignore all warnings
+warnings.filterwarnings("ignore")
 try:
     PWD = os.getcwd()
     if os.path.isfile(PWD+"/htepc.json"):

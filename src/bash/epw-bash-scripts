@@ -12,17 +12,9 @@ echo "--------------------------------------------------------------------------
 for ((ii=$1; ii<$2; ++ii)); do
   A=$(grep "v$ii\ " $file | awk '{print $2}')
   B=$(grep "v$ii\ " $file | awk '{print $3}')
-  if [[ ! -f scf_dir/scf-$A.in ]]; then
-    qe_input.py $A
-  fi
   process=$4
   echo "____________________________________________________________________________________________________________________________________"
   echo "$A $B"
-  if [[ -f scf_dir/scf-$A.in ]]; then
-    prefix=$(grep "prefix = " scf_dir/scf-$A.in | awk '{print $3}' | sed 's/.$//' | sed "s/'//g")
-  else
-    exit
-  fi
   if [ $dft == 'vasp' ] || [ $dft == 'VASP' ]; then
     scfcheck=$(echo 1 | bc)
   fi
@@ -80,7 +72,7 @@ for ((ii=$1; ii<$2; ++ii)); do
                 echo "NSW 0" >> vasp.in
                 echo "NELM 200" >> vasp.in
                 echo "ISIF 2" >> vasp.in
-                echo "ISMEAR -5" >> vasp.in
+                #echo "ISMEAR -5" >> vasp.in
                 echo "NBANDS $nbnd" >> vasp.in
                 echo "EDIFFG" >> vasp.in
                 echo "LORBIT" >> vasp.in
@@ -90,6 +82,12 @@ for ((ii=$1; ii<$2; ++ii)); do
               vasprun "$A" "$B"
             cd ../../
          else
+            if [[ -f scf_dir/scf-$A.in ]]; then
+              prefix=$(grep "prefix = " scf_dir/scf-$A.in | awk '{print $3}' | sed 's/.$//' | sed "s/'//g")
+            else
+              echo "scf-$A.in not found inside scf_dir, exiting"
+              exit
+            fi
             sed -n '/Begin final coordinates/,/End final coordinates/p' R$A-$B/relax/scf.out | sed '$d' | sed '1,4d'| sed '5d' > scf_dir/$A-$B-relax.dat 
             prefix=$(grep "prefix = " scf_dir/scf-$A.in | awk '{print $3}' | sed 's/.$//')
             nelm=$(grep "number of electrons       =     " R$A-$B/relax/scf.out | tail -n 1 | awk '{print $5}')
@@ -258,13 +256,28 @@ for ((ii=$1; ii<$2; ++ii)); do
             mkdir R$A-$B/epw
          fi
          if [ $dft == 'vasp' ] || [ $dft == 'VASP' ]; then
+           if [[ -f wannier90.json ]]; then
+              cp wannier90.json R$A-$B/epw/
+           else
+              echo "wannier90.json file not found"
+           fi
            cd R$A-$B/epw
-            checkwann=$(grep 'LWANNIER90' INCAR | wc -l)
+            #if [[ -f INCAR ]]; then
+            #  checkwann=$(grep 'LWANNIER90' INCAR | wc -l)
+            #else
+            #  cp ../relax/INCAR .
+            #  checkwann=$(echo 0 | bc)
+            #fi
             cp INCAR INCAR-scf
-            if [ $checkwann -lt 1 ]; then 
-             sed -i '$a LWANNIER90 = .TRUE.' INCAR
-            fi
+            #if [ $checkwann -lt 1 ]; then 
+            sed -i '$a LWANNIER90 = .TRUE.' INCAR
+            #fi
             sed -i '/NPAR/d' INCAR
+            prefix=$(echo 0 | bc)
+            create_epw_inputs.py $A $B $prefix "epw_band" $5
+            cat INCAR wannier-vasp.in > INCAR_wannier
+            cp INCAR INCAR_backup
+            cp INCAR_wannier INCAR
             vasprun "$A" "$B"
            cd ../../
          else
@@ -335,7 +348,7 @@ for ((ii=$1; ii<$2; ++ii)); do
         nband=$(echo $nel*1.5/2 | bc)
 
 
-         create_epw_inputs.py $A $B $prefix "epw" $nband $5
+         create_epw_inputs.py $A $B $prefix "epw" $5
          mv epw.in epw_dir/epw-$A-$B.in
          echo "After performing epw2, epw3, epw4,and proj steps, Performing remaining nscf, and epw calculations"
         if [[ ! -d R$A-$B/EPW ]] ; then

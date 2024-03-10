@@ -5,6 +5,7 @@
 # Requires qe_axsf2cellpos.py,scf-header.in (scf.in without crystal structure information), dynmat.axsf for any q-point
 # , and run-scf.sh batch script for job submission.
 # Run inside distortion-relax-scan script for 'mainprogram 24'.
+source jobscript.sh
 
 for ((ii=$1; ii<$2; ++ii)); do
   if [[ ! -d R$ii ]] ; then
@@ -33,7 +34,7 @@ fi
   echo " submitting jobs in mode $ii "
   cd R$ii
      sbatch run-scf.sh
-     sleep 1s
+     sleep $SLEEP
   cd ../
 done
 echo "all done"
