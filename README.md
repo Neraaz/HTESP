@@ -24,20 +24,24 @@ ________________________________________________________________________________
 
 ##                                                                  Utilities:
                                 
-## 1. Downloading and preparing input files from Materials Project database for QE and VASP calculations.
 
-## 2. Supports Quantum Espresso (QE) 
-      a. Ground-state calculations (structure relaxation, band, and dos calculations), convergence tests for kinetic energy cutoff
-      b. electron-phonon calculations and superconductivity using isotropic Eliashberg approximation including plotting of spectral function (alpha^2F), phonon dispersion (with or without atomic projections), bandstructure, density of states
-      c. Prepares input files for wannier90, EPW (anisotropic superconductivity) calculations, and wanniertools calculations. Need to determine energy windows for wannierization processes
-      d. Performing substitution, single phonon mode, distortion calculations for all modes at a single q-point with dynmat.axsf file, system under pressure calculations  
-      
-## 3. Supports VASP
-      a. phonon and thermodynamic calculations with phonopy package and VASP
-      b. Ground-state calculations to compute thermodynamic phase diagram (convex hull) using pymatgen
-      c. Fermi surface calculations using IFERMI package
-      d. Various automated calculations with vasp and pymatgen such as computing elastic properties, magnetic ordering,etc.
-      
+## 2. Key functionalities:
+
+a. Retrieving and Formatting Input Files from Materials Project, AFLOW, and OQMD Databases for Quantum Espresso (QE) and VASP Calculations.
+
+b. Conducting Ground-State Calculations, including Structure Relaxation, Band Structure, and Density of States (DOS) Calculations, with Comprehensive Convergence Tests.
+
+c. Performing Electron-Phonon Calculations and Investigating Superconductivity Utilizing Isotropic Eliashberg Approximation, with Spectral Function (α^2F) Plotting, Phonon Dispersion Analysis (with or without Atomic Projections).
+
+d. Generating Input Files for Wannier90, EPW (Anisotropic Superconductivity), and WannierTools Calculations, with energies windows provided by users for wannierization.
+
+e. Conducting Phonon and Thermodynamic Calculations Using the Phonopy Package.
+
+f. Executing Ground-State Calculations to Construct Thermodynamic Phase Diagrams (Convex Hulls) with the Pymatgen Library.
+
+g. Performing Fermi Surface Calculations Utilizing the IFERMI Package.
+
+h. Computing Elastic Properties, Investigating Magnetic Ordering, and Other Related Analyses.
 
 ## Requirements
 
