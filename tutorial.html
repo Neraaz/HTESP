@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="lang:clipboard.copy" content="Copy to clipboard">
+  <meta name="lang:clipboard.copied" content="Copied to clipboard">
+  <meta name="lang:search.language" content="en">
+  <meta name="lang:search.pipeline.stopwords" content="True">
+  <meta name="lang:search.pipeline.trimmer" content="True">
+  <meta name="lang:search.result.none" content="No matching documents">
+  <meta name="lang:search.result.one" content="1 matching document">
+  <meta name="lang:search.result.other" content="# matching documents">
+  <meta name="lang:search.tokenizer" content="[\s\-]+">
+
+  
+    <link href="https://fonts.gstatic.com/" rel="preconnect" crossorigin>
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,500,700|Roboto:300,400,400i,700&display=fallback" rel="stylesheet">
+
+    <style>
+      body,
+      input {
+        font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif
+      }
+
+      code,
+      kbd,
+      pre {
+        font-family: "Roboto Mono", "Courier New", Courier, monospace
+      }
+    </style>
+  
+
+  <link rel="stylesheet" href="_static/stylesheets/application.css"/>
+  <link rel="stylesheet" href="_static/stylesheets/application-palette.css"/>
+  <link rel="stylesheet" href="_static/stylesheets/application-fixes.css"/>
+  
+  <link rel="stylesheet" href="_static/fonts/material-icons.css"/>
+  
+  <meta name="theme-color" content="#3f51b5">
+  <script src="_static/javascripts/modernizr.js"></script>
+  
+  
+  
+    <title>Submission scripts generation &#8212; HTESP 0.0.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=83e35b93" />
+    <link rel="stylesheet" type="text/css" href="_static/material.css?v=79c92029" />
+    <script src="_static/documentation_options.js?v=d45e8c67"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="LICENSE" href="license.html" />
+    <link rel="prev" title="Commands (mainprogram process)" href="command.html" />
+  
+   
+
+  </head>
+  <body dir=ltr
+        data-md-color-primary=blue-grey data-md-color-accent=blue>
+  
+  <svg class="md-svg">
+    <defs data-children-count="0">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448" viewBox="0 0 416 448" id="__github"><path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19T128 352t-18.125-8.5-10.75-19T96 304t3.125-20.5 10.75-19T128 256t18.125 8.5 10.75 19T160 304zm160 0q0 10-3.125 20.5t-10.75 19T288 352t-18.125-8.5-10.75-19T256 304t3.125-20.5 10.75-19T288 256t18.125 8.5 10.75 19T320 304zm40 0q0-30-17.25-51T296 232q-10.25 0-48.75 5.25Q229.5 240 208 240t-39.25-2.75Q130.75 232 120 232q-29.5 0-46.75 21T56 304q0 22 8 38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0 37.25-1.75t35-7.375 30.5-15 20.25-25.75T360 304zm56-44q0 51.75-15.25 82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5T212 416q-19.5 0-35.5-.75t-36.875-3.125-38.125-7.5-34.25-12.875T37 371.5t-21.5-28.75Q0 312 0 260q0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25 30.875Q171.5 96 212 96q37 0 70 8 26.25-20.5 46.75-30.25T376 64q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34 99.5z"/></svg>
+      
+    </defs>
+  </svg>
+  
+  <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer">
+  <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search">
+  <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+  <a href="#tutorial" tabindex="1" class="md-skip"> Skip to content </a>
+  <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex navheader">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="index.html" title="HTESP 0.0.1 documentation"
+           class="md-header-nav__button md-logo">
+          
+            &nbsp;
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          <span class="md-header-nav__topic">HTESP 0.0.1 documentation</span>
+          <span class="md-header-nav__topic"> Submission scripts generation </span>
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+        
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" action="search.html" method="get" name="search">
+      <input type="text" class="md-search__input" name="q" placeholder=""Search""
+             autocapitalize="off" autocomplete="off" spellcheck="false"
+             data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+      </div>
+      
+      
+  
+  <script src="_static/javascripts/version_dropdown.js"></script>
+  <script>
+    var json_loc = ""versions.json"",
+        target_loc = "../",
+        text = "Versions";
+    $( document ).ready( add_version_dropdown(json_loc, target_loc, text));
+  </script>
+  
+
+    </div>
+  </nav>
+</header>
+
+  
+  <div class="md-container">
+    
+    
+    
+  <nav class="md-tabs" data-md-component="tabs">
+    <div class="md-tabs__inner md-grid">
+      <ul class="md-tabs__list">
+          <li class="md-tabs__item"><a href="index.html" class="md-tabs__link">HTESP 0.0.1 documentation</a></li>
+      </ul>
+    </div>
+  </nav>
+    <main class="md-main">
+      <div class="md-main__inner md-grid" data-md-component="container">
+        
+          <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+            <div class="md-sidebar__scrollwrap">
+              <div class="md-sidebar__inner">
+                <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href="index.html" title="HTESP 0.0.1 documentation" class="md-nav__button md-logo">
+      
+        <img src="_static/" alt=" logo" width="48" height="48">
+      
+    </a>
+    <a href="index.html"
+       title="HTESP 0.0.1 documentation">HTESP 0.0.1 documentation</a>
+  </label>
+  
+
+</nav>
+              </div>
+            </div>
+          </div>
+          <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+            <div class="md-sidebar__scrollwrap">
+              <div class="md-sidebar__inner">
+                
+<nav class="md-nav md-nav--secondary">
+    <label class="md-nav__title" for="__toc">"Contents"</label>
+  <ul class="md-nav__list" data-md-scrollfix="">
+        <li class="md-nav__item"><a href="#tutorial--page-root" class="md-nav__link">Submission scripts generation</a>
+        </li>
+        <li class="md-nav__item"><a href="#preparing-folder-for-calculations" class="md-nav__link">Preparing folder for calculations</a>
+        </li>
+        <li class="md-nav__item"><a href="#input-generation-from-structure-files" class="md-nav__link">Input generation from structure files</a>
+        </li>
+        <li class="md-nav__item"><a href="#inputs-with-magnetic-ordering" class="md-nav__link">Inputs with magnetic ordering</a>
+        </li>
+        <li class="md-nav__item"><a href="#combining-data-from-different-database" class="md-nav__link">Combining data from different database</a>
+        </li>
+        <li class="md-nav__item"><a href="#statistics" class="md-nav__link">Statistics</a>
+        </li>
+        <li class="md-nav__item"><a href="#convergence-tests" class="md-nav__link">Convergence tests</a>
+        </li>
+        <li class="md-nav__item"><a href="#structure-relaxation" class="md-nav__link">Structure relaxation</a>
+        </li>
+        <li class="md-nav__item"><a href="#electron-phonon-coupling-from-qe" class="md-nav__link">Electron-phonon coupling from QE</a>
+        </li>
+        <li class="md-nav__item"><a href="#atom-projected-phonon-dispersion" class="md-nav__link">Atom-projected phonon dispersion</a>
+        </li>
+        <li class="md-nav__item"><a href="#band-structure-and-dos-calculation" class="md-nav__link">Band structure and DOS calculation</a>
+        </li>
+        <li class="md-nav__item"><a href="#applying-distortion-following-eigenmode" class="md-nav__link">Applying distortion following eigenmode</a>
+        </li>
+        <li class="md-nav__item"><a href="#pressure-calculation" class="md-nav__link">Pressure calculation</a>
+        </li>
+        <li class="md-nav__item"><a href="#substitution-calculations" class="md-nav__link">Substitution calculations</a>
+        </li>
+        <li class="md-nav__item"><a href="#fermi-surface" class="md-nav__link">Fermi Surface</a>
+        </li>
+        <li class="md-nav__item"><a href="#thermodynamic-stability-convex-hull" class="md-nav__link">Thermodynamic stability (Convex Hull)</a>
+        </li>
+        <li class="md-nav__item"><a href="#magnetic-enumeration" class="md-nav__link">Magnetic enumeration</a>
+        </li>
+        <li class="md-nav__item"><a href="#magnetic-force-theorem" class="md-nav__link">Magnetic force theorem</a>
+        </li>
+        <li class="md-nav__item"><a href="#computing-elastic-constants" class="md-nav__link">Computing elastic constants</a>
+        </li>
+        <li class="md-nav__item"><a href="#printing-compound-information" class="md-nav__link">Printing compound information</a>
+        </li>
+        <li class="md-nav__item"><a href="#wannier-interpolated-bandstructure" class="md-nav__link">Wannier interpolated bandstructure</a>
+        </li>
+        <li class="md-nav__item"><a href="#phonon-calculations" class="md-nav__link">Phonon calculations</a>
+        </li>
+        <li class="md-nav__item"><a href="#equation-of-states" class="md-nav__link">Equation of states</a>
+        </li>
+        <li class="md-nav__item"><a href="#charged-calculations" class="md-nav__link">Charged calculations</a>
+        </li>
+        <li class="md-nav__item"><a href="#checking-running-calculations" class="md-nav__link">Checking running calculations</a>
+        </li>
+        <li class="md-nav__item"><a href="#printing-history-of-mainprogram" class="md-nav__link">Printing history of mainprogram</a>
+        </li>
+        <li class="md-nav__item"><a href="#aborting-jobs-with-job-id" class="md-nav__link">Aborting jobs with job_id</a>
+        </li>
+    
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+  </ul>
+  </ul>
+</nav>
+              </div>
+            </div>
+          </div>
+        
+        <div class="md-content">
+          <article class="md-content__inner md-typeset" role="main">
+            
+  <section id="submission-scripts-generation">
+<h1 id="tutorial--page-root">Submission scripts generation<a class="headerlink" href="#tutorial--page-root" title="Link to this heading">¶</a></h1>
+<p><strong>Bash script</strong>:</p>
+<p>Generate submission files with “generate_submission_file.sh” scripts.</p>
+<p>generate_submission.sh help ==&gt; help with the scripts</p>
+<p>Make ready “batch.header” file</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+
+<span class="c1">## SBATCH commands</span>
+
+<span class="c1">#SBATCH ....</span>
+
+<span class="c1">#module load ....</span>
+
+submission<span class="w"> </span>here
+</pre></div>
+</div>
+<p>Add ‘submission here’ in the last line to <a class="reference internal" href="param.html#batch-label"><span class="std std-ref">batch</span></a>. The bash script will replace this placeholder with the appropriate commands. Execute the following command to generate submission files for Quantum Espresso electron-phonon coupling calculations using mpirun (parallel command) and 48 cores. Make sure to customize the “batch.header” file according to the desired number of cores.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>generate_submission_file.sh<span class="w"> </span>qe-elph<span class="w"> </span>mpirun<span class="w"> </span><span class="m">48</span>
+</pre></div>
+</div>
+<p>It generates bunch of submission scripts for electron-phonon coupling (EPC) with QE package.</p>
+<p>Other available options are epw-elph, wannier_band, and vasp.</p>
+<p><strong>command line</strong>:</p>
+<p>This requires adjusting appropriate keys and values in <a class="reference internal" href="param.html#job-label"><span class="std std-ref">jobscript</span></a> dictionary in htepc.json file.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mainprogram<span class="w"> </span>jobscript
+</pre></div>
+</div>
+</section>
+<section id="preparing-folder-for-calculations">
+<h1 id="preparing-folder-for-calculations">Preparing folder for calculations<a class="headerlink" href="#preparing-folder-for-calculations" title="Link to this heading">¶</a></h1>
+<p>1.Begin by creating a working directory:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>work_dir
+
+<span class="nb">cd</span><span class="w"> </span>work_dir
+</pre></div>
+</div>
+<p>2.Locate the <code class="docutils literal notranslate"><span class="pre">htepc.json</span></code> file from the <code class="docutils literal notranslate"><span class="pre">utility/input_files</span></code> directory, referenced as <a class="reference internal" href="param.html#json-label"><span class="std std-ref">htepc.json</span></a>, which functions as the code’s input file.</p>
+<p>3.In addition to the <code class="docutils literal notranslate"><span class="pre">htepc.json</span></code> file, there exist several input files in the “.in” format, intended for direct processing by bash scripts. For VASP calculations, utilize the <a class="reference internal" href="otherinput.html#vasp-label"><span class="std std-ref">vasp.in</span></a> file.</p>
+<p>4.Execute the</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mainprogram<span class="w"> </span>search
+</pre></div>
+</div>
+<p>command to search for data either in the database or in .cif or .vasp files within the working directory. This action generates <code class="docutils literal notranslate"><span class="pre">input.in</span></code> and <code class="docutils literal notranslate"><span class="pre">mpid-list.in</span></code> files, excluding <code class="docutils literal notranslate"><span class="pre">fromcif</span></code> and <code class="docutils literal notranslate"><span class="pre">fromvasp</span></code> mode. Proceed to modify the first and second indices in <code class="docutils literal notranslate"><span class="pre">input.in</span></code> to generate input files in accordance with the <code class="docutils literal notranslate"><span class="pre">mpid-list.in</span></code> file.</p>
+<p>5.Utilize</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mainprogram<span class="w"> </span>download
+</pre></div>
+</div>
+<p>to generate <a class="reference internal" href="param.html#pwd-label"><span class="std std-ref">input files</span></a>. This will generate VASP (or QE) input files, if <code class="docutils literal notranslate"><span class="pre">DFT</span> <span class="pre">=</span> <span class="pre">VASP</span> <span class="pre">(or</span> <span class="pre">QE)</span></code> is set in <a class="reference internal" href="otherinput.html#inputin-label"><span class="std std-ref">input.in</span></a>. Now the <a class="reference internal" href="otherinput.html#mpid-label"><span class="std std-ref">mpid.in</span></a> is created. Always set <code class="docutils literal notranslate"><span class="pre">DFT</span> <span class="pre">=</span> <span class="pre">VASP</span> <span class="pre">(or</span> <span class="pre">QE)</span></code> in <a class="reference internal" href="otherinput.html#inputin-label"><span class="std std-ref">input.in</span></a> to proceed with calculations.</p>
+<p>For QE, it creates <code class="docutils literal notranslate"><span class="pre">scf_dir</span></code> directory and put <code class="docutils literal notranslate"><span class="pre">scf-{id}.in</span></code> files inside it. For VASP, it creates the <code class="docutils literal notranslate"><span class="pre">R{id}-{name}/relax</span></code> folder and put <code class="docutils literal notranslate"><span class="pre">INCAR</span> <span class="pre">POSCAR</span> <span class="pre">POTCAR</span> <span class="pre">KPOINTS</span></code> inside it. For example, for MgB2 where <code class="docutils literal notranslate"><span class="pre">mpid</span> <span class="pre">=</span> <span class="pre">mp-763</span></code> and <code class="docutils literal notranslate"><span class="pre">name</span> <span class="pre">=</span> <span class="pre">'B2Mg1'</span></code>, folders named <code class="docutils literal notranslate"><span class="pre">Rmp-763-B2Mg1/relax</span></code> will be created to store the downloaded files for VASP, whereas <code class="docutils literal notranslate"><span class="pre">scf-mp-763.in</span></code> will be present inside <code class="docutils literal notranslate"><span class="pre">scf_dir</span></code>. See <a class="reference internal" href="param.html#pwd-label"><span class="std std-ref">working folder</span></a>.</p>
+<p>In addition to generating input files, this process exclusively updates the <code class="docutils literal notranslate"><span class="pre">INCAR</span></code> file under the condition that a <a class="reference internal" href="otherinput.html#vasp-label"><span class="std std-ref">vasp.in</span></a> file is provided, without generating it from scratch. This update only occurs if an <code class="docutils literal notranslate"><span class="pre">INCAR</span></code> file is already present within the <code class="docutils literal notranslate"><span class="pre">R{id}-{name}/relax/</span></code> directory.</p>
+<p>Note: Before executing <code class="docutils literal notranslate"><span class="pre">mainprogram</span> <span class="pre">download</span></code>, configure the <code class="docutils literal notranslate"><span class="pre">POTCARs</span></code> according to the instructions provided by <code class="docutils literal notranslate"><span class="pre">pymatgen</span></code>.</p>
+</section>
+<section id="input-generation-from-structure-files">
+<h1 id="input-generation-from-structure-files">Input generation from structure files<a class="headerlink" href="#input-generation-from-structure-files" title="Link to this heading">¶</a></h1>
+<p>There are 2 modes to generate input files from structure files.</p>
+<ul class="simple">
+<li><p><strong>cif Mode</strong>:</p></li>
+</ul>
+<p>This mode is activated when <code class="docutils literal notranslate"><span class="pre">'mode':'fromcif'</span></code> is set in the <a class="reference internal" href="param.html#download-label"><span class="std std-ref">download</span></a> section.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="nt">"download"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nt">"info"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"mode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"fromcif"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"metal"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"FE"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"thermo_stable"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"exclude"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"Lu"</span><span class="p">],</span>
+<span class="w">    </span><span class="nt">"..."</span><span class="p">:</span><span class="w"> </span><span class="s2">"..."</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>By default, it utilizes Pymatgen to explore CIF files.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">"use_cif2cell"</span></code> is set to <code class="docutils literal notranslate"><span class="pre">true</span></code>, it employs the cif2cell package to convert <code class="docutils literal notranslate"><span class="pre">.cif</span></code> files to input files.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="nt">"inp"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nt">"start"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"end"</span><span class="p">:</span><span class="w"> </span><span class="mi">65</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"nkpt"</span><span class="p">:</span><span class="w"> </span><span class="mi">200</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"evenkpt"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"plot"</span><span class="p">:</span><span class="w"> </span><span class="s2">"phband"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"calc"</span><span class="p">:</span><span class="w"> </span><span class="s2">"VASP"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"use_cif2cell"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>VASP Mode</strong>:</p></li>
+</ul>
+<p>In this mode, the code utilizes structure files in <code class="docutils literal notranslate"><span class="pre">.vasp</span></code> format to generate input files.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">"mode":</span> <span class="pre">"fromvasp"</span></code> is turn on.</p></li>
+<li><p>We employ the <code class="docutils literal notranslate"><span class="pre">.vasp</span></code> format instead of <code class="docutils literal notranslate"><span class="pre">POSCAR</span></code> to prevent interference with other activities that specifically require a <code class="docutils literal notranslate"><span class="pre">POSCAR</span></code> file format.</p></li>
+</ul>
+<p>Now, execute the following commands to generate input files.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mainprogram<span class="w"> </span>search
+
+mainprogram<span class="w"> </span>download
+</pre></div>
+</div>
+</section>
+<section id="inputs-with-magnetic-ordering">
+<h1 id="inputs-with-magnetic-ordering">Inputs with magnetic ordering<a class="headerlink" href="#inputs-with-magnetic-ordering" title="Link to this heading">¶</a></h1>
+</section>
+<section id="combining-data-from-different-database">
+<h1 id="combining-data-from-different-database">Combining data from different database<a class="headerlink" href="#combining-data-from-different-database" title="Link to this heading">¶</a></h1>
+<p>In this section, we explored techniques for extracting data and generating input files from three distinct databases, subsequently amalgamating them. To facilitate this process, we employed the following <code class="docutils literal notranslate"><span class="pre">download</span></code> keyword in the <a class="reference internal" href="param.html#json-label"><span class="std std-ref">htepc.json</span></a> input configuration. In this context, we will delve into the phase diagram of MgB2 using the convex hull method. To achieve this, we require the ground-state configurations of Mg, B, and Mg-B compounds, which we can extract from databases that offer extensive resources.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="nt">"download"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nt">"info"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"mode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"chemsys"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"metal"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"FE"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"thermo_stable"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"exclude"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"Lu"</span><span class="p">],</span>
+<span class="w">    </span><span class="nt">"ntype"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">],</span>
+<span class="w">    </span><span class="nt">"elm"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"B"</span><span class="p">],</span>
+<span class="w">    </span><span class="nt">"prop"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"material_id"</span><span class="p">,</span><span class="w"> </span><span class="s2">"formula_pretty"</span><span class="p">,</span><span class="w"> </span><span class="s2">"structure"</span><span class="p">,</span><span class="w"> </span><span class="s2">"formation_energy_per_atom"</span><span class="p">,</span><span class="w"> </span><span class="s2">"band_gap"</span><span class="p">,</span><span class="w"> </span><span class="s2">"energy_above_hull"</span><span class="p">,</span><span class="w"> </span><span class="s2">"total_magnetization"</span><span class="p">,</span><span class="w"> </span><span class="s2">"ordering"</span><span class="p">,</span><span class="w"> </span><span class="s2">"total_magnetization_normalized_formula_units"</span><span class="p">,</span><span class="w"> </span><span class="s2">"num_magnetic_sites"</span><span class="p">,</span><span class="w"> </span><span class="s2">"theoretical"</span><span class="p">,</span><span class="w"> </span><span class="s2">"nsites"</span><span class="p">],</span>
+<span class="w">    </span><span class="nt">"ordering"</span><span class="p">:</span><span class="w"> </span><span class="s2">"NM"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"nsites"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"spacegroup"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">"inp"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"start"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"end"</span><span class="p">:</span><span class="w"> </span><span class="mi">65</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"nkpt"</span><span class="p">:</span><span class="w"> </span><span class="mi">200</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"evenkpt"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"plot"</span><span class="p">:</span><span class="w"> </span><span class="s2">"phband"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"calc"</span><span class="p">:</span><span class="w"> </span><span class="s2">"VASP"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"use_cif2cell"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">"chemsys"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"entries"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"Mg"</span><span class="p">,</span><span class="w"> </span><span class="s2">"B"</span><span class="p">],</span>
+<span class="w">    </span><span class="nt">"size_constraint"</span><span class="p">:</span><span class="w"> </span><span class="mi">60</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"ntype_constraint"</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"must_include"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"Mg"</span><span class="p">,</span><span class="s2">"B"</span><span class="p">],</span>
+<span class="w">    </span><span class="nt">"form_en"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"metal"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"magnetic"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"spacegroup"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">"oqmd"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"limit"</span><span class="p">:</span><span class="w"> </span><span class="mi">1000</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"entries"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"Mg"</span><span class="p">,</span><span class="w"> </span><span class="s2">"B"</span><span class="p">],</span>
+<span class="w">    </span><span class="nt">"size_constraint"</span><span class="p">:</span><span class="w"> </span><span class="mi">60</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"ntype_constraint"</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"must_include"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">    </span><span class="nt">"form_en"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"metal"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"magnetic"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"spacegroup"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"thermo_stable"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"FE"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"prop"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"composition"</span><span class="p">,</span><span class="w"> </span><span class="s2">"spacegroup"</span><span class="p">,</span><span class="w"> </span><span class="s2">"volume"</span><span class="p">,</span><span class="w"> </span><span class="s2">"band_gap"</span><span class="p">,</span><span class="w"> </span><span class="s2">"stability"</span><span class="p">]</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">"aflow"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"elm"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"Mg"</span><span class="p">,</span><span class="s2">"B"</span><span class="p">],</span>
+<span class="w">      </span><span class="nt">"nelm"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"nsites"</span><span class="p">:</span><span class="w"> </span><span class="mi">60</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"metal"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"FE"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"spacegroup"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"filter"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"limit"</span><span class="p">:</span><span class="w"> </span><span class="mi">5000</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"prop"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">          </span><span class="s2">"spacegroup_relax"</span><span class="p">,</span><span class="w"> </span><span class="s2">"Pearson_symbol_relax"</span>
+<span class="w">      </span><span class="p">]</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">},</span>
+</pre></div>
+</div>
+<p>. <strong>Data from Materials Project</strong>:</p>
+<ul class="simple">
+<li><p>Here, we use <code class="docutils literal notranslate"><span class="pre">chemsys</span></code> mode.</p></li>
+<li><p>In <code class="docutils literal notranslate"><span class="pre">chemsys</span></code> dictionary, we set necessary <a class="reference internal" href="param.html#download-label"><span class="std std-ref">parameters</span></a>.</p></li>
+<li><p>Here, we are preparing <code class="docutils literal notranslate"><span class="pre">VASP</span></code> input files.</p></li>
+<li><p>Now execute:</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1">#To perform search.</span>
+
+mainprogram<span class="w"> </span>search
+
+<span class="c1"># This creates a list of compounds and stored in ``mpid-list.in`` file. Now edit ``input.in`` file to include all the compounds in ``mpid-list.in``. To download, execute:</span>
+
+mainprogram<span class="w"> </span>download
+
+<span class="c1"># Now VASP input files are stored within R{id}-{name} folder and the {id} and {name} are stored in ``mpid.in`` file.</span>
+</pre></div>
+</div>
+<p>. <strong>Data from OQMD database</strong>:</p>
+<p>Similarly, once adjusting parameters in <code class="docutils literal notranslate"><span class="pre">oqmd</span></code> dictionary, we execute following two commands:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mainprogram<span class="w"> </span>oqmd-search
+
+<span class="c1"># This creates a list of compounds and stored in ``mpid-list.in`` file. Here, instead of editing input.in, here we directly change ``start`` and ``end`` keyword in ``inp`` dictionary. To download, execute:</span>
+
+mainprogram<span class="w"> </span>oqmd-download
+
+<span class="c1"># Likewise, {id} and {name} are appended to the mpid.in file, with inputs generated within the R{id}-{name} directory.</span>
+</pre></div>
+</div>
+<p>. <strong>Data from AFLOW database</strong>:</p>
+<p>Now, we adjust <code class="docutils literal notranslate"><span class="pre">aflow</span></code> dictionary as in example. Similarly, we execute following two commands:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mainprogram<span class="w"> </span>aflow-search
+
+mainprogram<span class="w"> </span>aflow-download
+</pre></div>
+</div>
+<p>This will create inputs for <code class="docutils literal notranslate"><span class="pre">Mg-B</span></code> binaries. Subsequently, we can utilize <code class="docutils literal notranslate"><span class="pre">'elm':</span> <span class="pre">["Mg"]</span></code> or <code class="docutils literal notranslate"><span class="pre">'elm':</span> <span class="pre">["B"]</span></code> with <code class="docutils literal notranslate"><span class="pre">'nelm':</span> <span class="pre">1</span></code> to explore and download elemental solids.</p>
+<p>Each process now generates input files within the <code class="docutils literal notranslate"><span class="pre">R{id}-{name}</span></code> directory and updates the <code class="docutils literal notranslate"><span class="pre">mpid.in</span></code> file accordingly. The <code class="docutils literal notranslate"><span class="pre">mpid.in</span></code> file after executing all of the above process looks like as:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>v1<span class="w"> </span>mp-110<span class="w"> </span>Mg1
+v2<span class="w"> </span>mp-1056351<span class="w"> </span>Mg1
+v3<span class="w"> </span>mp-1094122<span class="w"> </span>Mg9
+v4<span class="w"> </span>mp-1247180<span class="w"> </span>Mg10
+v5<span class="w"> </span>mp-1055956<span class="w"> </span>Mg1
+v6<span class="w"> </span>mp-973364<span class="w"> </span>Mg4
+v7<span class="w"> </span>mp-1056702<span class="w"> </span>Mg1
+v8<span class="w"> </span>mp-153<span class="w"> </span>Mg2
+v9<span class="w"> </span>mp-978275<span class="w"> </span>Mg4B28
+v10<span class="w"> </span>mp-1016262<span class="w"> </span>Mg7B1
+v11<span class="w"> </span>mp-1016250<span class="w"> </span>Mg3B1
+v12<span class="w"> </span>mp-763<span class="w"> </span>Mg1B2
+v13<span class="w"> </span>mp-1222002<span class="w"> </span>Mg2B6
+v14<span class="w"> </span>mp-365<span class="w"> </span>Mg4B16
+v15<span class="w"> </span>mp-1023515<span class="w"> </span>Mg15B1
+v16<span class="w"> </span>mp-632401<span class="w"> </span>B12
+v17<span class="w"> </span>mp-22046<span class="w"> </span>B50
+v18<span class="w"> </span>mp-1202723<span class="w"> </span>B48
+v19<span class="w"> </span>mp-729184<span class="w"> </span>B40
+v20<span class="w"> </span>mp-570316<span class="w"> </span>B48
+v21<span class="w"> </span>mp-1055985<span class="w"> </span>B1
+v22<span class="w"> </span>mp-1193675<span class="w"> </span>B28
+v23<span class="w"> </span>mp-1196985<span class="w"> </span>B48
+v24<span class="w"> </span>mp-1182425<span class="w"> </span>B12
+v25<span class="w"> </span>mp-1104251<span class="w"> </span>B15
+v26<span class="w"> </span>mp-160<span class="w"> </span>B12
+v27<span class="w"> </span>mp-570602<span class="w"> </span>B50
+v28<span class="w"> </span>oqmd-5087<span class="w"> </span>MgB2
+v29<span class="w"> </span>oqmd-598035<span class="w"> </span>B
+v30<span class="w"> </span>oqmd-752496<span class="w"> </span>Mg
+v31<span class="w"> </span>oqmd-752493<span class="w"> </span>Mg
+v32<span class="w"> </span>oqmd-752498<span class="w"> </span>Mg
+v33<span class="w"> </span>oqmd-752503<span class="w"> </span>Mg
+v34<span class="w"> </span>oqmd-752513<span class="w"> </span>Mg
+v35<span class="w"> </span>oqmd-752518<span class="w"> </span>Mg
+v36<span class="w"> </span>aflow-0ff128f86aa02a78<span class="w"> </span>Mg4B28
+v37<span class="w"> </span>aflow-00cc032d65b23a0e<span class="w"> </span>Mg1B3
+v38<span class="w"> </span>aflow-06e000e3dfa7f1a6<span class="w"> </span>Mg1B3
+v39<span class="w"> </span>aflow-1557ff34d66462bd<span class="w"> </span>Mg1B3
+v40<span class="w"> </span>aflow-240ad1d192e37bd1<span class="w"> </span>Mg2B6
+v41<span class="w"> </span>aflow-30aabb3b48b8fe87<span class="w"> </span>Mg1B3
+v42<span class="w"> </span>aflow-372f21c264152ba1<span class="w"> </span>Mg1B3
+v43<span class="w"> </span>aflow-4c199fa89b1b5b52<span class="w"> </span>Mg1B3
+v44<span class="w"> </span>aflow-02cc1bd8affd16ae<span class="w"> </span>Mg2B4
+v45<span class="w"> </span>aflow-0d34f75d8bfe3ae7<span class="w"> </span>Mg2B4
+v46<span class="w"> </span>aflow-0ec6d7c681e7b2ec<span class="w"> </span>Mg2B4
+v47<span class="w"> </span>aflow-1df296ebd052995b<span class="w"> </span>Mg2B4
+v48<span class="w"> </span>aflow-21ce6b6bac34f308<span class="w"> </span>Mg1B2
+v49<span class="w"> </span>aflow-258fa48850d77a27<span class="w"> </span>Mg4B8
+v50<span class="w"> </span>aflow-28a586560c918d8b<span class="w"> </span>Mg2B4
+v51<span class="w"> </span>aflow-2ac2cc83dd458e57<span class="w"> </span>Mg2B4
+v52<span class="w"> </span>aflow-2ca5e61d6888c369<span class="w"> </span>Mg1B2
+v53<span class="w"> </span>aflow-3fb674873248b3f2<span class="w"> </span>Mg2B4
+v54<span class="w"> </span>aflow-4927ade1c3ed0756<span class="w"> </span>Mg2B4
+v55<span class="w"> </span>aflow-43c18edea03be7cb<span class="w"> </span>Mg3B5
+v56<span class="w"> </span>aflow-0cc480408f59af4c<span class="w"> </span>Mg6B7
+v57<span class="w"> </span>aflow-1465604b7bf98c6f<span class="w"> </span>Mg2B2
+v58<span class="w"> </span>aflow-19d6ec62450aaafc<span class="w"> </span>Mg1B1
+v59<span class="w"> </span>aflow-21114a3635ea4f5a<span class="w"> </span>Mg1B1
+v60<span class="w"> </span>aflow-25b6828350dc1b7c<span class="w"> </span>Mg2B2
+v61<span class="w"> </span>aflow-3149e8cc44907844<span class="w"> </span>Mg6B6
+v62<span class="w"> </span>aflow-3e0f6494b0887580<span class="w"> </span>Mg2B2
+v63<span class="w"> </span>aflow-3e7e4bdf16a54268<span class="w"> </span>Mg2B2
+v64<span class="w"> </span>aflow-3f62c1822fd74775<span class="w"> </span>Mg4B4
+v65<span class="w"> </span>aflow-41b3f291ff574622<span class="w"> </span>Mg1B1
+v66<span class="w"> </span>aflow-0522c21699f6160f<span class="w"> </span>Mg2B1
+v67<span class="w"> </span>aflow-0dc1bf12a4577363<span class="w"> </span>Mg4B2
+v68<span class="w"> </span>aflow-1478d09a2eadbf28<span class="w"> </span>Mg4B2
+v69<span class="w"> </span>aflow-35ef05a738f98a62<span class="w"> </span>Mg2B1
+v70<span class="w"> </span>aflow-415ebc0814f84af4<span class="w"> </span>Mg4B2
+v71<span class="w"> </span>aflow-0dead30f9e4daf3a<span class="w"> </span>Mg3B1
+v72<span class="w"> </span>aflow-0e54cf897161c5a2<span class="w"> </span>Mg3B1
+v73<span class="w"> </span>aflow-137c05f64299cd85<span class="w"> </span>Mg3B1
+v74<span class="w"> </span>aflow-28698c7a4ef12281<span class="w"> </span>Mg3B1
+v75<span class="w"> </span>aflow-13d6d9dea258ceeb<span class="w"> </span>Mg4B1
+v76<span class="w"> </span>aflow-1ea75f4a6b073ff2<span class="w"> </span>Mg4B1
+v77<span class="w"> </span>aflow-04993233df287621<span class="w"> </span>Mg5B1
+v78<span class="w"> </span>aflow-429a554a5809b1ab<span class="w"> </span>Mg5B1
+v79<span class="w"> </span>aflow-4f396289df6f3900<span class="w"> </span>Mg7B1
+</pre></div>
+</div>
+<p>Now, we amalgamate these datasets from various databases and generate a new set of data having distinct spacegroup by executing:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mainprogram<span class="w"> </span>data-combine
+</pre></div>
+</div>
+<p>This creates a new file <code class="docutils literal notranslate"><span class="pre">mpid-new.in</span></code> and input files within <code class="docutils literal notranslate"><span class="pre">filtered_inputs</span></code> directory. This command is not only useful for combining data from different databases but will also help filter out duplicate entry of a compound. Please delete all existing inputs within the working directory and transfer input files from the <code class="docutils literal notranslate"><span class="pre">filtered_inputs</span></code> folder. Additionally, replace <code class="docutils literal notranslate"><span class="pre">mpid.in</span></code> with <code class="docutils literal notranslate"><span class="pre">mpid-new.in</span></code>.</p>
+<p>A new <code class="docutils literal notranslate"><span class="pre">mpid-new.in</span></code> has following data:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>v1<span class="w"> </span>mp-632401<span class="w"> </span>B12
+v2<span class="w"> </span>mp-22046<span class="w"> </span>B50
+v3<span class="w"> </span>mp-1202723<span class="w"> </span>B12
+v4<span class="w"> </span>mp-729184<span class="w"> </span>B40
+v5<span class="w"> </span>mp-570316<span class="w"> </span>B48
+v6<span class="w"> </span>mp-1055985<span class="w"> </span>B1
+v7<span class="w"> </span>mp-1193675<span class="w"> </span>B28
+v8<span class="w"> </span>mp-1196985<span class="w"> </span>B48
+v9<span class="w"> </span>mp-1182425<span class="w"> </span>B12
+v10<span class="w"> </span>mp-1104251<span class="w"> </span>B15
+v11<span class="w"> </span>mp-160<span class="w"> </span>B12
+v12<span class="w"> </span>mp-570602<span class="w"> </span>B50
+v13<span class="w"> </span>mp-978275<span class="w"> </span>Mg4B28
+v14<span class="w"> </span>mp-365<span class="w"> </span>Mg4B16
+v15<span class="w"> </span>mp-1222002<span class="w"> </span>Mg2B6
+v16<span class="w"> </span>aflow-00cc032d65b23a0e<span class="w"> </span>Mg1B3
+v17<span class="w"> </span>aflow-06e000e3dfa7f1a6<span class="w"> </span>Mg1B3
+v18<span class="w"> </span>aflow-1557ff34d66462bd<span class="w"> </span>Mg1B3
+v19<span class="w"> </span>aflow-240ad1d192e37bd1<span class="w"> </span>Mg2B6
+v20<span class="w"> </span>aflow-30aabb3b48b8fe87<span class="w"> </span>Mg1B3
+v21<span class="w"> </span>aflow-372f21c264152ba1<span class="w"> </span>Mg1B3
+v22<span class="w"> </span>aflow-4c199fa89b1b5b52<span class="w"> </span>Mg1B3
+v23<span class="w"> </span>mp-763<span class="w"> </span>Mg1B2
+v24<span class="w"> </span>aflow-02cc1bd8affd16ae<span class="w"> </span>Mg2B4
+v25<span class="w"> </span>aflow-0ec6d7c681e7b2ec<span class="w"> </span>Mg2B4
+v26<span class="w"> </span>aflow-1df296ebd052995b<span class="w"> </span>Mg2B4
+v27<span class="w"> </span>aflow-21ce6b6bac34f308<span class="w"> </span>Mg1B2
+v28<span class="w"> </span>aflow-258fa48850d77a27<span class="w"> </span>Mg4B8
+v29<span class="w"> </span>aflow-28a586560c918d8b<span class="w"> </span>Mg2B4
+v30<span class="w"> </span>aflow-2ac2cc83dd458e57<span class="w"> </span>Mg2B4
+v31<span class="w"> </span>aflow-2ca5e61d6888c369<span class="w"> </span>Mg1B2
+v32<span class="w"> </span>aflow-3fb674873248b3f2<span class="w"> </span>Mg1B2
+v33<span class="w"> </span>aflow-4927ade1c3ed0756<span class="w"> </span>Mg1B2
+v34<span class="w"> </span>aflow-43c18edea03be7cb<span class="w"> </span>Mg3B5
+v35<span class="w"> </span>aflow-0cc480408f59af4c<span class="w"> </span>Mg6B7
+v36<span class="w"> </span>aflow-1465604b7bf98c6f<span class="w"> </span>Mg2B2
+v37<span class="w"> </span>aflow-19d6ec62450aaafc<span class="w"> </span>Mg1B1
+v38<span class="w"> </span>aflow-21114a3635ea4f5a<span class="w"> </span>Mg1B1
+v39<span class="w"> </span>aflow-25b6828350dc1b7c<span class="w"> </span>Mg2B2
+v40<span class="w"> </span>aflow-3149e8cc44907844<span class="w"> </span>Mg2B2
+v41<span class="w"> </span>aflow-3e0f6494b0887580<span class="w"> </span>Mg2B2
+v42<span class="w"> </span>aflow-3e7e4bdf16a54268<span class="w"> </span>Mg2B2
+v43<span class="w"> </span>aflow-3f62c1822fd74775<span class="w"> </span>Mg4B4
+v44<span class="w"> </span>aflow-41b3f291ff574622<span class="w"> </span>Mg1B1
+v45<span class="w"> </span>aflow-0522c21699f6160f<span class="w"> </span>Mg2B1
+v46<span class="w"> </span>aflow-0dc1bf12a4577363<span class="w"> </span>Mg4B2
+v47<span class="w"> </span>aflow-1478d09a2eadbf28<span class="w"> </span>Mg2B1
+v48<span class="w"> </span>aflow-35ef05a738f98a62<span class="w"> </span>Mg2B1
+v49<span class="w"> </span>aflow-415ebc0814f84af4<span class="w"> </span>Mg4B2
+v50<span class="w"> </span>mp-1016250<span class="w"> </span>Mg3B1
+v51<span class="w"> </span>aflow-0dead30f9e4daf3a<span class="w"> </span>Mg3B1
+v52<span class="w"> </span>aflow-0e54cf897161c5a2<span class="w"> </span>Mg3B1
+v53<span class="w"> </span>aflow-137c05f64299cd85<span class="w"> </span>Mg3B1
+v54<span class="w"> </span>aflow-28698c7a4ef12281<span class="w"> </span>Mg3B1
+v55<span class="w"> </span>aflow-13d6d9dea258ceeb<span class="w"> </span>Mg4B1
+v56<span class="w"> </span>aflow-1ea75f4a6b073ff2<span class="w"> </span>Mg4B1
+v57<span class="w"> </span>aflow-04993233df287621<span class="w"> </span>Mg5B1
+v58<span class="w"> </span>aflow-429a554a5809b1ab<span class="w"> </span>Mg5B1
+v59<span class="w"> </span>mp-1016262<span class="w"> </span>Mg7B1
+v60<span class="w"> </span>aflow-4f396289df6f3900<span class="w"> </span>Mg7B1
+v61<span class="w"> </span>mp-1023515<span class="w"> </span>Mg15B1
+v62<span class="w"> </span>mp-110<span class="w"> </span>Mg1
+v63<span class="w"> </span>mp-1094122<span class="w"> </span>Mg3
+v64<span class="w"> </span>mp-1247180<span class="w"> </span>Mg10
+v65<span class="w"> </span>mp-1055956<span class="w"> </span>Mg1
+v66<span class="w"> </span>mp-973364<span class="w"> </span>Mg4
+v67<span class="w"> </span>mp-1056702<span class="w"> </span>Mg1
+v68<span class="w"> </span>mp-153<span class="w"> </span>Mg2
+</pre></div>
+</div>
+</section>
+<section id="statistics">
+<h1 id="statistics">Statistics<a class="headerlink" href="#statistics" title="Link to this heading">¶</a></h1>
+</section>
+<section id="convergence-tests">
+<h1 id="convergence-tests">Convergence tests<a class="headerlink" href="#convergence-tests" title="Link to this heading">¶</a></h1>
+<p>Please check <a class="reference internal" href="param.html#convtest-label"><span class="std std-ref">conv_test</span></a> dictionary:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run Convergence Tests</span>
+mainprogram<span class="w"> </span>convtest
+
+<span class="c1"># Collect Total Energies and Store Results in convergence_result folder.</span>
+mainprogram<span class="w"> </span><span class="m">22</span>
+</pre></div>
+</div>
+</section>
+<section id="structure-relaxation">
+<span id="relax-label"></span><h1 id="structure-relaxation">Structure relaxation<a class="headerlink" href="#structure-relaxation" title="Link to this heading">¶</a></h1>
+<p>To perform the structure relaxation, execute:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mainprogram<span class="w"> </span><span class="m">1</span>
+</pre></div>
+</div>
+<p>This command creates the R{id}-{name}/relax folder and conducts scf relaxation. For MgB2, where mpid = mp-763 and compound = ‘B2Mg1’, the Rmp-763-B2Mg1/relax folder is generated.</p>
+<p>To update the input files with the relaxed structure, use:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mainprogram<span class="w"> </span><span class="m">2</span>
+</pre></div>
+</div>
+<p>For subsequent scf relaxations without folder creation, execute:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mainprogram<span class="w"> </span><span class="m">3</span>
+</pre></div>
+</div>
+<p>Repeat processes 2 and 3 multiple times until the system is fully relaxed.</p>
+</section>
+<section id="electron-phonon-coupling-from-qe">
+<span id="epc"></span><h1 id="electron-phonon-coupling-from-qe">Electron-phonon coupling from QE<a class="headerlink" href="#electron-phonon-coupling-from-qe" title="Link to this heading">¶</a></h1>
+<p>Perform <a class="reference internal" href="#relax-label"><span class="std std-ref">structure relaxation</span></a>.</p>
+<p>For extracting the structure and generating necessary input files for various (scf,bands,dos,phonon,epw,wannier,wanniertool,pdos,electron-phonon) calculations with Quantum Espresso (QE), use:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mainprogram<span class="w"> </span><span class="m">4</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">This</span> <span class="pre">step</span> <span class="pre">is</span> <span class="pre">crucial,</span> <span class="pre">don't</span> <span class="pre">forget</span> <span class="pre">to</span> <span class="pre">execute</span> <span class="pre">after</span> <span class="pre">structure</span> <span class="pre">relaxation.</span></code></p>
+<p>To conduct electron-phonon calculations, follow these steps:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># For SCF calculations using a fine k-grid (twice that of coarse grid) for interpolating EPC quantities, create the "calc" folder inside "R{id}-{name}/".</span>
+
+mainprogram<span class="w"> </span><span class="m">5</span>
+
+<span class="c1"># Now SCF calculations using a coarse k-grid, in which EPC calculations is performed.</span>
+
+mainprogram<span class="w"> </span><span class="m">6</span>
+</pre></div>
+</div>
+<p>Here, the el-ph calculations (EPC) is started by executing following command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mainprogram<span class="w"> </span><span class="m">7</span>
+</pre></div>
+</div>
+<p>The behavior of this command is described below.</p>
+<blockquote>
+<div><p><strong>(a)</strong> For fresh calculations, it run EPC calculations with <a class="reference external" href="https://www.quantum-espresso.org/Doc/INPUT_PH.html#idm36">alpha_mix</a> as <code class="docutils literal notranslate"><span class="pre">alpha_mix</span> <span class="pre">=</span> <span class="pre">0.7</span></code>.</p>
+<p><strong>(b)</strong> If the calculations do not convergence, consider increasing <a class="reference external" href="https://www.quantum-espresso.org/Doc/INPUT_PH.html#idm30">niter_ph</a> value.</p>
+<p><strong>(c)</strong> If the calculations still fail to converge, they are resubmitted with <code class="docutils literal notranslate"><span class="pre">alpha_mix</span> <span class="pre">=</span> <span class="pre">0.3</span></code>.</p>
+<p><strong>(d)</strong> If the calculations fail again with lower <code class="docutils literal notranslate"><span class="pre">alpha_mix</span></code>, then the script adjusts <a class="reference external" href="https://www.quantum-espresso.org/Doc/INPUT_PH.html#idm39">nmix_ph</a> as <code class="docutils literal notranslate"><span class="pre">alpha_mix</span> <span class="pre">=</span> <span class="pre">0.3,</span> <span class="pre">nmix_ph</span> <span class="pre">=</span> <span class="pre">8</span></code>.</p>
+</div></blockquote>
+<p>Check the status of the EPC calculations with</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mainprogram<span class="w"> </span>checkph
+</pre></div>
+</div>
+<p>After a converged EPC calculations, postprocessing is performed:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mainprogram<span class="w"> </span><span class="m">8</span>-12
+</pre></div>
+</div>
+<p>Perform plotting with:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mainprogram<span class="w"> </span><span class="m">19</span>
+</pre></div>
+</div>
+<p>Options include gammaband in input.in, as well as eband (electronic band), phband (phonon band), wann_band (wannier-interpolated band), pdos (DOS, pDOS), and phonproj (atom projected phonon dispersion).</p>
+<p>To extract the results, creating the result.csv file and storing relaxed structures in the “cif” folder, use:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mainprogram<span class="w"> </span><span class="m">21</span>
+</pre></div>
+</div>
+<p>Finally, clean heavy files and copy to a folder named “completed” with:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mainprogram<span class="w"> </span><span class="m">20</span>
+</pre></div>
+</div>
+<p>With the <code class="docutils literal notranslate"><span class="pre">substitution</span></code>, <code class="docutils literal notranslate"><span class="pre">pressure</span></code>, and <code class="docutils literal notranslate"><span class="pre">charge</span> <span class="pre">calculations</span></code> modes, we can progress towards identifying those near the convex hull and exploring phonon-mediated superconductivity.</p>
+</section>
+<section id="atom-projected-phonon-dispersion">
+<h1 id="atom-projected-phonon-dispersion">Atom-projected phonon dispersion<a class="headerlink" href="#atom-projected-phonon-dispersion" title="Link to this heading">¶</a></h1>
+<p>1.Make sure .eig file is present inside R{id}-{name}/calc folder</p>
+<dl>
+<dt>2.Use <code class="docutils literal notranslate"><span class="pre">phonproj</span></code> keyword in <a class="reference internal" href="otherinput.html#inputin-label"><span class="std std-ref">input.in</span></a> file in the plot section, and perform <code class="docutils literal notranslate"><span class="pre">mainprogram</span> <span class="pre">19</span></code>.</dt><dd><p>This step creates following files inside R{id}-{name}/calc/ folder.</p>
+<p>phonon-name.proj.gp ==&gt; Has atomic projection for one atoms followed by others. name would be ‘MgB2’</p>
+<p>phonon-Mg.proj ==&gt; separate file for Mg projections</p>
+<p>phonon-B.proj ==&gt; separate file for B projection</p>
+</dd>
+</dl>
+<p>3.Check <code class="docutils literal notranslate"><span class="pre">plot-proj-{id}-{name}.pdf</span></code> insides plots directory. Here is an example of Y2C3: Y (red) and C (blue).</p>
+<a class="reference internal image-reference" href="_images/atom_proj.jpg"><img alt="_images/atom_proj.jpg" class="align-center" src="_images/atom_proj.jpg" style="width: 500px; height: 300px;"/></a>
+</section>
+<section id="band-structure-and-dos-calculation">
+<span id="band-dos-label"></span><h1 id="band-structure-and-dos-calculation">Band structure and DOS calculation<a class="headerlink" href="#band-structure-and-dos-calculation" title="Link to this heading">¶</a></h1>
+<p>Perform <a class="reference internal" href="#relax-label"><span class="std std-ref">structure relaxation</span></a>.</p>
+<p>For QE, after structure relaxation, execute:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mainprogram<span class="w"> </span><span class="m">4</span>
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Perform Bandstructure Calculation (QE). R{id}-{name}/bands folder created.</span>
+mainprogram<span class="w"> </span><span class="m">13</span>-15
+
+<span class="c1"># Perform Density of States (DOS) Calculation (QE). R{id}-{name}/dos folder created.</span>
+mainprogram<span class="w"> </span><span class="m">16</span>-17
+
+<span class="c1"># Perform Partial Density of States (PDOS) Calculation (QE)</span>
+mainprogram<span class="w"> </span><span class="m">20</span>
+
+<span class="c1"># Perform Bandstructure Calculation (VASP)</span>
+mainprogram<span class="w"> </span><span class="m">13</span><span class="w"> </span><span class="m">15</span>
+
+<span class="c1"># Perform Density of States (DOS) Calculation (VASP)</span>
+mainprogram<span class="w"> </span><span class="m">16</span>
+
+<span class="c1"># Perform Partial Density of States (PDOS) Calculation (VASP)</span>
+mainprogram<span class="w"> </span><span class="m">16</span>
+
+<span class="c1"># Plotting (QE and VASP)</span>
+mainprogram<span class="w"> </span><span class="m">19</span><span class="w"> </span><span class="c1"># Check band_stat.csv inside R{id}-{name}/bands/, which store minimum and maximum eigenvalues of different bands, useful to locate energy windows for wannierization process.</span>
+</pre></div>
+</div>
+<p>Here, each process needs to execute one at a time. For example, <code class="docutils literal notranslate"><span class="pre">13-15</span></code> means executing <code class="docutils literal notranslate"><span class="pre">13</span></code>, <code class="docutils literal notranslate"><span class="pre">14</span></code>, and <code class="docutils literal notranslate"><span class="pre">15</span></code> in serial mode, while <code class="docutils literal notranslate"><span class="pre">13</span> <span class="pre">15</span></code> means executing <code class="docutils literal notranslate"><span class="pre">13</span></code> and <code class="docutils literal notranslate"><span class="pre">15</span></code> individually.</p>
+</section>
+<section id="applying-distortion-following-eigenmode">
+<h1 id="applying-distortion-following-eigenmode">Applying distortion following eigenmode<a class="headerlink" href="#applying-distortion-following-eigenmode" title="Link to this heading">¶</a></h1>
+<p>This functionality is only available for Quantum ESPRESSO (QE).</p>
+<p>Ensure that the <code class="docutils literal notranslate"><span class="pre">{name}.dyn</span></code> file exists inside the R{id}-{name}/calc/ folder, where {id} and {name} correspond to identifiers and names found in the <code class="docutils literal notranslate"><span class="pre">mpid-list.in</span></code> file.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Execute dynmat.x and create dynmat.axsf file with eigenmodes.</span>
+
+mainprogram<span class="w"> </span><span class="m">23</span>
+
+<span class="c1"># Obtain atomic displacement files for a phonon mode. Relax distorted structures. Perform relaxation of 3N modes for systems with N ions. It creates ``R{i}`` folders, ``i = 1 to N`` inside R{id}-{name}/</span>
+
+mainprogram<span class="w"> </span><span class="m">24</span>
+
+<span class="c1">#Collect results "Energy-mode.csv" from the relaxation of distorted structures, can be found in R{id}-{name}/</span>
+
+mainprogram<span class="w"> </span><span class="m">25</span>
+</pre></div>
+</div>
+<p>To obtain unique relaxed energies, follow these steps:</p>
+<ol class="arabic simple">
+<li><p>Copy <code class="docutils literal notranslate"><span class="pre">extract_single_distort</span></code> and <code class="docutils literal notranslate"><span class="pre">distort-extract.py</span></code> from the <code class="docutils literal notranslate"><span class="pre">utility/distortion</span></code> folder.</p></li>
+<li><p>Execute <code class="docutils literal notranslate"><span class="pre">./extract_single_distort</span> <span class="pre">start</span> <span class="pre">end</span> <span class="pre">mpid-list.in</span></code> in your terminal. Replace <code class="docutils literal notranslate"><span class="pre">start</span></code> and <code class="docutils literal notranslate"><span class="pre">end</span></code> with appropriate indices, and <code class="docutils literal notranslate"><span class="pre">mpid-list.in</span></code> with the relevant file containing compound information.</p></li>
+<li><p>This process extracts unique ground-state energies for any compound and stores the results in the <code class="docutils literal notranslate"><span class="pre">distorted-energy.csv</span></code> file.</p></li>
+</ol>
+</section>
+<section id="pressure-calculation">
+<h1 id="pressure-calculation">Pressure calculation<a class="headerlink" href="#pressure-calculation" title="Link to this heading">¶</a></h1>
+<p>Perform <a class="reference internal" href="#relax-label"><span class="std std-ref">structure relaxation</span></a>.</p>
+<p>Use the <a class="reference internal" href="otherinput.html#pressure-label"><span class="std std-ref">pressure.in</span></a> file with the following format:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>all
+
+v1<span class="w"> </span><span class="m">50</span>
+
+v2<span class="w"> </span><span class="m">100</span>
+
+v3<span class="w"> </span><span class="m">150</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>The first line represents the <code class="docutils literal notranslate"><span class="pre">cell_dofree</span></code> parameter. <code class="docutils literal notranslate"><span class="pre">all</span></code> indicates that all angles and axes are moved.</p></li>
+<li><p>The subsequent lines, e.g., <code class="docutils literal notranslate"><span class="pre">v1</span> <span class="pre">50</span></code>, denote the indices (v1, v2, etc.) and the corresponding pressure values in kbar.</p></li>
+</ul>
+<p>For Quantum ESPRESSO (QE):</p>
+<ul class="simple">
+<li><p>Execute <code class="docutils literal notranslate"><span class="pre">mainprogram</span> <span class="pre">pressure-input</span></code> to create separate files for pressure inside <code class="docutils literal notranslate"><span class="pre">scf_dir/scf-mpid-pv.in</span></code>, where <code class="docutils literal notranslate"><span class="pre">pv</span></code> signifies the pressure value substituted. Additionally, <code class="docutils literal notranslate"><span class="pre">mpid-pressure.in</span></code> is created.</p></li>
+</ul>
+<p>For VASP:</p>
+<ul class="simple">
+<li><p>Utilize the “pressure.in” file with the format:</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>v1<span class="w"> </span><span class="m">0</span>.92
+
+v2<span class="w"> </span><span class="m">0</span>.94
+
+to<span class="w"> </span>isotropically<span class="w"> </span>scale<span class="w"> </span>the<span class="w"> </span>lattice<span class="w"> </span>parameters.
+</pre></div>
+</div>
+<p>For phonon calculations with pressure:</p>
+<ul class="simple">
+<li><p>Use the “ph-q.in” file for the Gamma point calculation. Other generic q-points can also be used.</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w">  </span><span class="m">0</span><span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="m">0</span>
+<span class="w">  </span>T
+
+Here,<span class="w"> </span><span class="sb">``</span>T<span class="sb">``</span><span class="w"> </span>denotes<span class="w"> </span>a<span class="w"> </span>metal<span class="p">;</span><span class="w"> </span>otherwise,<span class="w"> </span>it<span class="w"> </span>is<span class="w"> </span>considered<span class="w"> </span>nonmetallic.
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Execute <code class="docutils literal notranslate"><span class="pre">mainprogram</span> <span class="pre">epw1</span></code> to generate input files for phonon calculations.</p></li>
+</ul>
+<p>Perform the following operations:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mainprogram<span class="w"> </span><span class="m">26</span><span class="w"> </span>:<span class="w"> </span>Perform<span class="w"> </span>SCF<span class="w"> </span>relaxation.
+
+mainprogram<span class="w"> </span><span class="m">27</span>:<span class="w"> </span>Perform<span class="w"> </span>phonon<span class="w"> </span>calculation.
+</pre></div>
+</div>
+<p>Additionally, you can incorporate <code class="docutils literal notranslate"><span class="pre">mpid-pressure.in</span></code> in <code class="docutils literal notranslate"><span class="pre">input.in</span></code> and conduct other calculations.</p>
+<p>Execute <code class="docutils literal notranslate"><span class="pre">mainprogram</span> <span class="pre">28</span></code> to clean pressure folders.</p>
+</section>
+<section id="substitution-calculations">
+<h1 id="substitution-calculations">Substitution calculations<a class="headerlink" href="#substitution-calculations" title="Link to this heading">¶</a></h1>
+<p>To access help, type <code class="docutils literal notranslate"><span class="pre">site_subs.py</span> <span class="pre">h</span></code>.</p>
+<p>In the <code class="docutils literal notranslate"><span class="pre">htepc.json</span></code> file, ensure the existence of the <a class="reference internal" href="param.html#substitute-label"><span class="std std-ref">substitute</span></a>  keyword. To execute the substitution, run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mainprogram<span class="w"> </span><span class="m">29</span>
+</pre></div>
+</div>
+<p>There are two modes of substitution:</p>
+<p>1.Element Replacement Mode:</p>
+<p>Replace an element in a parent compound with a dictionary of elements and the number of sites as key-value pairs.</p>
+<p>For example, for the compound MgB2 requiring substitution for <code class="docutils literal notranslate"><span class="pre">B</span></code>, the substitution key will be as follows:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="s2">"mode"</span>:<span class="w"> </span><span class="m">1</span>
+
+<span class="s2">"elm"</span>:<span class="w"> </span><span class="s1">'B'</span>
+
+<span class="s2">"sub"</span>:<span class="w"> </span><span class="o">{</span><span class="s1">'B'</span>:<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="s1">'C'</span>:<span class="w"> </span><span class="m">1</span><span class="o">}</span>,<span class="w"> </span><span class="o">{</span><span class="s1">'B'</span>:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="s1">'C'</span>:<span class="w"> </span><span class="m">2</span><span class="o">}</span>
+</pre></div>
+</div>
+<p>This action will generate two additional files named <code class="docutils literal notranslate"><span class="pre">MgBC</span></code> and <code class="docutils literal notranslate"><span class="pre">MgC2</span></code>. The <code class="docutils literal notranslate"><span class="pre">mpid</span></code> and the compound name will be added to the <code class="docutils literal notranslate"><span class="pre">mpid.in</span></code> file. Additionally, two input files will be created inside the <code class="docutils literal notranslate"><span class="pre">scf_dir</span></code> directory as <code class="docutils literal notranslate"><span class="pre">scf-mpid-1.in</span></code> and <code class="docutils literal notranslate"><span class="pre">scf-mpid-2.in</span></code>.</p>
+<p>For VASP, <code class="docutils literal notranslate"><span class="pre">Rmp-763-1-MgB2</span></code> and <code class="docutils literal notranslate"><span class="pre">Rmp-763-2-MgB2</span></code> folders will be created with INCAR, KPOINTS, and POSCAR files. Create POTCAR separately. Once again, the <code class="docutils literal notranslate"><span class="pre">mpid</span></code> and the compound name will be added to the <code class="docutils literal notranslate"><span class="pre">mpid.in</span></code> file. Now, use the name of the <code class="docutils literal notranslate"><span class="pre">mpid.in</span></code> file in the <code class="docutils literal notranslate"><span class="pre">input.in</span></code> file to perform other calculations.</p>
+<p>To use the functionality, ensure the presence of the <code class="docutils literal notranslate"><span class="pre">bsym</span></code> package.</p>
+<p>2.Dictionary Replacement Mode:</p>
+<p>Utilize a dictionary in which all keys are replaced by their corresponding value pairs.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="s2">"mode"</span>:<span class="w"> </span><span class="m">2</span>
+
+<span class="s2">"new_sub"</span>:<span class="w"> </span><span class="o">{</span><span class="s1">'B'</span>:<span class="w"> </span><span class="s1">'C'</span><span class="o">}</span>
+</pre></div>
+</div>
+</section>
+<section id="fermi-surface">
+<h1 id="fermi-surface">Fermi Surface<a class="headerlink" href="#fermi-surface" title="Link to this heading">¶</a></h1>
+<p>Perform <a class="reference internal" href="#relax-label"><span class="std std-ref">structure relaxation</span></a>.</p>
+<p>First, generate a <a class="reference internal" href="param.html#job-label"><span class="std std-ref">job script</span></a> <code class="docutils literal notranslate"><span class="pre">run-ifermi.sh</span></code>. We need <a class="reference internal" href="param.html#ifermi"><span class="std std-ref">ifermi.json</span></a> file. Once, we edit based on our need,
+execute:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mainprogram<span class="w"> </span>jobscript
+</pre></div>
+</div>
+<p>For Fermi surface calculations using IFERMI:</p>
+<ol class="arabic simple">
+<li><p>Install the IFERMI package from [<a class="reference external" href="https://fermisurfaces.github.io/IFermi/introduction.html#installation](https://fermisurfaces.github.io/IFermi/introduction">https://fermisurfaces.github.io/IFermi/introduction.html#installation](https://fermisurfaces.github.io/IFermi/introduction</a>.html#installation).</p></li>
+<li><p>Once the <code class="docutils literal notranslate"><span class="pre">vasprun.xml</span></code> file is created inside <code class="docutils literal notranslate"><span class="pre">R{id}-{name}/relax/</span></code>, execute</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mainprogram<span class="w"> </span>fermisurface
+</pre></div>
+</div>
+<p>to generate Fermi surfaces in different formats using the IFERMI package.</p>
+</section>
+<section id="thermodynamic-stability-convex-hull">
+<h1 id="thermodynamic-stability-convex-hull">Thermodynamic stability (Convex Hull)<a class="headerlink" href="#thermodynamic-stability-convex-hull" title="Link to this heading">¶</a></h1>
+<p>A.Prepare input files</p>
+<p>Suppose we are computing phase diagram of <code class="docutils literal notranslate"><span class="pre">MgB2</span></code>, then we need to download all the elemental solids, binary solids corresponding to composition <code class="docutils literal notranslate"><span class="pre">Mg-B</span></code>. We do that by switching on the <code class="docutils literal notranslate"><span class="pre">chemsys</span></code> mode in <a class="reference internal" href="param.html#download-label"><span class="std std-ref">download</span></a> keyword in <a class="reference internal" href="param.html#json-label"><span class="std std-ref">htepc.json</span></a>.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="s2">"download"</span>:<span class="w"> </span><span class="o">{</span>
+<span class="s2">"info"</span>:<span class="w"> </span><span class="o">{</span>
+<span class="w">  </span><span class="s2">"mode"</span>:<span class="w"> </span><span class="s2">"element"</span>,<span class="w"> </span><span class="o">==</span>&gt;<span class="w"> </span>change<span class="w"> </span>this<span class="w"> </span>to<span class="w"> </span><span class="s2">"chemsys"</span>
+<span class="w">  </span><span class="s2">"metal"</span>:<span class="w"> </span>false,
+<span class="w">  </span><span class="s2">"FE"</span>:<span class="w"> </span>false,
+<span class="w">  </span><span class="s2">"thermo_stable"</span>:<span class="w"> </span>false,
+<span class="w">  </span>......
+<span class="w">  </span>......<span class="o">}</span>
+</pre></div>
+</div>
+<p>Now edit following portion of the <code class="docutils literal notranslate"><span class="pre">htepc.json</span></code> file:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="s2">"chemsys"</span>:<span class="w"> </span><span class="o">{</span>
+<span class="w">  </span><span class="s2">"entries"</span>:<span class="w"> </span><span class="o">[</span><span class="s2">"Mg"</span>,<span class="w"> </span><span class="s2">"B"</span><span class="o">]</span>,
+<span class="w">  </span><span class="s2">"size_constraint"</span>:<span class="w"> </span><span class="m">60</span>,<span class="w"> </span><span class="o">==</span>&gt;<span class="w"> </span>Optimal<span class="w"> </span>size<span class="w"> </span>of<span class="w"> </span>the<span class="w"> </span>compounds.
+<span class="w">  </span><span class="s2">"ntype_constraint"</span>:<span class="w"> </span><span class="m">3</span>,<span class="w">  </span><span class="o">==</span>&gt;<span class="w"> </span>Compounds<span class="w"> </span>containing<span class="w"> </span>fewer<span class="w"> </span>than<span class="w"> </span><span class="m">3</span><span class="w"> </span>different<span class="w"> </span>species,<span class="w"> </span>specifically<span class="w"> </span><span class="m">2</span>.
+<span class="w">  </span><span class="s2">"must_include"</span>:<span class="w"> </span><span class="o">[</span><span class="s2">"Mg"</span>,<span class="w"> </span><span class="s2">"B"</span><span class="o">]</span>,<span class="w"> </span><span class="o">==</span>&gt;<span class="w"> </span>If<span class="w"> </span><span class="s2">"B"</span><span class="w"> </span>is<span class="w"> </span>not<span class="w"> </span>included,<span class="w"> </span>only<span class="w"> </span>compounds<span class="w"> </span>containing<span class="w"> </span><span class="s2">"Mg"</span><span class="w"> </span>and<span class="w"> </span>the<span class="w"> </span>binary<span class="w"> </span>compound<span class="w"> </span><span class="s2">"Mg-B"</span><span class="w"> </span>are<span class="w"> </span>extracted<span class="w"> </span>since<span class="w"> </span><span class="s2">"Mg"</span><span class="w"> </span>must<span class="w"> </span>be<span class="w"> </span>included.
+<span class="w">  </span><span class="s2">"form_en"</span>:<span class="w"> </span>false,
+<span class="w">  </span><span class="s2">"metal"</span>:<span class="w"> </span>false,
+<span class="w">  </span><span class="s2">"magnetic"</span>:<span class="w"> </span>true,
+<span class="w">  </span><span class="s2">"spacegroup"</span>:<span class="w"> </span>null<span class="o">}</span>,
+</pre></div>
+</div>
+<p>By switching all other keyword to <code class="docutils literal notranslate"><span class="pre">false</span></code>, we don’t apply any filter on these properties. Now, we will search these
+queries on Materials Project database by executing:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mainprogram<span class="w"> </span>search
+</pre></div>
+</div>
+<p>Now, we will adjust <code class="docutils literal notranslate"><span class="pre">start</span></code>, <code class="docutils literal notranslate"><span class="pre">end</span></code>, and <code class="docutils literal notranslate"><span class="pre">mpid-list.in</span></code> in <a class="reference internal" href="otherinput.html#inputin-label"><span class="std std-ref">input.in</span></a>. We now execute <code class="docutils literal notranslate"><span class="pre">download</span></code> command to generate input files. If you want to use <code class="docutils literal notranslate"><span class="pre">VASP</span></code>, then set <code class="docutils literal notranslate"><span class="pre">DFT</span> <span class="pre">=</span> <span class="pre">VASP</span></code>.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mainprogram<span class="w"> </span>download
+</pre></div>
+</div>
+<p>Now, the folders appeared in <code class="docutils literal notranslate"><span class="pre">R{id}-{name}</span></code> format, with <code class="docutils literal notranslate"><span class="pre">id</span></code> and <code class="docutils literal notranslate"><span class="pre">name</span></code> recorded in <code class="docutils literal notranslate"><span class="pre">mpid.in</span></code> file. Now change <code class="docutils literal notranslate"><span class="pre">mpid-list.in</span></code> to <code class="docutils literal notranslate"><span class="pre">mpid.in</span></code> in <code class="docutils literal notranslate"><span class="pre">input.in</span></code> file and perform structure relaxation by executing:</p>
+<p>Perform <a class="reference internal" href="#relax-label"><span class="std std-ref">structure relaxation</span></a>.</p>
+<p>Repeat the processes <code class="docutils literal notranslate"><span class="pre">process</span> <span class="pre">=</span> <span class="pre">2</span> <span class="pre">and</span> <span class="pre">3</span></code> several times to ensure full relaxation. If the relaxation completes in 1 ionic step, using <code class="docutils literal notranslate"><span class="pre">mainprogram</span> <span class="pre">2</span></code> will change the <code class="docutils literal notranslate"><span class="pre">NSW</span></code> keyword inside <code class="docutils literal notranslate"><span class="pre">INCAR</span></code> to <code class="docutils literal notranslate"><span class="pre">0</span></code>. Finally, execute <code class="docutils literal notranslate"><span class="pre">mainprogram</span> <span class="pre">3</span></code> for VASP to obtain accurate total energies. In QE, the code always performs one more electronic self-consistent field (SCF) after the convergence of each ionic relaxation, therefore, there is no need to worry about it.</p>
+<p>Execute:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mainprogram<span class="w"> </span>e0
+</pre></div>
+</div>
+<p>to collect the total energy per atom. It will create <code class="docutils literal notranslate"><span class="pre">econv_vasp.csv</span></code> file. Finally, execute:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mainprogram<span class="w"> </span>vp-pd
+</pre></div>
+</div>
+<p>to compute phase diagram. Data are stored in <code class="docutils literal notranslate"><span class="pre">convexhull.csv</span></code> and <code class="docutils literal notranslate"><span class="pre">convexhull.pdf</span></code> plot is created.</p>
+</section>
+<section id="magnetic-enumeration">
+<h1 id="magnetic-enumeration">Magnetic enumeration<a class="headerlink" href="#magnetic-enumeration" title="Link to this heading">¶</a></h1>
+<p>Perform <a class="reference internal" href="#relax-label"><span class="std std-ref">structure relaxation</span></a>.</p>
+<p>There are 2 types of magnetic enumeration process with <code class="docutils literal notranslate"><span class="pre">VASP</span></code>, <code class="docutils literal notranslate"><span class="pre">ordering</span></code> and <code class="docutils literal notranslate"><span class="pre">magnetic</span> <span class="pre">anisotropy</span></code>. This requires update in “magmom”:</p>
+<ul class="simple">
+<li><p><strong>ordering</strong>:</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="s2">"magmom"</span>:<span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="s2">"magmom"</span>:<span class="w"> </span><span class="o">{</span>
+<span class="w">      </span><span class="s2">"Mn"</span>:<span class="w"> </span><span class="m">5</span>,
+<span class="w">      </span><span class="s2">"Cr"</span>:<span class="w"> </span><span class="m">5</span>,
+<span class="w">      </span><span class="s2">"Fe"</span>:<span class="w"> </span><span class="m">5</span>,
+<span class="w">      </span><span class="s2">"B"</span>:0<span class="o">}</span>,
+<span class="w">    </span><span class="s2">"type"</span>:<span class="s2">"ordering"</span>,
+<span class="w">    </span><span class="s2">"saxis"</span>:<span class="o">[[</span><span class="m">0</span>,0,1<span class="o">]</span>,<span class="o">[</span><span class="m">1</span>,0,0<span class="o">]</span>,<span class="o">[</span><span class="m">1</span>,1,0<span class="o">]</span>,<span class="o">[</span><span class="m">1</span>,1,1<span class="o">]]</span>,
+<span class="w">    </span><span class="s2">"order"</span>:<span class="w"> </span><span class="o">[</span><span class="s2">"ferromagnetic"</span>,<span class="w"> </span><span class="s2">"antiferromagnetic"</span>,<span class="w"> </span><span class="s2">"ferrimagnetic_by_motif"</span><span class="o">]}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>Magnetic Anisotropy</strong>:</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="s2">"magmom"</span>:<span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="s2">"magmom"</span>:<span class="w"> </span><span class="o">{</span>
+<span class="w">      </span><span class="s2">"Mn"</span>:<span class="w"> </span><span class="m">5</span>,
+<span class="w">      </span><span class="s2">"Cr"</span>:<span class="w"> </span><span class="m">5</span>,
+<span class="w">      </span><span class="s2">"Fe"</span>:<span class="w"> </span><span class="m">5</span>,
+<span class="w">      </span><span class="s2">"B"</span>:0<span class="o">}</span>,
+<span class="w">    </span><span class="s2">"type"</span>:<span class="s2">"anisotropy"</span>,
+<span class="w">    </span><span class="s2">"saxis"</span>:<span class="o">[[</span><span class="m">0</span>,0,1<span class="o">]</span>,<span class="o">[</span><span class="m">1</span>,0,0<span class="o">]</span>,<span class="o">[</span><span class="m">1</span>,1,0<span class="o">]</span>,<span class="o">[</span><span class="m">1</span>,1,1<span class="o">]]</span>,
+<span class="w">    </span><span class="s2">"order"</span>:<span class="w"> </span><span class="o">[</span><span class="s2">"ferromagnetic"</span>,<span class="w"> </span><span class="s2">"antiferromagnetic"</span>,<span class="w"> </span><span class="s2">"ferrimagnetic_by_motif"</span><span class="o">]}</span>
+</pre></div>
+</div>
+<p>To obtain input files for magnetic anisotropy calculations (MAEs), we can achieve in two step. First, add <code class="docutils literal notranslate"><span class="pre">LSORBIT</span> <span class="pre">.TRUE.</span></code> key in <a class="reference internal" href="otherinput.html#vasp-label"><span class="std std-ref">vasp.in</span></a> file (before lines with single column), and update the <code class="docutils literal notranslate"><span class="pre">INCAR</span></code> by executing:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mainprogram<span class="w"> </span>download
+</pre></div>
+</div>
+<p>This will write MAGMOM in <code class="docutils literal notranslate"><span class="pre">mx</span> <span class="pre">my</span> <span class="pre">mz</span></code> format. Now execute:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mainprogram<span class="w"> </span>magenum
+</pre></div>
+</div>
+<p>This creates input files with <code class="docutils literal notranslate"><span class="pre">mpid-magnetic.in</span></code> file. Update <code class="docutils literal notranslate"><span class="pre">mpid-magnetic.in</span></code> in <code class="docutils literal notranslate"><span class="pre">input.in</span></code> execute relaxation command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mainprogram<span class="w"> </span><span class="m">1</span>
+</pre></div>
+</div>
+<p>Similarly repeat <code class="docutils literal notranslate"><span class="pre">process</span> <span class="pre">2</span> <span class="pre">and</span> <span class="pre">3</span></code> for complete relaxation.</p>
+</section>
+<section id="magnetic-force-theorem">
+<h1 id="magnetic-force-theorem">Magnetic force theorem<a class="headerlink" href="#magnetic-force-theorem" title="Link to this heading">¶</a></h1>
+</section>
+<section id="computing-elastic-constants">
+<h1 id="computing-elastic-constants">Computing elastic constants<a class="headerlink" href="#computing-elastic-constants" title="Link to this heading">¶</a></h1>
+<p>Perform <a class="reference internal" href="#relax-label"><span class="std std-ref">structure relaxation</span></a>.</p>
+<p>To execute strain calculations, modify the <code class="docutils literal notranslate"><span class="pre">strain</span></code> keyword in the <a class="reference internal" href="param.html#json-label"><span class="std std-ref">htepc.json</span></a> file. Then, using the <code class="docutils literal notranslate"><span class="pre">input.in</span></code> and <code class="docutils literal notranslate"><span class="pre">mpid.in</span></code> files, execute the following commands:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mainprogram<span class="w"> </span>elastic-input
+</pre></div>
+</div>
+<p>This command applies strain to the conventional unit cell, generates deformed structures, and submits calculations.</p>
+<p>Once the calculations are completed, execute the following command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mainprogram<span class="w"> </span>compute-elastic
+</pre></div>
+</div>
+<p>This command computes the elastic constants and stores the results in the <code class="docutils literal notranslate"><span class="pre">elastic.csv</span></code> file. Make sure, your results are converged with respect to <code class="docutils literal notranslate"><span class="pre">plane-wave</span> <span class="pre">energy</span> <span class="pre">cutoff</span></code> and <code class="docutils literal notranslate"><span class="pre">k-point</span> <span class="pre">mesh</span></code>.</p>
+</section>
+<section id="printing-compound-information">
+<h1 id="printing-compound-information">Printing compound information<a class="headerlink" href="#printing-compound-information" title="Link to this heading">¶</a></h1>
+<p>Now, basic information about systems under calculations can be printed by executing:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mainprogram<span class="w"> </span>compound
+</pre></div>
+</div>
+<p>It prints data as follows:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Printing<span class="w"> </span>info<span class="w"> </span>about<span class="w"> </span>compounds.<span class="w"> </span>Do<span class="w"> </span><span class="s1">'mainprogram compound &gt; compound.txt'</span><span class="w"> </span>to<span class="w"> </span>save<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="s1">'compound.txt'</span><span class="w"> </span>file
+
+*<span class="w">               </span>Compound:<span class="w"> </span>Mg1B2
+
+Looking<span class="w"> </span><span class="k">for</span><span class="w"> </span>scf-mp-763.in<span class="w"> </span>file.<span class="w"> </span>Structural<span class="w"> </span>parameters<span class="w"> </span>before<span class="w"> </span>relaxation
+
+************<span class="w"> </span>Printing<span class="w"> </span>structural<span class="w"> </span>parameters<span class="w"> </span>*****************
+
+<span class="w">         </span>Cell<span class="w"> </span>par:<span class="w"> </span><span class="o">(</span><span class="m">3</span>.0627622617599624,<span class="w"> </span><span class="m">3</span>.0627622617599624,<span class="w"> </span><span class="m">3</span>.52087,<span class="w"> </span><span class="m">90</span>.0,<span class="w"> </span><span class="m">90</span>.0,<span class="w"> </span><span class="m">120</span>.00000000000001<span class="o">)</span>
+
+<span class="w">         </span>Cell<span class="w"> </span>volume:<span class="w"> </span><span class="m">28</span>.6027<span class="w"> </span>$<span class="se">\A</span>A^3$
+
+<span class="w">         </span>Spacegroup:<span class="w"> </span><span class="o">(</span><span class="s1">'P6/mmm'</span>,<span class="w"> </span><span class="m">191</span><span class="o">)</span>
+
+
+Looking<span class="w"> </span><span class="k">for</span><span class="w"> </span>scf-relax-mp-763-Mg1B2.in<span class="w"> </span>file.<span class="w"> </span>Structural<span class="w"> </span>parameters<span class="w"> </span>after<span class="w"> </span>relaxation
+
+************<span class="w"> </span>Printing<span class="w"> </span>structural<span class="w"> </span>parameters<span class="w"> </span>*****************
+
+<span class="w">         </span>Cell<span class="w"> </span>par:<span class="w"> </span><span class="o">(</span><span class="m">3</span>.0691304614624833,<span class="w"> </span><span class="m">3</span>.0691304614624833,<span class="w"> </span><span class="m">3</span>.515658311,<span class="w"> </span><span class="m">90</span>.0,<span class="w"> </span><span class="m">90</span>.0,<span class="w"> </span><span class="m">119</span>.99999998841307<span class="o">)</span>
+
+<span class="w">         </span>Cell<span class="w"> </span>volume:<span class="w"> </span><span class="m">28</span>.6793<span class="w"> </span>$<span class="se">\A</span>A^3$
+
+<span class="w">         </span>Spacegroup:<span class="w"> </span><span class="o">(</span><span class="s1">'P6/mmm'</span>,<span class="w"> </span><span class="m">191</span><span class="o">)</span>
+
+<span class="w">         </span>Valence<span class="w"> </span>Electrons:<span class="w"> </span><span class="m">16</span>.00
+
+<span class="w">         </span>Fermi<span class="w"> </span>Energy:<span class="w"> </span><span class="m">9</span>.1373<span class="w"> </span>eV
+
+<span class="w">         </span>KEcutoff:<span class="w"> </span><span class="m">35</span>,<span class="w"> </span>Ry
+
+<span class="w">         </span>K-mesh<span class="w"> </span>info:<span class="w"> </span><span class="o">(</span>automatic<span class="o">)</span><span class="w">  </span><span class="m">16</span><span class="w"> </span><span class="m">16</span><span class="w"> </span><span class="m">16</span><span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="m">0</span>
+
+<span class="w">         </span>q-mesh<span class="w"> </span>info:<span class="w"> </span><span class="o">[</span><span class="nv">nq1</span><span class="o">=</span><span class="m">4</span>,nq2<span class="o">=</span><span class="m">4</span>,nq3<span class="o">=</span><span class="m">3</span><span class="o">]</span>
+
+******************************************************
+
+all<span class="w"> </span><span class="k">done</span>
+</pre></div>
+</div>
+</section>
+<section id="wannier-interpolated-bandstructure">
+<h1 id="wannier-interpolated-bandstructure">Wannier interpolated bandstructure<a class="headerlink" href="#wannier-interpolated-bandstructure" title="Link to this heading">¶</a></h1>
+<p>Perform <a class="reference internal" href="#relax-label"><span class="std std-ref">structure relaxation</span></a>.</p>
+<p>Additionally, compute <a class="reference internal" href="#band-dos-label"><span class="std std-ref">DFT band structures and atom and orbital projected density of states (DOS)</span></a>. The DOS information can be valuable for selecting initial projections, while band structures stored in the band_stat.csv file can aid in choosing energy windows.</p>
+</section>
+<section id="phonon-calculations">
+<h1 id="phonon-calculations">Phonon calculations<a class="headerlink" href="#phonon-calculations" title="Link to this heading">¶</a></h1>
+<ul class="simple">
+<li><p><strong>DFPT</strong>:</p></li>
+</ul>
+<p>Perform <a class="reference internal" href="#relax-label"><span class="std std-ref">structure relaxation</span></a>.</p>
+<p>Prepare, QE input files for scf calculations to obtain the charge density by executing:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mainprogram<span class="w"> </span><span class="m">4</span>
+</pre></div>
+</div>
+<p>One can extract phonons from <a class="reference internal" href="#epc"><span class="std std-ref">electron-phonon coupling (EPC) calculations</span></a>.</p>
+<p>Similarly, one can perform phonon calculations by executing:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mainprogram<span class="w"> </span>epw1
+
+mainprogram<span class="w"> </span>qe-ph
+</pre></div>
+</div>
+<p>Post-processing processes to obtain phonon dispersion plots are:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mainprogram<span class="w"> </span><span class="m">8</span>
+
+mainprogram<span class="w"> </span><span class="m">9</span>
+
+mainprogram<span class="w"> </span><span class="m">12</span>
+
+mainprogram<span class="w"> </span><span class="m">19</span>
+</pre></div>
+</div>
+<p>Please, refer to <a class="reference internal" href="command.html#command"><span class="std std-ref">command line info</span></a> for description of these commands.</p>
+<ul class="simple">
+<li><p><strong>Supercell method</strong>:</p></li>
+</ul>
+<p>For this method, we utilize Phonopy with either Quantum ESPRESSO (QE) or VASP. Please install <a class="reference external" href="https://phonopy.github.io/phonopy/install.html">Phonopy</a> and ensure that the <code class="docutils literal notranslate"><span class="pre">phonopy</span></code> command is accessible.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1">#Prepare input files, create supercells, generate structures with displaced ions, and submit SCF calculations for each displacement.</span>
+mainprogram<span class="w"> </span>phono1
+
+<span class="c1">#Compute force constants</span>
+mainprogram<span class="w"> </span>phono2
+
+<span class="c1">#Generate band.conf file and plot phonon dispersion.</span>
+mainprogram<span class="w"> </span>phono4
+</pre></div>
+</div>
+</section>
+<section id="equation-of-states">
+<h1 id="equation-of-states">Equation of states<a class="headerlink" href="#equation-of-states" title="Link to this heading">¶</a></h1>
+</section>
+<section id="charged-calculations">
+<h1 id="charged-calculations">Charged calculations<a class="headerlink" href="#charged-calculations" title="Link to this heading">¶</a></h1>
+</section>
+<section id="checking-running-calculations">
+<h1 id="checking-running-calculations">Checking running calculations<a class="headerlink" href="#checking-running-calculations" title="Link to this heading">¶</a></h1>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>check_calc<span class="w"> </span>&lt;your_queue_command&gt;<span class="w"> </span>&lt;your_account_id&gt;
+
+<span class="c1">#Here, queue command could be ``squeue``.</span>
+</pre></div>
+</div>
+</section>
+<section id="printing-history-of-mainprogram">
+<h1 id="printing-history-of-mainprogram">Printing history of mainprogram<a class="headerlink" href="#printing-history-of-mainprogram" title="Link to this heading">¶</a></h1>
+<p>To view the ten most recent occurrences of the “mainprogram” command within the current session, execute the following two commands.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">history</span><span class="w"> </span>-a
+
+mainprogram<span class="w"> </span><span class="nb">history</span>
+</pre></div>
+</div>
+</section>
+<section id="aborting-jobs-with-job-id">
+<h1 id="aborting-jobs-with-job-id">Aborting jobs with job_id<a class="headerlink" href="#aborting-jobs-with-job-id" title="Link to this heading">¶</a></h1>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cancel_job<span class="w"> </span>&lt;job_id_start&gt;<span class="w"> </span>&lt;number_of_jobs&gt;<span class="w"> </span>&lt;Your_job_cancellation_command&gt;
+</pre></div>
+</div>
+</section>
+
+
+          </article>
+        </div>
+      </div>
+    </main>
+  </div>
+  <footer class="md-footer">
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+          
+            <a href="command.html" title="Commands (mainprogram process)"
+               class="md-flex md-footer-nav__link md-footer-nav__link--prev"
+               rel="prev">
+              <div class="md-flex__cell md-flex__cell--shrink">
+                <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+              </div>
+              <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+                <span class="md-flex__ellipsis">
+                  <span
+                      class="md-footer-nav__direction"> "Previous" </span> Commands (mainprogram process) </span>
+              </div>
+            </a>
+          
+          
+            <a href="license.html" title="LICENSE"
+               class="md-flex md-footer-nav__link md-footer-nav__link--next"
+               rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
+                class="md-flex__ellipsis"> <span
+                class="md-footer-nav__direction"> "Next" </span> LICENSE </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink"><i
+                class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          
+        </a>
+        
+      </nav>
+    </div>
+    <div class="md-footer-meta md-typeset">
+      <div class="md-footer-meta__inner md-grid">
+        <div class="md-footer-copyright">
+          <div class="md-footer-copyright__highlight">
+              &#169; Copyright 2024, Niraj K Nepal.
+              
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script src="_static/javascripts/application.js"></script>
+  <script>app.initialize({version: "1.0.4", url: {base: ".."}})</script>
+  </body>
+</html>
