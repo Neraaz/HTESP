@@ -18,7 +18,10 @@ if [[ -f R$ii/scf.out ]] && [[ $relaxed -gt 0 ]]; then
   cat scf-header.in R$ii/$ii.dat > R$ii/scf.in
 elif [[ -f R$ii/scf.out ]] && [[ $relaxed -lt 1 ]]; then
   echo "time out" 
-  grep -A 26 'CELL_PARAMETERS (angstrom)' R$ii/scf.out | tail -n 27 | sed '$d' > R$ii/cell.dat
+  nat=$(grep "number of atoms/cell" R$ii/scf.out | tail -n 1 | awk '{ print $5 }')
+  celli=$(echo $nat + 6 | bc)
+  cellj=$(echo $celli + 1 | bc)
+  grep -A $celli 'CELL_PARAMETERS (angstrom)' R$ii/scf.out | tail -n $cellj | sed '$d' > R$ii/cell.dat
   mv R$ii/scf.in R$ii/scf-initial.in
   mv R$ii/scf.out R$ii/scf-initial.out
   cat scf-header.in R$ii/cell.dat > R$ii/scf.in

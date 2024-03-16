@@ -5,6 +5,7 @@ Script is run within 'download-input' bash script."""
 import sys
 import os
 import json
+from pymatgen.analysis.magnetism import MagneticStructureEnumerator
 from htepc import MpConnect
 try:
     PWD = os.getcwd()
@@ -32,10 +33,15 @@ def qe_input(mpid):
     Returns:
     None
     """
+    magnetic = input_data['pwscf_in']['magnetic']
     obj = MpConnect()
     obj.setting(mpid)
     obj.maxecut_sssp()
     obj.getkpt()
+    if magnetic:
+        default_magmoms = input_data['magmom']['magmom']
+        struc = MagneticStructureEnumerator(obj.structure,default_magmoms=default_magmoms,strategies=['ferromagnetic'],truncate_by_symmetry=True).ordered_structures
+        obj.structure = struc[0]
     if os.path.isfile("htepc.json") or os.path.isfile("../../htepc.json"):
         d = input_data['download']
     evenkpt = d['inp']['evenkpt']
@@ -45,7 +51,10 @@ def qe_input(mpid):
     if not os.path.isfile('mpid.in'):
         kind = 0
         obj.download()
-        obj.setting_qeinput(pseudo_dir='../../pp/')
+        if magnetic:
+            obj.setting_qeinput(magnetic=True,pseudo_dir='../../pp/')
+        else:
+            obj.setting_qeinput(pseudo_dir='../../pp/')
         with open("mpid.in", "w") as write_mpid:
             write_mpid.write("v{}".format(kind+1) + " " + obj.mpid + " " + obj.prefix + "\n")
     else:
@@ -54,7 +63,10 @@ def qe_input(mpid):
         kind = len(lines)
         if not any(mpid in line for line in lines):
             obj.download()
-            obj.setting_qeinput(pseudo_dir='../../pp/')
+            if magnetic:
+                obj.setting_qeinput(magnetic=True,pseudo_dir='../../pp/')
+            else:
+                obj.setting_qeinput(pseudo_dir='../../pp/')
             with open("mpid.in", "a") as write_mpid:
                 write_mpid.write("v{}".format(kind+1) + " " + obj.mpid + " " + obj.prefix + "\n")
     if not os.path.isdir("input_cif"):

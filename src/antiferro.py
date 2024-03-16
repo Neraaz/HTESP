@@ -109,33 +109,22 @@ def magnetic_structure(obj,mpid,compound,magconfig,dft):
                 os.system("""echo "MAGMOM = {}" >> INCAR""".format(maglist))
                 os.chdir("../../")
             else:
-                print("Not implemented for QE\n")
-            #else:
-            #    obj.structure = struc
-            #    comp_list = []
-            #    for composition in struc.composition.elements:
-            #        comp_list.append(composition.name)
-            #    obj.comp_list = comp_list
-            #    obj.getkpt()
-            #    obj.getevenkpt()
-            #    obj.maxecut_sssp_for_subs()
-            #    obj.prefix = struc.composition.alphabetical_formula.replace(" ","")
-            #    maglist = []
-            #    for j,specie in enumerate(struc.species):
-            #        if specie.spin != None:
-            #            maglist.append(specie.spin)
-            #        else:
-            #            maglist.append(0)
-            #    struc.remove_spin()
-            #    obj.structure = struc
-            #    obj.setting_qeinput(pseudo_dir='../../pp')
-            #    if not os.path.isdir("scf_dir"):
-            #        os.system("mkdir scf_dir")
-            #    os.system("""sed -i '/&SYSTEM/a nspin = 2,' scf-None.in""")
-            #    nsites = len(maglist)
-            #    for j,_ in enumerate(maglist):
-            #        os.system("""sed -i '/&SYSTEM/a starting_magnetization({}) = {}' scf-None.in""".format(nsites-j,maglist[nsites-j-1]))
-            #    os.system("""mv scf-None.in""" + """ scf_dir/scf-{}-{}.in""".format(mpid,i+1))
+                obj.structure = struc
+                comp_list = []
+                for composition in struc.composition.elements:
+                    comp_list.append(composition.name)
+                obj.comp_list = comp_list
+                obj.getkpt()
+                evenkpt = input_data['download']['inp']['evenkpt']
+                if evenkpt:
+                    print("Utilizing even kpoint mesh\n")
+                    obj.getevenkpt()
+                obj.maxecut_sssp_for_subs()
+                obj.prefix = struc.composition.alphabetical_formula.replace(" ","")
+                obj.setting_qeinput(magnetic=True,pseudo_dir='../../pp')
+                if not os.path.isdir("scf_dir"):
+                    os.system("mkdir scf_dir")
+                os.system("""mv scf-None.in""" + """ scf_dir/scf-{}-{}.in""".format(mpid,i+1))
             #print(mpid,obj.prefix)
             with open("mpid-magnetic.in", "a") as mpid_append:
                 mpid_append.write("v{}".format(entry+1+i) + " " + mpid + "-{}".format(i+1) + " " + obj.prefix + "\n")

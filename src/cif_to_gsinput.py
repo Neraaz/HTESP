@@ -9,15 +9,16 @@ import warnings
 import scipy.linalg as alg
 #from ase import Atoms
 from ase.io import vasp
-from ase.data import atomic_masses,chemical_symbols
+#from ase.data import atomic_masses,chemical_symbols
 from pymatgen.io.cif import CifParser, CifWriter
 from pymatgen.io.vasp.sets import MPRelaxSet
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
+from pymatgen.analysis.magnetism import MagneticStructureEnumerator
 from pymatgen.core import structure
-from pymatgen.io import pwscf
+#from pymatgen.io import pwscf
 import numpy as np
 from write_potcar import poscar2potcar
-from htepc import INPUTscf
+from htepc import MpConnect
 try:
     PWD = os.getcwd()
     if os.path.isfile(PWD+"/htepc.json"):
@@ -226,69 +227,98 @@ def ciftoscf(calc_type,mpid,cif2cell=True,keven=False):
             else:
                 k_mesh[i] = k_mesh[i] + 1
     if calc_type in ('QE','qe'):
+        obj = MpConnect()
         structure_file = structure.Structure.from_file("POSCAR")
-        #structure_file = SpacegroupAnalyzer(structure_file, symprec=0.1).get_primitive_standard_structure()
-        if os.path.isfile("htepc.json") or os.path.isfile("../../htepc.json"):
-            psd_data = input_data['pseudo']
-            dict_element = psd_data.PSEUDO
+        magnetic = input_data['pwscf_in']['magnetic']
+        if magnetic:
+            default_magmoms = input_data['magmom']['magmom']
+            struc = MagneticStructureEnumerator(structure_file,default_magmoms=default_magmoms,strategies=['ferromagnetic'],truncate_by_symmetry=True).ordered_structures
+            obj.structure = struc[0]
         else:
-            print("htepc.json file not found\n")
-            print("Creating one with default values from SSSP efficiency set\n")
-            print("https://www.materialscloud.org/discover/sssp/table/efficiency\n")
-            dict_element = {'H': 60, 'Li': 40, 'Be': 40, 'N': 60, 'F': 45, 'Na': 40, 'Mg': 30, 'Al': 30, 'Si': 30, 'P': 30, 'S': 35, 'Cl': 40, 'K': 60, 'Ca': 30, 'Sc': 40, 'Ti': 35, 'V': 35, 'Cr': 40, 'Mn': 65, 'Fe': 90, 'Co': 45, 'Ni': 45, 'Cu': 55, 'Zn': 40, 'Ga': 70, 'Ge': 40, 'As': 35, 'Br': 30, 'Rb': 30, 'Sr': 30, 'Y': 35, 'Zr': 30, 'Nb': 40, 'Mo': 35, 'Tc': 30, 'Ru': 35, 'Rh': 35, 'Pd': 45, 'Ag': 50, 'Cd': 60, 'In': 50, 'Sn': 60, 'Sb': 40, 'Te': 30, 'I': 35, 'Cs': 30, 'Ba': 30, 'La': 40, 'Hf': 50, 'Ta': 45, 'W': 30, 'Re': 30, 'Os': 40, 'Ir': 55, 'Pt': 35, 'Hg': 50, 'Tl': 50, 'Pb': 40, 'Bi': 45, 'B': 35, 'C': 45, 'Au': 45, 'Se': 30, 'O': 60}
-            with open("pseudo.txt", "w") as write_pseudo:
-                write_pseudo.write("PSEUDO={}".format(dict_element))
-        #pseudo = pd.read_csv('pseudo.csv')
-        #print(pseudo)
-        #element_list = pseudo['Element'].tolist()
-        #SSSP_cutoff_list = pseudo['SSSPcutoff'].tolist()
-        #element_list = list(pseudo.keys())
-        #SSSP_cutoff_list = list(pseudo.values())
-        #nlist = len(element_list)
-        #dict_element = {}
-        #for i in range(nlist):
-        #    dict_element[element_list[i]] = SSSP_cutoff_list[i]
-        #
-        dict_mass = {}
-        nel = len(atomic_masses)
-        for i in range(nel):
-            dict_mass[chemical_symbols[i]] = atomic_masses[i]
-        cutoff_list = [dict_element[el] for el in symbol]
-        cutoff = max(cutoff_list)
-        rhocutoff = 8 * cutoff
-        prefix = compound
-        pseudo1 = {el:el+'.upf' for el in set(symbol)}
-        if check_pwd > 0:
-            if os.path.isfile("htepc.json") or os.path.isfile("../../htepc.json"):
-                pwscf_in = input_data['pwscf_in']
-                control = pwscf_in['control']
-                system = pwscf_in['system']
-                electrons = pwscf_in['electrons']
-            else:
-                control = {'calculation':'vc-relax', 'nstep':300, 'restart_mode':'from_scratch', 'pseudo_dir':'../../pp', 'outdir':'./', 'tprnfor':'.true.','tstress':'.true.', 'etot_conv_thr':0.00001, 'forc_conv_thr':0.0001}
-                system = {'smearing':'gauss', 'occupations':'smearing', 'degauss':0.02}
-                electrons = {'diagonalization':'david', 'mixing_mode':'plain', 'mixing_beta':0.7, 'conv_thr': 1e-16, 'electron_maxstep':300}
-                with open("pwscf_in.txt", "w") as pw_in:
-                    pw_in.write("control={}".format(control) + "\n")
-                    pw_in.write("system={}".format(system) + "\n")
-                    pw_in.write("electrons={}".format(electrons) + "\n")
-            system['ecutwfc'] = cutoff
-            system['ecutrho'] = rhocutoff
-            control['prefix'] = prefix
-            filename = pwscf.PWInput(structure_file, pseudo=pseudo1, control=control, system=system,electrons=electrons, kpoints_grid=tuple(k_mesh), ions={'ion_dynamics':'bfgs'}, cell={'cell_dynamics':'bfgs','press_conv_thr':0.05})
-            filename.write_file("temp.in")
-            os.system("""sed "s/'.true.'/.true./" {} > {}""".format("temp.in","scf-{}.in".format(mpid)))
-            os.system("sed -n '/K_POINTS automatic/,/CELL_PARAMETERS angstrom/p' scf-{}.in | sed '$d' > kpoint-{}.dat".format(mpid,mpid))
-            obj = INPUTscf("scf-{}.in".format(mpid))
-            obj.standardize(mpid,output="temp.dat")
-            os.system("sed -n '/&CONTROL/,/ATOMIC_SPECIES/p' scf-{}.in | sed '$d' > scf.header".format(mpid))
-            os.system("sed -n '/ATOMIC_SPECIES/,/ATOMIC_POSITIONS crystal/p' scf-{}.in | sed '$d' > species".format(mpid))
-            os.system("rm temp.in")
-            os.system("cat scf.header species temp.dat > scf-{}.in".format(mpid))
-            os.system("rm POSCAR scf.header species temp.dat kpoint*")
+            obj.structure = struc
+        comp_list = []
+        for composition in obj.structure.composition.elements:
+            comp_list.append(composition.name)
+        obj.comp_list = comp_list
+        obj.getkpt()
+        evenkpt = input_data['download']['inp']['evenkpt']
+        if evenkpt:
+            print("Utilizing even kpoint mesh\n")
+            obj.getevenkpt()
+        obj.maxecut_sssp()
+        #obj.prefix = struc.composition.alphabetical_formula.replace(" ","")
+        obj.prefix = compound
+        obj.mpid = mpid
+        if magnetic:
+            obj.setting_qeinput(magnetic=True,pseudo_dir='../../pp')
+        else:
+            obj.setting_qeinput(pseudo_dir='../../pp')
+        #os.system("""mv scf-None.in""" + """ scf_dir/scf-{}-{}.in""".format(mpid,i+1))
         if not os.path.isdir("scf_dir"):
             os.system("mkdir scf_dir")
         os.system("mv scf-{}.in scf_dir".format(mpid))
+        #structure_file = SpacegroupAnalyzer(structure_file, symprec=0.1).get_primitive_standard_structure()
+        #if os.path.isfile("htepc.json") or os.path.isfile("../../htepc.json"):
+        #    psd_data = input_data['pseudo']
+        #    dict_element = psd_data.PSEUDO
+        #else:
+        #    print("htepc.json file not found\n")
+        #    print("Creating one with default values from SSSP efficiency set\n")
+        #    print("https://www.materialscloud.org/discover/sssp/table/efficiency\n")
+        #    dict_element = {'H': 60, 'Li': 40, 'Be': 40, 'N': 60, 'F': 45, 'Na': 40, 'Mg': 30, 'Al': 30, 'Si': 30, 'P': 30, 'S': 35, 'Cl': 40, 'K': 60, 'Ca': 30, 'Sc': 40, 'Ti': 35, 'V': 35, 'Cr': 40, 'Mn': 65, 'Fe': 90, 'Co': 45, 'Ni': 45, 'Cu': 55, 'Zn': 40, 'Ga': 70, 'Ge': 40, 'As': 35, 'Br': 30, 'Rb': 30, 'Sr': 30, 'Y': 35, 'Zr': 30, 'Nb': 40, 'Mo': 35, 'Tc': 30, 'Ru': 35, 'Rh': 35, 'Pd': 45, 'Ag': 50, 'Cd': 60, 'In': 50, 'Sn': 60, 'Sb': 40, 'Te': 30, 'I': 35, 'Cs': 30, 'Ba': 30, 'La': 40, 'Hf': 50, 'Ta': 45, 'W': 30, 'Re': 30, 'Os': 40, 'Ir': 55, 'Pt': 35, 'Hg': 50, 'Tl': 50, 'Pb': 40, 'Bi': 45, 'B': 35, 'C': 45, 'Au': 45, 'Se': 30, 'O': 60}
+        #    with open("pseudo.txt", "w") as write_pseudo:
+        #        write_pseudo.write("PSEUDO={}".format(dict_element))
+        ##pseudo = pd.read_csv('pseudo.csv')
+        ##print(pseudo)
+        ##element_list = pseudo['Element'].tolist()
+        ##SSSP_cutoff_list = pseudo['SSSPcutoff'].tolist()
+        ##element_list = list(pseudo.keys())
+        ##SSSP_cutoff_list = list(pseudo.values())
+        ##nlist = len(element_list)
+        ##dict_element = {}
+        ##for i in range(nlist):
+        ##    dict_element[element_list[i]] = SSSP_cutoff_list[i]
+        ##
+        #dict_mass = {}
+        #nel = len(atomic_masses)
+        #for i in range(nel):
+        #    dict_mass[chemical_symbols[i]] = atomic_masses[i]
+        #cutoff_list = [dict_element[el] for el in symbol]
+        #cutoff = max(cutoff_list)
+        #rhocutoff = 8 * cutoff
+        #prefix = compound
+        #pseudo1 = {el:el+'.upf' for el in set(symbol)}
+        #if check_pwd > 0:
+        #    if os.path.isfile("htepc.json") or os.path.isfile("../../htepc.json"):
+        #        pwscf_in = input_data['pwscf_in']
+        #        control = pwscf_in['control']
+        #        system = pwscf_in['system']
+        #        electrons = pwscf_in['electrons']
+        #    else:
+        #        control = {'calculation':'vc-relax', 'nstep':300, 'restart_mode':'from_scratch', 'pseudo_dir':'../../pp', 'outdir':'./', 'tprnfor':'.true.','tstress':'.true.', 'etot_conv_thr':0.00001, 'forc_conv_thr':0.0001}
+        #        system = {'smearing':'gauss', 'occupations':'smearing', 'degauss':0.02}
+        #        electrons = {'diagonalization':'david', 'mixing_mode':'plain', 'mixing_beta':0.7, 'conv_thr': 1e-16, 'electron_maxstep':300}
+        #        with open("pwscf_in.txt", "w") as pw_in:
+        #            pw_in.write("control={}".format(control) + "\n")
+        #            pw_in.write("system={}".format(system) + "\n")
+        #            pw_in.write("electrons={}".format(electrons) + "\n")
+        #    system['ecutwfc'] = cutoff
+        #    system['ecutrho'] = rhocutoff
+        #    control['prefix'] = prefix
+        #    filename = pwscf.PWInput(structure_file, pseudo=pseudo1, control=control, system=system,electrons=electrons, kpoints_grid=tuple(k_mesh), ions={'ion_dynamics':'bfgs'}, cell={'cell_dynamics':'bfgs','press_conv_thr':0.05})
+        #    filename.write_file("temp.in")
+        #    os.system("""sed "s/'.true.'/.true./" {} > {}""".format("temp.in","scf-{}.in".format(mpid)))
+        #    os.system("sed -n '/K_POINTS automatic/,/CELL_PARAMETERS angstrom/p' scf-{}.in | sed '$d' > kpoint-{}.dat".format(mpid,mpid))
+        #    obj = INPUTscf("scf-{}.in".format(mpid))
+        #    obj.standardize(mpid,output="temp.dat")
+        #    os.system("sed -n '/&CONTROL/,/ATOMIC_SPECIES/p' scf-{}.in | sed '$d' > scf.header".format(mpid))
+        #    os.system("sed -n '/ATOMIC_SPECIES/,/ATOMIC_POSITIONS crystal/p' scf-{}.in | sed '$d' > species".format(mpid))
+        #    os.system("rm temp.in")
+        #    os.system("cat scf.header species temp.dat > scf-{}.in".format(mpid))
+        #    os.system("rm POSCAR scf.header species temp.dat kpoint*")
+        #if not os.path.isdir("scf_dir"):
+        #    os.system("mkdir scf_dir")
+        #os.system("mv scf-{}.in scf_dir".format(mpid))
     return compound
 def main():
     """

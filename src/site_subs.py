@@ -8,6 +8,7 @@ from pymatgen.io.vasp.inputs import Poscar
 from pymatgen.io.vasp.sets import MPRelaxSet
 from pymatgen.io import pwscf
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
+from pymatgen.analysis.magnetism import MagneticStructureEnumerator
 from pymatgen.core import structure
 from cif_to_gsinput import pos_to_kpt
 from write_potcar import poscar2potcar
@@ -135,16 +136,28 @@ def substitution(mpid,obj):
                 os.system("vasp_process.py POSCAR")
                 os.chdir("../../")
             else:
-                obj.structure = struc
+                magnetic = input_data['pwscf_in']['magnetic']
+                if magnetic:
+                    default_magmoms = input_data['magmom']['magmom']
+                    struc = MagneticStructureEnumerator(struc,default_magmoms=default_magmoms,strategies=['ferromagnetic'],truncate_by_symmetry=True).ordered_structures
+                    obj.structure = struc[0]
+                else:
+                    obj.structure = struc
                 comp_list = []
                 for composition in obj.structure.composition.elements:
                     comp_list.append(composition.name)
                 obj.comp_list = comp_list
                 obj.getkpt()
-                obj.getevenkpt()
+                evenkpt = input_data['download']['inp']['evenkpt']
+                if evenkpt:
+                    print("Utilizing even kpoint mesh\n")
+                    obj.getevenkpt()
                 obj.maxecut_sssp_for_subs()
                 obj.prefix = struc.composition.alphabetical_formula.replace(" ","")
-                obj.setting_qeinput(pseudo_dir='../../pp')
+                if magnetic:
+                    obj.setting_qeinput(magnetic=True,pseudo_dir='../../pp')
+                else:
+                    obj.setting_qeinput(pseudo_dir='../../pp')
                 os.system("""mv scf-None.in""" + """ scf_dir/scf-{}-{}.in""".format(mpid,i+1))
             print(mpid,obj.prefix)
             with open("mpid-substitute.in", "a") as mpid_append:

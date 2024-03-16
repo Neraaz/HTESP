@@ -1,4 +1,0 @@
-Github Source Code
---------------------
-
-`https://github.com/Neraaz/HTEPC`

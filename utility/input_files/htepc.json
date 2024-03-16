@@ -279,6 +279,7 @@
     }
   },
   "pwscf_in": {
+    "magnetic": false,
     "control": {
       "calculation": "vc-relax",
       "nstep": 300,

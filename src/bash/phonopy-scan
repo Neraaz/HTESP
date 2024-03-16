@@ -273,7 +273,8 @@ for ((ii=$1; ii<$2; ++ii)); do
      else
        conv=$(grep "reached required accuracy - stopping structural energy minimisation" R$A-$B/relax/OUTCAR | wc -l)
        nsw_check=$(grep "NSW = 0" R$A-$B/relax/INCAR | wc -l)
-       if [[ $conv -gt 0 ]] || [[ $nsw_check -gt 0 ]]; then
+       nsw_present=$(grep "NSW" R$A-$B/relax/INCAR | wc -l)
+       if [[ $conv -gt 0 ]] || [[ $nsw_check -gt 0 ]] || [[ $nsw_present -lt 1 ]]; then
        e0=$(grep TOTEN R$A-$B/relax/OUTCAR | tail -n 1 | awk '{ print $5 }')
        nat=$(grep -a "NIONS" R$A-$B/relax/OUTCAR | awk '{ print $12}')
        e=$(echo "scale=6; $e0/$nat" | bc)

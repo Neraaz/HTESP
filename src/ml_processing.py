@@ -91,7 +91,7 @@ class MlProcess:
         for i in range(self.data.shape[0]):
             obj.setting(self.data["ID"][i])
             if prop == 'symmetry':
-                ydata.append(obj.data['symmetry']['number'])
+                ydata.append(obj.data['symmetry']['symbol'])
             else:
                 ydata.append(obj.property(prop))
         self.data[self.prop] = ydata

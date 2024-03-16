@@ -4,6 +4,7 @@ import os
 import json
 import numpy as np
 import scipy.linalg as alg
+from collections import defaultdict, OrderedDict
 from ase.io import espresso,cif
 from ase.cell import Cell
 from pymatgen.io.cif import CifWriter
@@ -351,9 +352,8 @@ class MpConnect:
             psd_data = input_data["pseudo"]
             self.dict_element = psd_data['PSEUDO']
         else:
-            print("pseudo.py file not found\n")
-            print("Creating one with default values from SSSP efficiency set\n")
-            print("https://www.materialscloud.org/discover/sssp/table/efficiency\n")
+            print("htepc.json file not found, using default values from SSSP efficiency set\n")
+            #print("https://www.materialscloud.org/discover/sssp/table/efficiency\n")
             self.dict_element = {'H': 60, 'Li': 40, 'Be': 40, 'N': 60, 'F': 45, 'Na': 40, 'Mg': 30, 'Al': 30, 'Si': 30, 'P': 30, 'S': 35, 'Cl': 40, 'K': 60, 'Ca': 30, 'Sc': 40, 'Ti': 35, 'V': 35, 'Cr': 40, 'Mn': 65, 'Fe': 90, 'Co': 45, 'Ni': 45, 'Cu': 55, 'Zn': 40, 'Ga': 70, 'Ge': 40, 'As': 35, 'Br': 30, 'Rb': 30, 'Sr': 30, 'Y': 35, 'Zr': 30, 'Nb': 40, 'Mo': 35, 'Tc': 30, 'Ru': 35, 'Rh': 35, 'Pd': 45, 'Ag': 50, 'Cd': 60, 'In': 50, 'Sn': 60, 'Sb': 40, 'Te': 30, 'I': 35, 'Cs': 30, 'Ba': 30, 'La': 40, 'Hf': 50, 'Ta': 45, 'W': 30, 'Re': 30, 'Os': 40, 'Ir': 55, 'Pt': 35, 'Hg': 50, 'Tl': 50, 'Pb': 40, 'Bi': 45, 'B': 35, 'C': 45, 'Au': 45, 'Se': 30, 'O': 60}
             #with open("pseudo.py", "w") as write_pseudo:
             #    write_pseudo.write("PSEUDO={}".format(self.dict_element))
@@ -376,9 +376,18 @@ class MpConnect:
         try:
             self.comp_list = self.data['elements']
             cutoff_list = [self.getecut_sssp(el) for el in self.comp_list]
-        except:
+        except KeyError:
             self.comp_list = [str(el) for el in self.structure.elements]
             cutoff_list = [self.getecut_sssp(el) for el in self.comp_list]
+        except:
+            elements_spin = self.structure.elements 
+            cutoff_list = []
+            for elm_spin in elements_spin:
+                elm_spin = str(elm_spin)
+                if "," in elm_spin:
+                    cutoff_list.append(self.getecut_sssp(elm_spin.split(",")[0]))
+                else:
+                    cutoff_list.append(self.getecut_sssp(elm_spin))
         self.ecutwfc= max(cutoff_list)
         self.ecutrho = 8 * self.ecutwfc
         print("******************************************\n")
@@ -399,7 +408,17 @@ class MpConnect:
         -----------------
         Similar to maxecut_sssp but for substitution process.
         """
-        cutoff_list = [self.getecut_sssp(el) for el in self.comp_list]
+        try:
+            cutoff_list = [self.getecut_sssp(el) for el in self.comp_list]
+        except:
+            elements_spin = self.structure.elements 
+            cutoff_list = []
+            for elm_spin in elements_spin:
+                elm_spin = str(elm_spin)
+                if "," in elm_spin:
+                    cutoff_list.append(self.getecut_sssp(elm_spin.split(",")[0]))
+                else:
+                    cutoff_list.append(self.getecut_sssp(elm_spin))
         self.ecutwfc= max(cutoff_list)
         self.ecutrho = 8 * self.ecutwfc
         return self.ecutwfc,self.ecutrho
@@ -430,7 +449,7 @@ class MpConnect:
                 data.write(str(prop) + ",")
             data.write("\n")
         return property_list
-    def setting_qeinput(self,calculation='vc-relax',occupations='smearing',restart_mode='from_scratch',pseudo_dir='./',smearing=0.02,smearing_type='gauss',etot_conv_thr=1e-05,forc_conv_thr=1e-04,conv_thr=1e-16,ion_dynamics='bfgs',cell_dynamics='bfgs'):
+    def setting_qeinput(self,calculation='vc-relax',occupations='smearing',restart_mode='from_scratch',pseudo_dir='./',smearing=0.02,smearing_type='gauss',etot_conv_thr=1e-05,forc_conv_thr=1e-04,conv_thr=1e-16,ion_dynamics='bfgs',cell_dynamics='bfgs',magnetic=False):
         """
         Function to create input file for QE ground-state calculations.
 
@@ -447,7 +466,37 @@ class MpConnect:
         Returns:
         Creates input files in scf-mpid.in format inside scf_dir/.
         """
-        pseudo1 = {el:el+'.upf' for el in self.comp_list}
+        if magnetic:
+            elements_spin = self.structure.elements 
+            pseudo1 = {}
+            magnetization = []
+            magdict = OrderedDict()
+            new_species = []
+            for site in self.structure:
+                new_species.append(site.label)
+            new_species = convert_species_list(new_species)
+            pseudo_species = []
+            for elm_spin in elements_spin:
+                pseudo_species.append(str(elm_spin))
+            pseudo_species_new = convert_species_list(pseudo_species)
+            pseudo_change_dict = {}
+            for i,_ in enumerate(pseudo_species):
+                pseudo_change_dict[pseudo_species[i]] = pseudo_species_new[i]
+            for i,elm_spin in enumerate(elements_spin):
+                elm_spin = str(elm_spin)
+                if "," in elm_spin:
+                    elm_s = elm_spin.split(",")[0]
+                    spin_s = float(elm_spin.split(",")[1].split("=")[-1])
+                    mag_s = 1 if spin_s > 0 else -1 if spin_s < 0 else 0
+                    pseudo1[elm_spin] = elm_s + ".upf"
+                    magnetization.append(mag_s)
+                    magdict[elm_s] = mag_s
+                else:
+                    pseudo1[elm_spin] = elm_spin + ".upf"
+                    magnetization.append(0)
+                    magdict[elm_spin] = 0
+        else:
+            pseudo1 = {el:el+'.upf' for el in self.comp_list}
         #try:
         #    prefix = self.data['composition'].alphabetical_formula
         #except:
@@ -498,8 +547,94 @@ class MpConnect:
             print("Input for band calculation. Provide nband = <n> within SYSTEM section. Use sufficient <n>.")
         else:
             os.system("cat scf.header species temp.dat > scf-{}.in".format(self.mpid))
+        if magnetic:
+            maglist = list(magdict.values())
+            os.system(f"""sed -i '/&SYSTEM/a nspin = 2,' scf-{self.mpid}.in""")
+            nsites = len(maglist)
+            with open(f"scf-{self.mpid}.in", "r") as readscf:
+                scflines = readscf.readlines()
+            old_species = []
+            natom = 0
+            for i,scfl in enumerate(scflines):
+                if 'ATOMIC_POSITIONS' in scfl:
+                    atom_start = i
+                if 'ATOMIC_SPECIES' in scfl:
+                    pseudo_start = i
+            while natom < len(new_species):
+                old_species.append(scflines[atom_start+1].split(" ")[0])
+                natom += 1
+            new_list = []
+            for k,_ in enumerate(pseudo_species):
+                old = scflines[pseudo_start+1+k].split(" ")
+                old = list(filter(lambda x: x != '', old))[0]
+                new = pseudo_change_dict[old]
+                new_list.append(new)
+                os.system(f"""sed -i '{pseudo_start+2+k}s/{old}/{new}/' scf-{self.mpid}.in""")
+            maglist = list(reorder_dictionary(magdict,new_list).values())
+            for j,_ in enumerate(old_species):
+                os.system(f"""sed -i '{atom_start+2+j}s/{old_species[j]}/{new_species[j]}/' scf-{self.mpid}.in""")
+            for j,_ in enumerate(maglist):
+                os.system(f"""sed -i '/&SYSTEM/a starting_magnetization({nsites-j}) = {maglist[nsites-j-1]}' scf-{self.mpid}.in""")
         os.system("rm scf.header species temp.dat kpoint*")
-#Basic info about compounds with QE scf input file.
+def reorder_dictionary(original_dict, new_order):
+    """
+    Reorder the keys of a dictionary based on a new list of keywords and return the list of keys.
+
+    Parameters:
+    - original_dict (dict): The original dictionary whose keys are to be reordered.
+    - new_order (list): The new list of keywords specifying the desired order of keys.
+
+    Returns:
+    - list: The list of keys of the reordered dictionary based on the new order.
+
+    Example:
+    original_dict = {'a': 1, 'b': 2, 'c': 3, 'd': 4}
+    new_order = ['c', 'a', 'd', 'b']
+    reorder_dictionary(original_dict, new_order)
+    """
+    # Create a new OrderedDict with the keys ordered according to the new list
+    ordered_dict = OrderedDict((key, original_dict[key]) for key in new_order if key in original_dict)
+
+    # Return the list of keys in the new order
+    return ordered_dict
+
+def convert_species_list(original_list):
+    """
+    Replace elements in the original list with generic names followed by occurrence counts.
+
+    Parameters:
+    - original_list (list): List containing strings representing elements.
+
+    Returns:
+    - list: Updated list where elements are replaced with generic names and occurrence counts.
+
+    Algorithm:
+    - Replace elements with generic names followed by occurrence counts.
+
+    Example:
+     original_list = ['Fe,spin=5', 'Fe,spin=-5', 'pd', 'pd', 'I,spin=1', 'I,spin=-1']
+     convert_species_list(original_list)
+    ['Fe1', 'Fe2', 'pd', 'pd', 'I1', 'I2']
+    """
+    counter = defaultdict(int)
+    # Updated list
+    updated_list = []
+    # Iterate through the original list
+    for item in original_list:
+        if ',' in item and 'spin=0' not in item:
+            element = item.split(',')[0]
+            counter[element] += 1
+            if len(counter) > 1:
+                updated_list.append(element + str(counter[element]))
+            else:
+                updated_list.append(element)
+        elif ',' in item and 'spin=0' in item:
+            element = item.split(',')[0]
+            updated_list.append(element)
+        else:
+            updated_list.append(item)
+    return updated_list
+
 class INPUTscf:
     """
     class to process QE input files

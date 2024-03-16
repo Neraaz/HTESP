@@ -91,7 +91,8 @@ for ((ii=$1; ii<$2; ++ii)); do
       sed -n '/K_POINTS automatic/,/CELL_PARAMETERS angstrom/p' R$A-$B/relax/scf.in | sed '$d' > R$A-$B/relax/kpoint.dat
       nat=$(grep "number of atoms/cell" R$A-$B/relax/scf.out | tail -n 1 | awk '{ print $5 }')
       nat=$(echo $nat + 6 | bc)
-      grep -A $nat 'CELL_PARAMETERS (angstrom)' R$A-$B/relax/scf.out | tail -n 27 | sed '$d' > R$A-$B/relax/cell_norelax.dat
+      natplus1=$(echo $nat + 1 | bc)
+      grep -A $nat 'CELL_PARAMETERS (angstrom)' R$A-$B/relax/scf.out | tail -n $natplus1 | sed '$d' > R$A-$B/relax/cell_norelax.dat
       cp R$A-$B/relax/scf.in R$A-$B/relax/scf-initial.in
       cp R$A-$B/relax/scf.out R$A-$B/relax/scf-initial.out
       cat R$A-$B/relax/scf-header.in R$A-$B/relax/cell_norelax.dat > R$A-$B/relax/scf.in

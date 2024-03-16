@@ -8,9 +8,11 @@ from pymatgen.io.vasp.sets import MPRelaxSet
 from pymatgen.io import pwscf
 from pymatgen.io.vasp.sets import Vasprun
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
+from pymatgen.analysis.magnetism import MagneticStructureEnumerator
 from pymatgen.core import structure
 from pymatgen.analysis.elasticity import diff_fit,ElasticTensor,Stress
 from pymatgen.analysis.elasticity import DeformedStructureSet,find_eq_stress
+from pymatgen.analysis.magnetism import MagneticStructureEnumerator
 from cif_to_gsinput import pos_to_kpt
 from write_potcar import poscar2potcar
 from htepc import MpConnect
@@ -95,16 +97,28 @@ def deformation(mpid,obj,dft,orig_prefix,deformed_struc):
             os.system("""echo "ISIF = 2" >> INCAR""")
             os.chdir("../../")
         else:
-            obj.structure = struc
+            magnetic = input_data['pwscf_in']['magnetic']
+            if magnetic:
+                default_magmoms = input_data['magmom']['magmom']
+                struc = MagneticStructureEnumerator(struc,default_magmoms=default_magmoms,strategies=['ferromagnetic'],truncate_by_symmetry=True).ordered_structures
+                obj.structure = struc[0]
+            else:
+                obj.structure = struc
             comp_list = []
             for composition in obj.structure.composition.elements:
                 comp_list.append(composition.name)
             obj.comp_list = comp_list
             obj.getkpt()
-            obj.getevenkpt()
+            evenkpt = input_data['download']['inp']['evenkpt']
+            if evenkpt:
+                print("Utilizing even kpoint mesh\n")
+                obj.getevenkpt()
             obj.maxecut_sssp_for_subs()
             obj.prefix = struc.composition.alphabetical_formula.replace(" ","")
-            obj.setting_qeinput(calculation='relax',pseudo_dir='../../pp')
+            if magnetic:
+                obj.setting_qeinput(calculation='relax',magnetic=True,pseudo_dir='../../pp')
+            else:
+                obj.setting_qeinput(calculation='relax',pseudo_dir='../../pp')
             os.system("""mv scf-None.in""" + """ scf_dir/scf-{}-{}.in""".format(mpid,i+1))
         print(mpid,obj.prefix)
         with open("mpid-deformed.in", "a") as mpid_append:
@@ -156,7 +170,10 @@ def main(mpid,orig_prefix):
                 data = Vasprun("R{}-{}-{}/relax/vasprun.xml".format(mpid,istruc+1,prefix_conv))
                 calc_stress = -1.0*np.array(data.as_dict()['output']['ionic_steps'][0]['stress'])
             else:
-                print("Currently supporting only for VASP.\n")
+                os.system(f"""grep -A 3 'total   stress' R{mpid}-{istruc+1}-{prefix_conv}/relax/scf.out | tail -n 3 > stress-qe""")
+                data = np.loadtxt("stress-qe")[:,:3]
+                calc_stress = data*21798.7 #1 Ry/angstrom^3 to 1 kbar conversion
+                #print("Currently supporting only for VASP.\n")
             stress_obj = Stress(calc_stress)
             pk2stress = stress_obj.piola_kirchoff_2(deformation_mat[istruc])
             #pk2stress = calc_stress
@@ -180,20 +197,20 @@ def main(mpid,orig_prefix):
         print("Only 2 mode is available, either input or compute_elastic\n")
 if __name__ == "__main__":
     with open("input.in","r") as read_in:
-        lines = read_in.readlines()
-    START = int(lines[0].split("\n")[0])
-    END = int(lines[1].split("\n")[0])
-    FILENAME = lines[3].split("\n")[0]
+        lines1 = read_in.readlines()
+    START = int(lines1[0].split("\n")[0])
+    END = int(lines1[1].split("\n")[0])
+    FILENAME = lines1[3].split("\n")[0]
     with open(FILENAME,'r') as read_mpid:
         LINES = read_mpid.readlines()
     LINES = LINES[START-1:END-1]
     PROPNAME = ['trans_v', 'long_v', 'snyder_ac', 'snyder_opt', 'snyder_total', 'clarke_thermalcond', 'cahill_thermalcond', 'debye_temperature', 'structure', 'k_voigt', 'k_reuss', 'k_vrh', 'g_voigt', 'g_reuss', 'g_vrh', 'universal_anisotropy', 'homogeneous_poisson', 'y_mod']
     if not os.path.isfile("elastic.csv"):
-        with open("elastic.csv","w") as write_elastic:
-            write_elastic.write("materials_id,compound")
-            for prop in PROPNAME:
-                write_elastic.write("," + prop)
-            write_elastic.write("\n")
+        with open("elastic.csv","w") as write_elastic1:
+            write_elastic1.write("materials_id,compound")
+            for prop1 in PROPNAME:
+                write_elastic1.write("," + prop1)
+            write_elastic1.write("\n")
     for LINE in LINES:
         MPID = LINE.split(" ")[1]
         COMP = LINE.split(" ")[2].split("\n")[0]

@@ -39,6 +39,7 @@ for ((ii=$begin; ii<$last; ++ii)); do
    else
        is_poscar=$(echo 0 | bc)
    fi
+   lsorbit=$(grep "LSORBIT .TRUE." vasp.in | wc -l)
    if [[ $is_poscar -lt 1 ]];then
      #echo "$A $B $is_poscar"
      echo "Downloading: $A $B"
@@ -46,7 +47,7 @@ for ((ii=$begin; ii<$last; ++ii)); do
    else
      echo "R$A-$B/relax/POSCAR present"
    fi
-   if [[ ! -f R$A-$B/relax/NSW_0_DETECTED ]]; then
+   if [[ ! -f R$A-$B/relax/NSW_0_DETECTED ]] || [[ $lsorbit -gt 0 ]]; then
      if [[ -f vasp.in ]]; then
       cp vasp.in R$A-$B/relax/
      fi
