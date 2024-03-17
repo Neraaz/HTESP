@@ -20,7 +20,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install -r docs/requirement.txt
+          pip install -r requirement_docs.txt
 
       - name: Build documentation
         run: |

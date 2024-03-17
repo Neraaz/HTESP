@@ -1,5 +1,6 @@
 #!/usr/bin/env python
-"""Writen by Niraj K. Nepal, Ph.D."""
+#"""Writen by Niraj K. Nepal, Ph.D."""
+"""Module to generate k-points"""
 import sys
 
 def main():

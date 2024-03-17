@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
+# Written by Niraj K. Nepal, Ph.D.
 """
 Creates different magnetic ordering according to MagneticStructureEnumerator functions.
 """

@@ -1,5 +1,6 @@
 #!/usr/bin/env python
-"""Writen by Niraj K. Nepal, Ph.D."""
+#"""Writen by Niraj K. Nepal, Ph.D."""
+""" """
 import sys
 import os
 from fractions import Fraction

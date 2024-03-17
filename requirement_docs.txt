@@ -1,0 +1,12 @@
+numpy
+scipy
+pandas
+matplotlib
+ase
+pymatgen
+bsym
+lmfit
+mp_api
+qmpy-rester
+sphinx
+sphinx-material

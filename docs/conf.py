@@ -14,7 +14,7 @@ import os
 import sys
 import sphinx_material
 #sys.path.insert(0, os.path.abspath('_ext'))
-sys.path.insert(0, os.path.abspath('../../'))
+sys.path.insert(0, os.path.abspath('../src'))
 
 
 
@@ -41,8 +41,17 @@ release = '0.0.1'
 extensions = [
     'sphinx.ext.duration',
     'sphinx.ext.autodoc',
+    'sphinx.ext.autosummary',
     'sphinx.ext.extlinks',
 ]
+autodoc_default_options = {
+    'members': True,
+    'member-order': 'bysource',
+}
+
+
+# Exclude module-level docstrings but keep docstrings for functions and classes
+
 
 #edit_on_github_project = 'Neraaz/HTEPC_revised/'
 #edit_on_github_branch = 'main'
@@ -61,10 +70,7 @@ exclude_patterns = []
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-#html_theme = "classic"
-#html_theme = "bootstrap"
 html_theme = 'sphinx_material'
-#html_theme_path = sphinx_material.html_theme_path()
 
 
 # Add any paths that contain custom static files (such as style sheets) here,
@@ -72,12 +78,4 @@ html_theme = 'sphinx_material'
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 
-#html_context = {
-#    "display_github": True, # Integrate GitHub
-#    "github_user": "Neraaz", # Username
-#    "github_repo": "HTEPC_revised", # Repo name
-#    "github_version": "", # Version
-#    "conf_py_path": "", # Path in the checkout to the docs root
-#}
 html_show_sphinx = False
-#html_show_sourcelink = False

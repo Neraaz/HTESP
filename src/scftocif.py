@@ -1,5 +1,6 @@
 #!/usr/bin/env python
-"""Writen by Niraj K. Nepal, Ph.D."""
+#"""Writen by Niraj K. Nepal, Ph.D."""
+"""Module to extract structures"""
 import warnings
 from ase.io import cif,espresso
 warnings.filterwarnings('ignore')

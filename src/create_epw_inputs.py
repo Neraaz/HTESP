@@ -1,5 +1,6 @@
 #!/usr/bin/env python
-"""Writen by Niraj K. Nepal, Ph.D."""
+#"""Writen by Niraj K. Nepal, Ph.D."""
+"""Module to prepare input files for wannier90 and EPW calculations"""
 import sys
 import os
 import glob

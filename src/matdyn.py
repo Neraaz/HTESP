@@ -1,5 +1,6 @@
 #!/usr/bin/env python
-"""Writen by Niraj K. Nepal, Ph.D."""
+#"""Writen by Niraj K. Nepal, Ph.D."""
+"""Module to create input file to compute phonon dispersion at high-symmetry BZ path"""
 import sys
 import numpy as np
 def matdyn_in():

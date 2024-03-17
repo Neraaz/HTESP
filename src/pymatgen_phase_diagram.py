@@ -1,5 +1,6 @@
 #!/usr/bin/env python
-"""Writen by Niraj K. Nepal, Ph.D."""
+#"""Writen by Niraj K. Nepal, Ph.D."""
+"""Module to compute convex hull"""
 import os
 import pandas as pand
 from pymatgen.io import pwscf

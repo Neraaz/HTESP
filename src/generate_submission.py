@@ -1,5 +1,6 @@
 #!/usr/bin/env python
-"""Written by Niraj K. Nepal, Ph.D."""
+#"""Written by Niraj K. Nepal, Ph.D."""
+"""Module to prepare job submission scripts"""
 import os
 import glob
 import json
@@ -78,7 +79,7 @@ def main():
     Load parameters from a JSON file, generate submission files based on the specified calculation type,
     and create a script containing the submission commands.
 
-    Reads parameters from 'parameters.json' and defines command dictionaries for different calculation types.
+    Reads parameters from 'htepc.json' and defines command dictionaries for different calculation types.
     Generates submission files based on the provided calculation type and prints the submission commands.
     Creates a script containing the submission commands named 'run-<calculation_type>.sh'.
 

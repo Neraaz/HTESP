@@ -1,6 +1,6 @@
 #!/usr/bin/env python
+#Writen by Niraj K. Nepal, Ph.D.
 """
-Writen by Niraj K. Nepal, Ph.D.
 This code extract data from lambda.out file and plot Tc vs sigma,
 fit Tc = exp(-A*sigma**(1/3) + B) to obtain the value of decay
 parameter "A".

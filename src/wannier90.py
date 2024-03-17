@@ -1,5 +1,6 @@
 #!/usr/bin/env python
-"""Written by Niraj K. Nepal, Ph.D"""
+#"""Written by Niraj K. Nepal, Ph.D"""
+"""Module to prepare wannier90 input files"""
 import os
 import json
 import numpy as np

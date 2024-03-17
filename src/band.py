@@ -1,5 +1,6 @@
 #!/usr/bin/env python
-"""Writen by Niraj K. Nepal, Ph.D."""
+#"""Writen by Niraj K. Nepal, Ph.D."""
+"""Module to write input files for QE band calculations"""
 import sys
 
 def write_band_input(material_id, compound_name, prefix, dynamic_matrix):

@@ -1,4 +1,6 @@
-"""Writen by Niraj K. Nepal, Ph.D. (tug11655@temple.edu)"""
+#!/usr/bin/env python
+#"""Writen by Niraj K. Nepal, Ph.D. (tug11655@temple.edu)"""
+"""Module to perform elastic calculations"""
 import sys
 import os
 import json

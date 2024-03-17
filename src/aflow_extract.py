@@ -1,6 +1,8 @@
 #!/usr/bin/env python
+#
+#Written by Niraj K. Nepal, PhD.
 """
-Written by Niraj K. Nepal, PhD.
+Module to search and download input files from AFLOW database.
 """
 # coding: utf-8
 # Extracting Carbon compounds
@@ -72,7 +74,7 @@ def properties_string(dict_param):
                 criteria += "$paging(1,{}),".format(search[key])
             elif key == 'prop':
                 prop_string = ""
-                for i,prop1 in enumerate(search[key]):
+                for i,_ in enumerate(search[key]):
                     if i < len(search[key]) - 1:
                         prop_string += search[key][i] + ","
                     else:
@@ -90,7 +92,7 @@ def properties_string(dict_param):
                 criteria += "nspecies(1*,*{}),".format(search[key])
             elif key == 'prop':
                 prop_string = ""
-                for i,prop1 in enumerate(search[key]):
+                for i,_ in enumerate(search[key]):
                     if i < len(search[key]) - 1:
                         prop_string += search[key][i] + ","
                     else:
@@ -100,7 +102,7 @@ def properties_string(dict_param):
     criteria = criteria + prop_string
     criteria = criteria.replace(" ","")
     return criteria
-def search(dict_param):
+def search_data(dict_param):
     """
     Function to search data via AFLOW database.
 
@@ -241,7 +243,7 @@ def main():
     end = input_data['inp']['end']
     dft = input_data['inp']['calc']
     if condition == 'search':
-        search(input_data)
+        search_data(input_data)
     elif condition == 'download':
         print(start,end,dft)
         download(dft,start,end)

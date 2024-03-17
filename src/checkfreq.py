@@ -1,5 +1,6 @@
 #!/usr/bin/env python
-"""Writen by Niraj K. Nepal, Ph.D."""
+#"""Writen by Niraj K. Nepal, Ph.D."""
+"""Module to check if frequency is less than cutoff value"""
 import sys
 import numpy as np
 def check_freq(filename):

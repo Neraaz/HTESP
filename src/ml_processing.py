@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# Written by Niraj K. Nepal, Ph.D.
 """
 Install matminer to extract composition based magpie features and structure based Jarvis features.
 """

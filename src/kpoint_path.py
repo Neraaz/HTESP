@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Written by Niraj K. Nepal, Ph.D"""
+#"""Written by Niraj K. Nepal, Ph.D"""
 from ase.io import espresso, vasp
 from ase.cell import Cell
 from kpath import kpath

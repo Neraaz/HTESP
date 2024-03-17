@@ -86,3 +86,11 @@ Cite
 .. toctree::
 
    cite
+
+API Documentation
+------------------
+
+.. toctree::
+   :maxdepth: 1
+
+   utils

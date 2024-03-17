@@ -1,5 +1,6 @@
 #!/usr/bin/env python
-"""Writen by Niraj K. Nepal, Ph.D."""
+#"""Writen by Niraj K. Nepal, Ph.D."""
+"""Module to extract information about systems for running calculations"""
 import sys
 import spglib as spg
 from pymatgen.core import structure

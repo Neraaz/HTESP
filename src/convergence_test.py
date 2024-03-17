@@ -1,6 +1,7 @@
 #!/usr/bin/env python
-"""Written by Niraj K. Nepal, Ph.D.
- Submit convergence test for QE scf calculations.
+#"""Written by Niraj K. Nepal, Ph.D.
+"""
+ Module to submit convergence tests.
  Runs with 'mainprogram convtest'"""
 
 import os

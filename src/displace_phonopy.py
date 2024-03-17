@@ -1,4 +1,6 @@
-"""Written by Niraj K. Nepal,Ph.D."""
+#!/usr/bin/env python
+#"""Written by Niraj K. Nepal,Ph.D."""
+"""Module to process band.yaml file from phonopy calculations to extract eigenvectors"""
 # coding: utf-8
 import yaml
 import numpy as np

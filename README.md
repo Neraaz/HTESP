@@ -25,7 +25,7 @@ ________________________________________________________________________________
 ##                                                                  Utilities:
                                 
 
-## 2. Key functionalities:
+## Key functionalities:
 
 a. Retrieving and Formatting Input Files from Materials Project, AFLOW, and OQMD Databases for Quantum Espresso (QE) and VASP Calculations.
 

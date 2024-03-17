@@ -1,6 +1,6 @@
 #!/usr/bin/env python
-"""Writen by Niraj K. Nepal, Ph.D.
-This script will download QE input files from materials project database.
+#"""Writen by Niraj K. Nepal, Ph.D.
+"""This script will download QE input files from materials project database.
 Script is run within 'download-input' bash script."""
 import sys
 import os

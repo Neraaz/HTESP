@@ -1,5 +1,6 @@
 #!/usr/bin/env python
-"""Written by Niraj K. Nepal, Ph.D."""
+#"""Written by Niraj K. Nepal, Ph.D."""
+"""Module to group structures from different database"""
 # coding: utf-8
 import os
 from pymatgen.core import Structure

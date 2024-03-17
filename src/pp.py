@@ -7,6 +7,7 @@
 # 14/03/2018 - Detect if SOC is included in the calculation - Samuel Ponce
 # 05/06/2019 - Removed SOC for xml detection instead - Felix Goudreault
 #
+""" """
 from __future__ import print_function
 try:
     from builtins import input

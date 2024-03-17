@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
+# Written by Niraj K. Nepal, Ph.D.
 """
 Writing POTCAR file from POSCAR
 """

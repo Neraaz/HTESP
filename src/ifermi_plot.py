@@ -1,5 +1,6 @@
 #!/usr/bin/env python
-"""Written by Niraj K. Nepal, Ph.D."""
+#"""Written by Niraj K. Nepal, Ph.D."""
+"""Module to generate command for ifermi"""
 import os
 import json
 
