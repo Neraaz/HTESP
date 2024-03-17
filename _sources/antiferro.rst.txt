@@ -1,0 +1,31 @@
+﻿antiferro
+=========
+
+.. automodule:: antiferro
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      changeaxis
+      magnetic_structure
+      main
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

@@ -1,0 +1,29 @@
+﻿standard
+========
+
+.. automodule:: standard
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      main
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

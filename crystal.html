@@ -46,7 +46,7 @@
   
   
   
-    <title>Cite &#8212; HTESP 0.0.1 documentation</title>
+    <title>crystal &#8212; HTESP 0.0.1 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=83e35b93" />
     <link rel="stylesheet" type="text/css" href="_static/material.css?v=79c92029" />
     <script src="_static/documentation_options.js?v=d45e8c67"></script>
@@ -54,8 +54,8 @@
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Modules" href="utils.html" />
-    <link rel="prev" title="Contribution" href="contrib.html" />
+    <link rel="next" title="kpoint_path" href="kpoint_path.html" />
+    <link rel="prev" title="freq_process" href="freq_process.html" />
   
    
 
@@ -74,7 +74,7 @@
   <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer">
   <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search">
   <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
-  <a href="#cite" tabindex="1" class="md-skip"> Skip to content </a>
+  <a href="#crystal" tabindex="1" class="md-skip"> Skip to content </a>
   <header class="md-header" data-md-component="header">
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
@@ -92,7 +92,7 @@
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
           <span class="md-header-nav__topic">HTESP 0.0.1 documentation</span>
-          <span class="md-header-nav__topic"> Cite </span>
+          <span class="md-header-nav__topic"> crystal </span>
         </div>
       </div>
       <div class="md-flex__cell md-flex__cell--shrink">
@@ -149,6 +149,7 @@
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
           <li class="md-tabs__item"><a href="index.html" class="md-tabs__link">HTESP 0.0.1 documentation</a></li>
+          <li class="md-tabs__item"><a href="utils.html" class="md-tabs__link">Modules</a></li>
       </ul>
     </div>
   </nav>
@@ -179,7 +180,18 @@
               <div class="md-sidebar__inner">
                 
 <nav class="md-nav md-nav--secondary">
+    <label class="md-nav__title" for="__toc">"Contents"</label>
   <ul class="md-nav__list" data-md-scrollfix="">
+        <li class="md-nav__item"><a href="#crystal--page-root" class="md-nav__link">crystal</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#crystal.crystal_extract" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">crystal_extract()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#crystal.convex_hull" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">convex_hull()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#crystal.main" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a>
+        </li></ul>
+            </nav>
+        </li>
     
   <h3>This Page</h3>
   <ul class="this-page-menu">
@@ -193,10 +205,80 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  <section id="cite">
-<h1 id="cite--page-root">Cite<a class="headerlink" href="#cite--page-root" title="Link to this heading">¶</a></h1>
-<p>Please cite following paper, if you use this package.</p>
-<p>Also, cites appropriate softwares and packages that is used together with this package.</p>
+  <section id="module-crystal">
+<span id="crystal"></span><h1 id="crystal--page-root">crystal<a class="headerlink" href="#crystal--page-root" title="Link to this heading">¶</a></h1>
+<p>Module to extract information about systems for running calculations</p>
+<p class="rubric">Functions</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#crystal.convex_hull" title="crystal.convex_hull"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convex_hull</span></code></a>(comp)</p></td>
+<td><p>Function to extract energy above hull from the Materials Project database.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#crystal.crystal_extract" title="crystal.crystal_extract"><code class="xref py py-obj docutils literal notranslate"><span class="pre">crystal_extract</span></code></a>(filename)</p></td>
+<td><p>Function to extract lattice parameters from Quantum Espresso (QE) input files using ASE package.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#crystal.main" title="crystal.main"><code class="xref py py-obj docutils literal notranslate"><span class="pre">main</span></code></a>()</p></td>
+<td><p>Main function to extract properties from Materials Project and relaxed outputs.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py function">
+<dt class="sig sig-object py" id="crystal.crystal_extract">
+<span class="sig-prename descclassname"><span class="pre">crystal.</span></span><span class="sig-name descname"><span class="pre">crystal_extract</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#crystal.crystal_extract" title="Link to this definition">¶</a></dt>
+<dd><p>Function to extract lattice parameters from Quantum Espresso (QE) input files using ASE package.</p>
+<section id="parameters">
+<h2 id="parameters">Parameters:<a class="headerlink" href="#parameters" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>filename<span class="classifier">str</span></dt><dd><p>QE input file or VASP POSCAR.</p>
+</dd>
+</dl>
+</section>
+<section id="returns">
+<h2 id="returns">Returns:<a class="headerlink" href="#returns" title="Link to this heading">¶</a></h2>
+<p>None</p>
+<p>Prints lattice parameters including cell parameters, cell volume, crystal system, and spacegroup.</p>
+</section>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="crystal.convex_hull">
+<span class="sig-prename descclassname"><span class="pre">crystal.</span></span><span class="sig-name descname"><span class="pre">convex_hull</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">comp</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#crystal.convex_hull" title="Link to this definition">¶</a></dt>
+<dd><p>Function to extract energy above hull from the Materials Project database.</p>
+<section id="id1">
+<h2 id="id1">Parameters:<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>comp<span class="classifier">str</span></dt><dd><p>Compound name.</p>
+</dd>
+</dl>
+</section>
+<section id="id2">
+<h2 id="id2">Returns:<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>tuple</dt><dd><p>A tuple containing the energy above hull, formation energy per atom, and magnetic ordering information.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="crystal.main">
+<span class="sig-prename descclassname"><span class="pre">crystal.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#crystal.main" title="Link to this definition">¶</a></dt>
+<dd><p>Main function to extract properties from Materials Project and relaxed outputs.</p>
+<section id="usage">
+<h2 id="usage">Usage:<a class="headerlink" href="#usage" title="Link to this heading">¶</a></h2>
+<p>python script.py filename comp cond</p>
+<dl class="simple">
+<dt>filename<span class="classifier">str</span></dt><dd><p>Name of the QE input file.</p>
+</dd>
+<dt>comp<span class="classifier">str</span></dt><dd><p>Compound name.</p>
+</dd>
+<dt>cond<span class="classifier">str</span></dt><dd><p>Condition indicator.</p>
+</dd>
+</dl>
+</section>
+<section id="id3">
+<h2 id="id3">Returns:<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h2>
+<p>None</p>
+</section>
+</dd></dl>
 </section>
 
 
@@ -209,7 +291,7 @@
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
           
-            <a href="contrib.html" title="Contribution"
+            <a href="freq_process.html" title="freq_process"
                class="md-flex md-footer-nav__link md-footer-nav__link--prev"
                rel="prev">
               <div class="md-flex__cell md-flex__cell--shrink">
@@ -218,17 +300,17 @@
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> "Previous" </span> Contribution </span>
+                      class="md-footer-nav__direction"> "Previous" </span> freq_process </span>
               </div>
             </a>
           
           
-            <a href="utils.html" title="Modules"
+            <a href="kpoint_path.html" title="kpoint_path"
                class="md-flex md-footer-nav__link md-footer-nav__link--next"
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> "Next" </span> Modules </span>
+                class="md-footer-nav__direction"> "Next" </span> kpoint_path </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>

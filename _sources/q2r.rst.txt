@@ -1,0 +1,29 @@
+﻿q2r
+===
+
+.. automodule:: q2r
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      q2r_in
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

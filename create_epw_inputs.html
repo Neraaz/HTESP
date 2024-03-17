@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="lang:clipboard.copy" content="Copy to clipboard">
+  <meta name="lang:clipboard.copied" content="Copied to clipboard">
+  <meta name="lang:search.language" content="en">
+  <meta name="lang:search.pipeline.stopwords" content="True">
+  <meta name="lang:search.pipeline.trimmer" content="True">
+  <meta name="lang:search.result.none" content="No matching documents">
+  <meta name="lang:search.result.one" content="1 matching document">
+  <meta name="lang:search.result.other" content="# matching documents">
+  <meta name="lang:search.tokenizer" content="[\s\-]+">
+
+  
+    <link href="https://fonts.gstatic.com/" rel="preconnect" crossorigin>
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,500,700|Roboto:300,400,400i,700&display=fallback" rel="stylesheet">
+
+    <style>
+      body,
+      input {
+        font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif
+      }
+
+      code,
+      kbd,
+      pre {
+        font-family: "Roboto Mono", "Courier New", Courier, monospace
+      }
+    </style>
+  
+
+  <link rel="stylesheet" href="_static/stylesheets/application.css"/>
+  <link rel="stylesheet" href="_static/stylesheets/application-palette.css"/>
+  <link rel="stylesheet" href="_static/stylesheets/application-fixes.css"/>
+  
+  <link rel="stylesheet" href="_static/fonts/material-icons.css"/>
+  
+  <meta name="theme-color" content="#3f51b5">
+  <script src="_static/javascripts/modernizr.js"></script>
+  
+  
+  
+    <title>create_epw_inputs &#8212; HTESP 0.0.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=83e35b93" />
+    <link rel="stylesheet" type="text/css" href="_static/material.css?v=79c92029" />
+    <script src="_static/documentation_options.js?v=d45e8c67"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="band" href="band.html" />
+    <link rel="prev" title="cif_to_gsinput" href="cif_to_gsinput.html" />
+  
+   
+
+  </head>
+  <body dir=ltr
+        data-md-color-primary=blue-grey data-md-color-accent=blue>
+  
+  <svg class="md-svg">
+    <defs data-children-count="0">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448" viewBox="0 0 416 448" id="__github"><path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19T128 352t-18.125-8.5-10.75-19T96 304t3.125-20.5 10.75-19T128 256t18.125 8.5 10.75 19T160 304zm160 0q0 10-3.125 20.5t-10.75 19T288 352t-18.125-8.5-10.75-19T256 304t3.125-20.5 10.75-19T288 256t18.125 8.5 10.75 19T320 304zm40 0q0-30-17.25-51T296 232q-10.25 0-48.75 5.25Q229.5 240 208 240t-39.25-2.75Q130.75 232 120 232q-29.5 0-46.75 21T56 304q0 22 8 38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0 37.25-1.75t35-7.375 30.5-15 20.25-25.75T360 304zm56-44q0 51.75-15.25 82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5T212 416q-19.5 0-35.5-.75t-36.875-3.125-38.125-7.5-34.25-12.875T37 371.5t-21.5-28.75Q0 312 0 260q0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25 30.875Q171.5 96 212 96q37 0 70 8 26.25-20.5 46.75-30.25T376 64q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34 99.5z"/></svg>
+      
+    </defs>
+  </svg>
+  
+  <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer">
+  <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search">
+  <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+  <a href="#create_epw_inputs" tabindex="1" class="md-skip"> Skip to content </a>
+  <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex navheader">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="index.html" title="HTESP 0.0.1 documentation"
+           class="md-header-nav__button md-logo">
+          
+            &nbsp;
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          <span class="md-header-nav__topic">HTESP 0.0.1 documentation</span>
+          <span class="md-header-nav__topic"> create_epw_inputs </span>
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+        
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" action="search.html" method="get" name="search">
+      <input type="text" class="md-search__input" name="q" placeholder=""Search""
+             autocapitalize="off" autocomplete="off" spellcheck="false"
+             data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+      </div>
+      
+      
+  
+  <script src="_static/javascripts/version_dropdown.js"></script>
+  <script>
+    var json_loc = ""versions.json"",
+        target_loc = "../",
+        text = "Versions";
+    $( document ).ready( add_version_dropdown(json_loc, target_loc, text));
+  </script>
+  
+
+    </div>
+  </nav>
+</header>
+
+  
+  <div class="md-container">
+    
+    
+    
+  <nav class="md-tabs" data-md-component="tabs">
+    <div class="md-tabs__inner md-grid">
+      <ul class="md-tabs__list">
+          <li class="md-tabs__item"><a href="index.html" class="md-tabs__link">HTESP 0.0.1 documentation</a></li>
+          <li class="md-tabs__item"><a href="utils.html" class="md-tabs__link">Modules</a></li>
+      </ul>
+    </div>
+  </nav>
+    <main class="md-main">
+      <div class="md-main__inner md-grid" data-md-component="container">
+        
+          <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+            <div class="md-sidebar__scrollwrap">
+              <div class="md-sidebar__inner">
+                <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href="index.html" title="HTESP 0.0.1 documentation" class="md-nav__button md-logo">
+      
+        <img src="_static/" alt=" logo" width="48" height="48">
+      
+    </a>
+    <a href="index.html"
+       title="HTESP 0.0.1 documentation">HTESP 0.0.1 documentation</a>
+  </label>
+  
+
+</nav>
+              </div>
+            </div>
+          </div>
+          <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+            <div class="md-sidebar__scrollwrap">
+              <div class="md-sidebar__inner">
+                
+<nav class="md-nav md-nav--secondary">
+    <label class="md-nav__title" for="__toc">"Contents"</label>
+  <ul class="md-nav__list" data-md-scrollfix="">
+        <li class="md-nav__item"><a href="#create-epw-inputs--page-root" class="md-nav__link">create_epw_inputs</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#create_epw_inputs.phonon_input" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">phonon_input()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#create_epw_inputs.prepare_nscf" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">prepare_nscf()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#create_epw_inputs.projwfc" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">projwfc()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#create_epw_inputs.ciftoxsf" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ciftoxsf()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#create_epw_inputs.func_erfc" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">func_erfc()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#create_epw_inputs.scdmfit" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">scdmfit()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#create_epw_inputs.band_file_epw" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">band_file_epw()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#create_epw_inputs.pw2wan_input" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">pw2wan_input()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#create_epw_inputs.epw_sc_from_json" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">epw_sc_from_json()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#create_epw_inputs.epw_sc" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">epw_sc()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#create_epw_inputs.main" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a>
+        </li></ul>
+            </nav>
+        </li>
+    
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+  </ul>
+  </ul>
+</nav>
+              </div>
+            </div>
+          </div>
+        
+        <div class="md-content">
+          <article class="md-content__inner md-typeset" role="main">
+            
+  <section id="module-create_epw_inputs">
+<span id="create-epw-inputs"></span><h1 id="create-epw-inputs--page-root">create_epw_inputs<a class="headerlink" href="#create-epw-inputs--page-root" title="Link to this heading">¶</a></h1>
+<p>Module to prepare input files for wannier90 and EPW calculations</p>
+<p class="rubric">Functions</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#create_epw_inputs.band_file_epw" title="create_epw_inputs.band_file_epw"><code class="xref py py-obj docutils literal notranslate"><span class="pre">band_file_epw</span></code></a>(mpid, compound)</p></td>
+<td><p>function to include 'nosym = .true.' inside QE scf.in file for bandstructure calculation parameters ------------- mpid : Materials id compound : compound name</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#create_epw_inputs.ciftoxsf" title="create_epw_inputs.ciftoxsf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ciftoxsf</span></code></a>(file_name, outfile)</p></td>
+<td><p>function to change .cif file to .xsf format, suitable for xcrysden.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#create_epw_inputs.epw_sc" title="create_epw_inputs.epw_sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">epw_sc</span></code></a>(mpid, compound, prefix, qpoint_file, ...)</p></td>
+<td><p>function to write input file for EPW calculations.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#create_epw_inputs.epw_sc_from_json" title="create_epw_inputs.epw_sc_from_json"><code class="xref py py-obj docutils literal notranslate"><span class="pre">epw_sc_from_json</span></code></a>(json_file[, out])</p></td>
+<td><p>Write input file for EPW calculations based on JSON configuration.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#create_epw_inputs.func_erfc" title="create_epw_inputs.func_erfc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">func_erfc</span></code></a>(xdata, aparam, bparam[, func_type])</p></td>
+<td><p>erfc function erfc((x-a)/b) parameters -------------- xdata : x data aparam and bparam are parameters func_type : Type of function Returns -------------- ydata = 0.5 * erfc((xdata-aparam)/bparam)</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#create_epw_inputs.main" title="create_epw_inputs.main"><code class="xref py py-obj docutils literal notranslate"><span class="pre">main</span></code></a>()</p></td>
+<td><p>main function</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#create_epw_inputs.phonon_input" title="create_epw_inputs.phonon_input"><code class="xref py py-obj docutils literal notranslate"><span class="pre">phonon_input</span></code></a>(mass_file, qpoint_file, mpid, ...)</p></td>
+<td><p>function to write ph.in file for phonon calculation parameters -------------- mass_file : mass.in file automatically created in 'create-inputs' bash script qpoint_file : qpoint.in file provided mpid : MP id compound : MP compound name prefix : prefix used in QE calculations Returns: None -------------- write a file in 'ph-mpid-compound.in' format</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#create_epw_inputs.prepare_nscf" title="create_epw_inputs.prepare_nscf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prepare_nscf</span></code></a>(grid_file[, what])</p></td>
+<td><p>function to write file for non-scf calculations parameters --------------- grid_file: kmesh.grid file automatically created from bash scripts what : type of nscf grid.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#create_epw_inputs.projwfc" title="create_epw_inputs.projwfc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">projwfc</span></code></a>(prefix, mpid, compound)</p></td>
+<td><p>function to write projwfc.in file for orbital projection calculation parameters -------------- mpid : MP id compound : MP compound name prefix : prefix used in QE calculations Returns : None -------------- write a file in 'projwfc-mpid-compound.in' format</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#create_epw_inputs.pw2wan_input" title="create_epw_inputs.pw2wan_input"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pw2wan_input</span></code></a>(mpid, compound, prefix[, proj])</p></td>
+<td><p>function to write pw2wan input file parameters ----------- mpid : Materials id compound : compound name prefix : prefix used in QE calculations proj : 'scdm' if used SCDM projection, '' otherwise Returns ------------- write 'pw2wan-mpid-compound.in' file</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#create_epw_inputs.scdmfit" title="create_epw_inputs.scdmfit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scdmfit</span></code></a>(func, file_name, mpid, compound, fermi)</p></td>
+<td><p>function to fit erfc function and calculate SCDM parameters to generate automatic projections for  wannierization parameters -------------- func : function to fit file_name : Data in 'energy, projection' format mpid : MP id compound : compound fermi : Fermi level entang : type of entanglement.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py function">
+<dt class="sig sig-object py" id="create_epw_inputs.phonon_input">
+<span class="sig-prename descclassname"><span class="pre">create_epw_inputs.</span></span><span class="sig-name descname"><span class="pre">phonon_input</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mass_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qpoint_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mpid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#create_epw_inputs.phonon_input" title="Link to this definition">¶</a></dt>
+<dd><p>function to write ph.in file for phonon calculation
+parameters
+————–
+mass_file : mass.in file automatically created in ‘create-inputs’ bash script
+qpoint_file : qpoint.in file provided
+mpid : MP id
+compound : MP compound name
+prefix : prefix used in QE calculations
+Returns: None
+————–
+write a file in ‘ph-mpid-compound.in’ format</p>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="create_epw_inputs.prepare_nscf">
+<span class="sig-prename descclassname"><span class="pre">create_epw_inputs.</span></span><span class="sig-name descname"><span class="pre">prepare_nscf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">grid_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">what</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'nscf'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#create_epw_inputs.prepare_nscf" title="Link to this definition">¶</a></dt>
+<dd><p>function to write file for non-scf calculations
+parameters
+—————
+grid_file: kmesh.grid file automatically created from bash scripts
+what : type of nscf grid. ‘wan’ is nscf grid for wannierization
+Returns : None
+—————
+write a file with kmesh grid for non-scf calculation</p>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="create_epw_inputs.projwfc">
+<span class="sig-prename descclassname"><span class="pre">create_epw_inputs.</span></span><span class="sig-name descname"><span class="pre">projwfc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prefix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mpid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#create_epw_inputs.projwfc" title="Link to this definition">¶</a></dt>
+<dd><p>function to write projwfc.in file for orbital projection calculation
+parameters
+————–
+mpid : MP id
+compound : MP compound name
+prefix : prefix used in QE calculations
+Returns : None
+————–
+write a file in ‘projwfc-mpid-compound.in’ format</p>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="create_epw_inputs.ciftoxsf">
+<span class="sig-prename descclassname"><span class="pre">create_epw_inputs.</span></span><span class="sig-name descname"><span class="pre">ciftoxsf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outfile</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#create_epw_inputs.ciftoxsf" title="Link to this definition">¶</a></dt>
+<dd><p>function to change .cif file to .xsf format, suitable for xcrysden.
+parameters
+————-
+file_name : .cif filename
+outfile : .xsf filename
+Returns : None</p>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="create_epw_inputs.func_erfc">
+<span class="sig-prename descclassname"><span class="pre">create_epw_inputs.</span></span><span class="sig-name descname"><span class="pre">func_erfc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xdata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aparam</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bparam</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'erfc'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#create_epw_inputs.func_erfc" title="Link to this definition">¶</a></dt>
+<dd><p>erfc function erfc((x-a)/b)
+parameters
+————–
+xdata : x data
+aparam and bparam are parameters
+func_type : Type of function
+Returns
+————–
+ydata = 0.5 * erfc((xdata-aparam)/bparam)</p>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="create_epw_inputs.scdmfit">
+<span class="sig-prename descclassname"><span class="pre">create_epw_inputs.</span></span><span class="sig-name descname"><span class="pre">scdmfit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mpid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fermi</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entang</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'erfc'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#create_epw_inputs.scdmfit" title="Link to this definition">¶</a></dt>
+<dd><p>function to fit erfc function and calculate SCDM parameters
+to generate automatic projections for  wannierization
+parameters
+————–
+func : function to fit
+file_name : Data in ‘energy, projection’ format
+mpid : MP id
+compound : compound
+fermi : Fermi level
+entang : type of entanglement. Default: ‘erfc’
+Returns
+————–
+mu_scdm, sigma_scdm parameters</p>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="create_epw_inputs.band_file_epw">
+<span class="sig-prename descclassname"><span class="pre">create_epw_inputs.</span></span><span class="sig-name descname"><span class="pre">band_file_epw</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mpid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#create_epw_inputs.band_file_epw" title="Link to this definition">¶</a></dt>
+<dd><p>function to include ‘nosym = .true.’ inside QE scf.in file
+for bandstructure calculation
+parameters
+————-
+mpid : Materials id
+compound : compound name</p>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="create_epw_inputs.pw2wan_input">
+<span class="sig-prename descclassname"><span class="pre">create_epw_inputs.</span></span><span class="sig-name descname"><span class="pre">pw2wan_input</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mpid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">proj</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'</span> <span class="pre">'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#create_epw_inputs.pw2wan_input" title="Link to this definition">¶</a></dt>
+<dd><p>function to write pw2wan input file
+parameters
+———–
+mpid : Materials id
+compound : compound name
+prefix : prefix used in QE calculations
+proj : ‘scdm’ if used SCDM projection, ‘’ otherwise
+Returns
+————-
+write ‘pw2wan-mpid-compound.in’ file</p>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="create_epw_inputs.epw_sc_from_json">
+<span class="sig-prename descclassname"><span class="pre">create_epw_inputs.</span></span><span class="sig-name descname"><span class="pre">epw_sc_from_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'epw.in'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#create_epw_inputs.epw_sc_from_json" title="Link to this definition">¶</a></dt>
+<dd><p>Write input file for EPW calculations based on JSON configuration.</p>
+<section id="parameters">
+<h2 id="parameters">Parameters:<a class="headerlink" href="#parameters" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>json_file<span class="classifier">str</span></dt><dd><p>Path to the JSON configuration file.</p>
+</dd>
+<dt>out<span class="classifier">str, optional</span></dt><dd><p>EPW input file name. Default is ‘epw.in’.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="create_epw_inputs.epw_sc">
+<span class="sig-prename descclassname"><span class="pre">create_epw_inputs.</span></span><span class="sig-name descname"><span class="pre">epw_sc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mpid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qpoint_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kpoint_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">proj</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'</span> <span class="pre">'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'epw.in'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#create_epw_inputs.epw_sc" title="Link to this definition">¶</a></dt>
+<dd><p>function to write input file for EPW calculations. Default: ‘epw.in’</p>
+<section id="id1">
+<h2 id="id1">parameters<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
+<p>mpid : Materials id
+compound : compound name
+prefix : prefix used in QE calculations
+qpoint_file : ‘qpoint.in’ file for q-mesh
+kpoint_file : ‘kpoint.in’ file for k-mesh
+proj: projection types
+out : epw input file</p>
+</section>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="create_epw_inputs.main">
+<span class="sig-prename descclassname"><span class="pre">create_epw_inputs.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#create_epw_inputs.main" title="Link to this definition">¶</a></dt>
+<dd><p>main function</p>
+</dd></dl>
+</section>
+
+
+          </article>
+        </div>
+      </div>
+    </main>
+  </div>
+  <footer class="md-footer">
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+          
+            <a href="cif_to_gsinput.html" title="cif_to_gsinput"
+               class="md-flex md-footer-nav__link md-footer-nav__link--prev"
+               rel="prev">
+              <div class="md-flex__cell md-flex__cell--shrink">
+                <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+              </div>
+              <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+                <span class="md-flex__ellipsis">
+                  <span
+                      class="md-footer-nav__direction"> "Previous" </span> cif_to_gsinput </span>
+              </div>
+            </a>
+          
+          
+            <a href="band.html" title="band"
+               class="md-flex md-footer-nav__link md-footer-nav__link--next"
+               rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
+                class="md-flex__ellipsis"> <span
+                class="md-footer-nav__direction"> "Next" </span> band </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink"><i
+                class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          
+        </a>
+        
+      </nav>
+    </div>
+    <div class="md-footer-meta md-typeset">
+      <div class="md-footer-meta__inner md-grid">
+        <div class="md-footer-copyright">
+          <div class="md-footer-copyright__highlight">
+              &#169; Copyright 2024, Niraj K Nepal.
+              
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script src="_static/javascripts/application.js"></script>
+  <script>app.initialize({version: "1.0.4", url: {base: ".."}})</script>
+  </body>
+</html>

@@ -1,0 +1,30 @@
+﻿checkfreq
+=========
+
+.. automodule:: checkfreq
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      check_freq
+      main
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

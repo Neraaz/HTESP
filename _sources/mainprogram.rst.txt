@@ -1,0 +1,29 @@
+﻿mainprogram
+===========
+
+.. automodule:: mainprogram
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      main
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

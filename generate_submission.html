@@ -46,7 +46,7 @@
   
   
   
-    <title>Cite &#8212; HTESP 0.0.1 documentation</title>
+    <title>generate_submission &#8212; HTESP 0.0.1 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=83e35b93" />
     <link rel="stylesheet" type="text/css" href="_static/material.css?v=79c92029" />
     <script src="_static/documentation_options.js?v=d45e8c67"></script>
@@ -54,8 +54,8 @@
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Modules" href="utils.html" />
-    <link rel="prev" title="Contribution" href="contrib.html" />
+    <link rel="next" title="htepc" href="htepc.html" />
+    <link rel="prev" title="Modules" href="utils.html" />
   
    
 
@@ -74,7 +74,7 @@
   <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer">
   <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search">
   <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
-  <a href="#cite" tabindex="1" class="md-skip"> Skip to content </a>
+  <a href="#generate_submission" tabindex="1" class="md-skip"> Skip to content </a>
   <header class="md-header" data-md-component="header">
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
@@ -92,7 +92,7 @@
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
           <span class="md-header-nav__topic">HTESP 0.0.1 documentation</span>
-          <span class="md-header-nav__topic"> Cite </span>
+          <span class="md-header-nav__topic"> generate_submission </span>
         </div>
       </div>
       <div class="md-flex__cell md-flex__cell--shrink">
@@ -149,6 +149,7 @@
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
           <li class="md-tabs__item"><a href="index.html" class="md-tabs__link">HTESP 0.0.1 documentation</a></li>
+          <li class="md-tabs__item"><a href="utils.html" class="md-tabs__link">Modules</a></li>
       </ul>
     </div>
   </nav>
@@ -179,7 +180,16 @@
               <div class="md-sidebar__inner">
                 
 <nav class="md-nav md-nav--secondary">
+    <label class="md-nav__title" for="__toc">"Contents"</label>
   <ul class="md-nav__list" data-md-scrollfix="">
+        <li class="md-nav__item"><a href="#generate-submission--page-root" class="md-nav__link">generate_submission</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#generate_submission.generate_submission_files" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">generate_submission_files()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#generate_submission.main" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a>
+        </li></ul>
+            </nav>
+        </li>
     
   <h3>This Page</h3>
   <ul class="this-page-menu">
@@ -193,10 +203,58 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  <section id="cite">
-<h1 id="cite--page-root">Cite<a class="headerlink" href="#cite--page-root" title="Link to this heading">¶</a></h1>
-<p>Please cite following paper, if you use this package.</p>
-<p>Also, cites appropriate softwares and packages that is used together with this package.</p>
+  <section id="module-generate_submission">
+<span id="generate-submission"></span><h1 id="generate-submission--page-root">generate_submission<a class="headerlink" href="#generate-submission--page-root" title="Link to this heading">¶</a></h1>
+<p>Module to prepare job submission scripts</p>
+<p class="rubric">Functions</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#generate_submission.generate_submission_files" title="generate_submission.generate_submission_files"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_submission_files</span></code></a>(which_calc, ...)</p></td>
+<td><p>Generate submission files based on the calculation type, parallel command, number of processors, and a dictionary of commands. Parameters: - which_calc (str): The type of calculation. Valid options include 'qe', 'epw', 'wannier', and 'vasp'. - parallel_command (str): The parallel command to be used for execution, e.g., 'mpirun'. - nproc (str): The number of processors to be used. - command_list (dict): A dictionary containing command information for each calculation type. Keys are command names, and values are tuples containing the executable command,   input file, and output file.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#generate_submission.main" title="generate_submission.main"><code class="xref py py-obj docutils literal notranslate"><span class="pre">main</span></code></a>()</p></td>
+<td><p>Load parameters from a JSON file, generate submission files based on the specified calculation type, and create a script containing the submission commands.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py function">
+<dt class="sig sig-object py" id="generate_submission.generate_submission_files">
+<span class="sig-prename descclassname"><span class="pre">generate_submission.</span></span><span class="sig-name descname"><span class="pre">generate_submission_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">which_calc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel_command</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nproc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">command_list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#generate_submission.generate_submission_files" title="Link to this definition">¶</a></dt>
+<dd><p>Generate submission files based on the calculation type, parallel command, number of processors,
+and a dictionary of commands.
+Parameters:
+- which_calc (str): The type of calculation.</p>
+<blockquote>
+<div><p>Valid options include ‘qe’, ‘epw’, ‘wannier’, and ‘vasp’.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p>parallel_command (str): The parallel command to be used for execution, e.g., ‘mpirun’.</p></li>
+<li><p>nproc (str): The number of processors to be used.</p></li>
+<li><p>command_list (dict): A dictionary containing command information for each calculation type.
+Keys are command names, and values are tuples containing the executable command,
+input file, and output file.</p></li>
+</ul>
+<p>Returns:
+- submission_files (dict): A dictionary containing generated submission files.</p>
+<blockquote>
+<div><p>Keys are command names, and values are formatted submission commands ready for execution.</p>
+</div></blockquote>
+<p>Raises:
+- ValueError: If an invalid calculation type is provided.</p>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="generate_submission.main">
+<span class="sig-prename descclassname"><span class="pre">generate_submission.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#generate_submission.main" title="Link to this definition">¶</a></dt>
+<dd><p>Load parameters from a JSON file, generate submission files based on the specified calculation type,
+and create a script containing the submission commands.</p>
+<p>Reads parameters from ‘htepc.json’ and defines command dictionaries for different calculation types.
+Generates submission files based on the provided calculation type and prints the submission commands.
+Creates a script containing the submission commands named ‘run-&lt;calculation_type&gt;.sh’.</p>
+<p>Parameters:
+None</p>
+<p>Returns:
+None</p>
+</dd></dl>
 </section>
 
 
@@ -209,7 +267,7 @@
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
           
-            <a href="contrib.html" title="Contribution"
+            <a href="utils.html" title="Modules"
                class="md-flex md-footer-nav__link md-footer-nav__link--prev"
                rel="prev">
               <div class="md-flex__cell md-flex__cell--shrink">
@@ -218,17 +276,17 @@
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> "Previous" </span> Contribution </span>
+                      class="md-footer-nav__direction"> "Previous" </span> Modules </span>
               </div>
             </a>
           
           
-            <a href="utils.html" title="Modules"
+            <a href="htepc.html" title="htepc"
                class="md-flex md-footer-nav__link md-footer-nav__link--next"
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> "Next" </span> Modules </span>
+                class="md-footer-nav__direction"> "Next" </span> htepc </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>

@@ -1,0 +1,41 @@
+﻿htepc
+=====
+
+.. automodule:: htepc
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      convert_species_list
+      insert
+      pos_to_kpt
+      reorder_dictionary
+      scf_to_dos_scf
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      INPUTscf
+      MpConnect
+      OUTPUTscf
+   
+   
+
+   
+   
+   
+
+
+

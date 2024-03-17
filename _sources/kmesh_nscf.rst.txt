@@ -1,0 +1,29 @@
+﻿kmesh\_nscf
+===========
+
+.. automodule:: kmesh_nscf
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      main
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

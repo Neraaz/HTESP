@@ -1,0 +1,30 @@
+﻿pymatgen\_phase\_diagram
+========================
+
+.. automodule:: pymatgen_phase_diagram
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      main
+      plot_phase
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

@@ -1,0 +1,31 @@
+﻿crystal
+=======
+
+.. automodule:: crystal
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      convex_hull
+      crystal_extract
+      main
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

@@ -1,0 +1,29 @@
+﻿matdyn
+======
+
+.. automodule:: matdyn
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      matdyn_in
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

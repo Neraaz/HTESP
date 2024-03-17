@@ -46,7 +46,7 @@
   
   
   
-    <title>Cite &#8212; HTESP 0.0.1 documentation</title>
+    <title>band &#8212; HTESP 0.0.1 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=83e35b93" />
     <link rel="stylesheet" type="text/css" href="_static/material.css?v=79c92029" />
     <script src="_static/documentation_options.js?v=d45e8c67"></script>
@@ -54,8 +54,8 @@
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Modules" href="utils.html" />
-    <link rel="prev" title="Contribution" href="contrib.html" />
+    <link rel="next" title="scftocif" href="scftocif.html" />
+    <link rel="prev" title="create_epw_inputs" href="create_epw_inputs.html" />
   
    
 
@@ -74,7 +74,7 @@
   <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer">
   <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search">
   <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
-  <a href="#cite" tabindex="1" class="md-skip"> Skip to content </a>
+  <a href="#band" tabindex="1" class="md-skip"> Skip to content </a>
   <header class="md-header" data-md-component="header">
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
@@ -92,7 +92,7 @@
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
           <span class="md-header-nav__topic">HTESP 0.0.1 documentation</span>
-          <span class="md-header-nav__topic"> Cite </span>
+          <span class="md-header-nav__topic"> band </span>
         </div>
       </div>
       <div class="md-flex__cell md-flex__cell--shrink">
@@ -149,6 +149,7 @@
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
           <li class="md-tabs__item"><a href="index.html" class="md-tabs__link">HTESP 0.0.1 documentation</a></li>
+          <li class="md-tabs__item"><a href="utils.html" class="md-tabs__link">Modules</a></li>
       </ul>
     </div>
   </nav>
@@ -179,7 +180,16 @@
               <div class="md-sidebar__inner">
                 
 <nav class="md-nav md-nav--secondary">
+    <label class="md-nav__title" for="__toc">"Contents"</label>
   <ul class="md-nav__list" data-md-scrollfix="">
+        <li class="md-nav__item"><a href="#band--page-root" class="md-nav__link">band</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#band.write_band_input" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">write_band_input()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#band.main" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a>
+        </li></ul>
+            </nav>
+        </li>
     
   <h3>This Page</h3>
   <ul class="this-page-menu">
@@ -193,10 +203,38 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  <section id="cite">
-<h1 id="cite--page-root">Cite<a class="headerlink" href="#cite--page-root" title="Link to this heading">¶</a></h1>
-<p>Please cite following paper, if you use this package.</p>
-<p>Also, cites appropriate softwares and packages that is used together with this package.</p>
+  <section id="module-band">
+<span id="band"></span><h1 id="band--page-root">band<a class="headerlink" href="#band--page-root" title="Link to this heading">¶</a></h1>
+<p>Module to write input files for QE band calculations</p>
+<p class="rubric">Functions</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#band.main" title="band.main"><code class="xref py py-obj docutils literal notranslate"><span class="pre">main</span></code></a>()</p></td>
+<td><p>main function</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#band.write_band_input" title="band.write_band_input"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_band_input</span></code></a>(material_id, compound_name, ...)</p></td>
+<td><p>Function to write band.in file to process a bandstructure .freq.gp file in Quantum ESPRESSO calculations.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py function">
+<dt class="sig sig-object py" id="band.write_band_input">
+<span class="sig-prename descclassname"><span class="pre">band.</span></span><span class="sig-name descname"><span class="pre">write_band_input</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">material_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dynamic_matrix</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#band.write_band_input" title="Link to this definition">¶</a></dt>
+<dd><p>Function to write band.in file to process a bandstructure
+.freq.gp file in Quantum ESPRESSO calculations.</p>
+<p>Parameters:
+- material_id (str): Materials ID of the compound..
+- compound_name (str): Compound name.
+- prefix (str): Prefix used in the QE calculations.
+- dynamic_matrix (str): Bandstructure file to process.</p>
+<p>Returns:
+None</p>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="band.main">
+<span class="sig-prename descclassname"><span class="pre">band.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#band.main" title="Link to this definition">¶</a></dt>
+<dd><p>main function</p>
+</dd></dl>
 </section>
 
 
@@ -209,7 +247,7 @@
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
           
-            <a href="contrib.html" title="Contribution"
+            <a href="create_epw_inputs.html" title="create_epw_inputs"
                class="md-flex md-footer-nav__link md-footer-nav__link--prev"
                rel="prev">
               <div class="md-flex__cell md-flex__cell--shrink">
@@ -218,17 +256,17 @@
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> "Previous" </span> Contribution </span>
+                      class="md-footer-nav__direction"> "Previous" </span> create_epw_inputs </span>
               </div>
             </a>
           
           
-            <a href="utils.html" title="Modules"
+            <a href="scftocif.html" title="scftocif"
                class="md-flex md-footer-nav__link md-footer-nav__link--next"
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> "Next" </span> Modules </span>
+                class="md-footer-nav__direction"> "Next" </span> scftocif </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>

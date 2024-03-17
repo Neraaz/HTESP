@@ -1,0 +1,32 @@
+﻿fitting\_elph\_smearing
+=======================
+
+.. automodule:: fitting_elph_smearing
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      fit_param
+      func
+      main
+      parse_lambda
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

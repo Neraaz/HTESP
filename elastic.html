@@ -46,7 +46,7 @@
   
   
   
-    <title>Cite &#8212; HTESP 0.0.1 documentation</title>
+    <title>elastic &#8212; HTESP 0.0.1 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=83e35b93" />
     <link rel="stylesheet" type="text/css" href="_static/material.css?v=79c92029" />
     <script src="_static/documentation_options.js?v=d45e8c67"></script>
@@ -54,8 +54,8 @@
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Modules" href="utils.html" />
-    <link rel="prev" title="Contribution" href="contrib.html" />
+    <link rel="next" title="kmesh_nscf" href="kmesh_nscf.html" />
+    <link rel="prev" title="vasp_input" href="vasp_input.html" />
   
    
 
@@ -74,7 +74,7 @@
   <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer">
   <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search">
   <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
-  <a href="#cite" tabindex="1" class="md-skip"> Skip to content </a>
+  <a href="#elastic" tabindex="1" class="md-skip"> Skip to content </a>
   <header class="md-header" data-md-component="header">
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
@@ -92,7 +92,7 @@
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
           <span class="md-header-nav__topic">HTESP 0.0.1 documentation</span>
-          <span class="md-header-nav__topic"> Cite </span>
+          <span class="md-header-nav__topic"> elastic </span>
         </div>
       </div>
       <div class="md-flex__cell md-flex__cell--shrink">
@@ -149,6 +149,7 @@
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
           <li class="md-tabs__item"><a href="index.html" class="md-tabs__link">HTESP 0.0.1 documentation</a></li>
+          <li class="md-tabs__item"><a href="utils.html" class="md-tabs__link">Modules</a></li>
       </ul>
     </div>
   </nav>
@@ -179,7 +180,16 @@
               <div class="md-sidebar__inner">
                 
 <nav class="md-nav md-nav--secondary">
+    <label class="md-nav__title" for="__toc">"Contents"</label>
   <ul class="md-nav__list" data-md-scrollfix="">
+        <li class="md-nav__item"><a href="#elastic--page-root" class="md-nav__link">elastic</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#elastic.deformation" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">deformation()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#elastic.main" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a>
+        </li></ul>
+            </nav>
+        </li>
     
   <h3>This Page</h3>
   <ul class="this-page-menu">
@@ -193,10 +203,62 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  <section id="cite">
-<h1 id="cite--page-root">Cite<a class="headerlink" href="#cite--page-root" title="Link to this heading">¶</a></h1>
-<p>Please cite following paper, if you use this package.</p>
-<p>Also, cites appropriate softwares and packages that is used together with this package.</p>
+  <section id="module-elastic">
+<span id="elastic"></span><h1 id="elastic--page-root">elastic<a class="headerlink" href="#elastic--page-root" title="Link to this heading">¶</a></h1>
+<p>Module to perform elastic calculations</p>
+<p class="rubric">Functions</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#elastic.deformation" title="elastic.deformation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">deformation</span></code></a>(mpid, obj, dft, orig_prefix, ...)</p></td>
+<td><p>Function to create deformed structures utilizing pymatgen.analysis.elastic class.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#elastic.main" title="elastic.main"><code class="xref py py-obj docutils literal notranslate"><span class="pre">main</span></code></a>(mpid, orig_prefix)</p></td>
+<td><p>Main function to handle deformation and elastic computations.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py function">
+<dt class="sig sig-object py" id="elastic.deformation">
+<span class="sig-prename descclassname"><span class="pre">elastic.</span></span><span class="sig-name descname"><span class="pre">deformation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mpid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dft</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orig_prefix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deformed_struc</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#elastic.deformation" title="Link to this definition">¶</a></dt>
+<dd><p>Function to create deformed structures utilizing pymatgen.analysis.elastic class.</p>
+<section id="parameters">
+<h2 id="parameters">Parameters:<a class="headerlink" href="#parameters" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>mpid<span class="classifier">str</span></dt><dd><p>Materials id.</p>
+</dd>
+<dt>obj<span class="classifier">object</span></dt><dd><p>Object of MpConnect class.</p>
+</dd>
+<dt>dft<span class="classifier">str</span></dt><dd><p>Density Functional Theory (DFT) method used, e.g., ‘vasp’, ‘qe’.</p>
+</dd>
+<dt>orig_prefix<span class="classifier">str</span></dt><dd><p>Prefix for the original undeformed structure.</p>
+</dd>
+<dt>deformed_struc<span class="classifier">object</span></dt><dd><p>Object containing deformed structures.</p>
+</dd>
+</dl>
+</section>
+<section id="returns">
+<h2 id="returns">Returns:<a class="headerlink" href="#returns" title="Link to this heading">¶</a></h2>
+<p>None</p>
+</section>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="elastic.main">
+<span class="sig-prename descclassname"><span class="pre">elastic.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mpid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orig_prefix</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#elastic.main" title="Link to this definition">¶</a></dt>
+<dd><p>Main function to handle deformation and elastic computations.</p>
+<section id="id1">
+<h2 id="id1">Parameters:<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>mpid<span class="classifier">str</span></dt><dd><p>Materials id.</p>
+</dd>
+<dt>orig_prefix<span class="classifier">str</span></dt><dd><p>Prefix for the undeformed structure.</p>
+</dd>
+</dl>
+</section>
+<section id="id2">
+<h2 id="id2">Returns:<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h2>
+<p>None</p>
+</section>
+</dd></dl>
 </section>
 
 
@@ -209,7 +271,7 @@
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
           
-            <a href="contrib.html" title="Contribution"
+            <a href="vasp_input.html" title="vasp_input"
                class="md-flex md-footer-nav__link md-footer-nav__link--prev"
                rel="prev">
               <div class="md-flex__cell md-flex__cell--shrink">
@@ -218,17 +280,17 @@
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> "Previous" </span> Contribution </span>
+                      class="md-footer-nav__direction"> "Previous" </span> vasp_input </span>
               </div>
             </a>
           
           
-            <a href="utils.html" title="Modules"
+            <a href="kmesh_nscf.html" title="kmesh_nscf"
                class="md-flex md-footer-nav__link md-footer-nav__link--next"
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> "Next" </span> Modules </span>
+                class="md-footer-nav__direction"> "Next" </span> kmesh_nscf </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>

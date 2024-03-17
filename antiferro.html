@@ -46,7 +46,7 @@
   
   
   
-    <title>Cite &#8212; HTESP 0.0.1 documentation</title>
+    <title>antiferro &#8212; HTESP 0.0.1 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=83e35b93" />
     <link rel="stylesheet" type="text/css" href="_static/material.css?v=79c92029" />
     <script src="_static/documentation_options.js?v=d45e8c67"></script>
@@ -54,8 +54,8 @@
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Modules" href="utils.html" />
-    <link rel="prev" title="Contribution" href="contrib.html" />
+    <link rel="next" title="cif_to_gsinput" href="cif_to_gsinput.html" />
+    <link rel="prev" title="aflow_extract" href="aflow_extract.html" />
   
    
 
@@ -74,7 +74,7 @@
   <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer">
   <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search">
   <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
-  <a href="#cite" tabindex="1" class="md-skip"> Skip to content </a>
+  <a href="#antiferro" tabindex="1" class="md-skip"> Skip to content </a>
   <header class="md-header" data-md-component="header">
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
@@ -92,7 +92,7 @@
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
           <span class="md-header-nav__topic">HTESP 0.0.1 documentation</span>
-          <span class="md-header-nav__topic"> Cite </span>
+          <span class="md-header-nav__topic"> antiferro </span>
         </div>
       </div>
       <div class="md-flex__cell md-flex__cell--shrink">
@@ -149,6 +149,7 @@
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
           <li class="md-tabs__item"><a href="index.html" class="md-tabs__link">HTESP 0.0.1 documentation</a></li>
+          <li class="md-tabs__item"><a href="utils.html" class="md-tabs__link">Modules</a></li>
       </ul>
     </div>
   </nav>
@@ -179,7 +180,18 @@
               <div class="md-sidebar__inner">
                 
 <nav class="md-nav md-nav--secondary">
+    <label class="md-nav__title" for="__toc">"Contents"</label>
   <ul class="md-nav__list" data-md-scrollfix="">
+        <li class="md-nav__item"><a href="#antiferro--page-root" class="md-nav__link">antiferro</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#antiferro.magnetic_structure" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">magnetic_structure()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#antiferro.changeaxis" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">changeaxis()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#antiferro.main" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a>
+        </li></ul>
+            </nav>
+        </li>
     
   <h3>This Page</h3>
   <ul class="this-page-menu">
@@ -193,10 +205,57 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  <section id="cite">
-<h1 id="cite--page-root">Cite<a class="headerlink" href="#cite--page-root" title="Link to this heading">¶</a></h1>
-<p>Please cite following paper, if you use this package.</p>
-<p>Also, cites appropriate softwares and packages that is used together with this package.</p>
+  <section id="module-antiferro">
+<span id="antiferro"></span><h1 id="antiferro--page-root">antiferro<a class="headerlink" href="#antiferro--page-root" title="Link to this heading">¶</a></h1>
+<p>Creates different magnetic ordering according to MagneticStructureEnumerator functions.</p>
+<p class="rubric">Functions</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#antiferro.changeaxis" title="antiferro.changeaxis"><code class="xref py py-obj docutils literal notranslate"><span class="pre">changeaxis</span></code></a>(mpid, comp)</p></td>
+<td><p>Function to change magnetic axis to compute magnetic anisotropy.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#antiferro.magnetic_structure" title="antiferro.magnetic_structure"><code class="xref py py-obj docutils literal notranslate"><span class="pre">magnetic_structure</span></code></a>(obj, mpid, compound, ...)</p></td>
+<td><p>Functions to generate possible magnetic structures.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#antiferro.main" title="antiferro.main"><code class="xref py py-obj docutils literal notranslate"><span class="pre">main</span></code></a>()</p></td>
+<td><p>Main function to control the workflow.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py function">
+<dt class="sig sig-object py" id="antiferro.magnetic_structure">
+<span class="sig-prename descclassname"><span class="pre">antiferro.</span></span><span class="sig-name descname"><span class="pre">magnetic_structure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mpid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">magconfig</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dft</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#antiferro.magnetic_structure" title="Link to this definition">¶</a></dt>
+<dd><p>Functions to generate possible magnetic structures.</p>
+<p>Parameters:
+obj (MpConnect): An object representing an instance of the MpConnect class.
+mpid (str): Materials ID.
+compound (str): Compound name.
+magconfig (list): List of possible collinear magnetic configurations, e.g., [‘ferromagnetic’, ‘antiferromagnetic’].
+dft (str): Type of DFT calculation, e.g., ‘VASP’ or ‘QE’.</p>
+<p>Look for pymatgen.analysis.magnetism.MagneticStructureEnumerator class for more details.
+Install Enumlib library: <a class="reference external" href="https://github.com/msg-byu/enumlib">https://github.com/msg-byu/enumlib</a> to run this module.</p>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="antiferro.changeaxis">
+<span class="sig-prename descclassname"><span class="pre">antiferro.</span></span><span class="sig-name descname"><span class="pre">changeaxis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mpid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comp</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#antiferro.changeaxis" title="Link to this definition">¶</a></dt>
+<dd><p>Function to change magnetic axis to compute magnetic anisotropy.</p>
+<p>Parameters:
+mpid (str): Material ID.
+comp (str): Compound name.</p>
+<p>The function iterates over magnetic axis configurations specified in the saxis variable,
+updates the necessary input files for VASP calculations, and performs the VASP process.</p>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="antiferro.main">
+<span class="sig-prename descclassname"><span class="pre">antiferro.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#antiferro.main" title="Link to this definition">¶</a></dt>
+<dd><p>Main function to control the workflow.</p>
+<p>Reads input data, determines the type of calculation and magnetic configuration,
+and performs the corresponding operations.</p>
+<p>Parameters:
+None</p>
+<p>Returns:
+None</p>
+</dd></dl>
 </section>
 
 
@@ -209,7 +268,7 @@
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
           
-            <a href="contrib.html" title="Contribution"
+            <a href="aflow_extract.html" title="aflow_extract"
                class="md-flex md-footer-nav__link md-footer-nav__link--prev"
                rel="prev">
               <div class="md-flex__cell md-flex__cell--shrink">
@@ -218,17 +277,17 @@
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> "Previous" </span> Contribution </span>
+                      class="md-footer-nav__direction"> "Previous" </span> aflow_extract </span>
               </div>
             </a>
           
           
-            <a href="utils.html" title="Modules"
+            <a href="cif_to_gsinput.html" title="cif_to_gsinput"
                class="md-flex md-footer-nav__link md-footer-nav__link--next"
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> "Next" </span> Modules </span>
+                class="md-footer-nav__direction"> "Next" </span> cif_to_gsinput </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>

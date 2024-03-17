@@ -1,0 +1,32 @@
+﻿structure\_group
+================
+
+.. automodule:: structure_group
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      create_structure_list
+      main
+      read_structure_file
+      write_unique_structures
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

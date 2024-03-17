@@ -1,0 +1,30 @@
+﻿generate\_submission
+====================
+
+.. automodule:: generate_submission
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      generate_submission_files
+      main
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

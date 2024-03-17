@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="lang:clipboard.copy" content="Copy to clipboard">
+  <meta name="lang:clipboard.copied" content="Copied to clipboard">
+  <meta name="lang:search.language" content="en">
+  <meta name="lang:search.pipeline.stopwords" content="True">
+  <meta name="lang:search.pipeline.trimmer" content="True">
+  <meta name="lang:search.result.none" content="No matching documents">
+  <meta name="lang:search.result.one" content="1 matching document">
+  <meta name="lang:search.result.other" content="# matching documents">
+  <meta name="lang:search.tokenizer" content="[\s\-]+">
+
+  
+    <link href="https://fonts.gstatic.com/" rel="preconnect" crossorigin>
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,500,700|Roboto:300,400,400i,700&display=fallback" rel="stylesheet">
+
+    <style>
+      body,
+      input {
+        font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif
+      }
+
+      code,
+      kbd,
+      pre {
+        font-family: "Roboto Mono", "Courier New", Courier, monospace
+      }
+    </style>
+  
+
+  <link rel="stylesheet" href="_static/stylesheets/application.css"/>
+  <link rel="stylesheet" href="_static/stylesheets/application-palette.css"/>
+  <link rel="stylesheet" href="_static/stylesheets/application-fixes.css"/>
+  
+  <link rel="stylesheet" href="_static/fonts/material-icons.css"/>
+  
+  <meta name="theme-color" content="#3f51b5">
+  <script src="_static/javascripts/modernizr.js"></script>
+  
+  
+  
+    <title>projection_phband &#8212; HTESP 0.0.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=83e35b93" />
+    <link rel="stylesheet" type="text/css" href="_static/material.css?v=79c92029" />
+    <script src="_static/documentation_options.js?v=d45e8c67"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="oqmd_extract" href="oqmd_extract.html" />
+    <link rel="prev" title="pymatgen_phase_diagram" href="pymatgen_phase_diagram.html" />
+  
+   
+
+  </head>
+  <body dir=ltr
+        data-md-color-primary=blue-grey data-md-color-accent=blue>
+  
+  <svg class="md-svg">
+    <defs data-children-count="0">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448" viewBox="0 0 416 448" id="__github"><path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19T128 352t-18.125-8.5-10.75-19T96 304t3.125-20.5 10.75-19T128 256t18.125 8.5 10.75 19T160 304zm160 0q0 10-3.125 20.5t-10.75 19T288 352t-18.125-8.5-10.75-19T256 304t3.125-20.5 10.75-19T288 256t18.125 8.5 10.75 19T320 304zm40 0q0-30-17.25-51T296 232q-10.25 0-48.75 5.25Q229.5 240 208 240t-39.25-2.75Q130.75 232 120 232q-29.5 0-46.75 21T56 304q0 22 8 38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0 37.25-1.75t35-7.375 30.5-15 20.25-25.75T360 304zm56-44q0 51.75-15.25 82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5T212 416q-19.5 0-35.5-.75t-36.875-3.125-38.125-7.5-34.25-12.875T37 371.5t-21.5-28.75Q0 312 0 260q0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25 30.875Q171.5 96 212 96q37 0 70 8 26.25-20.5 46.75-30.25T376 64q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34 99.5z"/></svg>
+      
+    </defs>
+  </svg>
+  
+  <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer">
+  <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search">
+  <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+  <a href="#projection_phband" tabindex="1" class="md-skip"> Skip to content </a>
+  <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex navheader">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="index.html" title="HTESP 0.0.1 documentation"
+           class="md-header-nav__button md-logo">
+          
+            &nbsp;
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          <span class="md-header-nav__topic">HTESP 0.0.1 documentation</span>
+          <span class="md-header-nav__topic"> projection_phband </span>
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+        
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" action="search.html" method="get" name="search">
+      <input type="text" class="md-search__input" name="q" placeholder=""Search""
+             autocapitalize="off" autocomplete="off" spellcheck="false"
+             data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+      </div>
+      
+      
+  
+  <script src="_static/javascripts/version_dropdown.js"></script>
+  <script>
+    var json_loc = ""versions.json"",
+        target_loc = "../",
+        text = "Versions";
+    $( document ).ready( add_version_dropdown(json_loc, target_loc, text));
+  </script>
+  
+
+    </div>
+  </nav>
+</header>
+
+  
+  <div class="md-container">
+    
+    
+    
+  <nav class="md-tabs" data-md-component="tabs">
+    <div class="md-tabs__inner md-grid">
+      <ul class="md-tabs__list">
+          <li class="md-tabs__item"><a href="index.html" class="md-tabs__link">HTESP 0.0.1 documentation</a></li>
+          <li class="md-tabs__item"><a href="utils.html" class="md-tabs__link">Modules</a></li>
+      </ul>
+    </div>
+  </nav>
+    <main class="md-main">
+      <div class="md-main__inner md-grid" data-md-component="container">
+        
+          <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+            <div class="md-sidebar__scrollwrap">
+              <div class="md-sidebar__inner">
+                <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href="index.html" title="HTESP 0.0.1 documentation" class="md-nav__button md-logo">
+      
+        <img src="_static/" alt=" logo" width="48" height="48">
+      
+    </a>
+    <a href="index.html"
+       title="HTESP 0.0.1 documentation">HTESP 0.0.1 documentation</a>
+  </label>
+  
+
+</nav>
+              </div>
+            </div>
+          </div>
+          <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+            <div class="md-sidebar__scrollwrap">
+              <div class="md-sidebar__inner">
+                
+<nav class="md-nav md-nav--secondary">
+    <label class="md-nav__title" for="__toc">"Contents"</label>
+  <ul class="md-nav__list" data-md-scrollfix="">
+        <li class="md-nav__item"><a href="#projection-phband--page-root" class="md-nav__link">projection_phband</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#projection_phband.write_phonproj_in" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">write_phonproj_in()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#projection_phband.reading_input" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">reading_input()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#projection_phband.parse_input" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">parse_input()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#projection_phband.projection" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">projection()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#projection_phband.print_to_file" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">print_to_file()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#projection_phband.main" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a>
+        </li></ul>
+            </nav>
+        </li>
+    
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+  </ul>
+  </ul>
+</nav>
+              </div>
+            </div>
+          </div>
+        
+        <div class="md-content">
+          <article class="md-content__inner md-typeset" role="main">
+            
+  <section id="module-projection_phband">
+<span id="projection-phband"></span><h1 id="projection-phband--page-root">projection_phband<a class="headerlink" href="#projection-phband--page-root" title="Link to this heading">¶</a></h1>
+<p>Module to plot atom-projected phonon band dispersion</p>
+<p class="rubric">Functions</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#projection_phband.main" title="projection_phband.main"><code class="xref py py-obj docutils literal notranslate"><span class="pre">main</span></code></a>()</p></td>
+<td><p>Main function to generate phonon projections and print ion-color associations.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#projection_phband.parse_input" title="projection_phband.parse_input"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_input</span></code></a>(filename, nat, nqpt)</p></td>
+<td><p>Function to parse eigenvector file in .eig format obtained from matdyn.x using matdyn.in.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#projection_phband.print_to_file" title="projection_phband.print_to_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">print_to_file</span></code></a>()</p></td>
+<td><p>Function to save mode resolved projection in phonon-compound.prog.gp format.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#projection_phband.projection" title="projection_phband.projection"><code class="xref py py-obj docutils literal notranslate"><span class="pre">projection</span></code></a>(pol_q_mode, ion, indices)</p></td>
+<td><p>Function to calculate atomic projection for mode nu and wavevector q.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#projection_phband.reading_input" title="projection_phband.reading_input"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reading_input</span></code></a>(filename)</p></td>
+<td><p>Function to read the 'phonproj.in' file.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#projection_phband.write_phonproj_in" title="projection_phband.write_phonproj_in"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_phonproj_in</span></code></a>(comp, nkpoint, filename[, ...])</p></td>
+<td><p>Function to write the 'phonproj.in' file required for atomic projection.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py function">
+<dt class="sig sig-object py" id="projection_phband.write_phonproj_in">
+<span class="sig-prename descclassname"><span class="pre">projection_phband.</span></span><span class="sig-name descname"><span class="pre">write_phonproj_in</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">comp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nkpoint</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outfile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'phonproj.in'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#projection_phband.write_phonproj_in" title="Link to this definition">¶</a></dt>
+<dd><p>Function to write the ‘phonproj.in’ file required for atomic projection.</p>
+<p>This function generates the ‘phonproj.in’ file based on the provided compound name,
+the number of k-points, and the QE input scf.in file.</p>
+<section id="parameters">
+<h2 id="parameters">Parameters:<a class="headerlink" href="#parameters" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>comp<span class="classifier">str</span></dt><dd><p>Compound name.</p>
+</dd>
+<dt>nkpoint<span class="classifier">int</span></dt><dd><p>Number of k-points.</p>
+</dd>
+<dt>filename<span class="classifier">str</span></dt><dd><p>Path to the QE input scf.in file.</p>
+</dd>
+<dt>outfile<span class="classifier">str, optional</span></dt><dd><p>Output file name for ‘phonproj.in’. Default is ‘phonproj.in’.</p>
+</dd>
+</dl>
+</section>
+<section id="returns">
+<h2 id="returns">Returns:<a class="headerlink" href="#returns" title="Link to this heading">¶</a></h2>
+<p>None</p>
+</section>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="projection_phband.reading_input">
+<span class="sig-prename descclassname"><span class="pre">projection_phband.</span></span><span class="sig-name descname"><span class="pre">reading_input</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#projection_phband.reading_input" title="Link to this definition">¶</a></dt>
+<dd><p>Function to read the ‘phonproj.in’ file.</p>
+<p>This function reads the ‘phonproj.in’ file and extracts relevant information
+such as the name of the .eig file, the number of atoms in the compound,
+the size of the q-point mesh, and a dictionary containing ions and their indices
+defining their position in the QE input file ‘scf.in’.</p>
+<section id="id1">
+<h2 id="id1">Parameters:<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>filename<span class="classifier">str</span></dt><dd><p>Path to the ‘phonproj.in’ file.</p>
+</dd>
+</dl>
+</section>
+<section id="id2">
+<h2 id="id2">Returns:<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>eig_file<span class="classifier">str</span></dt><dd><p>Name of the .eig file.</p>
+</dd>
+<dt>nat<span class="classifier">int</span></dt><dd><p>Number of atoms in the compound.</p>
+</dd>
+<dt>nqpt<span class="classifier">int</span></dt><dd><p>Size of the q-point mesh (nq, 3).</p>
+</dd>
+<dt>ions<span class="classifier">dict</span></dt><dd><p>Dictionary with ions and indices defining their position in the ‘scf.in’ file.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="projection_phband.parse_input">
+<span class="sig-prename descclassname"><span class="pre">projection_phband.</span></span><span class="sig-name descname"><span class="pre">parse_input</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nqpt</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#projection_phband.parse_input" title="Link to this definition">¶</a></dt>
+<dd><p>Function to parse eigenvector file in .eig format obtained from matdyn.x using matdyn.in.</p>
+<p>This function reads the eigenvector file and extracts the q-points, frequencies, and
+eigenvectors for each mode.</p>
+<section id="id3">
+<h2 id="id3">Parameters:<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>filename<span class="classifier">str</span></dt><dd><p>Path to the .eig file.</p>
+</dd>
+<dt>nat<span class="classifier">int</span></dt><dd><p>Number of atoms.</p>
+</dd>
+<dt>nqpt<span class="classifier">int</span></dt><dd><p>Number of q points.</p>
+</dd>
+</dl>
+</section>
+<section id="id4">
+<h2 id="id4">Returns:<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>ql<span class="classifier">numpy.ndarray</span></dt><dd><p>Array of q points.</p>
+</dd>
+<dt>freq<span class="classifier">numpy.ndarray</span></dt><dd><p>Array of frequencies of 3*nat modes.</p>
+</dd>
+<dt>pol_q_mode<span class="classifier">numpy.ndarray</span></dt><dd><p>Array of eigenvectors of size (nqpt, 3*nat, nat, 3).</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="projection_phband.projection">
+<span class="sig-prename descclassname"><span class="pre">projection_phband.</span></span><span class="sig-name descname"><span class="pre">projection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pol_q_mode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ion</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indices</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#projection_phband.projection" title="Link to this definition">¶</a></dt>
+<dd><p>Function to calculate atomic projection for mode nu and wavevector q.</p>
+<p>This function computes the atomic projection for a given mode nu and wavevector q.</p>
+<section id="id5">
+<h2 id="id5">Parameters:<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>pol_q_mode<span class="classifier">numpy.ndarray</span></dt><dd><p>Array obtained from parse_input function containing eigenvectors.</p>
+</dd>
+<dt>ion<span class="classifier">str</span></dt><dd><p>Type of atom.</p>
+</dd>
+<dt>indices<span class="classifier">list</span></dt><dd><p>Indices of an ion in the scf.in input file.</p>
+</dd>
+</dl>
+</section>
+<section id="id6">
+<h2 id="id6">Returns:<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>proj_array<span class="classifier">numpy.ndarray</span></dt><dd><p>Array of projections of size (nq, 3*nat).</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="projection_phband.print_to_file">
+<span class="sig-prename descclassname"><span class="pre">projection_phband.</span></span><span class="sig-name descname"><span class="pre">print_to_file</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#projection_phband.print_to_file" title="Link to this definition">¶</a></dt>
+<dd><p>Function to save mode resolved projection in phonon-compound.prog.gp format.</p>
+<p>This function reads the input file ‘phonproj.in’ to extract necessary information about the phonon modes and ions.
+It then calculates the mode-resolved projections for each ion and writes them to a file in the format
+‘phonon-compound.proj.gp’.</p>
+<section id="id7">
+<h2 id="id7">Returns:<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>ions_list<span class="classifier">list</span></dt><dd><p>List of ion names for which projections are calculated and saved.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="projection_phband.main">
+<span class="sig-prename descclassname"><span class="pre">projection_phband.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#projection_phband.main" title="Link to this definition">¶</a></dt>
+<dd><p>Main function to generate phonon projections and print ion-color associations.</p>
+<p>This function serves as the main entry point for generating phonon projections and printing
+ion-color associations based on the projections.</p>
+<p>If ‘phonproj.in’ file is not found, it creates one.
+It then generates phonon projections for each ion
+and saves them to a file. Finally, it prints the association between ions and colors.</p>
+</dd></dl>
+</section>
+
+
+          </article>
+        </div>
+      </div>
+    </main>
+  </div>
+  <footer class="md-footer">
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+          
+            <a href="pymatgen_phase_diagram.html" title="pymatgen_phase_diagram"
+               class="md-flex md-footer-nav__link md-footer-nav__link--prev"
+               rel="prev">
+              <div class="md-flex__cell md-flex__cell--shrink">
+                <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+              </div>
+              <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+                <span class="md-flex__ellipsis">
+                  <span
+                      class="md-footer-nav__direction"> "Previous" </span> pymatgen_phase_diagram </span>
+              </div>
+            </a>
+          
+          
+            <a href="oqmd_extract.html" title="oqmd_extract"
+               class="md-flex md-footer-nav__link md-footer-nav__link--next"
+               rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
+                class="md-flex__ellipsis"> <span
+                class="md-footer-nav__direction"> "Next" </span> oqmd_extract </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink"><i
+                class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          
+        </a>
+        
+      </nav>
+    </div>
+    <div class="md-footer-meta md-typeset">
+      <div class="md-footer-meta__inner md-grid">
+        <div class="md-footer-copyright">
+          <div class="md-footer-copyright__highlight">
+              &#169; Copyright 2024, Niraj K Nepal.
+              
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script src="_static/javascripts/application.js"></script>
+  <script>app.initialize({version: "1.0.4", url: {base: ".."}})</script>
+  </body>
+</html>

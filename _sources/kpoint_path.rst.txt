@@ -1,0 +1,29 @@
+﻿kpoint\_path
+============
+
+.. automodule:: kpoint_path
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      kpoint_path
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

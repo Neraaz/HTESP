@@ -1,0 +1,30 @@
+﻿band
+====
+
+.. automodule:: band
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      main
+      write_band_input
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

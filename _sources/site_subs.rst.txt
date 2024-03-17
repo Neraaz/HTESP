@@ -1,0 +1,30 @@
+﻿site\_subs
+==========
+
+.. automodule:: site_subs
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      main
+      substitution
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

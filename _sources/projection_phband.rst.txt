@@ -1,0 +1,34 @@
+﻿projection\_phband
+==================
+
+.. automodule:: projection_phband
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      main
+      parse_input
+      print_to_file
+      projection
+      reading_input
+      write_phonproj_in
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
