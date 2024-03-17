@@ -135,4 +135,6 @@ Staff Scientist, Ames National Laboratory
 
 ## Citing HTESP
 
-### Online Documentation in Progress .....
+### Online Documentation
+
+https://neraaz.github.io/HTESP/
