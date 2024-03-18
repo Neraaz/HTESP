@@ -228,7 +228,7 @@
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#create_epw_inputs.band_file_epw" title="create_epw_inputs.band_file_epw"><code class="xref py py-obj docutils literal notranslate"><span class="pre">band_file_epw</span></code></a>(mpid, compound)</p></td>
-<td><p>function to include 'nosym = .true.' inside QE scf.in file for bandstructure calculation parameters ------------- mpid : Materials id compound : compound name</p></td>
+<td><p>function to include 'nosym = .true.' inside QE scf.in file for bandstructure calculation :param mpid: :type mpid: Materials id :param compound: :type compound: compound name</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#create_epw_inputs.ciftoxsf" title="create_epw_inputs.ciftoxsf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ciftoxsf</span></code></a>(file_name, outfile)</p></td>
 <td><p>function to change .cif file to .xsf format, suitable for xcrysden.</p></td>
@@ -240,135 +240,155 @@
 <td><p>Write input file for EPW calculations based on JSON configuration.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#create_epw_inputs.func_erfc" title="create_epw_inputs.func_erfc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">func_erfc</span></code></a>(xdata, aparam, bparam[, func_type])</p></td>
-<td><p>erfc function erfc((x-a)/b) parameters -------------- xdata : x data aparam and bparam are parameters func_type : Type of function Returns -------------- ydata = 0.5 * erfc((xdata-aparam)/bparam)</p></td>
+<td><p>erfc function erfc((x-a)/b) :param xdata: :type xdata: x data :param aparam and bparam are parameters: :param func_type: :type func_type: Type of function</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#create_epw_inputs.main" title="create_epw_inputs.main"><code class="xref py py-obj docutils literal notranslate"><span class="pre">main</span></code></a>()</p></td>
 <td><p>main function</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#create_epw_inputs.phonon_input" title="create_epw_inputs.phonon_input"><code class="xref py py-obj docutils literal notranslate"><span class="pre">phonon_input</span></code></a>(mass_file, qpoint_file, mpid, ...)</p></td>
-<td><p>function to write ph.in file for phonon calculation parameters -------------- mass_file : mass.in file automatically created in 'create-inputs' bash script qpoint_file : qpoint.in file provided mpid : MP id compound : MP compound name prefix : prefix used in QE calculations Returns: None -------------- write a file in 'ph-mpid-compound.in' format</p></td>
+<td><p>function to write ph.in file for phonon calculation :param mass_file: :type mass_file: mass.in file automatically created in 'create-inputs' bash script :param qpoint_file: :type qpoint_file: qpoint.in file provided :param mpid: :type mpid: MP id :param compound: :type compound: MP compound name :param prefix: :type prefix: prefix used in QE calculations :param Returns: :type Returns: None :param --------------: :param write a file in 'ph-mpid-compound.in' format:</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#create_epw_inputs.prepare_nscf" title="create_epw_inputs.prepare_nscf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prepare_nscf</span></code></a>(grid_file[, what])</p></td>
-<td><p>function to write file for non-scf calculations parameters --------------- grid_file: kmesh.grid file automatically created from bash scripts what : type of nscf grid.</p></td>
+<td><p>function to write file for non-scf calculations :param grid_file: :type grid_file: kmesh.grid file automatically created from bash scripts :param what: :type what: type of nscf grid.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#create_epw_inputs.projwfc" title="create_epw_inputs.projwfc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">projwfc</span></code></a>(prefix, mpid, compound)</p></td>
-<td><p>function to write projwfc.in file for orbital projection calculation parameters -------------- mpid : MP id compound : MP compound name prefix : prefix used in QE calculations Returns : None -------------- write a file in 'projwfc-mpid-compound.in' format</p></td>
+<td><p>function to write projwfc.in file for orbital projection calculation :param mpid: :type mpid: MP id :param compound: :type compound: MP compound name :param prefix: :type prefix: prefix used in QE calculations :param Returns: :type Returns: None :param --------------: :param write a file in 'projwfc-mpid-compound.in' format:</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#create_epw_inputs.pw2wan_input" title="create_epw_inputs.pw2wan_input"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pw2wan_input</span></code></a>(mpid, compound, prefix[, proj])</p></td>
-<td><p>function to write pw2wan input file parameters ----------- mpid : Materials id compound : compound name prefix : prefix used in QE calculations proj : 'scdm' if used SCDM projection, '' otherwise Returns ------------- write 'pw2wan-mpid-compound.in' file</p></td>
+<td><p>function to write pw2wan input file :param mpid: :type mpid: Materials id :param compound: :type compound: compound name :param prefix: :type prefix: prefix used in QE calculations :param proj: :type proj: 'scdm' if used SCDM projection, '' otherwise</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#create_epw_inputs.scdmfit" title="create_epw_inputs.scdmfit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scdmfit</span></code></a>(func, file_name, mpid, compound, fermi)</p></td>
-<td><p>function to fit erfc function and calculate SCDM parameters to generate automatic projections for  wannierization parameters -------------- func : function to fit file_name : Data in 'energy, projection' format mpid : MP id compound : compound fermi : Fermi level entang : type of entanglement.</p></td>
+<td><p>function to fit erfc function and calculate SCDM parameters to generate automatic projections for  wannierization :param func: :type func: function to fit :param file_name: :type file_name: Data in 'energy, projection' format :param mpid: :type mpid: MP id :param compound: :type compound: compound :param fermi: :type fermi: Fermi level :param entang: :type entang: type of entanglement.</p></td>
 </tr>
 </tbody>
 </table>
 <dl class="py function">
 <dt class="sig sig-object py" id="create_epw_inputs.phonon_input">
-<span class="sig-prename descclassname"><span class="pre">create_epw_inputs.</span></span><span class="sig-name descname"><span class="pre">phonon_input</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mass_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qpoint_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mpid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#create_epw_inputs.phonon_input" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">create_epw_inputs.</span></span><span class="sig-name descname"><span class="pre">phonon_input</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mass_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qpoint_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mpid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/create_epw_inputs.html#phonon_input"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#create_epw_inputs.phonon_input" title="Link to this definition">¶</a></dt>
 <dd><p>function to write ph.in file for phonon calculation
-parameters
-————–
-mass_file : mass.in file automatically created in ‘create-inputs’ bash script
-qpoint_file : qpoint.in file provided
-mpid : MP id
-compound : MP compound name
-prefix : prefix used in QE calculations
-Returns: None
-————–
-write a file in ‘ph-mpid-compound.in’ format</p>
+:param mass_file:
+:type mass_file: mass.in file automatically created in ‘create-inputs’ bash script
+:param qpoint_file:
+:type qpoint_file: qpoint.in file provided
+:param mpid:
+:type mpid: MP id
+:param compound:
+:type compound: MP compound name
+:param prefix:
+:type prefix: prefix used in QE calculations
+:param Returns:
+:type Returns: None
+:param ————–:
+:param write a file in ‘ph-mpid-compound.in’ format:</p>
 </dd></dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="create_epw_inputs.prepare_nscf">
-<span class="sig-prename descclassname"><span class="pre">create_epw_inputs.</span></span><span class="sig-name descname"><span class="pre">prepare_nscf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">grid_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">what</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'nscf'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#create_epw_inputs.prepare_nscf" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">create_epw_inputs.</span></span><span class="sig-name descname"><span class="pre">prepare_nscf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">grid_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">what</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'nscf'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/create_epw_inputs.html#prepare_nscf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#create_epw_inputs.prepare_nscf" title="Link to this definition">¶</a></dt>
 <dd><p>function to write file for non-scf calculations
-parameters
-—————
-grid_file: kmesh.grid file automatically created from bash scripts
-what : type of nscf grid. ‘wan’ is nscf grid for wannierization
-Returns : None
-—————
-write a file with kmesh grid for non-scf calculation</p>
+:param grid_file:
+:type grid_file: kmesh.grid file automatically created from bash scripts
+:param what:
+:type what: type of nscf grid. ‘wan’ is nscf grid for wannierization
+:param Returns:
+:type Returns: None
+:param —————:
+:param write a file with kmesh grid for non-scf calculation:</p>
 </dd></dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="create_epw_inputs.projwfc">
-<span class="sig-prename descclassname"><span class="pre">create_epw_inputs.</span></span><span class="sig-name descname"><span class="pre">projwfc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prefix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mpid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#create_epw_inputs.projwfc" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">create_epw_inputs.</span></span><span class="sig-name descname"><span class="pre">projwfc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prefix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mpid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/create_epw_inputs.html#projwfc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#create_epw_inputs.projwfc" title="Link to this definition">¶</a></dt>
 <dd><p>function to write projwfc.in file for orbital projection calculation
-parameters
-————–
-mpid : MP id
-compound : MP compound name
-prefix : prefix used in QE calculations
-Returns : None
-————–
-write a file in ‘projwfc-mpid-compound.in’ format</p>
+:param mpid:
+:type mpid: MP id
+:param compound:
+:type compound: MP compound name
+:param prefix:
+:type prefix: prefix used in QE calculations
+:param Returns:
+:type Returns: None
+:param ————–:
+:param write a file in ‘projwfc-mpid-compound.in’ format:</p>
 </dd></dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="create_epw_inputs.ciftoxsf">
-<span class="sig-prename descclassname"><span class="pre">create_epw_inputs.</span></span><span class="sig-name descname"><span class="pre">ciftoxsf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outfile</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#create_epw_inputs.ciftoxsf" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">create_epw_inputs.</span></span><span class="sig-name descname"><span class="pre">ciftoxsf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outfile</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/create_epw_inputs.html#ciftoxsf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#create_epw_inputs.ciftoxsf" title="Link to this definition">¶</a></dt>
 <dd><p>function to change .cif file to .xsf format, suitable for xcrysden.
-parameters
-————-
-file_name : .cif filename
-outfile : .xsf filename
-Returns : None</p>
+:param file_name:
+:type file_name: .cif filename
+:param outfile:
+:type outfile: .xsf filename
+:param Returns:
+:type Returns: None</p>
 </dd></dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="create_epw_inputs.func_erfc">
-<span class="sig-prename descclassname"><span class="pre">create_epw_inputs.</span></span><span class="sig-name descname"><span class="pre">func_erfc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xdata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aparam</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bparam</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'erfc'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#create_epw_inputs.func_erfc" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">create_epw_inputs.</span></span><span class="sig-name descname"><span class="pre">func_erfc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xdata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aparam</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bparam</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'erfc'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/create_epw_inputs.html#func_erfc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#create_epw_inputs.func_erfc" title="Link to this definition">¶</a></dt>
 <dd><p>erfc function erfc((x-a)/b)
-parameters
-————–
-xdata : x data
-aparam and bparam are parameters
-func_type : Type of function
-Returns
-————–
-ydata = 0.5 * erfc((xdata-aparam)/bparam)</p>
+:param xdata:
+:type xdata: x data
+:param aparam and bparam are parameters:
+:param func_type:
+:type func_type: Type of function</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ydata = 0.5 * erfc((xdata-aparam)/bparam)</p>
+</dd>
+</dl>
 </dd></dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="create_epw_inputs.scdmfit">
-<span class="sig-prename descclassname"><span class="pre">create_epw_inputs.</span></span><span class="sig-name descname"><span class="pre">scdmfit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mpid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fermi</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entang</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'erfc'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#create_epw_inputs.scdmfit" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">create_epw_inputs.</span></span><span class="sig-name descname"><span class="pre">scdmfit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mpid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fermi</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entang</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'erfc'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/create_epw_inputs.html#scdmfit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#create_epw_inputs.scdmfit" title="Link to this definition">¶</a></dt>
 <dd><p>function to fit erfc function and calculate SCDM parameters
 to generate automatic projections for  wannierization
-parameters
-————–
-func : function to fit
-file_name : Data in ‘energy, projection’ format
-mpid : MP id
-compound : compound
-fermi : Fermi level
-entang : type of entanglement. Default: ‘erfc’
-Returns
-————–
-mu_scdm, sigma_scdm parameters</p>
+:param func:
+:type func: function to fit
+:param file_name:
+:type file_name: Data in ‘energy, projection’ format
+:param mpid:
+:type mpid: MP id
+:param compound:
+:type compound: compound
+:param fermi:
+:type fermi: Fermi level
+:param entang:
+:type entang: type of entanglement. Default: ‘erfc’</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>mu_scdm, sigma_scdm parameters</p>
+</dd>
+</dl>
 </dd></dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="create_epw_inputs.band_file_epw">
-<span class="sig-prename descclassname"><span class="pre">create_epw_inputs.</span></span><span class="sig-name descname"><span class="pre">band_file_epw</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mpid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#create_epw_inputs.band_file_epw" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">create_epw_inputs.</span></span><span class="sig-name descname"><span class="pre">band_file_epw</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mpid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/create_epw_inputs.html#band_file_epw"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#create_epw_inputs.band_file_epw" title="Link to this definition">¶</a></dt>
 <dd><p>function to include ‘nosym = .true.’ inside QE scf.in file
 for bandstructure calculation
-parameters
-————-
-mpid : Materials id
-compound : compound name</p>
+:param mpid:
+:type mpid: Materials id
+:param compound:
+:type compound: compound name</p>
 </dd></dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="create_epw_inputs.pw2wan_input">
-<span class="sig-prename descclassname"><span class="pre">create_epw_inputs.</span></span><span class="sig-name descname"><span class="pre">pw2wan_input</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mpid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">proj</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'</span> <span class="pre">'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#create_epw_inputs.pw2wan_input" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">create_epw_inputs.</span></span><span class="sig-name descname"><span class="pre">pw2wan_input</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mpid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">proj</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'</span> <span class="pre">'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/create_epw_inputs.html#pw2wan_input"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#create_epw_inputs.pw2wan_input" title="Link to this definition">¶</a></dt>
 <dd><p>function to write pw2wan input file
-parameters
-———–
-mpid : Materials id
-compound : compound name
-prefix : prefix used in QE calculations
-proj : ‘scdm’ if used SCDM projection, ‘’ otherwise
-Returns
-————-
-write ‘pw2wan-mpid-compound.in’ file</p>
+:param mpid:
+:type mpid: Materials id
+:param compound:
+:type compound: compound name
+:param prefix:
+:type prefix: prefix used in QE calculations
+:param proj:
+:type proj: ‘scdm’ if used SCDM projection, ‘’ otherwise</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>write ‘pw2wan-mpid-compound.in’ file</p>
+</dd>
+</dl>
 </dd></dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="create_epw_inputs.epw_sc_from_json">
-<span class="sig-prename descclassname"><span class="pre">create_epw_inputs.</span></span><span class="sig-name descname"><span class="pre">epw_sc_from_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'epw.in'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#create_epw_inputs.epw_sc_from_json" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">create_epw_inputs.</span></span><span class="sig-name descname"><span class="pre">epw_sc_from_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'epw.in'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/create_epw_inputs.html#epw_sc_from_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#create_epw_inputs.epw_sc_from_json" title="Link to this definition">¶</a></dt>
 <dd><p>Write input file for EPW calculations based on JSON configuration.</p>
 <section id="parameters">
 <h2 id="parameters">Parameters:<a class="headerlink" href="#parameters" title="Link to this heading">¶</a></h2>
@@ -382,22 +402,25 @@ write ‘pw2wan-mpid-compound.in’ file</p>
 </dd></dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="create_epw_inputs.epw_sc">
-<span class="sig-prename descclassname"><span class="pre">create_epw_inputs.</span></span><span class="sig-name descname"><span class="pre">epw_sc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mpid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qpoint_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kpoint_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">proj</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'</span> <span class="pre">'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'epw.in'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#create_epw_inputs.epw_sc" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">create_epw_inputs.</span></span><span class="sig-name descname"><span class="pre">epw_sc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mpid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qpoint_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kpoint_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">proj</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'</span> <span class="pre">'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'epw.in'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/create_epw_inputs.html#epw_sc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#create_epw_inputs.epw_sc" title="Link to this definition">¶</a></dt>
 <dd><p>function to write input file for EPW calculations. Default: ‘epw.in’</p>
-<section id="id1">
-<h2 id="id1">parameters<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
-<p>mpid : Materials id
-compound : compound name
-prefix : prefix used in QE calculations
-qpoint_file : ‘qpoint.in’ file for q-mesh
-kpoint_file : ‘kpoint.in’ file for k-mesh
-proj: projection types
-out : epw input file</p>
-</section>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mpid</strong> (<em>Materials id</em>) – </p></li>
+<li><p><strong>compound</strong> (<em>compound name</em>) – </p></li>
+<li><p><strong>prefix</strong> (<em>prefix used in QE calculations</em>) – </p></li>
+<li><p><strong>qpoint_file</strong> (<em>'qpoint.in' file for q-mesh</em>) – </p></li>
+<li><p><strong>kpoint_file</strong> (<em>'kpoint.in' file for k-mesh</em>) – </p></li>
+<li><p><strong>proj</strong> (<em>projection types</em>) – </p></li>
+<li><p><strong>out</strong> (<em>epw input file</em>) – </p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="create_epw_inputs.main">
-<span class="sig-prename descclassname"><span class="pre">create_epw_inputs.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#create_epw_inputs.main" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">create_epw_inputs.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/create_epw_inputs.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#create_epw_inputs.main" title="Link to this definition">¶</a></dt>
 <dd><p>main function</p>
 </dd></dl>
 </section>

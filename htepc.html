@@ -283,7 +283,7 @@
 <td><p>Replace elements in the original list with generic names followed by occurrence counts.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#htepc.insert" title="htepc.insert"><code class="xref py py-obj docutils literal notranslate"><span class="pre">insert</span></code></a>([input_file, output, keyword, where, ...])</p></td>
-<td><p>Function to insert keyword in input file parameters ----------------------- input_file : (str) input file.</p></td>
+<td><p>Function to insert keyword in input file :param input_file: :type input_file: (str) input file.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#htepc.pos_to_kpt" title="htepc.pos_to_kpt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pos_to_kpt</span></code></a>(structure_filename, kpoint_density)</p></td>
 <td><p>Obtain k-point mesh from a structure file.</p></td>
@@ -300,19 +300,19 @@
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#htepc.INPUTscf" title="htepc.INPUTscf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">INPUTscf</span></code></a>([filename])</p></td>
-<td><p>class to process QE input files parameters ------------------ filename: (str) QE input file</p></td>
+<td><p>class to process QE input files :param filename: :type filename: (str) QE input file</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#htepc.MpConnect" title="htepc.MpConnect"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MpConnect</span></code></a>()</p></td>
 <td><p>Class for connecting to Materials Project (MP) via MP API, extracting properties, and preparing input files for Quantum Espresso (QE) calculations.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#htepc.OUTPUTscf" title="htepc.OUTPUTscf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OUTPUTscf</span></code></a>([filename])</p></td>
-<td><p>class to extract relax structure from QE output file and update input file parameters --------------------- filename : (str) QE output file.</p></td>
+<td><p>class to extract relax structure from QE output file and update input file :param filename: :type filename: (str) QE output file.</p></td>
 </tr>
 </tbody>
 </table>
 <dl class="py function">
 <dt class="sig sig-object py" id="htepc.pos_to_kpt">
-<span class="sig-prename descclassname"><span class="pre">htepc.</span></span><span class="sig-name descname"><span class="pre">pos_to_kpt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">structure_filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kpoint_density</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#htepc.pos_to_kpt" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">htepc.</span></span><span class="sig-name descname"><span class="pre">pos_to_kpt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">structure_filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kpoint_density</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htepc.html#pos_to_kpt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#htepc.pos_to_kpt" title="Link to this definition">¶</a></dt>
 <dd><p>Obtain k-point mesh from a structure file.</p>
 <section id="parameters">
 <h2 id="parameters">Parameters:<a class="headerlink" href="#parameters" title="Link to this heading">¶</a></h2>
@@ -333,7 +333,7 @@
 </dd></dl>
 <dl class="py class">
 <dt class="sig sig-object py" id="htepc.MpConnect">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">htepc.</span></span><span class="sig-name descname"><span class="pre">MpConnect</span></span><a class="headerlink" href="#htepc.MpConnect" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">htepc.</span></span><span class="sig-name descname"><span class="pre">MpConnect</span></span><a class="reference internal" href="_modules/htepc.html#MpConnect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#htepc.MpConnect" title="Link to this definition">¶</a></dt>
 <dd><p>Class for connecting to Materials Project (MP) via MP API, extracting properties,
 and preparing input files for Quantum Espresso (QE) calculations.</p>
 <section id="id1">
@@ -394,7 +394,7 @@ or ../../htepc.json file.</p>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="htepc.MpConnect.setting">
-<span class="sig-name descname"><span class="pre">setting</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">comp</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#htepc.MpConnect.setting" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">setting</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">comp</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htepc.html#MpConnect.setting"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#htepc.MpConnect.setting" title="Link to this definition">¶</a></dt>
 <dd><p>Initialize the process with a Materials ID.</p>
 <section id="id2">
 <h3 id="id2">Parameters:<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h3>
@@ -417,7 +417,7 @@ or ../../htepc.json file.</p>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="htepc.MpConnect.get_prop_list">
-<span class="sig-name descname"><span class="pre">get_prop_list</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#htepc.MpConnect.get_prop_list" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_prop_list</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/htepc.html#MpConnect.get_prop_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#htepc.MpConnect.get_prop_list" title="Link to this definition">¶</a></dt>
 <dd><p>Print the list of properties available when downloading the data.</p>
 <section id="id4">
 <h3 id="id4">Returns:<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h3>
@@ -433,7 +433,7 @@ or ../../htepc.json file.</p>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="htepc.MpConnect.download">
-<span class="sig-name descname"><span class="pre">download</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filetype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cif'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#htepc.MpConnect.download" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">download</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filetype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cif'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htepc.html#MpConnect.download"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#htepc.MpConnect.download" title="Link to this definition">¶</a></dt>
 <dd><p>Download the structure file.</p>
 <section id="id6">
 <h3 id="id6">Parameters:<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h3>
@@ -449,7 +449,7 @@ or ../../htepc.json file.</p>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="htepc.MpConnect.property">
-<span class="sig-name descname"><span class="pre">property</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#htepc.MpConnect.property" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">property</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htepc.html#MpConnect.property"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#htepc.MpConnect.property" title="Link to this definition">¶</a></dt>
 <dd><p>Extract a particular property.</p>
 <section id="id8">
 <h3 id="id8">Parameters:<a class="headerlink" href="#id8" title="Link to this heading">¶</a></h3>
@@ -472,7 +472,7 @@ or ../../htepc.json file.</p>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="htepc.MpConnect.getkpt">
-<span class="sig-name descname"><span class="pre">getkpt</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#htepc.MpConnect.getkpt" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">getkpt</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/htepc.html#MpConnect.getkpt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#htepc.MpConnect.getkpt" title="Link to this definition">¶</a></dt>
 <dd><p>Compute k-points based on k-point density.</p>
 <section id="id11">
 <h3 id="id11">Returns:<a class="headerlink" href="#id11" title="Link to this heading">¶</a></h3>
@@ -493,7 +493,7 @@ defaulting to 0.05 if unspecified. It returns the k-point grid, type, and shifts
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="htepc.MpConnect.getevenkpt">
-<span class="sig-name descname"><span class="pre">getevenkpt</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#htepc.MpConnect.getevenkpt" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">getevenkpt</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/htepc.html#MpConnect.getevenkpt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#htepc.MpConnect.getevenkpt" title="Link to this definition">¶</a></dt>
 <dd><p>Make the k-point mesh even.</p>
 <section id="id13">
 <h3 id="id13">Returns:<a class="headerlink" href="#id13" title="Link to this heading">¶</a></h3>
@@ -511,7 +511,7 @@ Returns the resulting even k-point grid as a tuple.</p>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="htepc.MpConnect.getecut_sssp">
-<span class="sig-name descname"><span class="pre">getecut_sssp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">element</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#htepc.MpConnect.getecut_sssp" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">getecut_sssp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">element</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htepc.html#MpConnect.getecut_sssp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#htepc.MpConnect.getecut_sssp" title="Link to this definition">¶</a></dt>
 <dd><p>Obtain the kinetic energy cutoff for a specific element.</p>
 <section id="id15">
 <h3 id="id15">Parameters:<a class="headerlink" href="#id15" title="Link to this heading">¶</a></h3>
@@ -534,7 +534,7 @@ Returns the resulting even k-point grid as a tuple.</p>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="htepc.MpConnect.maxecut_sssp">
-<span class="sig-name descname"><span class="pre">maxecut_sssp</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#htepc.MpConnect.maxecut_sssp" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">maxecut_sssp</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/htepc.html#MpConnect.maxecut_sssp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#htepc.MpConnect.maxecut_sssp" title="Link to this definition">¶</a></dt>
 <dd><p>Choose the maximum kinetic energy cutoff among elements in a compound.</p>
 <section id="id18">
 <h3 id="id18">Returns:<a class="headerlink" href="#id18" title="Link to this heading">¶</a></h3>
@@ -552,7 +552,7 @@ then prints tested cutoffs for waveFunction and density.</p>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="htepc.MpConnect.maxecut_sssp_for_subs">
-<span class="sig-name descname"><span class="pre">maxecut_sssp_for_subs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#htepc.MpConnect.maxecut_sssp_for_subs" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">maxecut_sssp_for_subs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/htepc.html#MpConnect.maxecut_sssp_for_subs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#htepc.MpConnect.maxecut_sssp_for_subs" title="Link to this definition">¶</a></dt>
 <dd><p>Determine the maximum kinetic energy cutoff among elements in a compound during the substitution process.</p>
 <section id="id20">
 <h3 id="id20">Returns:<a class="headerlink" href="#id20" title="Link to this heading">¶</a></h3>
@@ -569,23 +569,27 @@ and the maximum kinetic energy cutoff for charge density (ecutrho).</p>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="htepc.MpConnect.ecut_set">
-<span class="sig-name descname"><span class="pre">ecut_set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ecutwfc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ecutrho</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">400.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#htepc.MpConnect.ecut_set" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">ecut_set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ecutwfc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ecutrho</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">400.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htepc.html#MpConnect.ecut_set"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#htepc.MpConnect.ecut_set" title="Link to this definition">¶</a></dt>
 <dd><p>Function to set kinetic energy cutoffs</p>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="htepc.MpConnect.get_properties">
-<span class="sig-name descname"><span class="pre">get_properties</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">property_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#htepc.MpConnect.get_properties" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_properties</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">property_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htepc.html#MpConnect.get_properties"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#htepc.MpConnect.get_properties" title="Link to this definition">¶</a></dt>
 <dd><p>Function to extract multiple properties from MP.
-parameters
-——————-
-property_name : list of properties: Default: [‘material_id’]
-Returns
-——————-
-property_list : list of properties extracted.</p>
+:param property_name:
+:type property_name: list of properties: Default: [‘material_id’]</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>property_list</strong></p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list of properties extracted.</p>
+</dd>
+</dl>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="htepc.MpConnect.setting_qeinput">
-<span class="sig-name descname"><span class="pre">setting_qeinput</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calculation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'vc-relax'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">occupations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'smearing'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">restart_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'from_scratch'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pseudo_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'./'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smearing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.02</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smearing_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gauss'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">etot_conv_thr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">forc_conv_thr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">conv_thr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-16</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ion_dynamics</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'bfgs'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell_dynamics</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'bfgs'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">magnetic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#htepc.MpConnect.setting_qeinput" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">setting_qeinput</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calculation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'vc-relax'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">occupations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'smearing'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">restart_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'from_scratch'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pseudo_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'./'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smearing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.02</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smearing_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gauss'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">etot_conv_thr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">forc_conv_thr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">conv_thr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-16</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ion_dynamics</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'bfgs'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell_dynamics</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'bfgs'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">magnetic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htepc.html#MpConnect.setting_qeinput"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#htepc.MpConnect.setting_qeinput" title="Link to this definition">¶</a></dt>
 <dd><p>Function to create input file for QE ground-state calculations.</p>
 <p>Parameters:
 - calculation (str): Type of calculation. Default: ‘vc-relax’. Other options are ‘relax’ (ionic only), ‘bands’ for band structure, ‘scf’ for SCF calculations.
@@ -603,7 +607,7 @@ Creates input files in scf-mpid.in format inside scf_dir/.</p>
 </dd></dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="htepc.reorder_dictionary">
-<span class="sig-prename descclassname"><span class="pre">htepc.</span></span><span class="sig-name descname"><span class="pre">reorder_dictionary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_order</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#htepc.reorder_dictionary" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">htepc.</span></span><span class="sig-name descname"><span class="pre">reorder_dictionary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_order</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htepc.html#reorder_dictionary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#htepc.reorder_dictionary" title="Link to this definition">¶</a></dt>
 <dd><p>Reorder the keys of a dictionary based on a new list of keywords and return the list of keys.</p>
 <p>Parameters:
 - original_dict (dict): The original dictionary whose keys are to be reordered.
@@ -617,7 +621,7 @@ reorder_dictionary(original_dict, new_order)</p>
 </dd></dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="htepc.convert_species_list">
-<span class="sig-prename descclassname"><span class="pre">htepc.</span></span><span class="sig-name descname"><span class="pre">convert_species_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#htepc.convert_species_list" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">htepc.</span></span><span class="sig-name descname"><span class="pre">convert_species_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htepc.html#convert_species_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#htepc.convert_species_list" title="Link to this definition">¶</a></dt>
 <dd><p>Replace elements in the original list with generic names followed by occurrence counts.</p>
 <p>Parameters:
 - original_list (list): List containing strings representing elements.</p>
@@ -625,154 +629,165 @@ reorder_dictionary(original_dict, new_order)</p>
 - list: Updated list where elements are replaced with generic names and occurrence counts.</p>
 <p>Algorithm:
 - Replace elements with generic names followed by occurrence counts.</p>
-<dl class="simple">
-<dt>Example:</dt><dd><p>original_list = [‘Fe,spin=5’, ‘Fe,spin=-5’, ‘pd’, ‘pd’, ‘I,spin=1’, ‘I,spin=-1’]
+<p class="rubric">Example</p>
+<p>original_list = [‘Fe,spin=5’, ‘Fe,spin=-5’, ‘pd’, ‘pd’, ‘I,spin=1’, ‘I,spin=-1’]
 convert_species_list(original_list)</p>
-</dd>
-</dl>
 <p>[‘Fe1’, ‘Fe2’, ‘pd’, ‘pd’, ‘I1’, ‘I2’]</p>
 </dd></dl>
 <dl class="py class">
 <dt class="sig sig-object py" id="htepc.INPUTscf">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">htepc.</span></span><span class="sig-name descname"><span class="pre">INPUTscf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'scf.in'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#htepc.INPUTscf" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">htepc.</span></span><span class="sig-name descname"><span class="pre">INPUTscf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'scf.in'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htepc.html#INPUTscf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#htepc.INPUTscf" title="Link to this definition">¶</a></dt>
 <dd><p>class to process QE input files
-parameters
-——————
-filename: (str) QE input file</p>
+:param filename:
+:type filename: (str) QE input file</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="htepc.INPUTscf.scftocif">
-<span class="sig-name descname"><span class="pre">scftocif</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'file.cif'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#htepc.INPUTscf.scftocif" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">scftocif</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'file.cif'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htepc.html#INPUTscf.scftocif"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#htepc.INPUTscf.scftocif" title="Link to this definition">¶</a></dt>
 <dd><p>Function to convert QE input file to structure file in .cif format
-parameters
-—————
-output : (str) name of the output file
-Returns
-—————
-file2 : output file object</p>
+:param output:
+:type output: (str) name of the output file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>file2</strong></p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>output file object</p>
+</dd>
+</dl>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="htepc.INPUTscf.cellpar">
-<span class="sig-name descname"><span class="pre">cellpar</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#htepc.INPUTscf.cellpar" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">cellpar</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/htepc.html#INPUTscf.cellpar"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#htepc.INPUTscf.cellpar" title="Link to this definition">¶</a></dt>
 <dd><p>Function to calculate cell lengths and angles
-Returns
-———————–
-list of lenghts and angles</p>
+:rtype: list of lenghts and angles</p>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="htepc.INPUTscf.standardize">
-<span class="sig-name descname"><span class="pre">standardize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mpid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'standard.in'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#htepc.INPUTscf.standardize" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">standardize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mpid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'standard.in'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htepc.html#INPUTscf.standardize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#htepc.INPUTscf.standardize" title="Link to this definition">¶</a></dt>
 <dd><p>Function to get closest bravais lattice parameters.
-parameters
-—————–
-mpid : (str) materials project ID
-output : (str) output file. Default: ‘standard.in’</p>
+:param mpid:
+:type mpid: (str) materials project ID
+:param output:
+:type output: (str) output file. Default: ‘standard.in’</p>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="htepc.INPUTscf.generate_kpath">
-<span class="sig-name descname"><span class="pre">generate_kpath</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nqpoint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">200</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kcut</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'kpath.in'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#htepc.INPUTscf.generate_kpath" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">generate_kpath</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nqpoint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">200</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kcut</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'kpath.in'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htepc.html#INPUTscf.generate_kpath"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#htepc.INPUTscf.generate_kpath" title="Link to this definition">¶</a></dt>
 <dd><p>Function to generate and write k-point mesh for bandstructure calculation to a file
-parameters
-——————–
-nqpoint : (int) size of the k-point mesh. Default: 200
-kcut : (int) cutoff to the high-symmetry path of the Brillouin zone. Default: 0 for full Brillouin zone
-out : (str) output file. Default: ‘kpath.in’
-Returns
-——————–
-kpts : numpy array of kpoints in linear axis after processing
-n : (int) size of kpts</p>
+:param nqpoint:
+:type nqpoint: (int) size of the k-point mesh. Default: 200
+:param kcut:
+:type kcut: (int) cutoff to the high-symmetry path of the Brillouin zone. Default: 0 for full Brillouin zone
+:param out:
+:type out: (str) output file. Default: ‘kpath.in’</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><strong>kpts</strong> (<em>numpy array of kpoints in linear axis after processing</em>)</p></li>
+<li><p><strong>n</strong> (<em>(int) size of kpts</em>)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="htepc.INPUTscf.setting_input">
-<span class="sig-name descname"><span class="pre">setting_input</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">comp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mass</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qpoint</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#htepc.INPUTscf.setting_input" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">setting_input</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">comp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mass</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qpoint</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htepc.html#INPUTscf.setting_input"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#htepc.INPUTscf.setting_input" title="Link to this definition">¶</a></dt>
 <dd><p>Function to setup input
-parameters
-————-
-comp : compound name
-mass: List of masses of elements
-qpoint : List of qpoint</p>
+:param comp:
+:type comp: compound name
+:param mass:
+:type mass: List of masses of elements
+:param qpoint:
+:type qpoint: List of qpoint</p>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="htepc.INPUTscf.create_elph">
-<span class="sig-name descname"><span class="pre">create_elph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'elph.in'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-14</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.005</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#htepc.INPUTscf.create_elph" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">create_elph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'elph.in'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-14</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.005</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htepc.html#INPUTscf.create_elph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#htepc.INPUTscf.create_elph" title="Link to this definition">¶</a></dt>
 <dd><p>Function similar to elph.py file inside src/</p>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="htepc.INPUTscf.create_q2r">
-<span class="sig-name descname"><span class="pre">create_q2r</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'q2r.in'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#htepc.INPUTscf.create_q2r" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">create_q2r</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'q2r.in'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htepc.html#INPUTscf.create_q2r"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#htepc.INPUTscf.create_q2r" title="Link to this definition">¶</a></dt>
 <dd><p>Function similar to q2r.py file inside src/</p>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="htepc.INPUTscf.create_matdyn">
-<span class="sig-name descname"><span class="pre">create_matdyn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'matdyn.in'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nqpt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">60</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kcut</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#htepc.INPUTscf.create_matdyn" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">create_matdyn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'matdyn.in'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nqpt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">60</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kcut</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htepc.html#INPUTscf.create_matdyn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#htepc.INPUTscf.create_matdyn" title="Link to this definition">¶</a></dt>
 <dd><p>Function similar to matdyn.py file inside src/</p>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="htepc.INPUTscf.create_phdos">
-<span class="sig-name descname"><span class="pre">create_phdos</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kpts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'phdos.in'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ndos</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">200</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#htepc.INPUTscf.create_phdos" title="Link to this definition">¶</a></dt>
-<dd><p>Function similar to matdyn.dos.py file inside src/</p>
+<span class="sig-name descname"><span class="pre">create_phdos</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kpts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'phdos.in'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ndos</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">200</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htepc.html#INPUTscf.create_phdos"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#htepc.INPUTscf.create_phdos" title="Link to this definition">¶</a></dt>
+<dd><p>Function similar to matdyn_dos.py file inside src/</p>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="htepc.INPUTscf.create_dos">
-<span class="sig-name descname"><span class="pre">create_dos</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">out1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'dos.in'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pdos.in'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#htepc.INPUTscf.create_dos" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">create_dos</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">out1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'dos.in'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pdos.in'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htepc.html#INPUTscf.create_dos"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#htepc.INPUTscf.create_dos" title="Link to this definition">¶</a></dt>
 <dd><p>Function similar to dos.py file inside src/</p>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="htepc.INPUTscf.post_band">
-<span class="sig-name descname"><span class="pre">post_band</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'band.in'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#htepc.INPUTscf.post_band" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">post_band</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'band.in'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htepc.html#INPUTscf.post_band"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#htepc.INPUTscf.post_band" title="Link to this definition">¶</a></dt>
 <dd><p>Function similar to band.py file inside src/</p>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="htepc.INPUTscf.post_phband">
-<span class="sig-name descname"><span class="pre">post_phband</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'phonband.in'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#htepc.INPUTscf.post_phband" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">post_phband</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'phonband.in'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htepc.html#INPUTscf.post_phband"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#htepc.INPUTscf.post_phband" title="Link to this definition">¶</a></dt>
 <dd><p>Function similar to phonband.py file inside src/</p>
 </dd></dl>
 </dd></dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="htepc.scf_to_dos_scf">
-<span class="sig-prename descclassname"><span class="pre">htepc.</span></span><span class="sig-name descname"><span class="pre">scf_to_dos_scf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'scf.in'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'scf-dos.in'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#htepc.scf_to_dos_scf" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">htepc.</span></span><span class="sig-name descname"><span class="pre">scf_to_dos_scf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'scf.in'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'scf-dos.in'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htepc.html#scf_to_dos_scf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#htepc.scf_to_dos_scf" title="Link to this definition">¶</a></dt>
 <dd><p>Function to change QE input file from using smearing to ‘tetrahedra’ method, mainly for DOS calculation</p>
-<section id="id22">
-<h2 id="id22">parameters<a class="headerlink" href="#id22" title="Link to this heading">¶</a></h2>
-<p>input_file : (str) input file for QE scf calculation
-out : (str) output file after modification</p>
-</section>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_file</strong> (<em>(</em><em>str</em><em>) </em><em>input file for QE scf calculation</em>) – </p></li>
+<li><p><strong>out</strong> (<em>(</em><em>str</em><em>) </em><em>output file after modification</em>) – </p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="htepc.insert">
-<span class="sig-prename descclassname"><span class="pre">htepc.</span></span><span class="sig-name descname"><span class="pre">insert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'scf.in'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'scf-new.in'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keyword</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">where</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'after'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">what</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#htepc.insert" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">htepc.</span></span><span class="sig-name descname"><span class="pre">insert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'scf.in'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'scf-new.in'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keyword</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">where</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'after'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">what</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htepc.html#insert"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#htepc.insert" title="Link to this definition">¶</a></dt>
 <dd><p>Function to insert keyword in input file
-parameters
-———————–
-input_file : (str) input file. Default: ‘scf.in’
-output : (str) output file. Default: ‘scf-new.in’
-keyword : (str) keyword to look after
-where : (str) where to insert. Default: ‘after’, otherwise ‘before’
-what : (str) what to insert. Default: ‘’</p>
+:param input_file:
+:type input_file: (str) input file. Default: ‘scf.in’
+:param output:
+:type output: (str) output file. Default: ‘scf-new.in’
+:param keyword:
+:type keyword: (str) keyword to look after
+:param where:
+:type where: (str) where to insert. Default: ‘after’, otherwise ‘before’
+:param what:
+:type what: (str) what to insert. Default: ‘’</p>
 </dd></dl>
 <dl class="py class">
 <dt class="sig sig-object py" id="htepc.OUTPUTscf">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">htepc.</span></span><span class="sig-name descname"><span class="pre">OUTPUTscf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'scf.out'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#htepc.OUTPUTscf" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">htepc.</span></span><span class="sig-name descname"><span class="pre">OUTPUTscf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'scf.out'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htepc.html#OUTPUTscf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#htepc.OUTPUTscf" title="Link to this definition">¶</a></dt>
 <dd><p>class to extract relax structure from QE output file and update input file
-parameters
-———————
-filename : (str) QE output file. Default: ‘scf.out’</p>
+:param filename:
+:type filename: (str) QE output file. Default: ‘scf.out’</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="htepc.OUTPUTscf.extract_relax">
-<span class="sig-name descname"><span class="pre">extract_relax</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'relax.dat'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#htepc.OUTPUTscf.extract_relax" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">extract_relax</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'relax.dat'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htepc.html#OUTPUTscf.extract_relax"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#htepc.OUTPUTscf.extract_relax" title="Link to this definition">¶</a></dt>
 <dd><p>Function to extract cell and positions of crystal structures from scf output file and write to a file
-parameters
-—————-
-filename : (str) output file. Default: ‘relax.dat’</p>
+:param filename:
+:type filename: (str) output file. Default: ‘relax.dat’</p>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="htepc.OUTPUTscf.update_scf">
-<span class="sig-name descname"><span class="pre">update_scf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'scf.in'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'scf-new.in'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">what</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'structure'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#htepc.OUTPUTscf.update_scf" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">update_scf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'scf.in'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'scf-new.in'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">what</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'structure'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htepc.html#OUTPUTscf.update_scf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#htepc.OUTPUTscf.update_scf" title="Link to this definition">¶</a></dt>
 <dd><p>Function to update QE input file and update with new structure
-parameters
-————
-input_file : (str) QE scf input file to update. Default: ‘scf.in’
-output : (str) QE scf output file, updated with new structure. Default: ‘scf-new.in’
-what : (str) what to update. Default: ‘structure’. Other, not implemented yet !</p>
+:param input_file:
+:type input_file: (str) QE scf input file to update. Default: ‘scf.in’
+:param output:
+:type output: (str) QE scf output file, updated with new structure. Default: ‘scf-new.in’
+:param what:
+:type what: (str) what to update. Default: ‘structure’. Other, not implemented yet !</p>
 </dd></dl>
 </dd></dl>
 </section>

@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="lang:clipboard.copy" content="Copy to clipboard">
+  <meta name="lang:clipboard.copied" content="Copied to clipboard">
+  <meta name="lang:search.language" content="en">
+  <meta name="lang:search.pipeline.stopwords" content="True">
+  <meta name="lang:search.pipeline.trimmer" content="True">
+  <meta name="lang:search.result.none" content="No matching documents">
+  <meta name="lang:search.result.one" content="1 matching document">
+  <meta name="lang:search.result.other" content="# matching documents">
+  <meta name="lang:search.tokenizer" content="[\s\-]+">
+
+  
+    <link href="https://fonts.gstatic.com/" rel="preconnect" crossorigin>
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,500,700|Roboto:300,400,400i,700&display=fallback" rel="stylesheet">
+
+    <style>
+      body,
+      input {
+        font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif
+      }
+
+      code,
+      kbd,
+      pre {
+        font-family: "Roboto Mono", "Courier New", Courier, monospace
+      }
+    </style>
+  
+
+  <link rel="stylesheet" href="../_static/stylesheets/application.css"/>
+  <link rel="stylesheet" href="../_static/stylesheets/application-palette.css"/>
+  <link rel="stylesheet" href="../_static/stylesheets/application-fixes.css"/>
+  
+  <link rel="stylesheet" href="../_static/fonts/material-icons.css"/>
+  
+  <meta name="theme-color" content="#3f51b5">
+  <script src="../_static/javascripts/modernizr.js"></script>
+  
+  
+  
+    <title>generate_submission &#8212; HTESP 0.0.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=83e35b93" />
+    <link rel="stylesheet" type="text/css" href="../_static/material.css?v=79c92029" />
+    <script src="../_static/documentation_options.js?v=d45e8c67"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+  
+   
+
+  </head>
+  <body dir=ltr
+        data-md-color-primary=blue-grey data-md-color-accent=blue>
+  
+  <svg class="md-svg">
+    <defs data-children-count="0">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448" viewBox="0 0 416 448" id="__github"><path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19T128 352t-18.125-8.5-10.75-19T96 304t3.125-20.5 10.75-19T128 256t18.125 8.5 10.75 19T160 304zm160 0q0 10-3.125 20.5t-10.75 19T288 352t-18.125-8.5-10.75-19T256 304t3.125-20.5 10.75-19T288 256t18.125 8.5 10.75 19T320 304zm40 0q0-30-17.25-51T296 232q-10.25 0-48.75 5.25Q229.5 240 208 240t-39.25-2.75Q130.75 232 120 232q-29.5 0-46.75 21T56 304q0 22 8 38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0 37.25-1.75t35-7.375 30.5-15 20.25-25.75T360 304zm56-44q0 51.75-15.25 82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5T212 416q-19.5 0-35.5-.75t-36.875-3.125-38.125-7.5-34.25-12.875T37 371.5t-21.5-28.75Q0 312 0 260q0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25 30.875Q171.5 96 212 96q37 0 70 8 26.25-20.5 46.75-30.25T376 64q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34 99.5z"/></svg>
+      
+    </defs>
+  </svg>
+  
+  <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer">
+  <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search">
+  <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+  <a href="#_modules/generate_submission" tabindex="1" class="md-skip"> Skip to content </a>
+  <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex navheader">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="../index.html" title="HTESP 0.0.1 documentation"
+           class="md-header-nav__button md-logo">
+          
+            &nbsp;
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          <span class="md-header-nav__topic">HTESP 0.0.1 documentation</span>
+          <span class="md-header-nav__topic"> generate_submission </span>
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+        
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" action="../search.html" method="get" name="search">
+      <input type="text" class="md-search__input" name="q" placeholder=""Search""
+             autocapitalize="off" autocomplete="off" spellcheck="false"
+             data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+      </div>
+      
+      
+  
+  <script src="../_static/javascripts/version_dropdown.js"></script>
+  <script>
+    var json_loc = "../"versions.json"",
+        target_loc = "../../",
+        text = "Versions";
+    $( document ).ready( add_version_dropdown(json_loc, target_loc, text));
+  </script>
+  
+
+    </div>
+  </nav>
+</header>
+
+  
+  <div class="md-container">
+    
+    
+    
+  <nav class="md-tabs" data-md-component="tabs">
+    <div class="md-tabs__inner md-grid">
+      <ul class="md-tabs__list">
+          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">HTESP 0.0.1 documentation</a></li>
+          <li class="md-tabs__item"><a href="index.html" class="md-tabs__link">Module code</a></li>
+      </ul>
+    </div>
+  </nav>
+    <main class="md-main">
+      <div class="md-main__inner md-grid" data-md-component="container">
+        
+          <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+            <div class="md-sidebar__scrollwrap">
+              <div class="md-sidebar__inner">
+                <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href="../index.html" title="HTESP 0.0.1 documentation" class="md-nav__button md-logo">
+      
+        <img src="../_static/" alt=" logo" width="48" height="48">
+      
+    </a>
+    <a href="../index.html"
+       title="HTESP 0.0.1 documentation">HTESP 0.0.1 documentation</a>
+  </label>
+  
+
+</nav>
+              </div>
+            </div>
+          </div>
+          <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+            <div class="md-sidebar__scrollwrap">
+              <div class="md-sidebar__inner">
+                
+<nav class="md-nav md-nav--secondary">
+  <ul class="md-nav__list" data-md-scrollfix="">
+    
+  </ul>
+</nav>
+              </div>
+            </div>
+          </div>
+        
+        <div class="md-content">
+          <article class="md-content__inner md-typeset" role="main">
+            
+  <h1 id="modules-generate-submission--page-root">Source code for generate_submission</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1">#"""Written by Niraj K. Nepal, Ph.D."""</span>
+<span class="sd">"""Module to prepare job submission scripts"""</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">glob</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">ifermi_plot</span> <span class="kn">import</span> <span class="n">ifermi</span>
+
+<div class="viewcode-block" id="generate_submission_files">
+<a class="viewcode-back" href="../generate_submission.html#generate_submission.generate_submission_files">[docs]</a>
+<span class="k">def</span> <span class="nf">generate_submission_files</span><span class="p">(</span><span class="n">which_calc</span><span class="p">,</span> <span class="n">parallel_command</span><span class="p">,</span> <span class="n">nproc</span><span class="p">,</span> <span class="n">command_list</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Generate submission files based on the calculation type, parallel command, number of processors,</span>
+<span class="sd">    and a dictionary of commands.</span>
+<span class="sd">    Parameters:</span>
+<span class="sd">    - which_calc (str): The type of calculation.</span>
+<span class="sd">      Valid options include 'qe', 'epw', 'wannier', and 'vasp'.</span>
+<span class="sd">    - parallel_command (str): The parallel command to be used for execution, e.g., 'mpirun'.</span>
+<span class="sd">    - nproc (str): The number of processors to be used.</span>
+<span class="sd">    - command_list (dict): A dictionary containing command information for each calculation type.</span>
+<span class="sd">      Keys are command names, and values are tuples containing the executable command,</span>
+<span class="sd">      input file, and output file.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">    - submission_files (dict): A dictionary containing generated submission files.</span>
+<span class="sd">      Keys are command names, and values are formatted submission commands ready for execution.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">    - ValueError: If an invalid calculation type is provided.</span>
+<span class="sd">    """</span>
+    <span class="n">npscf</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">nproc</span><span class="p">)</span>
+    <span class="n">submission_files</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">if</span> <span class="n">which_calc</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">'qe'</span><span class="p">,</span><span class="s1">'QE'</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">command_name</span><span class="p">,</span> <span class="n">command_info</span> <span class="ow">in</span> <span class="n">command_list</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">x_command</span><span class="p">,</span> <span class="n">input_file</span><span class="p">,</span> <span class="n">output_file</span> <span class="o">=</span> <span class="n">command_info</span>
+            <span class="n">submission_files</span><span class="p">[</span><span class="n">command_name</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">parallel_command</span><span class="si">}</span><span class="s2"> -np </span><span class="si">{</span><span class="n">npscf</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">x_command</span><span class="si">}</span><span class="s2"> &lt; </span><span class="si">{</span><span class="n">input_file</span><span class="si">}</span><span class="s2"> &gt; </span><span class="si">{</span><span class="n">output_file</span><span class="si">}</span><span class="s2">"</span>
+
+    <span class="k">elif</span> <span class="n">which_calc</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">'epw'</span><span class="p">,</span><span class="s1">'EPW'</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">command_name</span><span class="p">,</span> <span class="n">command_info</span> <span class="ow">in</span> <span class="n">command_list</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">x_command</span><span class="p">,</span> <span class="n">input_file</span><span class="p">,</span> <span class="n">output_file</span> <span class="o">=</span> <span class="n">command_info</span>
+            <span class="k">if</span> <span class="n">command_name</span> <span class="o">==</span> <span class="s1">'epw'</span><span class="p">:</span>
+                <span class="n">submission_files</span><span class="p">[</span><span class="n">command_name</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">parallel_command</span><span class="si">}</span><span class="s2"> -np </span><span class="si">{</span><span class="n">nproc</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">x_command</span><span class="si">}</span><span class="s2"> -npools </span><span class="si">{</span><span class="n">nproc</span><span class="si">}</span><span class="s2"> -i </span><span class="si">{</span><span class="n">input_file</span><span class="si">}</span><span class="s2"> &gt; </span><span class="si">{</span><span class="n">output_file</span><span class="si">}</span><span class="s2">"</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">submission_files</span><span class="p">[</span><span class="n">command_name</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">parallel_command</span><span class="si">}</span><span class="s2"> -np </span><span class="si">{</span><span class="n">nproc</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">x_command</span><span class="si">}</span><span class="s2"> &lt; </span><span class="si">{</span><span class="n">input_file</span><span class="si">}</span><span class="s2"> &gt; </span><span class="si">{</span><span class="n">output_file</span><span class="si">}</span><span class="s2">"</span>
+
+    <span class="k">elif</span> <span class="n">which_calc</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">'wannier'</span><span class="p">,</span><span class="s1">'W'</span><span class="p">,</span><span class="s1">'WANNIER'</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">command_name</span><span class="p">,</span> <span class="n">command_info</span> <span class="ow">in</span> <span class="n">command_list</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">x_command</span><span class="p">,</span> <span class="n">input_file</span><span class="p">,</span> <span class="n">output_file</span> <span class="o">=</span> <span class="n">command_info</span>
+            <span class="k">if</span> <span class="n">command_name</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">'scf'</span><span class="p">,</span><span class="s1">'nscf'</span><span class="p">):</span>
+                <span class="n">submission_files</span><span class="p">[</span><span class="n">command_name</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">parallel_command</span><span class="si">}</span><span class="s2"> -np </span><span class="si">{</span><span class="n">npscf</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">x_command</span><span class="si">}</span><span class="s2"> &lt; </span><span class="si">{</span><span class="n">input_file</span><span class="si">}</span><span class="s2"> &gt; </span><span class="si">{</span><span class="n">output_file</span><span class="si">}</span><span class="s2">"</span>
+            <span class="k">elif</span> <span class="n">command_name</span> <span class="o">==</span> <span class="s1">'pw2wannier90'</span><span class="p">:</span>
+                <span class="n">submission_files</span><span class="p">[</span><span class="n">command_name</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">parallel_command</span><span class="si">}</span><span class="s2"> -np </span><span class="si">{</span><span class="n">npscf</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">x_command</span><span class="si">}</span><span class="s2"> -in </span><span class="si">{</span><span class="n">input_file</span><span class="si">}</span><span class="s2"> &gt; </span><span class="si">{</span><span class="n">output_file</span><span class="si">}</span><span class="s2">"</span>
+            <span class="k">elif</span> <span class="n">command_name</span> <span class="o">==</span> <span class="s1">'wannier_prepare'</span><span class="p">:</span>
+                <span class="n">submission_files</span><span class="p">[</span><span class="n">command_name</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"wannier90.x -pp ex"</span>
+            <span class="k">elif</span> <span class="n">command_name</span> <span class="o">==</span> <span class="s1">'wannier_band'</span><span class="p">:</span>
+                <span class="n">submission_files</span><span class="p">[</span><span class="n">command_name</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"wannier90.x ex"</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">"command not found</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">which_calc</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">'vasp'</span><span class="p">,</span><span class="s1">'VASP'</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">command_name</span><span class="p">,</span> <span class="n">command_info</span> <span class="ow">in</span> <span class="n">command_list</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">x_command</span><span class="p">,</span> <span class="n">input_file</span><span class="p">,</span> <span class="n">output_file</span> <span class="o">=</span> <span class="n">command_info</span>
+            <span class="k">if</span> <span class="n">command_name</span> <span class="o">==</span> <span class="s1">'ifermi'</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">submission_files</span><span class="p">[</span><span class="n">command_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">ifermi</span><span class="p">(</span><span class="s2">"plot"</span><span class="p">,</span><span class="s2">"htepc.json"</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">"htepc.json not found</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">command_name</span> <span class="o">==</span> <span class="s1">'wannier'</span><span class="p">:</span>
+                <span class="n">submission_files</span><span class="p">[</span><span class="n">command_name</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"wannier90.x wannier90"</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">submission_files</span><span class="p">[</span><span class="n">command_name</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">parallel_command</span><span class="si">}</span><span class="s2"> -np </span><span class="si">{</span><span class="n">npscf</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">x_command</span><span class="si">}</span><span class="s2">"</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"Not valid options</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">submission_files</span></div>
+
+
+
+<div class="viewcode-block" id="main">
+<a class="viewcode-back" href="../generate_submission.html#generate_submission.main">[docs]</a>
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Load parameters from a JSON file, generate submission files based on the specified calculation type,</span>
+<span class="sd">    and create a script containing the submission commands.</span>
+
+<span class="sd">    Reads parameters from 'htepc.json' and defines command dictionaries for different calculation types.</span>
+<span class="sd">    Generates submission files based on the provided calculation type and prints the submission commands.</span>
+<span class="sd">    Creates a script containing the submission commands named 'run-&lt;calculation_type&gt;.sh'.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">    None</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">    None</span>
+<span class="sd">    """</span>
+    <span class="c1"># Load parameters from JSON file</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"htepc.json"</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'htepc.json'</span><span class="p">)</span> <span class="k">as</span> <span class="n">json_file</span><span class="p">:</span>
+            <span class="c1">#parameters = json.load(json_file)</span>
+            <span class="n">parameters</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">json_file</span><span class="p">)[</span><span class="s1">'job_script'</span><span class="p">]</span>
+
+    <span class="n">qe_elph_commands</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">'scf'</span><span class="p">:</span> <span class="p">(</span><span class="s1">'pw.x'</span><span class="p">,</span> <span class="s1">'scf.in'</span><span class="p">,</span> <span class="s1">'scf.out'</span><span class="p">),</span>
+        <span class="s1">'band'</span><span class="p">:</span> <span class="p">(</span><span class="s1">'pw.x'</span><span class="p">,</span> <span class="s1">'scf-band.in'</span><span class="p">,</span> <span class="s1">'scf-band.out'</span><span class="p">),</span>
+        <span class="s1">'bandp'</span><span class="p">:</span> <span class="p">(</span><span class="s1">'bands.x'</span><span class="p">,</span> <span class="s1">'band.in'</span><span class="p">,</span> <span class="s1">'band.out'</span><span class="p">),</span>
+        <span class="s1">'dos'</span><span class="p">:</span> <span class="p">(</span><span class="s1">'pw.x'</span><span class="p">,</span> <span class="s1">'scf-dos.in'</span><span class="p">,</span> <span class="s1">'scf-dos.out'</span><span class="p">),</span>
+        <span class="s1">'dosp'</span><span class="p">:</span> <span class="p">(</span><span class="s1">'dos.x'</span><span class="p">,</span> <span class="s1">'dos.in'</span><span class="p">,</span> <span class="s1">'dos.out'</span><span class="p">),</span>
+        <span class="s1">'elph'</span><span class="p">:</span> <span class="p">(</span><span class="s1">'ph.x'</span><span class="p">,</span> <span class="s1">'elph.in'</span><span class="p">,</span> <span class="s1">'elph.out'</span><span class="p">),</span>
+        <span class="s1">'q2r'</span><span class="p">:</span> <span class="p">(</span><span class="s1">'q2r.x'</span><span class="p">,</span> <span class="s1">'q2r.in'</span><span class="p">,</span> <span class="s1">'q2r.out'</span><span class="p">),</span>
+        <span class="s1">'dynmat'</span><span class="p">:</span> <span class="p">(</span><span class="s1">'dynmat.x'</span><span class="p">,</span> <span class="s1">'dynmat.in'</span><span class="p">,</span> <span class="s1">'dynmat.out'</span><span class="p">),</span>
+        <span class="s1">'matdyn'</span><span class="p">:</span> <span class="p">(</span><span class="s1">'matdyn.x'</span><span class="p">,</span> <span class="s1">'matdyn.in'</span><span class="p">,</span> <span class="s1">'matdyn.out'</span><span class="p">),</span>
+        <span class="s1">'matdyn-dos'</span><span class="p">:</span> <span class="p">(</span><span class="s1">'matdyn.x'</span><span class="p">,</span> <span class="s1">'matdyn-dos.in'</span><span class="p">,</span> <span class="s1">'matdyn-dos.out'</span><span class="p">),</span>
+        <span class="s1">'lambda'</span><span class="p">:</span> <span class="p">(</span><span class="s1">'lambda.x'</span><span class="p">,</span> <span class="s1">'lambda.in'</span><span class="p">,</span> <span class="s1">'lambda.out'</span><span class="p">),</span>
+        <span class="s1">'pdos'</span><span class="p">:</span> <span class="p">(</span><span class="s1">'projwfc.x'</span><span class="p">,</span> <span class="s1">'pdos.in'</span><span class="p">,</span> <span class="s1">'pdos.out'</span><span class="p">)</span>
+    <span class="p">}</span>
+
+    <span class="n">epw_elph_commands</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">'scf'</span><span class="p">:</span> <span class="p">(</span><span class="s1">'pw.x'</span><span class="p">,</span> <span class="s1">'scf.in'</span><span class="p">,</span> <span class="s1">'scf.out'</span><span class="p">),</span>
+        <span class="s1">'ph'</span><span class="p">:</span> <span class="p">(</span><span class="s1">'ph.x'</span><span class="p">,</span> <span class="s1">'elph.in'</span><span class="p">,</span> <span class="s1">'elph.out'</span><span class="p">),</span>
+        <span class="s1">'proj'</span><span class="p">:</span> <span class="p">(</span><span class="s1">'pw.x'</span><span class="p">,</span> <span class="s1">'nscf-proj.in'</span><span class="p">,</span> <span class="s1">'nscf-proj.out'</span><span class="p">),</span>
+        <span class="s1">'epw_nscf'</span><span class="p">:</span> <span class="p">(</span><span class="s1">'pw.x'</span><span class="p">,</span> <span class="s1">'nscf_epw.in'</span><span class="p">,</span> <span class="s1">'nscf_epw.out'</span><span class="p">),</span>
+        <span class="s1">'epw'</span><span class="p">:</span> <span class="p">(</span><span class="s1">'epw.x'</span><span class="p">,</span> <span class="s1">'epw.in'</span><span class="p">,</span> <span class="s1">'epw.out'</span><span class="p">)</span>
+    <span class="p">}</span>
+
+    <span class="n">wannier_band_commands</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">'scf'</span><span class="p">:</span> <span class="p">(</span><span class="s1">'pw.x'</span><span class="p">,</span> <span class="s1">'scf.in'</span><span class="p">,</span> <span class="s1">'scf.out'</span><span class="p">),</span>
+        <span class="s1">'nscf'</span><span class="p">:</span> <span class="p">(</span><span class="s1">'pw.x'</span><span class="p">,</span> <span class="s1">'nscf.in'</span><span class="p">,</span> <span class="s1">'nscf.out'</span><span class="p">),</span>
+        <span class="s1">'wannier_prepare'</span><span class="p">:</span> <span class="p">(</span><span class="s1">'wannier90.x'</span><span class="p">,</span><span class="s1">''</span><span class="p">,</span><span class="s1">''</span><span class="p">),</span>
+        <span class="s1">'pw2wannier90'</span><span class="p">:</span> <span class="p">(</span><span class="s1">'pw2wannier90.x'</span><span class="p">,</span> <span class="s1">'pw2wan.in'</span><span class="p">,</span> <span class="s1">'pw2wan.out'</span><span class="p">),</span>
+        <span class="s1">'wannier_band'</span><span class="p">:</span> <span class="p">(</span><span class="s1">'wannier90.x'</span><span class="p">,</span> <span class="s1">''</span><span class="p">,</span><span class="s1">''</span><span class="p">)</span>
+    <span class="p">}</span>
+
+    <span class="n">vasp_commands</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">'vasp'</span><span class="p">:</span> <span class="p">(</span><span class="s1">'vasp_std'</span><span class="p">,</span> <span class="s1">''</span><span class="p">,</span> <span class="s1">''</span><span class="p">),</span>
+        <span class="s1">'ifermi'</span><span class="p">:</span> <span class="p">(</span><span class="s1">'ifermi'</span><span class="p">,</span> <span class="s1">''</span><span class="p">,</span> <span class="s1">''</span><span class="p">),</span>
+        <span class="s1">'wannier'</span><span class="p">:</span> <span class="p">(</span><span class="s1">'wannier'</span><span class="p">,</span><span class="s1">''</span><span class="p">,</span><span class="s1">''</span><span class="p">)</span>
+    <span class="p">}</span>
+
+
+    <span class="c1"># Generate the submission files</span>
+    <span class="k">if</span> <span class="n">parameters</span><span class="p">[</span><span class="s1">'which_calc'</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">'qe'</span><span class="p">,</span><span class="s1">'QE'</span><span class="p">):</span>
+        <span class="n">submission_files</span> <span class="o">=</span> <span class="n">generate_submission_files</span><span class="p">(</span><span class="n">parameters</span><span class="p">[</span><span class="s1">'which_calc'</span><span class="p">],</span> <span class="n">parameters</span><span class="p">[</span><span class="s1">'parallel_command'</span><span class="p">],</span> <span class="n">parameters</span><span class="p">[</span><span class="s1">'nproc'</span><span class="p">],</span> <span class="n">qe_elph_commands</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">parameters</span><span class="p">[</span><span class="s1">'which_calc'</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">'epw'</span><span class="p">,</span><span class="s1">'EPW'</span><span class="p">):</span>
+        <span class="n">submission_files</span> <span class="o">=</span> <span class="n">generate_submission_files</span><span class="p">(</span><span class="n">parameters</span><span class="p">[</span><span class="s1">'which_calc'</span><span class="p">],</span> <span class="n">parameters</span><span class="p">[</span><span class="s1">'parallel_command'</span><span class="p">],</span> <span class="n">parameters</span><span class="p">[</span><span class="s1">'nproc'</span><span class="p">],</span> <span class="n">epw_elph_commands</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">parameters</span><span class="p">[</span><span class="s1">'which_calc'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'wannier'</span><span class="p">:</span>
+        <span class="n">submission_files</span> <span class="o">=</span> <span class="n">generate_submission_files</span><span class="p">(</span><span class="n">parameters</span><span class="p">[</span><span class="s1">'which_calc'</span><span class="p">],</span> <span class="n">parameters</span><span class="p">[</span><span class="s1">'parallel_command'</span><span class="p">],</span> <span class="n">parameters</span><span class="p">[</span><span class="s1">'nproc'</span><span class="p">],</span> <span class="n">wannier_band_commands</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">parameters</span><span class="p">[</span><span class="s1">'which_calc'</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">'vasp'</span><span class="p">,</span><span class="s1">'VASP'</span><span class="p">):</span>
+        <span class="n">submission_files</span> <span class="o">=</span> <span class="n">generate_submission_files</span><span class="p">(</span><span class="n">parameters</span><span class="p">[</span><span class="s1">'which_calc'</span><span class="p">],</span> <span class="n">parameters</span><span class="p">[</span><span class="s1">'parallel_command'</span><span class="p">],</span> <span class="n">parameters</span><span class="p">[</span><span class="s1">'nproc'</span><span class="p">],</span> <span class="n">vasp_commands</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"Options not available</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+
+    <span class="c1"># Print the submission files dictionary directly</span>
+    <span class="n">commands</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s1">'command_list'</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">parameters</span><span class="p">[</span><span class="s1">'command_combine'</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">command</span> <span class="ow">in</span> <span class="n">commands</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"temp"</span><span class="p">):</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"""cp </span><span class="si">{}</span><span class="s2"> temp"""</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">parameters</span><span class="p">[</span><span class="s1">'batch'</span><span class="p">]))</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"""echo "</span><span class="si">{}</span><span class="s2">" &gt;&gt; temp"""</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">submission_files</span><span class="p">[</span><span class="n">command</span><span class="p">]))</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"""mv temp run-</span><span class="si">{}</span><span class="s2">.sh"""</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">commands</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">command</span> <span class="ow">in</span> <span class="n">commands</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"""cp </span><span class="si">{}</span><span class="s2"> temp"""</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">parameters</span><span class="p">[</span><span class="s1">'batch'</span><span class="p">]))</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"""echo "</span><span class="si">{}</span><span class="s2">" &gt;&gt; temp"""</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">submission_files</span><span class="p">[</span><span class="n">command</span><span class="p">]))</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"""mv temp run-</span><span class="si">{}</span><span class="s2">.sh"""</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">command</span><span class="p">))</span>
+
+    <span class="n">calc_visible</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s1">'calc_visible_with'</span><span class="p">]</span>
+    <span class="n">check_calc_visible</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">"CALC_VISIBLE_WITH*"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">check_calc_visible</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"rm CALC_VISIBLE_WITH*"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">calc_visible</span> <span class="o">==</span> <span class="s2">"id"</span><span class="p">:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"touch CALC_VISIBLE_WITH_ID"</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">calc_visible</span> <span class="o">==</span> <span class="s2">"name"</span><span class="p">:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"touch CALC_VISIBLE_WITH_NAME"</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">calc_visible</span> <span class="o">==</span> <span class="s2">"id-name"</span><span class="p">:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"touch CALC_VISIBLE_WITH_ID-NAME"</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">pass</span></div>
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+
+          </article>
+        </div>
+      </div>
+    </main>
+  </div>
+  <footer class="md-footer">
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+          
+          
+        </a>
+        
+      </nav>
+    </div>
+    <div class="md-footer-meta md-typeset">
+      <div class="md-footer-meta__inner md-grid">
+        <div class="md-footer-copyright">
+          <div class="md-footer-copyright__highlight">
+              &#169; Copyright 2024, Niraj K Nepal.
+              
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script src="../_static/javascripts/application.js"></script>
+  <script>app.initialize({version: "1.0.4", url: {base: ".."}})</script>
+  </body>
+</html>

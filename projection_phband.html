@@ -239,7 +239,7 @@
 </table>
 <dl class="py function">
 <dt class="sig sig-object py" id="projection_phband.write_phonproj_in">
-<span class="sig-prename descclassname"><span class="pre">projection_phband.</span></span><span class="sig-name descname"><span class="pre">write_phonproj_in</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">comp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nkpoint</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outfile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'phonproj.in'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#projection_phband.write_phonproj_in" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">projection_phband.</span></span><span class="sig-name descname"><span class="pre">write_phonproj_in</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">comp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nkpoint</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outfile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'phonproj.in'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/projection_phband.html#write_phonproj_in"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#projection_phband.write_phonproj_in" title="Link to this definition">¶</a></dt>
 <dd><p>Function to write the ‘phonproj.in’ file required for atomic projection.</p>
 <p>This function generates the ‘phonproj.in’ file based on the provided compound name,
 the number of k-points, and the QE input scf.in file.</p>
@@ -263,7 +263,7 @@ the number of k-points, and the QE input scf.in file.</p>
 </dd></dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="projection_phband.reading_input">
-<span class="sig-prename descclassname"><span class="pre">projection_phband.</span></span><span class="sig-name descname"><span class="pre">reading_input</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#projection_phband.reading_input" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">projection_phband.</span></span><span class="sig-name descname"><span class="pre">reading_input</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/projection_phband.html#reading_input"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#projection_phband.reading_input" title="Link to this definition">¶</a></dt>
 <dd><p>Function to read the ‘phonproj.in’ file.</p>
 <p>This function reads the ‘phonproj.in’ file and extracts relevant information
 such as the name of the .eig file, the number of atoms in the compound,
@@ -292,7 +292,7 @@ defining their position in the QE input file ‘scf.in’.</p>
 </dd></dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="projection_phband.parse_input">
-<span class="sig-prename descclassname"><span class="pre">projection_phband.</span></span><span class="sig-name descname"><span class="pre">parse_input</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nqpt</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#projection_phband.parse_input" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">projection_phband.</span></span><span class="sig-name descname"><span class="pre">parse_input</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nqpt</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/projection_phband.html#parse_input"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#projection_phband.parse_input" title="Link to this definition">¶</a></dt>
 <dd><p>Function to parse eigenvector file in .eig format obtained from matdyn.x using matdyn.in.</p>
 <p>This function reads the eigenvector file and extracts the q-points, frequencies, and
 eigenvectors for each mode.</p>
@@ -321,7 +321,7 @@ eigenvectors for each mode.</p>
 </dd></dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="projection_phband.projection">
-<span class="sig-prename descclassname"><span class="pre">projection_phband.</span></span><span class="sig-name descname"><span class="pre">projection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pol_q_mode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ion</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indices</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#projection_phband.projection" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">projection_phband.</span></span><span class="sig-name descname"><span class="pre">projection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pol_q_mode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ion</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indices</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/projection_phband.html#projection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#projection_phband.projection" title="Link to this definition">¶</a></dt>
 <dd><p>Function to calculate atomic projection for mode nu and wavevector q.</p>
 <p>This function computes the atomic projection for a given mode nu and wavevector q.</p>
 <section id="id5">
@@ -345,7 +345,7 @@ eigenvectors for each mode.</p>
 </dd></dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="projection_phband.print_to_file">
-<span class="sig-prename descclassname"><span class="pre">projection_phband.</span></span><span class="sig-name descname"><span class="pre">print_to_file</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#projection_phband.print_to_file" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">projection_phband.</span></span><span class="sig-name descname"><span class="pre">print_to_file</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/projection_phband.html#print_to_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#projection_phband.print_to_file" title="Link to this definition">¶</a></dt>
 <dd><p>Function to save mode resolved projection in phonon-compound.prog.gp format.</p>
 <p>This function reads the input file ‘phonproj.in’ to extract necessary information about the phonon modes and ions.
 It then calculates the mode-resolved projections for each ion and writes them to a file in the format
@@ -360,7 +360,7 @@ It then calculates the mode-resolved projections for each ion and writes them to
 </dd></dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="projection_phband.main">
-<span class="sig-prename descclassname"><span class="pre">projection_phband.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#projection_phband.main" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">projection_phband.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/projection_phband.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#projection_phband.main" title="Link to this definition">¶</a></dt>
 <dd><p>Main function to generate phonon projections and print ion-color associations.</p>
 <p>This function serves as the main entry point for generating phonon projections and printing
 ion-color associations based on the projections.</p>

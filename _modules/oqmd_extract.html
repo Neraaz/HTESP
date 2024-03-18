@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="lang:clipboard.copy" content="Copy to clipboard">
+  <meta name="lang:clipboard.copied" content="Copied to clipboard">
+  <meta name="lang:search.language" content="en">
+  <meta name="lang:search.pipeline.stopwords" content="True">
+  <meta name="lang:search.pipeline.trimmer" content="True">
+  <meta name="lang:search.result.none" content="No matching documents">
+  <meta name="lang:search.result.one" content="1 matching document">
+  <meta name="lang:search.result.other" content="# matching documents">
+  <meta name="lang:search.tokenizer" content="[\s\-]+">
+
+  
+    <link href="https://fonts.gstatic.com/" rel="preconnect" crossorigin>
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,500,700|Roboto:300,400,400i,700&display=fallback" rel="stylesheet">
+
+    <style>
+      body,
+      input {
+        font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif
+      }
+
+      code,
+      kbd,
+      pre {
+        font-family: "Roboto Mono", "Courier New", Courier, monospace
+      }
+    </style>
+  
+
+  <link rel="stylesheet" href="../_static/stylesheets/application.css"/>
+  <link rel="stylesheet" href="../_static/stylesheets/application-palette.css"/>
+  <link rel="stylesheet" href="../_static/stylesheets/application-fixes.css"/>
+  
+  <link rel="stylesheet" href="../_static/fonts/material-icons.css"/>
+  
+  <meta name="theme-color" content="#3f51b5">
+  <script src="../_static/javascripts/modernizr.js"></script>
+  
+  
+  
+    <title>oqmd_extract &#8212; HTESP 0.0.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=83e35b93" />
+    <link rel="stylesheet" type="text/css" href="../_static/material.css?v=79c92029" />
+    <script src="../_static/documentation_options.js?v=d45e8c67"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+  
+   
+
+  </head>
+  <body dir=ltr
+        data-md-color-primary=blue-grey data-md-color-accent=blue>
+  
+  <svg class="md-svg">
+    <defs data-children-count="0">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448" viewBox="0 0 416 448" id="__github"><path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19T128 352t-18.125-8.5-10.75-19T96 304t3.125-20.5 10.75-19T128 256t18.125 8.5 10.75 19T160 304zm160 0q0 10-3.125 20.5t-10.75 19T288 352t-18.125-8.5-10.75-19T256 304t3.125-20.5 10.75-19T288 256t18.125 8.5 10.75 19T320 304zm40 0q0-30-17.25-51T296 232q-10.25 0-48.75 5.25Q229.5 240 208 240t-39.25-2.75Q130.75 232 120 232q-29.5 0-46.75 21T56 304q0 22 8 38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0 37.25-1.75t35-7.375 30.5-15 20.25-25.75T360 304zm56-44q0 51.75-15.25 82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5T212 416q-19.5 0-35.5-.75t-36.875-3.125-38.125-7.5-34.25-12.875T37 371.5t-21.5-28.75Q0 312 0 260q0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25 30.875Q171.5 96 212 96q37 0 70 8 26.25-20.5 46.75-30.25T376 64q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34 99.5z"/></svg>
+      
+    </defs>
+  </svg>
+  
+  <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer">
+  <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search">
+  <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+  <a href="#_modules/oqmd_extract" tabindex="1" class="md-skip"> Skip to content </a>
+  <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex navheader">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="../index.html" title="HTESP 0.0.1 documentation"
+           class="md-header-nav__button md-logo">
+          
+            &nbsp;
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          <span class="md-header-nav__topic">HTESP 0.0.1 documentation</span>
+          <span class="md-header-nav__topic"> oqmd_extract </span>
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+        
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" action="../search.html" method="get" name="search">
+      <input type="text" class="md-search__input" name="q" placeholder=""Search""
+             autocapitalize="off" autocomplete="off" spellcheck="false"
+             data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+      </div>
+      
+      
+  
+  <script src="../_static/javascripts/version_dropdown.js"></script>
+  <script>
+    var json_loc = "../"versions.json"",
+        target_loc = "../../",
+        text = "Versions";
+    $( document ).ready( add_version_dropdown(json_loc, target_loc, text));
+  </script>
+  
+
+    </div>
+  </nav>
+</header>
+
+  
+  <div class="md-container">
+    
+    
+    
+  <nav class="md-tabs" data-md-component="tabs">
+    <div class="md-tabs__inner md-grid">
+      <ul class="md-tabs__list">
+          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">HTESP 0.0.1 documentation</a></li>
+          <li class="md-tabs__item"><a href="index.html" class="md-tabs__link">Module code</a></li>
+      </ul>
+    </div>
+  </nav>
+    <main class="md-main">
+      <div class="md-main__inner md-grid" data-md-component="container">
+        
+          <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+            <div class="md-sidebar__scrollwrap">
+              <div class="md-sidebar__inner">
+                <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href="../index.html" title="HTESP 0.0.1 documentation" class="md-nav__button md-logo">
+      
+        <img src="../_static/" alt=" logo" width="48" height="48">
+      
+    </a>
+    <a href="../index.html"
+       title="HTESP 0.0.1 documentation">HTESP 0.0.1 documentation</a>
+  </label>
+  
+
+</nav>
+              </div>
+            </div>
+          </div>
+          <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+            <div class="md-sidebar__scrollwrap">
+              <div class="md-sidebar__inner">
+                
+<nav class="md-nav md-nav--secondary">
+  <ul class="md-nav__list" data-md-scrollfix="">
+    
+  </ul>
+</nav>
+              </div>
+            </div>
+          </div>
+        
+        <div class="md-content">
+          <article class="md-content__inner md-typeset" role="main">
+            
+  <h1 id="modules-oqmd-extract--page-root">Source code for oqmd_extract</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1">#"""Writen by Niraj K. Nepal, Ph.D."""</span>
+<span class="sd">"""Module to extract data from OQMD database"""</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span>
+<span class="kn">from</span> <span class="nn">ase.io.vasp</span> <span class="kn">import</span> <span class="n">read_vasp</span>
+<span class="kn">from</span> <span class="nn">ase.data</span> <span class="kn">import</span> <span class="n">atomic_masses</span><span class="p">,</span><span class="n">chemical_symbols</span>
+<span class="kn">from</span> <span class="nn">pymatgen.io.vasp.sets</span> <span class="kn">import</span> <span class="n">MPRelaxSet</span>
+<span class="kn">from</span> <span class="nn">pymatgen.core</span> <span class="kn">import</span> <span class="n">structure</span>
+<span class="kn">from</span> <span class="nn">pymatgen.symmetry.analyzer</span> <span class="kn">import</span> <span class="n">SpacegroupAnalyzer</span>
+<span class="kn">from</span> <span class="nn">pymatgen.io</span> <span class="kn">import</span> <span class="n">pwscf</span>
+<span class="kn">import</span> <span class="nn">qmpy_rester</span> <span class="k">as</span> <span class="nn">qr</span>
+<span class="kn">from</span> <span class="nn">cif_to_gsinput</span> <span class="kn">import</span> <span class="n">pos_to_kpt</span>
+<span class="kn">from</span> <span class="nn">write_potcar</span> <span class="kn">import</span> <span class="n">poscar2potcar</span>
+<span class="kn">from</span> <span class="nn">htepc</span> <span class="kn">import</span> <span class="n">INPUTscf</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">PWD</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">PWD</span><span class="o">+</span><span class="s2">"/htepc.json"</span><span class="p">):</span>
+        <span class="n">JSONFILE</span> <span class="o">=</span> <span class="n">PWD</span><span class="o">+</span><span class="s2">"/htepc.json"</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">JSONFILE</span> <span class="o">=</span> <span class="s2">"../../htepc.json"</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">JSONFILE</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">)</span> <span class="k">as</span> <span class="n">readjson</span><span class="p">:</span>
+        <span class="n">input_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">readjson</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"htepc.json file not found</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+
+<div class="viewcode-block" id="poscar_to_input">
+<a class="viewcode-back" href="../oqmd_extract.html#oqmd_extract.poscar_to_input">[docs]</a>
+<span class="k">def</span> <span class="nf">poscar_to_input</span><span class="p">(</span><span class="n">calc_type</span><span class="p">,</span><span class="n">mpid</span><span class="p">,</span><span class="n">compound</span><span class="p">,</span><span class="n">keven</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Function to convert POSCAR into ground-state input files.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    calc_type : str</span>
+<span class="sd">        Calculation type. "QE" or "VASP".</span>
+<span class="sd">    mpid : str</span>
+<span class="sd">        Material id.</span>
+<span class="sd">    compound : str</span>
+<span class="sd">        Compound name.</span>
+<span class="sd">    keven : bool</span>
+<span class="sd">        If even k-mesh to use.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    str</span>
+<span class="sd">        Compound name.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    This function reads a POSCAR file and generates input files required for ground-state calculations</span>
+<span class="sd">    using either Quantum Espresso (QE) or VASP software.</span>
+
+<span class="sd">    It checks if 'htepc.json' exists, and if so, it retrieves settings such as k-point density and</span>
+<span class="sd">    download configurations.</span>
+
+<span class="sd">    Based on the calculation type, it creates input files and directories accordingly. For VASP,</span>
+<span class="sd">    it prepares INCAR, POSCAR, and POTCAR files and potentially runs VASP processing scripts if available.</span>
+<span class="sd">    For QE, it creates input files with appropriate settings.</span>
+
+<span class="sd">    Finally, it moves input files to the designated directories.</span>
+
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"htepc.json"</span><span class="p">):</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">input_data</span><span class="p">[</span><span class="s1">'download'</span><span class="p">]</span>
+    <span class="n">evenkpt</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s1">'inp'</span><span class="p">][</span><span class="s1">'evenkpt'</span><span class="p">]</span>
+    <span class="n">kptden</span> <span class="o">=</span> <span class="n">input_data</span><span class="p">[</span><span class="s1">'kptden'</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">evenkpt</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"Even kpoint mesh is utilized</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+        <span class="n">k_mesh</span> <span class="o">=</span> <span class="n">pos_to_kpt</span><span class="p">(</span><span class="s2">"POSCAR"</span><span class="p">,</span><span class="n">kptden</span><span class="p">,</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">k_mesh</span> <span class="o">=</span> <span class="n">pos_to_kpt</span><span class="p">(</span><span class="s2">"POSCAR"</span><span class="p">,</span><span class="n">kptden</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">read_vasp</span><span class="p">(</span><span class="s2">"POSCAR"</span><span class="p">)</span>
+    <span class="n">symbol</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">symbols</span><span class="p">)</span>
+    <span class="c1">#print(symbol)</span>
+    <span class="k">if</span> <span class="n">calc_type</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">'VASP'</span><span class="p">,</span><span class="s1">'vasp'</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="s1">'R</span><span class="si">{}</span><span class="s1">-</span><span class="si">{}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">compound</span><span class="p">)):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"mkdir R</span><span class="si">{}</span><span class="s2">-</span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">compound</span><span class="p">))</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="s1">'R</span><span class="si">{}</span><span class="s1">-</span><span class="si">{}</span><span class="s1">/relax/'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">compound</span><span class="p">)):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"mkdir R</span><span class="si">{}</span><span class="s2">-</span><span class="si">{}</span><span class="s2">/relax/"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">compound</span><span class="p">))</span>
+        <span class="n">structure_file</span> <span class="o">=</span> <span class="n">structure</span><span class="o">.</span><span class="n">Structure</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="s2">"POSCAR"</span><span class="p">)</span>
+        <span class="n">structure_file</span> <span class="o">=</span> <span class="n">SpacegroupAnalyzer</span><span class="p">(</span><span class="n">structure_file</span><span class="p">,</span> <span class="n">symprec</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span><span class="o">.</span><span class="n">get_primitive_standard_structure</span><span class="p">()</span>
+        <span class="n">relax_set</span> <span class="o">=</span> <span class="n">MPRelaxSet</span><span class="p">(</span><span class="n">structure</span><span class="o">=</span><span class="n">structure_file</span><span class="p">)</span>
+        <span class="c1">#relax_set.potcar.write_file("POTCAR")</span>
+        <span class="n">relax_set</span><span class="o">.</span><span class="n">poscar</span><span class="o">.</span><span class="n">write_file</span><span class="p">(</span><span class="s2">"POSCAR"</span><span class="p">)</span>
+        <span class="n">poscar2potcar</span><span class="p">()</span>
+        <span class="n">relax_set</span><span class="o">.</span><span class="n">incar</span><span class="o">.</span><span class="n">write_file</span><span class="p">(</span><span class="s2">"INCAR"</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"mv KPOINTS POSCAR INCAR POTCAR R</span><span class="si">{}</span><span class="s2">-</span><span class="si">{}</span><span class="s2">/relax/"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">compound</span><span class="p">))</span>
+        <span class="c1">#os.system("mv KPOINTS POSCAR INCAR R{}-{}/relax/".format(mpid,compound))</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"vasp.in"</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"cp vasp.in R</span><span class="si">{}</span><span class="s2">-</span><span class="si">{}</span><span class="s2">/relax"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">compound</span><span class="p">))</span>
+            <span class="n">pwd</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
+            <span class="n">relax_folder</span> <span class="o">=</span> <span class="n">pwd</span> <span class="o">+</span> <span class="s2">"/R</span><span class="si">{}</span><span class="s2">-</span><span class="si">{}</span><span class="s2">/relax"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">compound</span><span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">relax_folder</span><span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"vasp_process.py POSCAR"</span><span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">pwd</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"rm KPOINTS"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">keven</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">k_mesh</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">%</span><span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">k_mesh</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">k_mesh</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">k_mesh</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">k_mesh</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="n">calc_type</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">'QE'</span><span class="p">,</span><span class="s1">'qe'</span><span class="p">):</span>
+        <span class="n">structure_file</span> <span class="o">=</span> <span class="n">structure</span><span class="o">.</span><span class="n">Structure</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="s2">"POSCAR"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"htepc.json"</span><span class="p">):</span>
+            <span class="n">psd_data</span> <span class="o">=</span> <span class="n">input_data</span><span class="p">[</span><span class="s1">'pseudo'</span><span class="p">]</span>
+            <span class="n">dict_element</span> <span class="o">=</span> <span class="n">psd_data</span><span class="p">[</span><span class="s1">'PSEUDO'</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"pseudo not found</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"Creating one with default values from SSSP efficiency set</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"https://www.materialscloud.org/discover/sssp/table/efficiency</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">dict_element</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'H'</span><span class="p">:</span> <span class="mi">60</span><span class="p">,</span> <span class="s1">'Li'</span><span class="p">:</span> <span class="mi">40</span><span class="p">,</span> <span class="s1">'Be'</span><span class="p">:</span> <span class="mi">40</span><span class="p">,</span> <span class="s1">'N'</span><span class="p">:</span> <span class="mi">60</span><span class="p">,</span> <span class="s1">'F'</span><span class="p">:</span> <span class="mi">45</span><span class="p">,</span> <span class="s1">'Na'</span><span class="p">:</span> <span class="mi">40</span><span class="p">,</span> <span class="s1">'Mg'</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span> <span class="s1">'Al'</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span> <span class="s1">'Si'</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span> <span class="s1">'P'</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span> <span class="s1">'S'</span><span class="p">:</span> <span class="mi">35</span><span class="p">,</span> <span class="s1">'Cl'</span><span class="p">:</span> <span class="mi">40</span><span class="p">,</span> <span class="s1">'K'</span><span class="p">:</span> <span class="mi">60</span><span class="p">,</span> <span class="s1">'Ca'</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span> <span class="s1">'Sc'</span><span class="p">:</span> <span class="mi">40</span><span class="p">,</span> <span class="s1">'Ti'</span><span class="p">:</span> <span class="mi">35</span><span class="p">,</span> <span class="s1">'V'</span><span class="p">:</span> <span class="mi">35</span><span class="p">,</span> <span class="s1">'Cr'</span><span class="p">:</span> <span class="mi">40</span><span class="p">,</span> <span class="s1">'Mn'</span><span class="p">:</span> <span class="mi">65</span><span class="p">,</span> <span class="s1">'Fe'</span><span class="p">:</span> <span class="mi">90</span><span class="p">,</span> <span class="s1">'Co'</span><span class="p">:</span> <span class="mi">45</span><span class="p">,</span> <span class="s1">'Ni'</span><span class="p">:</span> <span class="mi">45</span><span class="p">,</span> <span class="s1">'Cu'</span><span class="p">:</span> <span class="mi">55</span><span class="p">,</span> <span class="s1">'Zn'</span><span class="p">:</span> <span class="mi">40</span><span class="p">,</span> <span class="s1">'Ga'</span><span class="p">:</span> <span class="mi">70</span><span class="p">,</span> <span class="s1">'Ge'</span><span class="p">:</span> <span class="mi">40</span><span class="p">,</span> <span class="s1">'As'</span><span class="p">:</span> <span class="mi">35</span><span class="p">,</span> <span class="s1">'Br'</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span> <span class="s1">'Rb'</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span> <span class="s1">'Sr'</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span> <span class="s1">'Y'</span><span class="p">:</span> <span class="mi">35</span><span class="p">,</span> <span class="s1">'Zr'</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span> <span class="s1">'Nb'</span><span class="p">:</span> <span class="mi">40</span><span class="p">,</span> <span class="s1">'Mo'</span><span class="p">:</span> <span class="mi">35</span><span class="p">,</span> <span class="s1">'Tc'</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span> <span class="s1">'Ru'</span><span class="p">:</span> <span class="mi">35</span><span class="p">,</span> <span class="s1">'Rh'</span><span class="p">:</span> <span class="mi">35</span><span class="p">,</span> <span class="s1">'Pd'</span><span class="p">:</span> <span class="mi">45</span><span class="p">,</span> <span class="s1">'Ag'</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span> <span class="s1">'Cd'</span><span class="p">:</span> <span class="mi">60</span><span class="p">,</span> <span class="s1">'In'</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span> <span class="s1">'Sn'</span><span class="p">:</span> <span class="mi">60</span><span class="p">,</span> <span class="s1">'Sb'</span><span class="p">:</span> <span class="mi">40</span><span class="p">,</span> <span class="s1">'Te'</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span> <span class="s1">'I'</span><span class="p">:</span> <span class="mi">35</span><span class="p">,</span> <span class="s1">'Cs'</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span> <span class="s1">'Ba'</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span> <span class="s1">'La'</span><span class="p">:</span> <span class="mi">40</span><span class="p">,</span> <span class="s1">'Hf'</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span> <span class="s1">'Ta'</span><span class="p">:</span> <span class="mi">45</span><span class="p">,</span> <span class="s1">'W'</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span> <span class="s1">'Re'</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span> <span class="s1">'Os'</span><span class="p">:</span> <span class="mi">40</span><span class="p">,</span> <span class="s1">'Ir'</span><span class="p">:</span> <span class="mi">55</span><span class="p">,</span> <span class="s1">'Pt'</span><span class="p">:</span> <span class="mi">35</span><span class="p">,</span> <span class="s1">'Hg'</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span> <span class="s1">'Tl'</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span> <span class="s1">'Pb'</span><span class="p">:</span> <span class="mi">40</span><span class="p">,</span> <span class="s1">'Bi'</span><span class="p">:</span> <span class="mi">45</span><span class="p">,</span> <span class="s1">'B'</span><span class="p">:</span> <span class="mi">35</span><span class="p">,</span> <span class="s1">'C'</span><span class="p">:</span> <span class="mi">45</span><span class="p">,</span> <span class="s1">'Au'</span><span class="p">:</span> <span class="mi">45</span><span class="p">,</span> <span class="s1">'Se'</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span> <span class="s1">'O'</span><span class="p">:</span> <span class="mi">60</span><span class="p">}</span>
+            <span class="c1">#with open("pseudo.py", "w") as write_pseudo:</span>
+            <span class="c1">#    write_pseudo.write("PSEUDO={}".format(dict_element))</span>
+        <span class="n">dict_mass</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">nel</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">atomic_masses</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nel</span><span class="p">):</span>
+            <span class="n">dict_mass</span><span class="p">[</span><span class="n">chemical_symbols</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="n">atomic_masses</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">cutoff_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">dict_element</span><span class="p">[</span><span class="n">el</span><span class="p">]</span> <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="n">symbol</span><span class="p">]</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"energy cutoff not provided for some of the elements. Please check htepc.json</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+        <span class="n">cutoff</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">cutoff_list</span><span class="p">)</span>
+        <span class="n">rhocutoff</span> <span class="o">=</span> <span class="mi">8</span> <span class="o">*</span> <span class="n">cutoff</span>
+        <span class="n">prefix</span> <span class="o">=</span> <span class="n">compound</span>
+        <span class="n">pseudo1</span> <span class="o">=</span> <span class="p">{</span><span class="n">el</span><span class="p">:</span><span class="n">el</span><span class="o">+</span><span class="s1">'.upf'</span> <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">symbol</span><span class="p">)}</span>
+        <span class="n">check_pwd</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">check_pwd</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">pwscf_in</span> <span class="o">=</span> <span class="n">input_data</span><span class="p">[</span><span class="s1">'pwscf_in'</span><span class="p">]</span>
+                <span class="n">control</span> <span class="o">=</span> <span class="n">pwscf_in</span><span class="p">[</span><span class="s1">'control'</span><span class="p">]</span>
+                <span class="n">system</span> <span class="o">=</span> <span class="n">pwscf_in</span><span class="p">[</span><span class="s1">'system'</span><span class="p">]</span>
+                <span class="n">electrons</span> <span class="o">=</span> <span class="n">pwscf_in</span><span class="p">[</span><span class="s1">'electrons'</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>
+                <span class="n">control</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'calculation'</span><span class="p">:</span><span class="s1">'vc-relax'</span><span class="p">,</span> <span class="s1">'nstep'</span><span class="p">:</span><span class="mi">300</span><span class="p">,</span> <span class="s1">'restart_mode'</span><span class="p">:</span><span class="s1">'from_scratch'</span><span class="p">,</span> <span class="s1">'pseudo_dir'</span><span class="p">:</span><span class="s1">'../../pp'</span><span class="p">,</span> <span class="s1">'outdir'</span><span class="p">:</span><span class="s1">'./'</span><span class="p">,</span> <span class="s1">'tprnfor'</span><span class="p">:</span><span class="s1">'.true.'</span><span class="p">,</span><span class="s1">'tstress'</span><span class="p">:</span><span class="s1">'.true.'</span><span class="p">,</span> <span class="s1">'etot_conv_thr'</span><span class="p">:</span><span class="mf">0.00001</span><span class="p">,</span> <span class="s1">'forc_conv_thr'</span><span class="p">:</span><span class="mf">0.0001</span><span class="p">}</span>
+                <span class="n">system</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'smearing'</span><span class="p">:</span><span class="s1">'gauss'</span><span class="p">,</span> <span class="s1">'occupations'</span><span class="p">:</span><span class="s1">'smearing'</span><span class="p">,</span> <span class="s1">'degauss'</span><span class="p">:</span><span class="mf">0.02</span><span class="p">}</span>
+                <span class="n">electrons</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'diagonalization'</span><span class="p">:</span><span class="s1">'david'</span><span class="p">,</span> <span class="s1">'mixing_mode'</span><span class="p">:</span><span class="s1">'plain'</span><span class="p">,</span> <span class="s1">'mixing_beta'</span><span class="p">:</span><span class="mf">0.7</span><span class="p">,</span> <span class="s1">'conv_thr'</span><span class="p">:</span> <span class="mf">1e-16</span><span class="p">,</span> <span class="s1">'electron_maxstep'</span><span class="p">:</span><span class="mi">300</span><span class="p">}</span>
+                <span class="c1">#with open("pwscf_in.py", "w") as pw_in:</span>
+                <span class="c1">#    pw_in.write("control={}".format(control) + "\n")</span>
+                <span class="c1">#    pw_in.write("system={}".format(system) + "\n")</span>
+                <span class="c1">#    pw_in.write("electrons={}".format(electrons) + "\n")</span>
+            <span class="n">system</span><span class="p">[</span><span class="s1">'ecutwfc'</span><span class="p">]</span> <span class="o">=</span> <span class="n">cutoff</span>
+            <span class="n">system</span><span class="p">[</span><span class="s1">'ecutrho'</span><span class="p">]</span> <span class="o">=</span> <span class="n">rhocutoff</span>
+            <span class="n">control</span><span class="p">[</span><span class="s1">'prefix'</span><span class="p">]</span> <span class="o">=</span> <span class="n">prefix</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="n">pwscf</span><span class="o">.</span><span class="n">PWInput</span><span class="p">(</span><span class="n">structure_file</span><span class="p">,</span> <span class="n">pseudo</span><span class="o">=</span><span class="n">pseudo1</span><span class="p">,</span> <span class="n">control</span><span class="o">=</span><span class="n">control</span><span class="p">,</span> <span class="n">system</span><span class="o">=</span><span class="n">system</span><span class="p">,</span><span class="n">electrons</span><span class="o">=</span><span class="n">electrons</span><span class="p">,</span> <span class="n">kpoints_grid</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="n">k_mesh</span><span class="p">),</span> <span class="n">ions</span><span class="o">=</span><span class="p">{</span><span class="s1">'ion_dynamics'</span><span class="p">:</span><span class="s1">'bfgs'</span><span class="p">},</span> <span class="n">cell</span><span class="o">=</span><span class="p">{</span><span class="s1">'cell_dynamics'</span><span class="p">:</span><span class="s1">'bfgs'</span><span class="p">,</span><span class="s1">'press_conv_thr'</span><span class="p">:</span><span class="mf">0.05</span><span class="p">})</span>
+            <span class="n">filename</span><span class="o">.</span><span class="n">write_file</span><span class="p">(</span><span class="s2">"temp.in"</span><span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"""sed "s/'.true.'/.true./" </span><span class="si">{}</span><span class="s2"> &gt; </span><span class="si">{}</span><span class="s2">"""</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">"temp.in"</span><span class="p">,</span><span class="s2">"scf-</span><span class="si">{}</span><span class="s2">.in"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mpid</span><span class="p">)))</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"sed -n '/K_POINTS automatic/,/CELL_PARAMETERS angstrom/p' scf-</span><span class="si">{}</span><span class="s2">.in | sed '$d' &gt; kpoint-</span><span class="si">{}</span><span class="s2">.dat"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">mpid</span><span class="p">))</span>
+            <span class="n">obj</span> <span class="o">=</span> <span class="n">INPUTscf</span><span class="p">(</span><span class="s2">"scf-</span><span class="si">{}</span><span class="s2">.in"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mpid</span><span class="p">))</span>
+            <span class="n">obj</span><span class="o">.</span><span class="n">standardize</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">output</span><span class="o">=</span><span class="s2">"temp.dat"</span><span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"sed -n '/&amp;CONTROL/,/ATOMIC_SPECIES/p' scf-</span><span class="si">{}</span><span class="s2">.in | sed '$d' &gt; scf.header"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mpid</span><span class="p">))</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"sed -n '/ATOMIC_SPECIES/,/ATOMIC_POSITIONS crystal/p' scf-</span><span class="si">{}</span><span class="s2">.in | sed '$d' &gt; species"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mpid</span><span class="p">))</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"rm temp.in"</span><span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"cat scf.header species temp.dat &gt; scf-</span><span class="si">{}</span><span class="s2">.in"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mpid</span><span class="p">))</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"rm POSCAR scf.header species temp.dat kpoint*"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="s2">"scf_dir"</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"mkdir scf_dir"</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"mv scf-</span><span class="si">{}</span><span class="s2">.in scf_dir"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mpid</span><span class="p">))</span></div>
+
+    <span class="c1">#return compound</span>
+<div class="viewcode-block" id="search">
+<a class="viewcode-back" href="../oqmd_extract.html#oqmd_extract.search">[docs]</a>
+<span class="k">def</span> <span class="nf">search</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span><span class="n">properties</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Function to search compounds.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    kwargs : dict</span>
+<span class="sd">        Dictionary object for query to the OQMD website.</span>
+<span class="sd">    properties : list</span>
+<span class="sd">        Properties to extract.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    This function uses QMPYRester to retrieve data from the OQMD (Open Quantum Materials Database) website.</span>
+<span class="sd">    It attempts to get data with the provided query parameters. If the limit is reached, it decreases the limit</span>
+<span class="sd">    and retries until successful.</span>
+
+<span class="sd">    It then writes the retrieved data to 'download.csv' file, including IDs and properties specified in the list</span>
+<span class="sd">    'properties'. It also creates 'mpid-list.in' file containing IDs, names, and compounds for each entry.</span>
+<span class="sd">    """</span>
+    <span class="n">obj</span> <span class="o">=</span> <span class="n">qr</span><span class="o">.</span><span class="n">QMPYRester</span><span class="p">()</span>
+    <span class="n">limit</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">'limit'</span><span class="p">]</span>
+    <span class="n">orig_limit</span> <span class="o">=</span> <span class="n">limit</span>
+    <span class="k">while</span> <span class="n">limit</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">get_oqmd_phases</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">'data'</span><span class="p">]</span>
+            <span class="k">break</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">limit</span> <span class="o">-=</span> <span class="nb">int</span><span class="p">(</span><span class="n">orig_limit</span><span class="o">*</span><span class="mf">0.1</span><span class="p">)</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s1">'limit'</span><span class="p">]</span> <span class="o">=</span> <span class="n">limit</span>
+            <span class="k">continue</span>
+    <span class="n">ind</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="s2">"download"</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="s2">"download"</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"download/download-oqmd.csv"</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">)</span> <span class="k">as</span> <span class="n">write_download</span><span class="p">:</span>
+        <span class="n">write_download</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"ID,"</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">prop</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">properties</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">prop</span> <span class="o">==</span> <span class="s1">'composition'</span><span class="p">:</span>
+                <span class="n">write_download</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"compound,"</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">properties</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">write_download</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">prop</span> <span class="o">+</span> <span class="s2">","</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">write_download</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">prop</span><span class="p">)</span>
+        <span class="n">write_download</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"mpid-list.in"</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">)</span> <span class="k">as</span> <span class="n">write_mpid</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">subdata</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="n">strings</span> <span class="o">=</span> <span class="n">subdata</span><span class="p">[</span><span class="s1">'name'</span><span class="p">]</span>
+            <span class="n">strings</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s1">'[A-Z][a-z]*'</span><span class="p">,</span> <span class="n">strings</span><span class="p">)</span>
+            <span class="n">elements</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">'element_set'</span><span class="p">]</span>
+            <span class="n">elements</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s1">'[A-Za-z]+'</span><span class="p">,</span> <span class="n">elements</span><span class="p">)</span>
+            <span class="c1">#elements = re.findall(r'[A-Za-z]+', elements)</span>
+            <span class="c1">#print(strings,elements)</span>
+            <span class="n">exists_in_string</span> <span class="o">=</span> <span class="nb">any</span><span class="p">(</span><span class="n">string</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">elements</span> <span class="k">for</span> <span class="n">string</span> <span class="ow">in</span> <span class="n">strings</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">exists_in_string</span><span class="p">:</span>
+                <span class="n">write_mpid</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"v</span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ind</span><span class="p">)</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="s2">"oqmd-"</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">subdata</span><span class="p">[</span><span class="s1">'entry_id'</span><span class="p">])</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="n">subdata</span><span class="p">[</span><span class="s1">'name'</span><span class="p">]</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+                <span class="n">ind</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"download/download-oqmd.csv"</span><span class="p">,</span> <span class="s2">"a"</span><span class="p">)</span> <span class="k">as</span> <span class="n">write_download</span><span class="p">:</span>
+                    <span class="n">write_download</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"oqmd-"</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">subdata</span><span class="p">[</span><span class="s1">'entry_id'</span><span class="p">])</span> <span class="o">+</span> <span class="s2">","</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">prop</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">properties</span><span class="p">):</span>
+                        <span class="k">if</span> <span class="n">prop</span> <span class="o">==</span> <span class="s1">'composition'</span><span class="p">:</span>
+                            <span class="n">write_download</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">subdata</span><span class="p">[</span><span class="n">prop</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">" "</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span> <span class="o">+</span> <span class="s2">","</span><span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">properties</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                                <span class="n">write_download</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">subdata</span><span class="p">[</span><span class="n">prop</span><span class="p">])</span> <span class="o">+</span> <span class="s2">","</span><span class="p">)</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="n">write_download</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">subdata</span><span class="p">[</span><span class="n">prop</span><span class="p">]))</span>
+                    <span class="n">write_download</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="download">
+<a class="viewcode-back" href="../oqmd_extract.html#oqmd_extract.download">[docs]</a>
+<span class="k">def</span> <span class="nf">download</span><span class="p">(</span><span class="n">calc_type</span><span class="p">,</span><span class="n">start</span><span class="p">,</span><span class="n">end</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Function to create input files.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    calc_type : str</span>
+<span class="sd">        Type of calculations, QE or VASP.</span>
+<span class="sd">    start : int</span>
+<span class="sd">        Start index of the compounds to download.</span>
+<span class="sd">    end : int</span>
+<span class="sd">        End index of the compounds to download.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    This function utilizes QMPYRester to retrieve data from the Open Quantum Materials Database (OQMD).</span>
+<span class="sd">    It reads material IDs and compounds from 'mpid-list.in' file and downloads the corresponding data.</span>
+<span class="sd">    For each compound, it creates a POSCAR file containing the compound structure.</span>
+<span class="sd">    Then, it invokes the 'poscar_to_input' function to generate input files for QE or VASP calculations.</span>
+<span class="sd">    Finally, it updates 'mpid.in' file with downloaded compounds.</span>
+
+<span class="sd">    """</span>
+    <span class="c1">#kwargs = {</span>
+    <span class="c1">#    'element_set': '(Fe-Mn),B',      # composition include (Fe OR Mn) AND O</span>
+    <span class="c1">#    'stability': '&lt;-0.1',            # hull distance smaller than -0.1 eV</span>
+    <span class="c1">#    'natom': '&lt;10',                  # number of atoms less than 10</span>
+    <span class="c1">#    }</span>
+    <span class="n">obj</span> <span class="o">=</span> <span class="n">qr</span><span class="o">.</span><span class="n">QMPYRester</span><span class="p">()</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"mpid-list.in"</span><span class="p">,</span><span class="s2">"r"</span><span class="p">)</span> <span class="k">as</span> <span class="n">read_mpid</span><span class="p">:</span>
+        <span class="n">mpid_data</span> <span class="o">=</span> <span class="n">read_mpid</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+    <span class="n">mpid_data</span> <span class="o">=</span> <span class="n">mpid_data</span><span class="p">[</span><span class="n">start</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="n">end</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">mpid</span> <span class="ow">in</span> <span class="n">mpid_data</span><span class="p">:</span>
+        <span class="c1">#print(mpid)</span>
+        <span class="n">oqmd_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">mpid</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">" "</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"-"</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">subd</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">get_entry_by_id</span><span class="p">(</span><span class="n">oqmd_id</span><span class="p">)</span>
+    <span class="c1">#data = obj.get_oqmd_phases(**kwargs)</span>
+    <span class="c1">#for subd in data['data']:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">oqmd_id</span> <span class="o">=</span> <span class="n">subd</span><span class="p">[</span><span class="s1">'id'</span><span class="p">]</span>
+            <span class="n">oqmd_id</span> <span class="o">=</span> <span class="s2">"oqmd-"</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">oqmd_id</span><span class="p">)</span>
+            <span class="c1">#print(oqmd_id + "\n")</span>
+            <span class="n">compound</span> <span class="o">=</span> <span class="n">subd</span><span class="p">[</span><span class="s1">'name'</span><span class="p">]</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'POSCAR'</span><span class="p">,</span> <span class="s1">'w'</span><span class="p">)</span> <span class="k">as</span> <span class="n">write_poscar</span><span class="p">:</span>
+                <span class="n">write_poscar</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">compound</span> <span class="o">+</span> <span class="s1">'</span><span class="se">\n</span><span class="s1">'</span><span class="p">)</span>
+                <span class="n">write_poscar</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"1.0 </span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+                <span class="n">unit_cell</span> <span class="o">=</span> <span class="n">subd</span><span class="p">[</span><span class="s1">'unit_cell'</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">lattice</span> <span class="ow">in</span> <span class="n">unit_cell</span><span class="p">:</span>
+                    <span class="n">write_poscar</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">lattice</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">lattice</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">lattice</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+                <span class="c1">#basis = d1['cartesian_site_positions']</span>
+                <span class="n">basis</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">elements</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="c1">#print(subd['sites'])</span>
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">elm</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">subd</span><span class="p">[</span><span class="s1">'sites'</span><span class="p">]):</span>
+                    <span class="n">elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">subd</span><span class="p">[</span><span class="s1">'sites'</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"@"</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">" "</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="n">basis</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">subd</span><span class="p">[</span><span class="s1">'sites'</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"@"</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">" "</span><span class="p">)[</span><span class="mi">1</span><span class="p">:])</span>
+                <span class="n">elem_count</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">elements</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">elm</span> <span class="ow">in</span> <span class="n">elem_count</span><span class="p">:</span>
+                    <span class="n">write_poscar</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">elm</span> <span class="o">+</span> <span class="s2">" "</span><span class="p">)</span>
+                <span class="n">write_poscar</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">elm</span> <span class="ow">in</span> <span class="n">elem_count</span><span class="p">:</span>
+                    <span class="n">write_poscar</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">elem_count</span><span class="p">[</span><span class="n">elm</span><span class="p">])</span> <span class="o">+</span> <span class="s2">" "</span><span class="p">)</span>
+                <span class="n">write_poscar</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+                <span class="n">write_poscar</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"Direct</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">bas</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">basis</span><span class="p">):</span>
+                    <span class="n">write_poscar</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">bas</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="n">bas</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="n">bas</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="n">elements</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">poscar_to_input</span><span class="p">(</span><span class="n">calc_type</span><span class="p">,</span><span class="n">oqmd_id</span><span class="p">,</span><span class="n">compound</span><span class="p">,</span><span class="kc">False</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"POSCAR"</span><span class="p">):</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"mv POSCAR POSCAR-</span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">oqmd_id</span><span class="p">))</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s1">'mpid.in'</span><span class="p">):</span>
+                <span class="n">k_ind</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"mpid.in"</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">)</span> <span class="k">as</span> <span class="n">write_mpid</span><span class="p">:</span>
+                    <span class="n">write_mpid</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"v</span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k_ind</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="n">oqmd_id</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="n">compound</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'mpid.in'</span><span class="p">,</span> <span class="s1">'r'</span><span class="p">)</span> <span class="k">as</span> <span class="n">read_mpid</span><span class="p">:</span>
+                    <span class="n">lines</span> <span class="o">=</span> <span class="n">read_mpid</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+                <span class="n">k_ind</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">oqmd_id</span> <span class="ow">in</span> <span class="n">line</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">):</span>
+                    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"mpid.in"</span><span class="p">,</span> <span class="s2">"a"</span><span class="p">)</span> <span class="k">as</span> <span class="n">write_mpid</span><span class="p">:</span>
+                        <span class="n">write_mpid</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"v</span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k_ind</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="n">oqmd_id</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="n">compound</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Structure data not found for </span><span class="si">{</span><span class="n">oqmd_id</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">subd</span><span class="p">[</span><span class="s1">'name'</span><span class="p">]</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="k">continue</span></div>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+    <span class="n">CONDITION</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"htepc.json"</span><span class="p">):</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">input_data</span><span class="p">[</span><span class="s1">'download'</span><span class="p">]</span>
+        <span class="n">START</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s1">'inp'</span><span class="p">][</span><span class="s1">'start'</span><span class="p">]</span>
+        <span class="n">END</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s1">'inp'</span><span class="p">][</span><span class="s1">'end'</span><span class="p">]</span>
+        <span class="n">doqmd</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s1">'oqmd'</span><span class="p">]</span>
+        <span class="n">LIMIT</span> <span class="o">=</span> <span class="n">doqmd</span><span class="p">[</span><span class="s1">'limit'</span><span class="p">]</span>
+        <span class="n">NTYPE</span> <span class="o">=</span> <span class="n">doqmd</span><span class="p">[</span><span class="s1">'ntype_constraint'</span><span class="p">]</span>
+        <span class="n">ELM_LIST</span> <span class="o">=</span> <span class="n">doqmd</span><span class="p">[</span><span class="s1">'entries'</span><span class="p">]</span>
+        <span class="n">NELM</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ELM_LIST</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">NELM</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">ELMS</span> <span class="o">=</span> <span class="n">ELM_LIST</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ELMS</span> <span class="o">=</span> <span class="s1">''</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">ELM</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ELM_LIST</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">NELM</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">ELMS</span> <span class="o">=</span> <span class="n">ELMS</span> <span class="o">+</span> <span class="n">ELM</span> <span class="o">+</span> <span class="s2">"-"</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">ELMS</span> <span class="o">=</span> <span class="n">ELMS</span> <span class="o">+</span> <span class="n">ELM</span>
+        <span class="n">ELMS</span> <span class="o">=</span> <span class="s1">'(</span><span class="si">{}</span><span class="s1">)'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ELMS</span><span class="p">)</span>
+        <span class="n">MUST_INCLUDE</span> <span class="o">=</span> <span class="n">doqmd</span><span class="p">[</span><span class="s1">'must_include'</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">MUST_INCLUDE</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">ELMS</span> <span class="o">=</span> <span class="n">ELMS</span> <span class="o">+</span> <span class="s2">","</span>
+        <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">ELM</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">MUST_INCLUDE</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">MUST_INCLUDE</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">j</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">ELMS</span> <span class="o">+=</span> <span class="n">ELM</span> <span class="o">+</span> <span class="s2">","</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">ELMS</span> <span class="o">+=</span> <span class="n">ELM</span>
+        <span class="n">PROPERTIES</span> <span class="o">=</span> <span class="n">doqmd</span><span class="p">[</span><span class="s1">'prop'</span><span class="p">]</span>
+        <span class="c1">#PROPERTIES = ['composition','spacegroup','volume','band_gap','stability']</span>
+        <span class="n">METAL</span><span class="o">=</span><span class="n">doqmd</span><span class="p">[</span><span class="s1">'metal'</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">METAL</span><span class="p">:</span>
+            <span class="n">BAND_GAP</span> <span class="o">=</span> <span class="mf">0.001</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">BAND_GAP</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">NEG_FE</span><span class="o">=</span><span class="n">doqmd</span><span class="p">[</span><span class="s1">'FE'</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">NEG_FE</span><span class="p">:</span>
+            <span class="n">FE</span> <span class="o">=</span> <span class="mf">0.0001</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">FE</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">THERMO_STABLE</span><span class="o">=</span><span class="n">doqmd</span><span class="p">[</span><span class="s1">'thermo_stable'</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">THERMO_STABLE</span><span class="p">:</span>
+            <span class="n">EBH</span> <span class="o">=</span> <span class="mf">0.001</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">EBH</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">NSITES</span><span class="o">=</span><span class="n">doqmd</span><span class="p">[</span><span class="s1">'size_constraint'</span><span class="p">]</span>
+        <span class="n">SPACEGROUP</span><span class="o">=</span><span class="n">doqmd</span><span class="p">[</span><span class="s1">'spacegroup'</span><span class="p">]</span>
+        <span class="n">KWARGS</span> <span class="o">=</span> <span class="p">{</span>
+                   <span class="s1">'element_set'</span><span class="p">:</span> <span class="s1">'</span><span class="si">{}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ELMS</span><span class="p">),</span>
+                   <span class="s1">'band_gap'</span><span class="p">:</span> <span class="s1">'&lt;</span><span class="si">{}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">BAND_GAP</span><span class="p">),</span>
+                   <span class="s1">'delta_e'</span><span class="p">:</span> <span class="s1">'&lt;</span><span class="si">{}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">FE</span><span class="p">),</span>
+                   <span class="s1">'stability'</span><span class="p">:</span> <span class="s1">'&lt;</span><span class="si">{}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">EBH</span><span class="p">),</span>
+                   <span class="s1">'natoms'</span><span class="p">:</span> <span class="s1">'&lt;</span><span class="si">{}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">NSITES</span><span class="p">),</span>
+                   <span class="s1">'ntypes'</span><span class="p">:</span> <span class="s1">'&lt;</span><span class="si">{}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">NTYPE</span><span class="p">),</span>
+                   <span class="s1">'limit'</span> <span class="p">:</span> <span class="n">LIMIT</span><span class="p">,</span>
+                  <span class="p">}</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">METAL</span><span class="p">:</span>
+            <span class="n">KWARGS</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">'band_gap'</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">NEG_FE</span><span class="p">:</span>
+            <span class="n">KWARGS</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">'delta_e'</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">THERMO_STABLE</span><span class="p">:</span>
+            <span class="n">KWARGS</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">'stability'</span><span class="p">)</span>
+        <span class="n">CALC_TYPE</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s1">'inp'</span><span class="p">][</span><span class="s1">'calc'</span><span class="p">]</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">CALC_TYPE</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"input file htepc.json not found</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"Utilizing default settings</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+        <span class="n">NTYPE</span> <span class="o">=</span> <span class="s1">'&lt;5'</span> <span class="c1">#Number of different types of element in the compound.</span>
+        <span class="n">NSITES</span> <span class="o">=</span> <span class="s1">'&lt;10'</span>
+        <span class="n">ELM_LIST</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'B'</span><span class="p">,</span><span class="s1">'C'</span><span class="p">]</span>
+        <span class="n">EXCLUDE_EL</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'Lu'</span><span class="p">]</span>
+        <span class="n">METAL</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">NEG_FE</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">THERMO_STABLE</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">ORDERING</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">SPACEGROUP</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">CALC_TYPE</span> <span class="o">=</span> <span class="s1">'QE'</span>
+        <span class="n">PROPERTIES</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'composition'</span><span class="p">,</span><span class="s1">'spacegroup'</span><span class="p">,</span><span class="s1">'volume'</span><span class="p">,</span><span class="s1">'band_gap'</span><span class="p">,</span><span class="s1">'stability'</span><span class="p">]</span>
+        <span class="n">KWARGS</span> <span class="o">=</span> <span class="p">{</span>
+                   <span class="s1">'element_set'</span><span class="p">:</span> <span class="s1">'(B-C)'</span><span class="p">,</span>
+                   <span class="s1">'band_gap'</span><span class="p">:</span> <span class="s1">'&lt;2.0'</span><span class="p">,</span>
+                   <span class="s1">'delta_e'</span><span class="p">:</span> <span class="s1">'&lt;0.0001'</span><span class="p">,</span>
+                   <span class="s1">'stability'</span><span class="p">:</span> <span class="s1">'&lt;-0.1'</span><span class="p">,</span>
+                   <span class="s1">'natoms'</span><span class="p">:</span> <span class="n">NSITES</span><span class="p">,</span>
+                   <span class="s1">'ntypes'</span><span class="p">:</span> <span class="n">NTYPE</span><span class="p">,</span>
+                   <span class="s1">'limit'</span> <span class="p">:</span> <span class="n">LIMIT</span><span class="p">,</span>
+                  <span class="p">}</span>
+        <span class="c1">#with open("download.py", "w") as h:</span>
+        <span class="c1">#    h.write("info="+str(default1) + "\n")</span>
+        <span class="c1">#    h.write("inp="+str(default2) + "\n")</span>
+        <span class="c1">#    h.write("chemsys="+str(chemsys) + "\n")</span>
+    <span class="k">if</span> <span class="n">CONDITION</span> <span class="o">==</span> <span class="s1">'search'</span><span class="p">:</span>
+        <span class="n">search</span><span class="p">(</span><span class="n">KWARGS</span><span class="p">,</span><span class="n">PROPERTIES</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">CONDITION</span> <span class="o">==</span> <span class="s1">'download'</span><span class="p">:</span>
+        <span class="n">download</span><span class="p">(</span><span class="n">CALC_TYPE</span><span class="p">,</span><span class="n">START</span><span class="p">,</span><span class="n">END</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"wrong options. Allowed options are either search or download</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+
+          </article>
+        </div>
+      </div>
+    </main>
+  </div>
+  <footer class="md-footer">
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+          
+          
+        </a>
+        
+      </nav>
+    </div>
+    <div class="md-footer-meta md-typeset">
+      <div class="md-footer-meta__inner md-grid">
+        <div class="md-footer-copyright">
+          <div class="md-footer-copyright__highlight">
+              &#169; Copyright 2024, Niraj K Nepal.
+              
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script src="../_static/javascripts/application.js"></script>
+  <script>app.initialize({version: "1.0.4", url: {base: ".."}})</script>
+  </body>
+</html>

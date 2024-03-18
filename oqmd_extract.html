@@ -224,30 +224,25 @@
 </table>
 <dl class="py function">
 <dt class="sig sig-object py" id="oqmd_extract.poscar_to_input">
-<span class="sig-prename descclassname"><span class="pre">oqmd_extract.</span></span><span class="sig-name descname"><span class="pre">poscar_to_input</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calc_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mpid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keven</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#oqmd_extract.poscar_to_input" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">oqmd_extract.</span></span><span class="sig-name descname"><span class="pre">poscar_to_input</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calc_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mpid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keven</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oqmd_extract.html#poscar_to_input"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#oqmd_extract.poscar_to_input" title="Link to this definition">¶</a></dt>
 <dd><p>Function to convert POSCAR into ground-state input files.</p>
-<section id="parameters">
-<h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Link to this heading">¶</a></h2>
-<dl class="simple">
-<dt>calc_type<span class="classifier">str</span></dt><dd><p>Calculation type. “QE” or “VASP”.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>calc_type</strong> (<em>str</em>) – Calculation type. “QE” or “VASP”.</p></li>
+<li><p><strong>mpid</strong> (<em>str</em>) – Material id.</p></li>
+<li><p><strong>compound</strong> (<em>str</em>) – Compound name.</p></li>
+<li><p><strong>keven</strong> (<em>bool</em>) – If even k-mesh to use.</p></li>
+</ul>
 </dd>
-<dt>mpid<span class="classifier">str</span></dt><dd><p>Material id.</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Compound name.</p>
 </dd>
-<dt>compound<span class="classifier">str</span></dt><dd><p>Compound name.</p>
-</dd>
-<dt>keven<span class="classifier">bool</span></dt><dd><p>If even k-mesh to use.</p>
-</dd>
-</dl>
-</section>
-<section id="returns">
-<h2 id="returns">Returns<a class="headerlink" href="#returns" title="Link to this heading">¶</a></h2>
-<dl class="simple">
-<dt>str</dt><dd><p>Compound name.</p>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
 </dd>
 </dl>
-</section>
-<section id="notes">
-<h2 id="notes">Notes<a class="headerlink" href="#notes" title="Link to this heading">¶</a></h2>
+<p class="rubric">Notes</p>
 <p>This function reads a POSCAR file and generates input files required for ground-state calculations
 using either Quantum Espresso (QE) or VASP software.</p>
 <p>It checks if ‘htepc.json’ exists, and if so, it retrieves settings such as k-point density and
@@ -256,53 +251,45 @@ download configurations.</p>
 it prepares INCAR, POSCAR, and POTCAR files and potentially runs VASP processing scripts if available.
 For QE, it creates input files with appropriate settings.</p>
 <p>Finally, it moves input files to the designated directories.</p>
-</section>
 </dd></dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="oqmd_extract.search">
-<span class="sig-prename descclassname"><span class="pre">oqmd_extract.</span></span><span class="sig-name descname"><span class="pre">search</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kwargs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">properties</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#oqmd_extract.search" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">oqmd_extract.</span></span><span class="sig-name descname"><span class="pre">search</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kwargs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">properties</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oqmd_extract.html#search"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#oqmd_extract.search" title="Link to this definition">¶</a></dt>
 <dd><p>Function to search compounds.</p>
-<section id="id1">
-<h2 id="id1">Parameters<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
-<dl class="simple">
-<dt>kwargs<span class="classifier">dict</span></dt><dd><p>Dictionary object for query to the OQMD website.</p>
-</dd>
-<dt>properties<span class="classifier">list</span></dt><dd><p>Properties to extract.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>kwargs</strong> (<em>dict</em>) – Dictionary object for query to the OQMD website.</p></li>
+<li><p><strong>properties</strong> (<em>list</em>) – Properties to extract.</p></li>
+</ul>
 </dd>
 </dl>
-</section>
-<section id="id2">
-<h2 id="id2">Notes<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h2>
+<p class="rubric">Notes</p>
 <p>This function uses QMPYRester to retrieve data from the OQMD (Open Quantum Materials Database) website.
 It attempts to get data with the provided query parameters. If the limit is reached, it decreases the limit
 and retries until successful.</p>
 <p>It then writes the retrieved data to ‘download.csv’ file, including IDs and properties specified in the list
 ‘properties’. It also creates ‘mpid-list.in’ file containing IDs, names, and compounds for each entry.</p>
-</section>
 </dd></dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="oqmd_extract.download">
-<span class="sig-prename descclassname"><span class="pre">oqmd_extract.</span></span><span class="sig-name descname"><span class="pre">download</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calc_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#oqmd_extract.download" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">oqmd_extract.</span></span><span class="sig-name descname"><span class="pre">download</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calc_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oqmd_extract.html#download"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#oqmd_extract.download" title="Link to this definition">¶</a></dt>
 <dd><p>Function to create input files.</p>
-<section id="id3">
-<h2 id="id3">Parameters<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h2>
-<dl class="simple">
-<dt>calc_type<span class="classifier">str</span></dt><dd><p>Type of calculations, QE or VASP.</p>
-</dd>
-<dt>start<span class="classifier">int</span></dt><dd><p>Start index of the compounds to download.</p>
-</dd>
-<dt>end<span class="classifier">int</span></dt><dd><p>End index of the compounds to download.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>calc_type</strong> (<em>str</em>) – Type of calculations, QE or VASP.</p></li>
+<li><p><strong>start</strong> (<em>int</em>) – Start index of the compounds to download.</p></li>
+<li><p><strong>end</strong> (<em>int</em>) – End index of the compounds to download.</p></li>
+</ul>
 </dd>
 </dl>
-</section>
-<section id="id4">
-<h2 id="id4">Notes<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h2>
+<p class="rubric">Notes</p>
 <p>This function utilizes QMPYRester to retrieve data from the Open Quantum Materials Database (OQMD).
 It reads material IDs and compounds from ‘mpid-list.in’ file and downloads the corresponding data.
 For each compound, it creates a POSCAR file containing the compound structure.
 Then, it invokes the ‘poscar_to_input’ function to generate input files for QE or VASP calculations.
 Finally, it updates ‘mpid.in’ file with downloaded compounds.</p>
-</section>
 </dd></dl>
 </section>
 

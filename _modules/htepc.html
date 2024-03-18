@@ -1,0 +1,1280 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="lang:clipboard.copy" content="Copy to clipboard">
+  <meta name="lang:clipboard.copied" content="Copied to clipboard">
+  <meta name="lang:search.language" content="en">
+  <meta name="lang:search.pipeline.stopwords" content="True">
+  <meta name="lang:search.pipeline.trimmer" content="True">
+  <meta name="lang:search.result.none" content="No matching documents">
+  <meta name="lang:search.result.one" content="1 matching document">
+  <meta name="lang:search.result.other" content="# matching documents">
+  <meta name="lang:search.tokenizer" content="[\s\-]+">
+
+  
+    <link href="https://fonts.gstatic.com/" rel="preconnect" crossorigin>
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,500,700|Roboto:300,400,400i,700&display=fallback" rel="stylesheet">
+
+    <style>
+      body,
+      input {
+        font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif
+      }
+
+      code,
+      kbd,
+      pre {
+        font-family: "Roboto Mono", "Courier New", Courier, monospace
+      }
+    </style>
+  
+
+  <link rel="stylesheet" href="../_static/stylesheets/application.css"/>
+  <link rel="stylesheet" href="../_static/stylesheets/application-palette.css"/>
+  <link rel="stylesheet" href="../_static/stylesheets/application-fixes.css"/>
+  
+  <link rel="stylesheet" href="../_static/fonts/material-icons.css"/>
+  
+  <meta name="theme-color" content="#3f51b5">
+  <script src="../_static/javascripts/modernizr.js"></script>
+  
+  
+  
+    <title>htepc &#8212; HTESP 0.0.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=83e35b93" />
+    <link rel="stylesheet" type="text/css" href="../_static/material.css?v=79c92029" />
+    <script src="../_static/documentation_options.js?v=d45e8c67"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+  
+   
+
+  </head>
+  <body dir=ltr
+        data-md-color-primary=blue-grey data-md-color-accent=blue>
+  
+  <svg class="md-svg">
+    <defs data-children-count="0">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448" viewBox="0 0 416 448" id="__github"><path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19T128 352t-18.125-8.5-10.75-19T96 304t3.125-20.5 10.75-19T128 256t18.125 8.5 10.75 19T160 304zm160 0q0 10-3.125 20.5t-10.75 19T288 352t-18.125-8.5-10.75-19T256 304t3.125-20.5 10.75-19T288 256t18.125 8.5 10.75 19T320 304zm40 0q0-30-17.25-51T296 232q-10.25 0-48.75 5.25Q229.5 240 208 240t-39.25-2.75Q130.75 232 120 232q-29.5 0-46.75 21T56 304q0 22 8 38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0 37.25-1.75t35-7.375 30.5-15 20.25-25.75T360 304zm56-44q0 51.75-15.25 82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5T212 416q-19.5 0-35.5-.75t-36.875-3.125-38.125-7.5-34.25-12.875T37 371.5t-21.5-28.75Q0 312 0 260q0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25 30.875Q171.5 96 212 96q37 0 70 8 26.25-20.5 46.75-30.25T376 64q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34 99.5z"/></svg>
+      
+    </defs>
+  </svg>
+  
+  <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer">
+  <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search">
+  <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+  <a href="#_modules/htepc" tabindex="1" class="md-skip"> Skip to content </a>
+  <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex navheader">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="../index.html" title="HTESP 0.0.1 documentation"
+           class="md-header-nav__button md-logo">
+          
+            &nbsp;
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          <span class="md-header-nav__topic">HTESP 0.0.1 documentation</span>
+          <span class="md-header-nav__topic"> htepc </span>
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+        
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" action="../search.html" method="get" name="search">
+      <input type="text" class="md-search__input" name="q" placeholder=""Search""
+             autocapitalize="off" autocomplete="off" spellcheck="false"
+             data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+      </div>
+      
+      
+  
+  <script src="../_static/javascripts/version_dropdown.js"></script>
+  <script>
+    var json_loc = "../"versions.json"",
+        target_loc = "../../",
+        text = "Versions";
+    $( document ).ready( add_version_dropdown(json_loc, target_loc, text));
+  </script>
+  
+
+    </div>
+  </nav>
+</header>
+
+  
+  <div class="md-container">
+    
+    
+    
+  <nav class="md-tabs" data-md-component="tabs">
+    <div class="md-tabs__inner md-grid">
+      <ul class="md-tabs__list">
+          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">HTESP 0.0.1 documentation</a></li>
+          <li class="md-tabs__item"><a href="index.html" class="md-tabs__link">Module code</a></li>
+      </ul>
+    </div>
+  </nav>
+    <main class="md-main">
+      <div class="md-main__inner md-grid" data-md-component="container">
+        
+          <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+            <div class="md-sidebar__scrollwrap">
+              <div class="md-sidebar__inner">
+                <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href="../index.html" title="HTESP 0.0.1 documentation" class="md-nav__button md-logo">
+      
+        <img src="../_static/" alt=" logo" width="48" height="48">
+      
+    </a>
+    <a href="../index.html"
+       title="HTESP 0.0.1 documentation">HTESP 0.0.1 documentation</a>
+  </label>
+  
+
+</nav>
+              </div>
+            </div>
+          </div>
+          <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+            <div class="md-sidebar__scrollwrap">
+              <div class="md-sidebar__inner">
+                
+<nav class="md-nav md-nav--secondary">
+  <ul class="md-nav__list" data-md-scrollfix="">
+    
+  </ul>
+</nav>
+              </div>
+            </div>
+          </div>
+        
+        <div class="md-content">
+          <article class="md-content__inner md-typeset" role="main">
+            
+  <h1 id="modules-htepc--page-root">Source code for htepc</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1">#"""Writen by Niraj K. Nepal, Ph.D."""</span>
+<span class="sd">"""Module to prepare QE input files"""</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">scipy.linalg</span> <span class="k">as</span> <span class="nn">alg</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span><span class="p">,</span> <span class="n">OrderedDict</span>
+<span class="kn">from</span> <span class="nn">ase.io</span> <span class="kn">import</span> <span class="n">espresso</span><span class="p">,</span><span class="n">cif</span>
+<span class="kn">from</span> <span class="nn">ase.cell</span> <span class="kn">import</span> <span class="n">Cell</span>
+<span class="kn">from</span> <span class="nn">pymatgen.io.cif</span> <span class="kn">import</span> <span class="n">CifWriter</span>
+<span class="kn">from</span> <span class="nn">pymatgen.io.vasp.sets</span> <span class="kn">import</span> <span class="n">MPRelaxSet</span>
+<span class="kn">from</span> <span class="nn">pymatgen.io</span> <span class="kn">import</span> <span class="n">pwscf</span>
+<span class="kn">from</span> <span class="nn">pymatgen.symmetry.analyzer</span> <span class="kn">import</span> <span class="n">SpacegroupAnalyzer</span>
+<span class="kn">from</span> <span class="nn">mp_api.client</span> <span class="kn">import</span> <span class="n">MPRester</span>
+<span class="kn">from</span> <span class="nn">kpath</span> <span class="kn">import</span> <span class="n">kpath</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">PWD</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">PWD</span><span class="o">+</span><span class="s2">"/htepc.json"</span><span class="p">):</span>
+        <span class="n">JSONFILE</span> <span class="o">=</span> <span class="n">PWD</span><span class="o">+</span><span class="s2">"/htepc.json"</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">JSONFILE</span> <span class="o">=</span> <span class="s2">"../../htepc.json"</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">JSONFILE</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">)</span> <span class="k">as</span> <span class="n">readjson</span><span class="p">:</span>
+        <span class="n">input_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">readjson</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"htepc.json file not found</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+<span class="c1">#connect to materials project and extract various informations. including QE inputs.</span>
+<div class="viewcode-block" id="pos_to_kpt">
+<a class="viewcode-back" href="../htepc.html#htepc.pos_to_kpt">[docs]</a>
+<span class="k">def</span> <span class="nf">pos_to_kpt</span><span class="p">(</span><span class="n">structure_filename</span><span class="p">,</span><span class="n">kpoint_density</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Obtain k-point mesh from a structure file.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">    ----------------------</span>
+<span class="sd">    structure_filename : str</span>
+<span class="sd">        Structure file (e.g., QE scf.in or VASP POSCAR).</span>
+<span class="sd">    kpoint_density : float</span>
+<span class="sd">        K-point density.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">    ----------------------</span>
+<span class="sd">    kmesh : list</span>
+<span class="sd">        K-point mesh according to the k-point density.</span>
+<span class="sd">    """</span>
+    <span class="n">kptsp</span> <span class="o">=</span> <span class="n">kpoint_density</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">structure_filename</span><span class="p">,</span><span class="s2">"r"</span><span class="p">)</span> <span class="k">as</span> <span class="n">read_struc</span><span class="p">:</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="n">read_struc</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+    <span class="c1"># Get cell vectors</span>
+    <span class="n">line</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+    <span class="n">latscl</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">ain</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+    <span class="n">amat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+    <span class="n">bmat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+    <span class="n">anorm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="mi">2</span> <span class="o">+</span> <span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+            <span class="n">ain</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="o">*</span> <span class="n">latscl</span>
+            <span class="n">amat</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">ain</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span>
+        <span class="n">anorm</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">ain</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">ain</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">ain</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">bmat</span> <span class="o">=</span> <span class="n">alg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">amat</span><span class="p">)</span>
+    <span class="n">bnorm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">bnorm</span> <span class="o">=</span> <span class="n">alg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">bmat</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">kratio</span> <span class="o">=</span> <span class="p">[</span><span class="n">bnorm</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">/</span> <span class="n">bnorm</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)]</span>
+    <span class="n">klat</span> <span class="o">=</span> <span class="n">bnorm</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">kptsp</span>
+    <span class="n">kmesh</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">kratio</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">klat</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span> <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">kratio</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">klat</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)]</span>
+    <span class="n">kratio</span> <span class="o">=</span> <span class="p">[</span><span class="n">bnorm</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">/</span> <span class="n">bnorm</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)]</span>
+    <span class="n">klat</span> <span class="o">=</span> <span class="n">bnorm</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">kptsp</span>
+    <span class="n">kmesh</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">kratio</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">klat</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span> <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">kratio</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">klat</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)]</span>
+    <span class="k">return</span> <span class="n">kmesh</span></div>
+
+<div class="viewcode-block" id="MpConnect">
+<a class="viewcode-back" href="../htepc.html#htepc.MpConnect">[docs]</a>
+<span class="k">class</span> <span class="nc">MpConnect</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Class for connecting to Materials Project (MP) via MP API, extracting properties,</span>
+<span class="sd">    and preparing input files for Quantum Espresso (QE) calculations.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">    --------------</span>
+<span class="sd">    key : str, optional</span>
+<span class="sd">        MP API KEY. Use your own key. If not provided, it should be available in htepc.json</span>
+<span class="sd">        or ../../htepc.json file.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">    --------------</span>
+<span class="sd">    prop : list</span>
+<span class="sd">        List of available properties.</span>
+<span class="sd">    mpid : str</span>
+<span class="sd">        Materials ID.</span>
+<span class="sd">    comp : str</span>
+<span class="sd">        Compound name.</span>
+<span class="sd">    data : dict</span>
+<span class="sd">        Dictionary containing materials data.</span>
+<span class="sd">    prefix : str</span>
+<span class="sd">        Prefix for the compound.</span>
+<span class="sd">    ecutwfc : float</span>
+<span class="sd">        Kinetic energy cutoff for wavefunction.</span>
+<span class="sd">    ecutrho : float</span>
+<span class="sd">        Kinetic energy cutoff for charge density.</span>
+<span class="sd">    kpt : list</span>
+<span class="sd">        K-point grid.</span>
+<span class="sd">    structure : Structure</span>
+<span class="sd">        Structure object.</span>
+<span class="sd">    pseudo_dir : str</span>
+<span class="sd">        Path to pseudopotential files.</span>
+<span class="sd">    outdir : str</span>
+<span class="sd">        Directory for output files.</span>
+<span class="sd">    evenkpt : tuple</span>
+<span class="sd">        K-grid with an even number of points in all directions.</span>
+<span class="sd">    kpshift : list</span>
+<span class="sd">        K-point grid shifts.</span>
+<span class="sd">    kptype : str</span>
+<span class="sd">        K-point grid type.</span>
+<span class="sd">    calc : str</span>
+<span class="sd">        Type of calculation.</span>
+<span class="sd">    smear : float</span>
+<span class="sd">        Degauss value for smearing.</span>
+<span class="sd">    smear_type : str</span>
+<span class="sd">        Type of smearing.</span>
+<span class="sd">    etot_conv_thr : float</span>
+<span class="sd">        Total energy convergence threshold.</span>
+<span class="sd">    forc_conv_thr : float</span>
+<span class="sd">        Force convergence threshold.</span>
+<span class="sd">    conv_thr : float</span>
+<span class="sd">        Convergence threshold.</span>
+<span class="sd">    dict_element : dict</span>
+<span class="sd">        Dictionary containing kinetic energy cutoffs for different elements.</span>
+<span class="sd">    comp_list : list</span>
+<span class="sd">        List of elements in the compound.</span>
+<span class="sd">    """</span>
+    <span class="c1">#def __init__(self,key="J5fFknl84LrMvXi3"):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"htepc.json"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"../../htepc.json"</span><span class="p">):</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="n">input_data</span><span class="p">[</span><span class="s2">"mpi_key"</span><span class="p">][</span><span class="s2">"API_KEY"</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"htepc.json file not found. Please provide with your materials project api key</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+        <span class="c1">#try:</span>
+        <span class="c1">#    from mpi_key import API_KEY as key</span>
+        <span class="c1">#    print("mpi_key.py found with API to materials project database\n")</span>
+        <span class="c1">#except ModuleNotFoundError:</span>
+        <span class="c1">#    print("mpi_key.py file not found. One is created. Please, replace the XXX with your key\n")</span>
+        <span class="c1">#    with open("mpi_key.py", "w") as key_write:</span>
+        <span class="c1">#        api = {'key':"XXX"}</span>
+        <span class="c1">#        key_write.write("API_KEY={}".format(api) + "\n")</span>
+        <span class="c1">#    from mpi_key import API_KEY as key</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">key</span> <span class="o">=</span> <span class="n">key</span><span class="p">[</span><span class="s1">'key'</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mpr</span> <span class="o">=</span> <span class="n">MPRester</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">key</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prop</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mpid</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">comp</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ecutwfc</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ecutrho</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kpt</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">structure</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pseudo_dir</span> <span class="o">=</span> <span class="s2">""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outdir</span> <span class="o">=</span> <span class="s2">""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">evenkpt</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kpshift</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kptype</span> <span class="o">=</span> <span class="s2">""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calc</span> <span class="o">=</span> <span class="s2">""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">smear</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">smear_type</span> <span class="o">=</span> <span class="s2">""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">etot_conv_thr</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">forc_conv_thr</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conv_thr</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dict_element</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">comp_list</span> <span class="o">=</span> <span class="kc">None</span>
+<div class="viewcode-block" id="MpConnect.setting">
+<a class="viewcode-back" href="../htepc.html#htepc.MpConnect.setting">[docs]</a>
+    <span class="k">def</span> <span class="nf">setting</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">comp</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Initialize the process with a Materials ID.</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">        ---------------------</span>
+<span class="sd">        comp : str</span>
+<span class="sd">            Materials ID.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">        ---------------------</span>
+<span class="sd">        comp : str</span>
+<span class="sd">            Materials ID.</span>
+
+<span class="sd">        Notes:</span>
+<span class="sd">        ---------------------</span>
+<span class="sd">        This function initializes the process with a Materials ID. It retrieves the data related to the given ID from the Materials Project (MP) database, sets up necessary parameters, and prepares the structure for further calculations.</span>
+<span class="sd">        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">comp</span><span class="o">=</span><span class="n">comp</span>
+        <span class="c1">#self.data = self.mpr.get_data(self.comp)[0]</span>
+        <span class="c1">#self.data = self.mpr.summary.get_data_by_id(self.comp).dict()</span>
+        <span class="c1">#self.data = self.mpr.materials.get_data_by_id(self.comp).dict()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prop</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mpr</span><span class="o">.</span><span class="n">materials</span><span class="o">.</span><span class="n">summary</span><span class="o">.</span><span class="n">available_fields</span><span class="p">[:</span><span class="o">-</span><span class="mi">29</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"htepc.json"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"../../htepc.json"</span><span class="p">):</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="n">input_data</span><span class="p">[</span><span class="s2">"download"</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">prop</span> <span class="ow">in</span> <span class="n">d</span><span class="p">[</span><span class="s1">'info'</span><span class="p">][</span><span class="s1">'prop'</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">prop</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prop</span><span class="p">)</span>
+        <span class="c1">#self.data = self.mpr.materials.summary.get_data_by_id(self.comp,fields=self.prop).dict()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mpr</span><span class="o">.</span><span class="n">materials</span><span class="o">.</span><span class="n">summary</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">material_ids</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">comp</span><span class="p">],</span><span class="n">fields</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">structure</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">structure</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mpid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'material_id'</span><span class="p">]</span>
+        <span class="n">symbol_comp</span> <span class="o">=</span> <span class="s2">""</span>
+        <span class="n">elm</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'composition'</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="n">count</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'composition'</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">_</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">elm</span><span class="p">):</span>
+            <span class="n">symbol_comp</span> <span class="o">+=</span> <span class="n">elm</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">count</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span> <span class="o">=</span> <span class="n">symbol_comp</span>
+        <span class="c1">#self.prefix = self.data['composition'].alphabetical_formula.replace(" ", "")</span>
+        <span class="c1">#self.structure = self.mpr.get_structure_by_material_id(self.mpid)</span>
+        <span class="c1">#self.structure = self.mpr.materials.summary.search(material_ids=[self.comp],fields=['structure'])[0].structure</span>
+        <span class="c1">#print("******************************************\n")</span>
+        <span class="c1">#print("Use property method to extract the following info\n")</span>
+        <span class="c1">#print("property('name') or get_properties(['name1', 'name2', ..])\n")</span>
+        <span class="c1">#print("******************************************\n")</span>
+        <span class="k">return</span> <span class="n">comp</span></div>
+
+<div class="viewcode-block" id="MpConnect.get_prop_list">
+<a class="viewcode-back" href="../htepc.html#htepc.MpConnect.get_prop_list">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_prop_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Print the list of properties available when downloading the data.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">        ---------------------</span>
+<span class="sd">        prop_list : dict_keys</span>
+<span class="sd">            A list of keys representing the available properties.</span>
+
+<span class="sd">        Notes:</span>
+<span class="sd">        ---------------------</span>
+<span class="sd">        This function retrieves the list of properties available for download from the Materials Project (MP) database for the current Materials ID (mpid). It returns a list of keys that represent the available properties that can be downloaded and accessed for analysis or further processing.</span>
+<span class="sd">        """</span>
+        <span class="c1">#return self.mpr.summary.get_data_by_id(self.mpid).dict().keys()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">prop</span></div>
+
+        <span class="c1">#return self.mpr.materials.summary.search(material_ids=[self.mpid],fields=self.prop).dict().keys()</span>
+<div class="viewcode-block" id="MpConnect.download">
+<a class="viewcode-back" href="../htepc.html#htepc.MpConnect.download">[docs]</a>
+    <span class="k">def</span> <span class="nf">download</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">filetype</span><span class="o">=</span><span class="s1">'cif'</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Download the structure file.</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">        ---------------</span>
+<span class="sd">        filetype : str, optional</span>
+<span class="sd">            File format for downloading. Default is 'cif'.</span>
+
+<span class="sd">        Notes:</span>
+<span class="sd">        ---------------</span>
+<span class="sd">        This function downloads the structure file for the current Materials ID (mpid) from the Materials Project (MP) database. It saves the file in the specified format, with the default format being CIF ('.cif'). Other supported formats may be specified as needed.</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="n">filetype</span> <span class="o">==</span> <span class="s1">'cif'</span><span class="p">:</span>
+            <span class="n">unsym_struc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">structure</span>
+            <span class="c1">#unsym_struc = self.mpr.get_structure_by_material_id(self.mpid)</span>
+            <span class="n">CifWriter</span><span class="p">(</span><span class="n">unsym_struc</span><span class="p">,</span> <span class="n">symprec</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span><span class="o">.</span><span class="n">write_file</span><span class="p">(</span><span class="s1">'</span><span class="si">{}</span><span class="s1">.cif'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mpid</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="MpConnect.property">
+<a class="viewcode-back" href="../htepc.html#htepc.MpConnect.property">[docs]</a>
+    <span class="k">def</span> <span class="nf">property</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">         Extract a particular property.</span>
+
+<span class="sd">         Parameters:</span>
+<span class="sd">         ------------------</span>
+<span class="sd">         name : str</span>
+<span class="sd">             The name of the property available from the list obtained from the get_prop_list() function.</span>
+
+<span class="sd">         Returns:</span>
+<span class="sd">         ------------------</span>
+<span class="sd">         value</span>
+<span class="sd">             The value of the specified property.</span>
+
+<span class="sd">         Notes:</span>
+<span class="sd">         ------------------</span>
+<span class="sd">         This function extracts the value of a specific property identified by its name from the data retrieved for the current Materials ID (mpid). The property name should be one of the properties listed in the output of the get_prop_list() function.</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">name</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="MpConnect.getkpt">
+<a class="viewcode-back" href="../htepc.html#htepc.MpConnect.getkpt">[docs]</a>
+    <span class="k">def</span> <span class="nf">getkpt</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Compute k-points based on k-point density.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">        ---------------------</span>
+<span class="sd">        kpt : list</span>
+<span class="sd">            The k-point grid.</span>
+<span class="sd">        kptype : str</span>
+<span class="sd">            The type of k-point grid.</span>
+<span class="sd">        kptshift : list</span>
+<span class="sd">            The shifts in the k-point grid, returns [0,0,0].</span>
+
+<span class="sd">        Notes:</span>
+<span class="sd">        ---------------------</span>
+<span class="sd">        This function computes the k-point grid based on a specified k-point density,</span>
+<span class="sd">        defaulting to 0.05 if unspecified. It returns the k-point grid, type, and shifts.</span>
+<span class="sd">        """</span>
+        <span class="n">struc</span> <span class="o">=</span> <span class="n">SpacegroupAnalyzer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="p">,</span><span class="n">symprec</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span><span class="o">.</span><span class="n">get_primitive_standard_structure</span><span class="p">()</span>
+        <span class="n">relax_set</span> <span class="o">=</span> <span class="n">MPRelaxSet</span><span class="p">(</span><span class="n">structure</span><span class="o">=</span><span class="n">struc</span><span class="p">)</span>
+        <span class="n">relax_set</span><span class="o">.</span><span class="n">poscar</span><span class="o">.</span><span class="n">write_file</span><span class="p">(</span><span class="s1">'POSCAR'</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">kptden</span> <span class="o">=</span> <span class="n">input_data</span><span class="p">[</span><span class="s1">'kptden'</span><span class="p">]</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"Default kptden of 0.05 being utilized</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">kptden</span> <span class="o">=</span> <span class="mf">0.05</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kpt</span> <span class="o">=</span> <span class="n">pos_to_kpt</span><span class="p">(</span><span class="s2">"POSCAR"</span><span class="p">,</span><span class="n">kptden</span><span class="p">)</span>
+        <span class="c1">#kpoints3=MPHSERelaxSet(self.structure).kpoints</span>
+        <span class="c1">#kpoints3=MPRelaxSet(self.structure).kpoints</span>
+        <span class="c1">#kpoint_dict=kpoints3.as_dict()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kptype</span> <span class="o">=</span> <span class="s2">"automatic"</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kpshift</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"rm POSCAR"</span><span class="p">)</span>
+        <span class="c1">#kptden = input_data['kptden']</span>
+        <span class="c1">#self.kpt = kpoint_dict['kpoints'][0]</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"*********************************</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"KPOINT with kpoint density of </span><span class="si">{}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">kptden</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"*********************************</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">kpt</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">kptype</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">kpshift</span></div>
+
+
+<div class="viewcode-block" id="MpConnect.getevenkpt">
+<a class="viewcode-back" href="../htepc.html#htepc.MpConnect.getevenkpt">[docs]</a>
+    <span class="k">def</span> <span class="nf">getevenkpt</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Make the k-point mesh even.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">        ---------------</span>
+<span class="sd">        evenkpt : tuple</span>
+<span class="sd">            K-grid with an even number of points in all directions.</span>
+
+<span class="sd">        Notes:</span>
+<span class="sd">        ---------------</span>
+<span class="sd">        Ensures the generated k-point grid has even points in each dimension</span>
+<span class="sd">        by incrementing odd components to the next even number.</span>
+<span class="sd">        Returns the resulting even k-point grid as a tuple.</span>
+<span class="sd">        """</span>
+        <span class="n">kptsize</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">kpt</span><span class="p">)</span>
+        <span class="n">kpoint_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kpt</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">kptsize</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">kpoint_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">%</span><span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">kpoint_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">kpoint_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">kpoint_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">kpoint_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">evenkpt</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">kpoint_list</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">evenkpt</span></div>
+
+
+<div class="viewcode-block" id="MpConnect.getecut_sssp">
+<a class="viewcode-back" href="../htepc.html#htepc.MpConnect.getecut_sssp">[docs]</a>
+    <span class="k">def</span> <span class="nf">getecut_sssp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">element</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Obtain the kinetic energy cutoff for a specific element.</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">        ---------------------</span>
+<span class="sd">        element : str</span>
+<span class="sd">            The type of element for which the kinetic energy cutoff is required.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">        ----------------------</span>
+<span class="sd">        float</span>
+<span class="sd">            Kinetic energy cutoff for the particular element.</span>
+
+<span class="sd">        Notes:</span>
+<span class="sd">        ----------------------</span>
+<span class="sd">        Gets cutoff values for elements from htepc.json or defaults from SSSP efficiency set if not found.</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"htepc.json"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"../../htpec.json"</span><span class="p">):</span>
+            <span class="n">psd_data</span> <span class="o">=</span> <span class="n">input_data</span><span class="p">[</span><span class="s2">"pseudo"</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dict_element</span> <span class="o">=</span> <span class="n">psd_data</span><span class="p">[</span><span class="s1">'PSEUDO'</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"htepc.json file not found, using default values from SSSP efficiency set</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="c1">#print("https://www.materialscloud.org/discover/sssp/table/efficiency\n")</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dict_element</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'H'</span><span class="p">:</span> <span class="mi">60</span><span class="p">,</span> <span class="s1">'Li'</span><span class="p">:</span> <span class="mi">40</span><span class="p">,</span> <span class="s1">'Be'</span><span class="p">:</span> <span class="mi">40</span><span class="p">,</span> <span class="s1">'N'</span><span class="p">:</span> <span class="mi">60</span><span class="p">,</span> <span class="s1">'F'</span><span class="p">:</span> <span class="mi">45</span><span class="p">,</span> <span class="s1">'Na'</span><span class="p">:</span> <span class="mi">40</span><span class="p">,</span> <span class="s1">'Mg'</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span> <span class="s1">'Al'</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span> <span class="s1">'Si'</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span> <span class="s1">'P'</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span> <span class="s1">'S'</span><span class="p">:</span> <span class="mi">35</span><span class="p">,</span> <span class="s1">'Cl'</span><span class="p">:</span> <span class="mi">40</span><span class="p">,</span> <span class="s1">'K'</span><span class="p">:</span> <span class="mi">60</span><span class="p">,</span> <span class="s1">'Ca'</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span> <span class="s1">'Sc'</span><span class="p">:</span> <span class="mi">40</span><span class="p">,</span> <span class="s1">'Ti'</span><span class="p">:</span> <span class="mi">35</span><span class="p">,</span> <span class="s1">'V'</span><span class="p">:</span> <span class="mi">35</span><span class="p">,</span> <span class="s1">'Cr'</span><span class="p">:</span> <span class="mi">40</span><span class="p">,</span> <span class="s1">'Mn'</span><span class="p">:</span> <span class="mi">65</span><span class="p">,</span> <span class="s1">'Fe'</span><span class="p">:</span> <span class="mi">90</span><span class="p">,</span> <span class="s1">'Co'</span><span class="p">:</span> <span class="mi">45</span><span class="p">,</span> <span class="s1">'Ni'</span><span class="p">:</span> <span class="mi">45</span><span class="p">,</span> <span class="s1">'Cu'</span><span class="p">:</span> <span class="mi">55</span><span class="p">,</span> <span class="s1">'Zn'</span><span class="p">:</span> <span class="mi">40</span><span class="p">,</span> <span class="s1">'Ga'</span><span class="p">:</span> <span class="mi">70</span><span class="p">,</span> <span class="s1">'Ge'</span><span class="p">:</span> <span class="mi">40</span><span class="p">,</span> <span class="s1">'As'</span><span class="p">:</span> <span class="mi">35</span><span class="p">,</span> <span class="s1">'Br'</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span> <span class="s1">'Rb'</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span> <span class="s1">'Sr'</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span> <span class="s1">'Y'</span><span class="p">:</span> <span class="mi">35</span><span class="p">,</span> <span class="s1">'Zr'</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span> <span class="s1">'Nb'</span><span class="p">:</span> <span class="mi">40</span><span class="p">,</span> <span class="s1">'Mo'</span><span class="p">:</span> <span class="mi">35</span><span class="p">,</span> <span class="s1">'Tc'</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span> <span class="s1">'Ru'</span><span class="p">:</span> <span class="mi">35</span><span class="p">,</span> <span class="s1">'Rh'</span><span class="p">:</span> <span class="mi">35</span><span class="p">,</span> <span class="s1">'Pd'</span><span class="p">:</span> <span class="mi">45</span><span class="p">,</span> <span class="s1">'Ag'</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span> <span class="s1">'Cd'</span><span class="p">:</span> <span class="mi">60</span><span class="p">,</span> <span class="s1">'In'</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span> <span class="s1">'Sn'</span><span class="p">:</span> <span class="mi">60</span><span class="p">,</span> <span class="s1">'Sb'</span><span class="p">:</span> <span class="mi">40</span><span class="p">,</span> <span class="s1">'Te'</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span> <span class="s1">'I'</span><span class="p">:</span> <span class="mi">35</span><span class="p">,</span> <span class="s1">'Cs'</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span> <span class="s1">'Ba'</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span> <span class="s1">'La'</span><span class="p">:</span> <span class="mi">40</span><span class="p">,</span> <span class="s1">'Hf'</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span> <span class="s1">'Ta'</span><span class="p">:</span> <span class="mi">45</span><span class="p">,</span> <span class="s1">'W'</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span> <span class="s1">'Re'</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span> <span class="s1">'Os'</span><span class="p">:</span> <span class="mi">40</span><span class="p">,</span> <span class="s1">'Ir'</span><span class="p">:</span> <span class="mi">55</span><span class="p">,</span> <span class="s1">'Pt'</span><span class="p">:</span> <span class="mi">35</span><span class="p">,</span> <span class="s1">'Hg'</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span> <span class="s1">'Tl'</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span> <span class="s1">'Pb'</span><span class="p">:</span> <span class="mi">40</span><span class="p">,</span> <span class="s1">'Bi'</span><span class="p">:</span> <span class="mi">45</span><span class="p">,</span> <span class="s1">'B'</span><span class="p">:</span> <span class="mi">35</span><span class="p">,</span> <span class="s1">'C'</span><span class="p">:</span> <span class="mi">45</span><span class="p">,</span> <span class="s1">'Au'</span><span class="p">:</span> <span class="mi">45</span><span class="p">,</span> <span class="s1">'Se'</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span> <span class="s1">'O'</span><span class="p">:</span> <span class="mi">60</span><span class="p">}</span>
+            <span class="c1">#with open("pseudo.py", "w") as write_pseudo:</span>
+            <span class="c1">#    write_pseudo.write("PSEUDO={}".format(self.dict_element))</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict_element</span><span class="p">[</span><span class="n">element</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="MpConnect.maxecut_sssp">
+<a class="viewcode-back" href="../htepc.html#htepc.MpConnect.maxecut_sssp">[docs]</a>
+    <span class="k">def</span> <span class="nf">maxecut_sssp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Choose the maximum kinetic energy cutoff among elements in a compound.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">        -----------------</span>
+<span class="sd">        tuple</span>
+<span class="sd">            A tuple containing the maximum kinetic energy cutoff for waveFunction (ecutwfc)</span>
+<span class="sd">            and the maximum kinetic energy cutoff for charge density (ecutrho).</span>
+
+<span class="sd">        Notes:</span>
+<span class="sd">        -----------------</span>
+<span class="sd">        This function finds the maximum kinetic energy cutoff for compound elements,</span>
+<span class="sd">        then prints tested cutoffs for waveFunction and density.</span>
+<span class="sd">        """</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">comp_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'elements'</span><span class="p">]</span>
+            <span class="n">cutoff_list</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">getecut_sssp</span><span class="p">(</span><span class="n">el</span><span class="p">)</span> <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">comp_list</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">comp_list</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">el</span><span class="p">)</span> <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="o">.</span><span class="n">elements</span><span class="p">]</span>
+            <span class="n">cutoff_list</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">getecut_sssp</span><span class="p">(</span><span class="n">el</span><span class="p">)</span> <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">comp_list</span><span class="p">]</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">elements_spin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="o">.</span><span class="n">elements</span> 
+            <span class="n">cutoff_list</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">elm_spin</span> <span class="ow">in</span> <span class="n">elements_spin</span><span class="p">:</span>
+                <span class="n">elm_spin</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">elm_spin</span><span class="p">)</span>
+                <span class="k">if</span> <span class="s2">","</span> <span class="ow">in</span> <span class="n">elm_spin</span><span class="p">:</span>
+                    <span class="n">cutoff_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">getecut_sssp</span><span class="p">(</span><span class="n">elm_spin</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">","</span><span class="p">)[</span><span class="mi">0</span><span class="p">]))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">cutoff_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">getecut_sssp</span><span class="p">(</span><span class="n">elm_spin</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ecutwfc</span><span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">cutoff_list</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ecutrho</span> <span class="o">=</span> <span class="mi">8</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">ecutwfc</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"******************************************</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"SSSP tested K.E. cutoffs for waveFunction and density</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"******************************************</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ecutwfc</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">ecutrho</span></div>
+
+<div class="viewcode-block" id="MpConnect.maxecut_sssp_for_subs">
+<a class="viewcode-back" href="../htepc.html#htepc.MpConnect.maxecut_sssp_for_subs">[docs]</a>
+    <span class="k">def</span> <span class="nf">maxecut_sssp_for_subs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Determine the maximum kinetic energy cutoff among elements in a compound during the substitution process.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">        -----------------</span>
+<span class="sd">        tuple</span>
+<span class="sd">            A tuple containing the maximum kinetic energy cutoff for waveFunction (ecutwfc)</span>
+<span class="sd">            and the maximum kinetic energy cutoff for charge density (ecutrho).</span>
+
+<span class="sd">        Notes:</span>
+<span class="sd">        -----------------</span>
+<span class="sd">        Similar to maxecut_sssp but for substitution process.</span>
+<span class="sd">        """</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">cutoff_list</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">getecut_sssp</span><span class="p">(</span><span class="n">el</span><span class="p">)</span> <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">comp_list</span><span class="p">]</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">elements_spin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="o">.</span><span class="n">elements</span> 
+            <span class="n">cutoff_list</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">elm_spin</span> <span class="ow">in</span> <span class="n">elements_spin</span><span class="p">:</span>
+                <span class="n">elm_spin</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">elm_spin</span><span class="p">)</span>
+                <span class="k">if</span> <span class="s2">","</span> <span class="ow">in</span> <span class="n">elm_spin</span><span class="p">:</span>
+                    <span class="n">cutoff_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">getecut_sssp</span><span class="p">(</span><span class="n">elm_spin</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">","</span><span class="p">)[</span><span class="mi">0</span><span class="p">]))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">cutoff_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">getecut_sssp</span><span class="p">(</span><span class="n">elm_spin</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ecutwfc</span><span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">cutoff_list</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ecutrho</span> <span class="o">=</span> <span class="mi">8</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">ecutwfc</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ecutwfc</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">ecutrho</span></div>
+
+
+<div class="viewcode-block" id="MpConnect.ecut_set">
+<a class="viewcode-back" href="../htepc.html#htepc.MpConnect.ecut_set">[docs]</a>
+    <span class="k">def</span> <span class="nf">ecut_set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">ecutwfc</span><span class="o">=</span><span class="mf">50.0</span><span class="p">,</span><span class="n">ecutrho</span><span class="o">=</span><span class="mf">400.0</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Function to set kinetic energy cutoffs</span>
+<span class="sd">        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ecutrho</span><span class="o">=</span><span class="n">ecutrho</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ecutwfc</span><span class="o">=</span><span class="n">ecutwfc</span></div>
+
+
+<div class="viewcode-block" id="MpConnect.get_properties">
+<a class="viewcode-back" href="../htepc.html#htepc.MpConnect.get_properties">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">property_name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Function to extract multiple properties from MP.</span>
+<span class="sd">        parameters</span>
+<span class="sd">        -------------------</span>
+<span class="sd">        property_name : list of properties: Default: ['material_id']</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------------------</span>
+<span class="sd">        property_list : list of properties extracted.</span>
+<span class="sd">        """</span>
+        <span class="n">property_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">prop</span> <span class="ow">in</span> <span class="n">property_name</span><span class="p">:</span>
+            <span class="n">property_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">prop</span><span class="p">])</span>
+        <span class="n">property_list</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'material_id'</span><span class="p">])</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'mpid.csv'</span><span class="p">,</span> <span class="s1">'a'</span><span class="p">)</span> <span class="k">as</span> <span class="n">data</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">prop</span> <span class="ow">in</span> <span class="n">property_list</span><span class="p">:</span>
+                <span class="n">data</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">prop</span><span class="p">)</span> <span class="o">+</span> <span class="s2">","</span><span class="p">)</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">property_list</span></div>
+
+<div class="viewcode-block" id="MpConnect.setting_qeinput">
+<a class="viewcode-back" href="../htepc.html#htepc.MpConnect.setting_qeinput">[docs]</a>
+    <span class="k">def</span> <span class="nf">setting_qeinput</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">calculation</span><span class="o">=</span><span class="s1">'vc-relax'</span><span class="p">,</span><span class="n">occupations</span><span class="o">=</span><span class="s1">'smearing'</span><span class="p">,</span><span class="n">restart_mode</span><span class="o">=</span><span class="s1">'from_scratch'</span><span class="p">,</span><span class="n">pseudo_dir</span><span class="o">=</span><span class="s1">'./'</span><span class="p">,</span><span class="n">smearing</span><span class="o">=</span><span class="mf">0.02</span><span class="p">,</span><span class="n">smearing_type</span><span class="o">=</span><span class="s1">'gauss'</span><span class="p">,</span><span class="n">etot_conv_thr</span><span class="o">=</span><span class="mf">1e-05</span><span class="p">,</span><span class="n">forc_conv_thr</span><span class="o">=</span><span class="mf">1e-04</span><span class="p">,</span><span class="n">conv_thr</span><span class="o">=</span><span class="mf">1e-16</span><span class="p">,</span><span class="n">ion_dynamics</span><span class="o">=</span><span class="s1">'bfgs'</span><span class="p">,</span><span class="n">cell_dynamics</span><span class="o">=</span><span class="s1">'bfgs'</span><span class="p">,</span><span class="n">magnetic</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Function to create input file for QE ground-state calculations.</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">        - calculation (str): Type of calculation. Default: 'vc-relax'. Other options are 'relax' (ionic only), 'bands' for band structure, 'scf' for SCF calculations.</span>
+<span class="sd">        - occupations (str): Occupation. Default: 'smearing'. Other options could be 'tetrahedra' and so on.</span>
+<span class="sd">        - restart_mode (str): How to start the calculations.</span>
+<span class="sd">        - pseudo_dir (str): Path to pseudopotential files. Default: './' (current directory).</span>
+<span class="sd">        - smearing (float): Degauss value. Default: 0.02.</span>
+<span class="sd">        - smearing_type (str): Type of smearing. Default: 'gauss'.</span>
+<span class="sd">        - etot_conv_thr, forc_conv_thr, conv_thr (float): Convergence parameters of QE calculations.</span>
+<span class="sd">        - ion_dynamics, cell_dynamics (str): Algorithm to perform relaxation. Default: 'bfgs'.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">        Creates input files in scf-mpid.in format inside scf_dir/.</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="n">magnetic</span><span class="p">:</span>
+            <span class="n">elements_spin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="o">.</span><span class="n">elements</span> 
+            <span class="n">pseudo1</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">magnetization</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">magdict</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+            <span class="n">new_species</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="p">:</span>
+                <span class="n">new_species</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">site</span><span class="o">.</span><span class="n">label</span><span class="p">)</span>
+            <span class="n">new_species</span> <span class="o">=</span> <span class="n">convert_species_list</span><span class="p">(</span><span class="n">new_species</span><span class="p">)</span>
+            <span class="n">pseudo_species</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">elm_spin</span> <span class="ow">in</span> <span class="n">elements_spin</span><span class="p">:</span>
+                <span class="n">pseudo_species</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">elm_spin</span><span class="p">))</span>
+            <span class="n">pseudo_species_new</span> <span class="o">=</span> <span class="n">convert_species_list</span><span class="p">(</span><span class="n">pseudo_species</span><span class="p">)</span>
+            <span class="n">pseudo_change_dict</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">_</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pseudo_species</span><span class="p">):</span>
+                <span class="n">pseudo_change_dict</span><span class="p">[</span><span class="n">pseudo_species</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="n">pseudo_species_new</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">elm_spin</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">elements_spin</span><span class="p">):</span>
+                <span class="n">elm_spin</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">elm_spin</span><span class="p">)</span>
+                <span class="k">if</span> <span class="s2">","</span> <span class="ow">in</span> <span class="n">elm_spin</span><span class="p">:</span>
+                    <span class="n">elm_s</span> <span class="o">=</span> <span class="n">elm_spin</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">","</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">spin_s</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">elm_spin</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">","</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"="</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+                    <span class="n">mag_s</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">spin_s</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="o">-</span><span class="mi">1</span> <span class="k">if</span> <span class="n">spin_s</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span>
+                    <span class="n">pseudo1</span><span class="p">[</span><span class="n">elm_spin</span><span class="p">]</span> <span class="o">=</span> <span class="n">elm_s</span> <span class="o">+</span> <span class="s2">".upf"</span>
+                    <span class="n">magnetization</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mag_s</span><span class="p">)</span>
+                    <span class="n">magdict</span><span class="p">[</span><span class="n">elm_s</span><span class="p">]</span> <span class="o">=</span> <span class="n">mag_s</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">pseudo1</span><span class="p">[</span><span class="n">elm_spin</span><span class="p">]</span> <span class="o">=</span> <span class="n">elm_spin</span> <span class="o">+</span> <span class="s2">".upf"</span>
+                    <span class="n">magnetization</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                    <span class="n">magdict</span><span class="p">[</span><span class="n">elm_spin</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">pseudo1</span> <span class="o">=</span> <span class="p">{</span><span class="n">el</span><span class="p">:</span><span class="n">el</span><span class="o">+</span><span class="s1">'.upf'</span> <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">comp_list</span><span class="p">}</span>
+        <span class="c1">#try:</span>
+        <span class="c1">#    prefix = self.data['composition'].alphabetical_formula</span>
+        <span class="c1">#except:</span>
+        <span class="c1">#    prefix = self.data['pretty_formula']</span>
+        <span class="n">prefix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"htepc.json"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"../../htpec.json"</span><span class="p">):</span>
+            <span class="n">pwscf_in</span> <span class="o">=</span> <span class="n">input_data</span><span class="p">[</span><span class="s2">"pwscf_in"</span><span class="p">]</span>
+            <span class="n">control</span> <span class="o">=</span> <span class="n">pwscf_in</span><span class="p">[</span><span class="s1">'control'</span><span class="p">]</span>
+            <span class="n">system</span> <span class="o">=</span> <span class="n">pwscf_in</span><span class="p">[</span><span class="s1">'system'</span><span class="p">]</span>
+            <span class="n">electrons</span> <span class="o">=</span> <span class="n">pwscf_in</span><span class="p">[</span><span class="s1">'electrons'</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">control</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'calculation'</span><span class="p">:</span><span class="n">calculation</span><span class="p">,</span> <span class="s1">'nstep'</span><span class="p">:</span><span class="mi">300</span><span class="p">,</span> <span class="s1">'restart_mode'</span><span class="p">:</span><span class="n">restart_mode</span><span class="p">,</span> <span class="s1">'pseudo_dir'</span><span class="p">:</span><span class="n">pseudo_dir</span><span class="p">,</span> <span class="s1">'outdir'</span><span class="p">:</span><span class="s1">'./'</span><span class="p">,</span> <span class="s1">'tprnfor'</span><span class="p">:</span><span class="s1">'.true.'</span><span class="p">,</span><span class="s1">'tstress'</span><span class="p">:</span><span class="s1">'.true.'</span><span class="p">,</span> <span class="s1">'etot_conv_thr'</span><span class="p">:</span><span class="n">etot_conv_thr</span><span class="p">,</span> <span class="s1">'forc_conv_thr'</span><span class="p">:</span><span class="n">forc_conv_thr</span><span class="p">}</span>
+            <span class="n">system</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'smearing'</span><span class="p">:</span><span class="n">smearing_type</span><span class="p">,</span> <span class="s1">'occupations'</span><span class="p">:</span><span class="n">occupations</span><span class="p">,</span> <span class="s1">'degauss'</span><span class="p">:</span><span class="n">smearing</span><span class="p">}</span>
+            <span class="n">electrons</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'diagonalization'</span><span class="p">:</span><span class="s1">'david'</span><span class="p">,</span> <span class="s1">'mixing_mode'</span><span class="p">:</span><span class="s1">'plain'</span><span class="p">,</span> <span class="s1">'mixing_beta'</span><span class="p">:</span><span class="mf">0.7</span><span class="p">,</span> <span class="s1">'conv_thr'</span><span class="p">:</span> <span class="n">conv_thr</span><span class="p">,</span> <span class="s1">'electron_maxstep'</span><span class="p">:</span><span class="mi">300</span><span class="p">}</span>
+            <span class="c1">#with open("pwscf_in.py", "w") as pw_in:</span>
+            <span class="c1">#    pw_in.write("control={}".format(control) + "\n")</span>
+            <span class="c1">#    pw_in.write("system={}".format(system) + "\n")</span>
+            <span class="c1">#    pw_in.write("electrons={}".format(electrons) + "\n")</span>
+        <span class="n">system</span><span class="p">[</span><span class="s1">'ecutwfc'</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ecutwfc</span>
+        <span class="n">system</span><span class="p">[</span><span class="s1">'ecutrho'</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ecutrho</span>
+        <span class="n">control</span><span class="p">[</span><span class="s1">'prefix'</span><span class="p">]</span> <span class="o">=</span> <span class="n">prefix</span>
+        <span class="c1"># lW  2010_SC has monoclinic conventional cell with alpha&lt;90, beta=gamma=90, different from international beta=90</span>
+        <span class="n">tmpanalyzer</span> <span class="o">=</span> <span class="n">SpacegroupAnalyzer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="p">)</span>
+        <span class="n">tmpstructure</span> <span class="o">=</span> <span class="n">tmpanalyzer</span><span class="o">.</span><span class="n">get_primitive_standard_structure</span><span class="p">(</span><span class="n">international_monoclinic</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="c1">#print(tmpstructure)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">structure</span> <span class="o">=</span> <span class="n">tmpstructure</span>
+        <span class="k">if</span> <span class="n">calculation</span> <span class="o">==</span> <span class="s1">'vc-relax'</span><span class="p">:</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="n">pwscf</span><span class="o">.</span><span class="n">PWInput</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="p">,</span> <span class="n">pseudo</span><span class="o">=</span><span class="n">pseudo1</span><span class="p">,</span> <span class="n">control</span><span class="o">=</span><span class="n">control</span><span class="p">,</span> <span class="n">system</span><span class="o">=</span><span class="n">system</span><span class="p">,</span><span class="n">electrons</span><span class="o">=</span><span class="n">electrons</span><span class="p">,</span> <span class="n">kpoints_grid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kpt</span><span class="p">,</span> <span class="n">ions</span><span class="o">=</span><span class="p">{</span><span class="s1">'ion_dynamics'</span><span class="p">:</span><span class="n">ion_dynamics</span><span class="p">},</span> <span class="n">cell</span><span class="o">=</span><span class="p">{</span><span class="s1">'cell_dynamics'</span><span class="p">:</span><span class="n">cell_dynamics</span><span class="p">,</span><span class="s1">'press_conv_thr'</span><span class="p">:</span><span class="mf">0.05</span><span class="p">})</span>
+        <span class="k">elif</span> <span class="n">calculation</span> <span class="o">==</span> <span class="s1">'relax'</span><span class="p">:</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="n">pwscf</span><span class="o">.</span><span class="n">PWInput</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="p">,</span> <span class="n">pseudo</span><span class="o">=</span><span class="n">pseudo1</span><span class="p">,</span> <span class="n">control</span><span class="o">=</span><span class="n">control</span><span class="p">,</span> <span class="n">system</span><span class="o">=</span><span class="n">system</span><span class="p">,</span><span class="n">electrons</span><span class="o">=</span><span class="n">electrons</span><span class="p">,</span> <span class="n">kpoints_grid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kpt</span><span class="p">,</span> <span class="n">ions</span><span class="o">=</span><span class="p">{</span><span class="s1">'ion_dynamics'</span><span class="p">:</span><span class="n">ion_dynamics</span><span class="p">})</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="n">pwscf</span><span class="o">.</span><span class="n">PWInput</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="p">,</span> <span class="n">pseudo</span><span class="o">=</span><span class="n">pseudo1</span><span class="p">,</span> <span class="n">control</span><span class="o">=</span><span class="n">control</span><span class="p">,</span> <span class="n">system</span><span class="o">=</span><span class="n">system</span><span class="p">,</span><span class="n">electrons</span><span class="o">=</span><span class="n">electrons</span><span class="p">,</span> <span class="n">kpoints_grid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kpt</span><span class="p">)</span>
+        <span class="n">filename</span><span class="o">.</span><span class="n">write_file</span><span class="p">(</span><span class="s2">"temp.in"</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"""sed "s/'.true.'/.true./" </span><span class="si">{}</span><span class="s2"> &gt; </span><span class="si">{}</span><span class="s2">"""</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">"temp.in"</span><span class="p">,</span><span class="s2">"scf-</span><span class="si">{}</span><span class="s2">.in"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mpid</span><span class="p">)))</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"sed -n '/K_POINTS automatic/,/CELL_PARAMETERS angstrom/p' scf-</span><span class="si">{}</span><span class="s2">.in | sed '$d' &gt; kpoint-</span><span class="si">{}</span><span class="s2">.dat"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mpid</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">mpid</span><span class="p">))</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="n">INPUTscf</span><span class="p">(</span><span class="s2">"scf-</span><span class="si">{}</span><span class="s2">.in"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mpid</span><span class="p">))</span>
+        <span class="n">obj</span><span class="o">.</span><span class="n">standardize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mpid</span><span class="p">,</span><span class="n">output</span><span class="o">=</span><span class="s2">"temp.dat"</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"sed -n '/&amp;CONTROL/,/ATOMIC_SPECIES/p' scf-</span><span class="si">{}</span><span class="s2">.in | sed '$d' &gt; scf.header"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mpid</span><span class="p">))</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"sed -n '/ATOMIC_SPECIES/,/ATOMIC_POSITIONS crystal/p' scf-</span><span class="si">{}</span><span class="s2">.in | sed '$d' &gt; species"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mpid</span><span class="p">))</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"rm temp.in"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">calculation</span> <span class="o">==</span> <span class="s1">'bands'</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"sed -i '/K_POINTS/{N;d;}' temp.dat"</span><span class="p">)</span>
+            <span class="n">obj</span> <span class="o">=</span> <span class="n">INPUTscf</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s2">"scf-</span><span class="si">{}</span><span class="s2">.in"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mpid</span><span class="p">))</span>
+            <span class="n">obj</span><span class="o">.</span><span class="n">generate_kpath</span><span class="p">(</span><span class="n">nqpoint</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span><span class="n">kcut</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="s2">"kpoint.dat"</span><span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"cat kpoint.dat temp.dat &gt; temp2.dat"</span><span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"mv temp2.dat temp.dat"</span><span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"cat scf.header species temp.dat &gt; scf-</span><span class="si">{}</span><span class="s2">.in"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mpid</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"Input for band calculation. Provide nband = &lt;n&gt; within SYSTEM section. Use sufficient &lt;n&gt;."</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"cat scf.header species temp.dat &gt; scf-</span><span class="si">{}</span><span class="s2">.in"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mpid</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">magnetic</span><span class="p">:</span>
+            <span class="n">maglist</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">magdict</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="sa">f</span><span class="s2">"""sed -i '/&amp;SYSTEM/a nspin = 2,' scf-</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">mpid</span><span class="si">}</span><span class="s2">.in"""</span><span class="p">)</span>
+            <span class="n">nsites</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">maglist</span><span class="p">)</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">"scf-</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">mpid</span><span class="si">}</span><span class="s2">.in"</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">)</span> <span class="k">as</span> <span class="n">readscf</span><span class="p">:</span>
+                <span class="n">scflines</span> <span class="o">=</span> <span class="n">readscf</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+            <span class="n">old_species</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">natom</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">scfl</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">scflines</span><span class="p">):</span>
+                <span class="k">if</span> <span class="s1">'ATOMIC_POSITIONS'</span> <span class="ow">in</span> <span class="n">scfl</span><span class="p">:</span>
+                    <span class="n">atom_start</span> <span class="o">=</span> <span class="n">i</span>
+                <span class="k">if</span> <span class="s1">'ATOMIC_SPECIES'</span> <span class="ow">in</span> <span class="n">scfl</span><span class="p">:</span>
+                    <span class="n">pseudo_start</span> <span class="o">=</span> <span class="n">i</span>
+            <span class="k">while</span> <span class="n">natom</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">new_species</span><span class="p">):</span>
+                <span class="n">old_species</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">scflines</span><span class="p">[</span><span class="n">atom_start</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">" "</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="n">natom</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">new_list</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">_</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pseudo_species</span><span class="p">):</span>
+                <span class="n">old</span> <span class="o">=</span> <span class="n">scflines</span><span class="p">[</span><span class="n">pseudo_start</span><span class="o">+</span><span class="mi">1</span><span class="o">+</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">" "</span><span class="p">)</span>
+                <span class="n">old</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">!=</span> <span class="s1">''</span><span class="p">,</span> <span class="n">old</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">new</span> <span class="o">=</span> <span class="n">pseudo_change_dict</span><span class="p">[</span><span class="n">old</span><span class="p">]</span>
+                <span class="n">new_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new</span><span class="p">)</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="sa">f</span><span class="s2">"""sed -i '</span><span class="si">{</span><span class="n">pseudo_start</span><span class="o">+</span><span class="mi">2</span><span class="o">+</span><span class="n">k</span><span class="si">}</span><span class="s2">s/</span><span class="si">{</span><span class="n">old</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">new</span><span class="si">}</span><span class="s2">/' scf-</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">mpid</span><span class="si">}</span><span class="s2">.in"""</span><span class="p">)</span>
+            <span class="n">maglist</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">reorder_dictionary</span><span class="p">(</span><span class="n">magdict</span><span class="p">,</span><span class="n">new_list</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+            <span class="k">for</span> <span class="n">j</span><span class="p">,</span><span class="n">_</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">old_species</span><span class="p">):</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="sa">f</span><span class="s2">"""sed -i '</span><span class="si">{</span><span class="n">atom_start</span><span class="o">+</span><span class="mi">2</span><span class="o">+</span><span class="n">j</span><span class="si">}</span><span class="s2">s/</span><span class="si">{</span><span class="n">old_species</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">new_species</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="si">}</span><span class="s2">/' scf-</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">mpid</span><span class="si">}</span><span class="s2">.in"""</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">j</span><span class="p">,</span><span class="n">_</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">maglist</span><span class="p">):</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="sa">f</span><span class="s2">"""sed -i '/&amp;SYSTEM/a starting_magnetization(</span><span class="si">{</span><span class="n">nsites</span><span class="o">-</span><span class="n">j</span><span class="si">}</span><span class="s2">) = </span><span class="si">{</span><span class="n">maglist</span><span class="p">[</span><span class="n">nsites</span><span class="o">-</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">' scf-</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">mpid</span><span class="si">}</span><span class="s2">.in"""</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"rm scf.header species temp.dat kpoint*"</span><span class="p">)</span></div>
+</div>
+
+<div class="viewcode-block" id="reorder_dictionary">
+<a class="viewcode-back" href="../htepc.html#htepc.reorder_dictionary">[docs]</a>
+<span class="k">def</span> <span class="nf">reorder_dictionary</span><span class="p">(</span><span class="n">original_dict</span><span class="p">,</span> <span class="n">new_order</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Reorder the keys of a dictionary based on a new list of keywords and return the list of keys.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">    - original_dict (dict): The original dictionary whose keys are to be reordered.</span>
+<span class="sd">    - new_order (list): The new list of keywords specifying the desired order of keys.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">    - list: The list of keys of the reordered dictionary based on the new order.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">    original_dict = {'a': 1, 'b': 2, 'c': 3, 'd': 4}</span>
+<span class="sd">    new_order = ['c', 'a', 'd', 'b']</span>
+<span class="sd">    reorder_dictionary(original_dict, new_order)</span>
+<span class="sd">    """</span>
+    <span class="c1"># Create a new OrderedDict with the keys ordered according to the new list</span>
+    <span class="n">ordered_dict</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">((</span><span class="n">key</span><span class="p">,</span> <span class="n">original_dict</span><span class="p">[</span><span class="n">key</span><span class="p">])</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">new_order</span> <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">original_dict</span><span class="p">)</span>
+
+    <span class="c1"># Return the list of keys in the new order</span>
+    <span class="k">return</span> <span class="n">ordered_dict</span></div>
+
+
+<div class="viewcode-block" id="convert_species_list">
+<a class="viewcode-back" href="../htepc.html#htepc.convert_species_list">[docs]</a>
+<span class="k">def</span> <span class="nf">convert_species_list</span><span class="p">(</span><span class="n">original_list</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Replace elements in the original list with generic names followed by occurrence counts.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">    - original_list (list): List containing strings representing elements.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">    - list: Updated list where elements are replaced with generic names and occurrence counts.</span>
+
+<span class="sd">    Algorithm:</span>
+<span class="sd">    - Replace elements with generic names followed by occurrence counts.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">     original_list = ['Fe,spin=5', 'Fe,spin=-5', 'pd', 'pd', 'I,spin=1', 'I,spin=-1']</span>
+<span class="sd">     convert_species_list(original_list)</span>
+<span class="sd">    ['Fe1', 'Fe2', 'pd', 'pd', 'I1', 'I2']</span>
+<span class="sd">    """</span>
+    <span class="n">counter</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+    <span class="c1"># Updated list</span>
+    <span class="n">updated_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c1"># Iterate through the original list</span>
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">original_list</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s1">','</span> <span class="ow">in</span> <span class="n">item</span> <span class="ow">and</span> <span class="s1">'spin=0'</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">item</span><span class="p">:</span>
+            <span class="n">element</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">','</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">counter</span><span class="p">[</span><span class="n">element</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">counter</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">updated_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">element</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">counter</span><span class="p">[</span><span class="n">element</span><span class="p">]))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">updated_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="s1">','</span> <span class="ow">in</span> <span class="n">item</span> <span class="ow">and</span> <span class="s1">'spin=0'</span> <span class="ow">in</span> <span class="n">item</span><span class="p">:</span>
+            <span class="n">element</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">','</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">updated_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">updated_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">updated_list</span></div>
+
+
+<div class="viewcode-block" id="INPUTscf">
+<a class="viewcode-back" href="../htepc.html#htepc.INPUTscf">[docs]</a>
+<span class="k">class</span> <span class="nc">INPUTscf</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    class to process QE input files</span>
+<span class="sd">    parameters</span>
+<span class="sd">    ------------------</span>
+<span class="sd">    filename: (str) QE input file</span>
+<span class="sd">    """</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">filename</span><span class="o">=</span><span class="s1">'scf.in'</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file2</span> <span class="o">=</span> <span class="n">espresso</span><span class="o">.</span><span class="n">read_espresso_in</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">file2</span><span class="o">.</span><span class="n">cell</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">file2</span><span class="o">.</span><span class="n">get_volume</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">braiv_latt</span> <span class="o">=</span> <span class="n">Cell</span><span class="o">.</span><span class="n">get_bravais_lattice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lattice</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">braiv_latt</span><span class="o">.</span><span class="n">lattice_system</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mpid</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">comp</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">qpoint</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mass</span> <span class="o">=</span> <span class="p">[]</span>
+
+<div class="viewcode-block" id="INPUTscf.scftocif">
+<a class="viewcode-back" href="../htepc.html#htepc.INPUTscf.scftocif">[docs]</a>
+    <span class="k">def</span> <span class="nf">scftocif</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">output</span><span class="o">=</span><span class="s1">'file.cif'</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Function to convert QE input file to structure file in .cif format</span>
+<span class="sd">        parameters</span>
+<span class="sd">        ---------------</span>
+<span class="sd">        output : (str) name of the output file</span>
+<span class="sd">        Returns</span>
+<span class="sd">        ---------------</span>
+<span class="sd">        file2 : output file object</span>
+<span class="sd">        """</span>
+        <span class="n">cif</span><span class="o">.</span><span class="n">write_cif</span><span class="p">(</span><span class="n">output</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">file2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">file2</span></div>
+
+
+<div class="viewcode-block" id="INPUTscf.cellpar">
+<a class="viewcode-back" href="../htepc.html#htepc.INPUTscf.cellpar">[docs]</a>
+    <span class="k">def</span> <span class="nf">cellpar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Function to calculate cell lengths and angles</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -----------------------</span>
+<span class="sd">        list of lenghts and angles</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">file2</span><span class="o">.</span><span class="n">get_cell_lengths_and_angles</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="INPUTscf.standardize">
+<a class="viewcode-back" href="../htepc.html#htepc.INPUTscf.standardize">[docs]</a>
+    <span class="k">def</span> <span class="nf">standardize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">mpid</span><span class="p">,</span><span class="n">output</span><span class="o">=</span><span class="s2">"standard.in"</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Function to get closest bravais lattice parameters.</span>
+<span class="sd">        parameters</span>
+<span class="sd">        -----------------</span>
+<span class="sd">        mpid : (str) materials project ID</span>
+<span class="sd">        output : (str) output file. Default: 'standard.in'</span>
+<span class="sd">        """</span>
+        <span class="n">finalpos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">file2</span><span class="o">.</span><span class="n">get_scaled_positions</span><span class="p">()</span>
+        <span class="n">finalcell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">braiv_latt</span><span class="o">.</span><span class="n">tocell</span><span class="p">()</span>
+        <span class="c1">#finalcell = self.cell</span>
+        <span class="n">specieslist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">file2</span><span class="o">.</span><span class="n">symbols</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"kpoint-</span><span class="si">{}</span><span class="s2">.dat"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mpid</span><span class="p">),</span> <span class="s2">"r"</span><span class="p">)</span> <span class="k">as</span> <span class="n">kpoint</span><span class="p">:</span>
+            <span class="n">kplines</span> <span class="o">=</span> <span class="n">kpoint</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">)</span> <span class="k">as</span> <span class="n">struc</span><span class="p">:</span>
+            <span class="n">struc</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"ATOMIC_POSITIONS crystal</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="c1">#for i in range(len(specieslist)):</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">_</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">specieslist</span><span class="p">):</span>
+                <span class="n">struc</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">specieslist</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">finalpos</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span><span class="o">+</span> <span class="s2">" "</span><span class="p">)</span>
+                <span class="n">struc</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">finalpos</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">finalpos</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">2</span><span class="p">])</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
+                <span class="n">struc</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">kplines</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="n">struc</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"CELL_PARAMETERS angstrom</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+                <span class="n">struc</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">finalcell</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">finalcell</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">finalcell</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">2</span><span class="p">])</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="INPUTscf.generate_kpath">
+<a class="viewcode-back" href="../htepc.html#htepc.INPUTscf.generate_kpath">[docs]</a>
+    <span class="k">def</span> <span class="nf">generate_kpath</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">nqpoint</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span><span class="n">kcut</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="s1">'kpath.in'</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Function to generate and write k-point mesh for bandstructure calculation to a file</span>
+<span class="sd">        parameters</span>
+<span class="sd">        --------------------</span>
+<span class="sd">        nqpoint : (int) size of the k-point mesh. Default: 200</span>
+<span class="sd">        kcut : (int) cutoff to the high-symmetry path of the Brillouin zone. Default: 0 for full Brillouin zone</span>
+<span class="sd">        out : (str) output file. Default: 'kpath.in'</span>
+<span class="sd">        Returns</span>
+<span class="sd">        --------------------</span>
+<span class="sd">        kpts : numpy array of kpoints in linear axis after processing</span>
+<span class="sd">        n : (int) size of kpts</span>
+<span class="sd">        """</span>
+        <span class="n">kpts</span><span class="p">,</span><span class="n">_</span><span class="p">,</span><span class="n">_</span><span class="p">,</span><span class="n">_</span><span class="p">,</span><span class="n">_</span><span class="p">,</span><span class="n">_</span> <span class="o">=</span> <span class="n">kpath</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span><span class="n">nqpoint</span><span class="p">,</span><span class="n">kcut</span><span class="p">)</span>
+        <span class="n">nkpt</span> <span class="o">=</span> <span class="n">kpts</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="s1">'w'</span><span class="p">)</span> <span class="k">as</span> <span class="n">kmesh</span><span class="p">:</span>
+            <span class="n">kmesh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">'K_POINTS</span><span class="se">\n</span><span class="s1">'</span><span class="p">)</span>
+            <span class="n">kmesh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">nkpt</span><span class="p">)</span> <span class="o">+</span> <span class="s1">'</span><span class="se">\n</span><span class="s1">'</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nkpt</span><span class="p">):</span>
+                <span class="n">kmesh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">kpts</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span><span class="mi">8</span><span class="p">))</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">kpts</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span><span class="mi">8</span><span class="p">))</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">kpts</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">2</span><span class="p">],</span><span class="mi">8</span><span class="p">))</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">nkpt</span><span class="p">,</span><span class="n">kpts</span></div>
+
+
+<div class="viewcode-block" id="INPUTscf.setting_input">
+<a class="viewcode-back" href="../htepc.html#htepc.INPUTscf.setting_input">[docs]</a>
+    <span class="k">def</span> <span class="nf">setting_input</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">comp</span><span class="p">,</span><span class="n">mass</span><span class="p">,</span><span class="n">qpoint</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Function to setup input</span>
+<span class="sd">        parameters</span>
+<span class="sd">        -------------</span>
+<span class="sd">        comp : compound name</span>
+<span class="sd">        mass: List of masses of elements</span>
+<span class="sd">        qpoint : List of qpoint</span>
+<span class="sd">        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">comp</span><span class="o">=</span><span class="n">comp</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mass</span><span class="o">=</span><span class="n">mass</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">qpoint</span><span class="o">=</span><span class="n">qpoint</span>
+        <span class="n">obj</span><span class="o">=</span><span class="n">MpConnect</span><span class="p">()</span>
+        <span class="n">obj</span><span class="o">.</span><span class="n">setting</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">comp</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mpid</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">mpid</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">prefix</span></div>
+
+
+<div class="viewcode-block" id="INPUTscf.create_elph">
+<a class="viewcode-back" href="../htepc.html#htepc.INPUTscf.create_elph">[docs]</a>
+    <span class="k">def</span> <span class="nf">create_elph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">output</span><span class="o">=</span><span class="s1">'elph.in'</span><span class="p">,</span><span class="n">tol</span><span class="o">=</span><span class="mf">0.00000000000001</span><span class="p">,</span><span class="n">sigma</span><span class="o">=</span><span class="mf">0.005</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">         Function similar to elph.py file inside src/</span>
+<span class="sd">        """</span>
+        <span class="n">dynmat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"'"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span> <span class="o">+</span> <span class="s2">".dyn"</span>
+        <span class="n">nat</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mass</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="s1">'w'</span><span class="p">)</span> <span class="k">as</span> <span class="n">elph</span><span class="p">:</span>
+            <span class="n">elph</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"electron phonon coupling </span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">elph</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"&amp;inputph"</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">elph</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"tr2_ph=</span><span class="si">{}</span><span class="s2">,"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tol</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">elph</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"prefix=</span><span class="si">{}</span><span class="s2">,"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prefix</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">elph</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"fildvscf='aldv',"</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">nat</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+                <span class="n">elph</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"amass(</span><span class="si">{}</span><span class="s2">)=</span><span class="si">{}</span><span class="s2">,"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">mass</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">elph</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"outdir='./',"</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">elph</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"fildyn='</span><span class="si">{}</span><span class="s2">',"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dynmat</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">elph</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"electron_phonon='interpolated',"</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">elph</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"el_ph_sigma=</span><span class="si">{}</span><span class="s2">,"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sigma</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">elph</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"el_ph_nsigma=10,"</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">elph</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"trans=.true.,"</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">elph</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"ldisp=.true."</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">elph</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"nq1=</span><span class="si">{}</span><span class="s2">,nq2=</span><span class="si">{}</span><span class="s2">,nq3=</span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qpoint</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qpoint</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qpoint</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">elph</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"/"</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="INPUTscf.create_q2r">
+<a class="viewcode-back" href="../htepc.html#htepc.INPUTscf.create_q2r">[docs]</a>
+    <span class="k">def</span> <span class="nf">create_q2r</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">output</span><span class="o">=</span><span class="s1">'q2r.in'</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">         Function similar to q2r.py file inside src/</span>
+<span class="sd">        """</span>
+        <span class="n">dynmat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"'"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span> <span class="o">+</span> <span class="s2">".dyn"</span>
+        <span class="n">frc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"'"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span> <span class="o">+</span> <span class="s2">".fc"</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="s1">'w'</span><span class="p">)</span> <span class="k">as</span> <span class="n">q2r_write</span><span class="p">:</span>
+            <span class="n">q2r_write</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"&amp;input"</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">q2r_write</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"zasr='simple',"</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">q2r_write</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"fildyn='</span><span class="si">{}</span><span class="s2">',"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dynmat</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">q2r_write</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"flfrc='</span><span class="si">{}</span><span class="s2">',"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">frc</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">q2r_write</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"la2F=.true."</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">q2r_write</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"/"</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="INPUTscf.create_matdyn">
+<a class="viewcode-back" href="../htepc.html#htepc.INPUTscf.create_matdyn">[docs]</a>
+    <span class="k">def</span> <span class="nf">create_matdyn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="s1">'matdyn.in'</span><span class="p">,</span><span class="n">nqpt</span><span class="o">=</span><span class="mi">60</span><span class="p">,</span><span class="n">kcut</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">         Function similar to matdyn.py file inside src/</span>
+<span class="sd">        """</span>
+        <span class="n">freq</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"'"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span> <span class="o">+</span> <span class="s2">".freq"</span>
+        <span class="n">frc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"'"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span> <span class="o">+</span> <span class="s2">".fc"</span>
+        <span class="n">eig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"'"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span> <span class="o">+</span> <span class="s2">".eig"</span>
+        <span class="n">nat</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mass</span><span class="p">)</span>
+        <span class="n">nkpt</span><span class="p">,</span><span class="n">kpts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate_kpath</span><span class="p">(</span><span class="n">nqpoint</span><span class="o">=</span><span class="n">nqpt</span><span class="p">,</span><span class="n">kcut</span><span class="o">=</span><span class="n">kcut</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="s1">'w'</span><span class="p">)</span> <span class="k">as</span> <span class="n">matdyn_write</span><span class="p">:</span>
+            <span class="n">matdyn_write</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"&amp;input"</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">matdyn_write</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"asr='simple',"</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">nat</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+                <span class="n">matdyn_write</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"amass(</span><span class="si">{}</span><span class="s2">)=</span><span class="si">{}</span><span class="s2">,"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">mass</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">matdyn_write</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"flfrc='</span><span class="si">{}</span><span class="s2">',"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">frc</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">matdyn_write</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"flfrq='</span><span class="si">{}</span><span class="s2">',"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">freq</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">matdyn_write</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"fleig='</span><span class="si">{}</span><span class="s2">',"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">eig</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">matdyn_write</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"la2F=.true.,"</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">matdyn_write</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"dos=.false."</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">matdyn_write</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"/"</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">matdyn_write</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">nkpt</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nkpt</span><span class="p">):</span>
+                <span class="n">matdyn_write</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">kpts</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span><span class="mi">8</span><span class="p">))</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">kpts</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span><span class="mi">8</span><span class="p">))</span> <span class="o">+</span> <span class="s2">" "</span><span class="p">)</span>
+                <span class="n">matdyn_write</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">kpts</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">2</span><span class="p">],</span><span class="mi">8</span><span class="p">))</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="INPUTscf.create_phdos">
+<a class="viewcode-back" href="../htepc.html#htepc.INPUTscf.create_phdos">[docs]</a>
+    <span class="k">def</span> <span class="nf">create_phdos</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">kpts</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="s1">'phdos.in'</span><span class="p">,</span><span class="n">ndos</span><span class="o">=</span><span class="mi">200</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">         Function similar to matdyn_dos.py file inside src/</span>
+<span class="sd">        """</span>
+        <span class="n">freq</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"'"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"-dos.freq"</span>
+        <span class="n">frc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"'"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span> <span class="o">+</span> <span class="s2">".fc"</span>
+        <span class="n">nat</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mass</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="s1">'w'</span><span class="p">)</span> <span class="k">as</span> <span class="n">phdos</span><span class="p">:</span>
+            <span class="n">phdos</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"&amp;input"</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">phdos</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"asr='simple',"</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">nat</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+                <span class="n">phdos</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"amass(</span><span class="si">{}</span><span class="s2">)=</span><span class="si">{}</span><span class="s2">,"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">mass</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">phdos</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"flfrc='</span><span class="si">{}</span><span class="s2">',"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">frc</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">phdos</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"flfrq='</span><span class="si">{}</span><span class="s2">',"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">freq</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">phdos</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"la2F=.true.,"</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">phdos</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"dos=.true.,"</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">phdos</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"fldos='phonon.dos',"</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">phdos</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"nk1=</span><span class="si">{}</span><span class="s2">,nk2=</span><span class="si">{}</span><span class="s2">,nk3=</span><span class="si">{}</span><span class="s2">,ndos=</span><span class="si">{}</span><span class="s2">,"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">kpts</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">kpts</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">kpts</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span><span class="n">ndos</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">phdos</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"/"</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="INPUTscf.create_dos">
+<a class="viewcode-back" href="../htepc.html#htepc.INPUTscf.create_dos">[docs]</a>
+    <span class="k">def</span> <span class="nf">create_dos</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">out1</span><span class="o">=</span><span class="s1">'dos.in'</span><span class="p">,</span><span class="n">out2</span><span class="o">=</span><span class="s1">'pdos.in'</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">         Function similar to dos.py file inside src/</span>
+<span class="sd">        """</span>
+        <span class="n">dynmat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"'"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span> <span class="o">+</span> <span class="s2">".dos"</span>
+        <span class="n">dynmat1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"'"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span> <span class="o">+</span> <span class="s2">".pdos"</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">out1</span><span class="p">,</span> <span class="s1">'w'</span><span class="p">)</span> <span class="k">as</span> <span class="n">dos</span><span class="p">:</span>
+            <span class="n">dos</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"&amp;dos"</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">dos</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"prefix=</span><span class="si">{}</span><span class="s2">,"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prefix</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">dos</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"outdir='./',"</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">dos</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"fildos='</span><span class="si">{}</span><span class="s2">',"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dynmat</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">dos</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"DeltaE=0.01"</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">dos</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"/"</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">out2</span><span class="p">,</span> <span class="s1">'w'</span><span class="p">)</span> <span class="k">as</span> <span class="n">pdos</span><span class="p">:</span>
+            <span class="n">pdos</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"&amp;projwfc"</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">pdos</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"prefix=</span><span class="si">{}</span><span class="s2">,"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prefix</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">pdos</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"outdir='./',"</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">pdos</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"pfildos='</span><span class="si">{}</span><span class="s2">',"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dynmat1</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">pdos</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"DeltaE=0.01"</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">pdos</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"/"</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="INPUTscf.post_band">
+<a class="viewcode-back" href="../htepc.html#htepc.INPUTscf.post_band">[docs]</a>
+    <span class="k">def</span> <span class="nf">post_band</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="s1">'band.in'</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">         Function similar to band.py file inside src/</span>
+<span class="sd">        """</span>
+        <span class="n">dynmat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"'"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span> <span class="o">+</span> <span class="s2">".dat"</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="s1">'w'</span><span class="p">)</span> <span class="k">as</span> <span class="n">band</span><span class="p">:</span>
+            <span class="n">band</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"&amp;BANDS"</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">band</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"prefix=</span><span class="si">{}</span><span class="s2">,"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prefix</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">band</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"outdir='./',"</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">band</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"filband='</span><span class="si">{}</span><span class="s2">',"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dynmat</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">band</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"lsym=.true."</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">band</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"/"</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="INPUTscf.post_phband">
+<a class="viewcode-back" href="../htepc.html#htepc.INPUTscf.post_phband">[docs]</a>
+    <span class="k">def</span> <span class="nf">post_phband</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="s1">'phonband.in'</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">         Function similar to phonband.py file inside src/</span>
+<span class="sd">        """</span>
+        <span class="n">freq</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"'"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span> <span class="o">+</span> <span class="s2">".freq"</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="s1">'w'</span><span class="p">)</span> <span class="k">as</span> <span class="n">phband</span><span class="p">:</span>
+            <span class="n">phband</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">freq</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">phband</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"0 5000"</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">phband</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"freq.plot"</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">phband</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"freq.ps"</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">phband</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"0.0"</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">phband</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"100.0 0.0"</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span></div>
+</div>
+
+
+<div class="viewcode-block" id="scf_to_dos_scf">
+<a class="viewcode-back" href="../htepc.html#htepc.scf_to_dos_scf">[docs]</a>
+<span class="k">def</span> <span class="nf">scf_to_dos_scf</span><span class="p">(</span><span class="n">input_file</span><span class="o">=</span><span class="s1">'scf.in'</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="s1">'scf-dos.in'</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Function to change QE input file from using smearing to 'tetrahedra' method, mainly for DOS calculation</span>
+
+<span class="sd">    parameters</span>
+<span class="sd">    ----------------------</span>
+<span class="sd">    input_file : (str) input file for QE scf calculation</span>
+<span class="sd">    out : (str) output file after modification</span>
+
+<span class="sd">    """</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"""sed -i '/calculation/d' </span><span class="si">{}</span><span class="s2"> """</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">input_file</span><span class="p">))</span>
+    <span class="n">insert</span><span class="p">(</span><span class="n">input_file</span><span class="o">=</span><span class="n">input_file</span><span class="p">,</span><span class="n">output</span><span class="o">=</span><span class="s1">'temp'</span><span class="p">,</span><span class="n">keyword</span><span class="o">=</span><span class="s1">'&amp;CONTROL'</span><span class="p">,</span><span class="n">what</span><span class="o">=</span><span class="s2">"calculation = 'nscf',"</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"""cat </span><span class="si">{}</span><span class="s2"> | sed "s/'smearing'/'tetrahedra'/" | sed '/degaus/d' | sed '/smearing/d' &gt; </span><span class="si">{}</span><span class="s2">"""</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">'temp'</span><span class="p">,</span><span class="n">out</span><span class="p">))</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"""rm temp"""</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Use denser k-mesh for dos calculations"</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="insert">
+<a class="viewcode-back" href="../htepc.html#htepc.insert">[docs]</a>
+<span class="k">def</span> <span class="nf">insert</span><span class="p">(</span><span class="n">input_file</span><span class="o">=</span><span class="s1">'scf.in'</span><span class="p">,</span><span class="n">output</span><span class="o">=</span><span class="s1">'scf-new.in'</span><span class="p">,</span><span class="n">keyword</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">where</span><span class="o">=</span><span class="s2">"after"</span><span class="p">,</span><span class="n">what</span><span class="o">=</span><span class="s2">""</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Function to insert keyword in input file</span>
+<span class="sd">    parameters</span>
+<span class="sd">    -----------------------</span>
+<span class="sd">    input_file : (str) input file. Default: 'scf.in'</span>
+<span class="sd">    output : (str) output file. Default: 'scf-new.in'</span>
+<span class="sd">    keyword : (str) keyword to look after</span>
+<span class="sd">    where : (str) where to insert. Default: 'after', otherwise 'before'</span>
+<span class="sd">    what : (str) what to insert. Default: ''</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="n">where</span> <span class="o">==</span> <span class="s2">"after"</span><span class="p">:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"""sed "/</span><span class="si">{}</span><span class="s2">/a   </span><span class="si">{}</span><span class="s2">" </span><span class="si">{}</span><span class="s2"> &gt; </span><span class="si">{}</span><span class="s2">"""</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">keyword</span><span class="p">,</span><span class="n">what</span><span class="p">,</span><span class="n">input_file</span><span class="p">,</span><span class="n">output</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"""sed "/</span><span class="si">{}</span><span class="s2">/i   </span><span class="si">{}</span><span class="s2">" </span><span class="si">{}</span><span class="s2"> &gt; </span><span class="si">{}</span><span class="s2">"""</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">keyword</span><span class="p">,</span><span class="n">what</span><span class="p">,</span><span class="n">input_file</span><span class="p">,</span><span class="n">output</span><span class="p">))</span></div>
+
+<span class="c1"># Extract relaxed structure and update QE input.</span>
+<div class="viewcode-block" id="OUTPUTscf">
+<a class="viewcode-back" href="../htepc.html#htepc.OUTPUTscf">[docs]</a>
+<span class="k">class</span> <span class="nc">OUTPUTscf</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    class to extract relax structure from QE output file and update input file</span>
+<span class="sd">    parameters</span>
+<span class="sd">    ---------------------</span>
+<span class="sd">    filename : (str) QE output file. Default: 'scf.out'</span>
+<span class="sd">    """</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">filename</span><span class="o">=</span><span class="s1">'scf.out'</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>
+
+<div class="viewcode-block" id="OUTPUTscf.extract_relax">
+<a class="viewcode-back" href="../htepc.html#htepc.OUTPUTscf.extract_relax">[docs]</a>
+    <span class="k">def</span> <span class="nf">extract_relax</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">output</span><span class="o">=</span><span class="s1">'relax.dat'</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Function to extract cell and positions of crystal structures from scf output file and write to a file</span>
+<span class="sd">        parameters</span>
+<span class="sd">        ----------------</span>
+<span class="sd">        filename : (str) output file. Default: 'relax.dat'</span>
+<span class="sd">        """</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"sed -n '/Begin final coordinates/,/End final coordinates/p' </span><span class="si">{}</span><span class="s2"> | sed '$d' | sed '1,4d'| sed '5d' &gt; </span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span><span class="n">output</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="OUTPUTscf.update_scf">
+<a class="viewcode-back" href="../htepc.html#htepc.OUTPUTscf.update_scf">[docs]</a>
+    <span class="k">def</span> <span class="nf">update_scf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">input_file</span><span class="o">=</span><span class="s1">'scf.in'</span><span class="p">,</span><span class="n">output</span><span class="o">=</span><span class="s1">'scf-new.in'</span><span class="p">,</span><span class="n">what</span><span class="o">=</span><span class="s1">'structure'</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Function to update QE input file and update with new structure</span>
+<span class="sd">        parameters</span>
+<span class="sd">        ------------</span>
+<span class="sd">        input_file : (str) QE scf input file to update. Default: 'scf.in'</span>
+<span class="sd">        output : (str) QE scf output file, updated with new structure. Default: 'scf-new.in'</span>
+<span class="sd">        what : (str) what to update. Default: 'structure'. Other, not implemented yet !</span>
+<span class="sd">        """</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"sed -n '/K_POINTS automatic/,/CELL_PARAMETERS angstrom/p' </span><span class="si">{}</span><span class="s2"> | sed '$d' &gt; kpoint.dat"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">input_file</span><span class="p">))</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"sed -n '/&amp;CONTROL/,/ATOMIC_POSITIONS crystal/p' </span><span class="si">{}</span><span class="s2"> | sed '$d'  &gt; scf.header"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">input_file</span><span class="p">))</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"sed -n '/ATOMIC_SPECIES/,/ATOMIC_POSITIONS crystal/p' </span><span class="si">{}</span><span class="s2"> | sed '$d' &gt; species"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">input_file</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">what</span> <span class="o">==</span> <span class="s1">'structure'</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">extract_relax</span><span class="p">(</span><span class="s1">'relax.in'</span><span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"cat scf.header kpoint.dat relax.in &gt; </span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">output</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">'do nothing</span><span class="se">\n</span><span class="s1">'</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"rm scf.header species kpoint.dat relax.in"</span><span class="p">)</span></div>
+</div>
+
+
+<span class="c1">#def extract_energy(self,input='scf.out'):</span>
+<span class="c1">#    os.system("""Rytoev=`echo "scale=6;13.605698" | bc`""")</span>
+<span class="c1">#    os.system("""en=`grep "!    total energy              =   " {} | tail -n1 | awk '{print $5}'` """.format(input))</span>
+<span class="c1">#    os.system("""e=`echo "scale=6; $en * $Rytoev  " | bc`""")</span>
+<span class="c1">#    os.system("""echo "the total energy: $e" """)</span>
+<span class="c1">#    return</span>
+<span class="c1">#class for calculations. In progress........</span>
+<span class="c1">#class calculation:</span>
+<span class="c1">#    def __init__(self,batch_header='batch.header'):</span>
+<span class="c1">#        self.batch_header = batch_header</span>
+<span class="c1">#def create_submission_scripts(self):</span>
+<span class="c1">#def relax_structure(self,input='scf.in',out='scf.out'):</span>
+<span class="c1">#def calculate_Tc(self,mu=0.16,degaussq=0.12,ngaussq=0,phfile='elph.out',phsigma=0.005):</span>
+</pre></div>
+
+          </article>
+        </div>
+      </div>
+    </main>
+  </div>
+  <footer class="md-footer">
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+          
+          
+        </a>
+        
+      </nav>
+    </div>
+    <div class="md-footer-meta md-typeset">
+      <div class="md-footer-meta__inner md-grid">
+        <div class="md-footer-copyright">
+          <div class="md-footer-copyright__highlight">
+              &#169; Copyright 2024, Niraj K Nepal.
+              
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script src="../_static/javascripts/application.js"></script>
+  <script>app.initialize({version: "1.0.4", url: {base: ".."}})</script>
+  </body>
+</html>

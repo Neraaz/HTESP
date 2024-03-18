@@ -214,16 +214,19 @@
 </table>
 <dl class="py function">
 <dt class="sig sig-object py" id="wannier90.epw_bandcheck">
-<span class="sig-prename descclassname"><span class="pre">wannier90.</span></span><span class="sig-name descname"><span class="pre">epw_bandcheck</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">infile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'scf.in'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ex.win'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">proj</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'</span> <span class="pre">'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">json_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'wannier90.json'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dft</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'QE'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wannier90.epw_bandcheck" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">wannier90.</span></span><span class="sig-name descname"><span class="pre">epw_bandcheck</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">infile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'scf.in'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ex.win'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">proj</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'</span> <span class="pre">'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">json_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'wannier90.json'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dft</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'QE'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/wannier90.html#epw_bandcheck"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#wannier90.epw_bandcheck" title="Link to this definition">¶</a></dt>
 <dd><p>function to write input file for wannier90 calculations. Default: ‘ex.win’</p>
-<section id="parameters">
-<h2 id="parameters">parameters<a class="headerlink" href="#parameters" title="Link to this heading">¶</a></h2>
-<p>infile : input file for scf calculation
-out : output file. Default: ‘ex.win’
-proj : ‘scdm’ if used SCDM projection, ‘’ otherwise
-json_file: JSON file containing element-value pairs for configurational settings
-dft: DFT package name, can be ‘QE’ (Quantum ESPRESSO), ‘VASP’, or ‘other’</p>
-</section>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>infile</strong> (<em>input file for scf calculation</em>) – </p></li>
+<li><p><strong>out</strong> (<em>output file. Default: 'ex.win'</em>) – </p></li>
+<li><p><strong>proj</strong> (<em>'scdm' if used SCDM projection</em><em>, </em><em>'' otherwise</em>) – </p></li>
+<li><p><strong>json_file</strong> (<em>JSON file containing element-value pairs for configurational settings</em>) – </p></li>
+<li><p><strong>dft</strong> (<em>DFT package name</em><em>, </em><em>can be 'QE'</em><em> (</em><em>Quantum ESPRESSO</em><em>)</em><em>, </em><em>'VASP'</em><em>, or </em><em>'other'</em>) – </p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 </section>
 
