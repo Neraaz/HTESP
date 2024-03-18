@@ -807,7 +807,7 @@ class INPUTscf:
                 matdyn_write.write(str(round(kpts[i][2],8)) + " " + str(0.0) + "\n")
     def create_phdos(self,kpts,out='phdos.in',ndos=200):
         """
-         Function similar to matdyn.dos.py file inside src/
+         Function similar to matdyn_dos.py file inside src/
         """
         freq = self.prefix.replace("'", "") + "-dos.freq"
         frc = self.prefix.replace("'", "") + ".fc"

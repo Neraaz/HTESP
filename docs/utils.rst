@@ -49,4 +49,4 @@ Modules
     q2r
     create_wt_inputs
     qe_axsf2cellpos
-    matdyn.dos
+    matdyn_dos

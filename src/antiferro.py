@@ -160,9 +160,11 @@ def changeaxis(mpid,comp):
             os.mkdir("R{}-saxis-{}{}{}-{}/relax".format(mpid,sx,sy,sz,comp))
         os.chdir("R{}-{}/relax/".format(mpid,comp))
         os.system("cp INCAR POTCAR POSCAR KPOINTS ../../R{}-saxis-{}{}{}-{}/relax/".format(mpid,sx,sy,sz,comp))
+        os.system("cp CHGCAR ../../R{}-saxis-{}{}{}-{}/relax/".format(mpid,sx,sy,sz,comp))
         os.chdir("../../")
         os.system("""sed -i '/SAXIS/d' R{}-saxis-{}{}{}-{}/relax/INCAR""".format(mpid,sx,sy,sz,comp))
         os.system("""echo 'SAXIS = {} {} {}' >> R{}-saxis-{}{}{}-{}/relax/INCAR""".format(sx,sy,sz,mpid,sx,sy,sz,comp))
+        #os.system("""echo 'ICHARG = 11' >> R{}-saxis-{}{}{}-{}/relax/INCAR""".format(sx,sy,sz,mpid,sx,sy,sz,comp))
         with open("mpid-magnetic.in", "a") as mpid_append:
             mpid_append.write("v{}".format(entry+1+i) + " " + mpid + "-saxis-{}{}{}".format(sx,sy,sz) + " " + comp + "\n")
         if os.path.isfile("htepc.json"):

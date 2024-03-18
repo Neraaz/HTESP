@@ -5,7 +5,7 @@ Contribution
 
 Postdoctoral Researcher, Ames National Laboratory
 
-Lin-Lin Wang (nnepal@ameslab.gov)
+Lin-Lin Wang (llw@ameslab.gov)
 
 Staff Scientist, Ames National Laboratory
 

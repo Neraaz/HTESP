@@ -127,7 +127,7 @@ for ((ii=$1; ii<$2; ++ii)); do
     cp scf_dir/kpathlines.dat kpath/kpath-$A-$B.dat
     rm scf_dir/kpathlines.dat scf_dir/kspecial-points.dat
     mv matdyn-$A-$B.in matdyn_dir/
-    matdyn.dos.py $A $B $prefix
+    matdyn_dos.py $A $B $prefix
     mv matdyn-$A-$B-dos.in matdyn_dir
     rm mass.dat kpoint.dat
 
