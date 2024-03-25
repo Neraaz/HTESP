@@ -392,6 +392,12 @@ or ../../htepc.json file.</p>
 <dt>comp_list<span class="classifier">list</span></dt><dd><p>List of elements in the compound.</p>
 </dd>
 </dl>
+<p>Example of using MpConnect class:
+&gt;&gt;&gt; obj = MpConnect()  # Initialize MpConnect object
+&gt;&gt;&gt; obj.setting(‘mp-763’)  # Set Materials ID to ‘mp-763’
+&gt;&gt;&gt; obj.getkpt()  # Get k-points for the structure
+&gt;&gt;&gt; obj.maxecut_sssp()  # Calculate maximum recommended energy cutoff using SSSP
+&gt;&gt;&gt; obj.setting_qeinput()  # Set up Quantum Espresso input files based on the retrieved data</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="htepc.MpConnect.setting">
 <span class="sig-name descname"><span class="pre">setting</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">comp</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htepc.html#MpConnect.setting"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#htepc.MpConnect.setting" title="Link to this definition">¶</a></dt>
@@ -547,7 +553,7 @@ and the maximum kinetic energy cutoff for charge density (ecutrho).</p>
 <section id="id19">
 <h3 id="id19">Notes:<a class="headerlink" href="#id19" title="Link to this heading">¶</a></h3>
 <p>This function finds the maximum kinetic energy cutoff for compound elements,
-then prints tested cutoffs for waveFunction and density.</p>
+then returs the cutoffs for waveFunction and density.</p>
 </section>
 </dd></dl>
 <dl class="py method">
@@ -615,9 +621,9 @@ Creates input files in scf-mpid.in format inside scf_dir/.</p>
 <p>Returns:
 - list: The list of keys of the reordered dictionary based on the new order.</p>
 <p>Example:
-original_dict = {‘a’: 1, ‘b’: 2, ‘c’: 3, ‘d’: 4}
-new_order = [‘c’, ‘a’, ‘d’, ‘b’]
-reorder_dictionary(original_dict, new_order)</p>
+&gt;&gt;&gt; original_dict = {‘a’: 1, ‘b’: 2, ‘c’: 3, ‘d’: 4}
+&gt;&gt;&gt; new_order = [‘c’, ‘a’, ‘d’, ‘b’]
+&gt;&gt;&gt; reorder_dictionary(original_dict, new_order)</p>
 </dd></dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="htepc.convert_species_list">
@@ -629,10 +635,10 @@ reorder_dictionary(original_dict, new_order)</p>
 - list: Updated list where elements are replaced with generic names and occurrence counts.</p>
 <p>Algorithm:
 - Replace elements with generic names followed by occurrence counts.</p>
-<p class="rubric">Example</p>
-<p>original_list = [‘Fe,spin=5’, ‘Fe,spin=-5’, ‘pd’, ‘pd’, ‘I,spin=1’, ‘I,spin=-1’]
-convert_species_list(original_list)</p>
-<p>[‘Fe1’, ‘Fe2’, ‘pd’, ‘pd’, ‘I1’, ‘I2’]</p>
+<p>Example:
+&gt;&gt;&gt; original_list = [‘Fe,spin=5’, ‘Fe,spin=-5’, ‘pd’, ‘pd’, ‘I,spin=1’, ‘I,spin=-1’]
+&gt;&gt;&gt; convert_species_list(original_list)
+[‘Fe1’, ‘Fe2’, ‘pd’, ‘pd’, ‘I1’, ‘I2’]</p>
 </dd></dl>
 <dl class="py class">
 <dt class="sig sig-object py" id="htepc.INPUTscf">

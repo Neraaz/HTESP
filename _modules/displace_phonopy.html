@@ -217,6 +217,24 @@
 <span class="sd">        The parsed data from the YAML file.</span>
 <span class="sd">    eigen : list</span>
 <span class="sd">        List containing eigenvalues.</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    &gt;&gt;&gt; displace = DisplacePhonopy("band.conf") #create an object</span>
+<span class="sd">    &gt;&gt;&gt; displace.parse() #parsing band.conf</span>
+<span class="sd">    &gt;&gt;&gt; displace.print_qpt() #print qpoints and its index</span>
+<span class="sd">    0 [0.0, 0.0, 0.0]</span>
+<span class="sd">    1 [0.1, 0.1, 0.1]</span>
+<span class="sd">    ...</span>
+<span class="sd">    &gt;&gt;&gt; displace.print_mode(0) #print band energies for a qpoint</span>
+<span class="sd">    1 0.0</span>
+<span class="sd">    2 0.1</span>
+<span class="sd">    ...</span>
+<span class="sd">    &gt;&gt;&gt; displace.negative_freq() #returns dictionary of qpoints, band index, and phonon frequency</span>
+<span class="sd">    &gt;&gt;&gt; #Easy to locate qpoint (iq) and band index (inu) for negative frequencies</span>
+<span class="sd">    &gt;&gt;&gt; displace.geteigenvec(0, 0) #get eigen vector corresponding to particular iq and inu.</span>
+<span class="sd">    &gt;&gt;&gt; displace.applydisplace() #Apply distortion to the structure, provided an undistorted</span>
+<span class="sd">    &gt;&gt;&gt; #structure exists as POSCAR file</span>
 <span class="sd">    """</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">filename</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>

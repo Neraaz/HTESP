@@ -232,40 +232,57 @@
 
 <span class="sd">    Returns:</span>
 <span class="sd">    str: A string representing the search criteria for URL.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; criteria_dict = {</span>
+<span class="sd">        ...    "aflow": {</span>
+<span class="sd">        ...        "filter": True,</span>
+<span class="sd">        ...        "elm": ["Cu", "Zn"],</span>
+<span class="sd">        ...        "nsites": 4,</span>
+<span class="sd">        ...        "metal": True,</span>
+<span class="sd">        ...        "FE": False,</span>
+<span class="sd">        ...        "spacegroup": None,</span>
+<span class="sd">        ...        "limit": 10,</span>
+<span class="sd">        ...        "prop": ["energy", "bandgap"]</span>
+<span class="sd">        ...    }</span>
+<span class="sd">        ... }</span>
+<span class="sd">        &gt;&gt;&gt; criteria_string = properties_string(criteria_dict)</span>
+<span class="sd">        &gt;&gt;&gt; print(criteria_string)</span>
+<span class="sd">        'species(Cu,Zn),natoms(1*,*4),Egap(0),enthalpy_formation_atom(*),spacegroup_relax(*),</span>
+<span class="sd">        $paging(1,10),energy,bandgap'</span>
 <span class="sd">    """</span>
     <span class="n">criteria</span> <span class="o">=</span> <span class="s2">""</span>
-    <span class="n">search</span> <span class="o">=</span> <span class="n">dict_param</span><span class="p">[</span><span class="s1">'aflow'</span><span class="p">]</span>
-    <span class="n">apply_filter</span> <span class="o">=</span> <span class="n">search</span><span class="p">[</span><span class="s1">'filter'</span><span class="p">]</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">search</span><span class="p">,</span><span class="n">apply_filter</span><span class="p">)</span>
+    <span class="n">search</span> <span class="o">=</span> <span class="n">dict_param</span><span class="p">[</span><span class="s1">'aflow'</span><span class="p">]</span> <span class="c1"># Extract aflow dictionary from dict_param</span>
+    <span class="n">apply_filter</span> <span class="o">=</span> <span class="n">search</span><span class="p">[</span><span class="s1">'filter'</span><span class="p">]</span> <span class="c1"># Check if filtering is applied</span>
     <span class="k">if</span> <span class="n">apply_filter</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">search</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">'elm'</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">'elm'</span><span class="p">:</span> <span class="c1"># Element filter</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">search</span><span class="p">[</span><span class="n">key</span><span class="p">]))</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
                     <span class="n">criteria</span> <span class="o">+=</span> <span class="s2">"species(</span><span class="si">{}</span><span class="s2">),"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">search</span><span class="p">[</span><span class="n">key</span><span class="p">])[</span><span class="mi">0</span><span class="p">])</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">criteria</span> <span class="o">+=</span> <span class="s2">"species</span><span class="si">{}</span><span class="s2">,"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">search</span><span class="p">[</span><span class="n">key</span><span class="p">]))</span>
-            <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">'nelm'</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">'nelm'</span><span class="p">:</span> <span class="c1"># Number of elements filter</span>
                 <span class="n">criteria</span> <span class="o">+=</span> <span class="s2">"nspecies(1*,*</span><span class="si">{}</span><span class="s2">),"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">search</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
-            <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">'nsites'</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">'nsites'</span><span class="p">:</span> <span class="c1"># Number of sites filter</span>
                 <span class="n">criteria</span> <span class="o">+=</span> <span class="s2">"natoms(1*,*</span><span class="si">{}</span><span class="s2">),"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">search</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
-            <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">'metal'</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">'metal'</span><span class="p">:</span> <span class="c1"># Metal filter</span>
                 <span class="k">if</span> <span class="n">search</span><span class="p">[</span><span class="n">key</span><span class="p">]:</span>
                     <span class="n">criteria</span> <span class="o">+=</span> <span class="s2">"Egap(0),"</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">criteria</span> <span class="o">+=</span> <span class="s2">"Egap(*),"</span>
-            <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">'FE'</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">'FE'</span><span class="p">:</span> <span class="c1"># Formation energy filter</span>
                 <span class="k">if</span> <span class="n">search</span><span class="p">[</span><span class="n">key</span><span class="p">]:</span>
                     <span class="n">criteria</span> <span class="o">+=</span> <span class="s2">"enthalpy_formation_atom(-100*,*0),"</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">criteria</span> <span class="o">+=</span> <span class="s2">"enthalpy_formation_atom(*),"</span>
-            <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">'spacegroup'</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">'spacegroup'</span><span class="p">:</span> <span class="c1"># Spacegroup filter</span>
                 <span class="k">if</span> <span class="n">search</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">criteria</span> <span class="o">+=</span> <span class="s2">"spacegroup_relax(*),"</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">criteria</span> <span class="o">+=</span> <span class="s2">"spacegroup_relax(</span><span class="si">{}</span><span class="s2">),"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">search</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
-            <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">'limit'</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">'limit'</span><span class="p">:</span> <span class="c1"># Limit filter for number of results filter</span>
                 <span class="n">criteria</span> <span class="o">+=</span> <span class="s2">"$paging(1,</span><span class="si">{}</span><span class="s2">),"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">search</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
-            <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">'prop'</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">'prop'</span><span class="p">:</span> <span class="c1"># Additional properties to include</span>
                 <span class="n">prop_string</span> <span class="o">=</span> <span class="s2">""</span>
                 <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">_</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">search</span><span class="p">[</span><span class="n">key</span><span class="p">]):</span>
                     <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">search</span><span class="p">[</span><span class="n">key</span><span class="p">])</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
@@ -293,7 +310,7 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s2">"Invalid key provided</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
     <span class="n">criteria</span> <span class="o">=</span> <span class="n">criteria</span> <span class="o">+</span> <span class="n">prop_string</span>
-    <span class="n">criteria</span> <span class="o">=</span> <span class="n">criteria</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">" "</span><span class="p">,</span><span class="s2">""</span><span class="p">)</span>
+    <span class="n">criteria</span> <span class="o">=</span> <span class="n">criteria</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">" "</span><span class="p">,</span><span class="s2">""</span><span class="p">)</span> <span class="c1"># Remove any spaces in the criteria string</span>
     <span class="k">return</span> <span class="n">criteria</span></div>
 
 <div class="viewcode-block" id="search_data">
@@ -312,12 +329,27 @@
 <span class="sd">    in dict_param and retrieves data from the AFLOW database. It saves the</span>
 <span class="sd">    retrieved data as a CSV file in the 'download' directory and also</span>
 <span class="sd">    generates an 'mpid-list.in' file containing relevant data.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; search_criteria = {</span>
+<span class="sd">        ...    "aflow": {</span>
+<span class="sd">        ...        "filter": True,</span>
+<span class="sd">        ...        "elm": ["Cu", "Zn"],</span>
+<span class="sd">        ...        "nsites": 4,</span>
+<span class="sd">        ...        "metal": True,</span>
+<span class="sd">        ...        "FE": False,</span>
+<span class="sd">        ...        "spacegroup": None,</span>
+<span class="sd">        ...        "limit": 10,</span>
+<span class="sd">        ...        "prop": ["energy", "bandgap"]</span>
+<span class="sd">        ...    }</span>
+<span class="sd">        ... }</span>
+<span class="sd">        &gt;&gt;&gt; search_data(search_criteria)</span>
 <span class="sd">    """</span>
     <span class="n">aflow_url</span> <span class="o">=</span> <span class="s2">"http://www.aflowlib.org/API/aflux/"</span>
-    <span class="n">criteria</span> <span class="o">=</span> <span class="n">properties_string</span><span class="p">(</span><span class="n">dict_param</span><span class="p">)</span>
-    <span class="c1">#print(criteria)</span>
-    <span class="n">search_url</span> <span class="o">=</span> <span class="n">aflow_url</span> <span class="o">+</span> <span class="s2">"?"</span> <span class="o">+</span> <span class="n">criteria</span>
+    <span class="n">criteria</span> <span class="o">=</span> <span class="n">properties_string</span><span class="p">(</span><span class="n">dict_param</span><span class="p">)</span> <span class="c1"># Generating criteria string for URL</span>
+    <span class="n">search_url</span> <span class="o">=</span> <span class="n">aflow_url</span> <span class="o">+</span> <span class="s2">"?"</span> <span class="o">+</span> <span class="n">criteria</span> <span class="c1"># Constructing the search URL</span>
     <span class="n">success</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="c1"># Attempting to fetch data from the AFLOW database</span>
     <span class="k">while</span> <span class="ow">not</span> <span class="n">success</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">data</span> <span class="o">=</span> <span class="n">urlopen</span><span class="p">(</span><span class="n">search_url</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">)</span>
@@ -325,13 +357,16 @@
         <span class="k">except</span><span class="p">:</span>
             <span class="n">success</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="k">continue</span>
-    <span class="n">data_processed</span> <span class="o">=</span> <span class="n">ast</span><span class="o">.</span><span class="n">literal_eval</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-    <span class="n">data_processed</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data_processed</span><span class="p">)</span>
-    <span class="c1">#print(data_processed)</span>
+    <span class="n">data_processed</span> <span class="o">=</span> <span class="n">ast</span><span class="o">.</span><span class="n">literal_eval</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="c1"># Processing retrieved data</span>
+    <span class="n">data_processed</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data_processed</span><span class="p">)</span> <span class="c1"># Converting to panda dataframe</span>
+
+    <span class="c1"># Creating download directory if doesn't exists</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="s2">"download"</span><span class="p">):</span>
         <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="s2">"download"</span><span class="p">)</span>
+    <span class="c1"># Saving data as the CSV file in the 'download' directory</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"download/download-aflow.csv"</span><span class="p">):</span>
         <span class="n">data_processed</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s2">"download/download-aflow.csv"</span><span class="p">,</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="c1"># Generating 'mpid-list.in' file</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"mpid-list.in"</span><span class="p">):</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"mpid-list.in"</span><span class="p">,</span><span class="s2">"w"</span><span class="p">)</span> <span class="k">as</span> <span class="n">write_mpid</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">data_processed</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
@@ -353,21 +388,42 @@
 <span class="sd">    fractional positions, and creates a pymatgen Structure object. It then returns</span>
 <span class="sd">    the Structure object representing the structure. This function currently does</span>
 <span class="sd">    not write the POSCAR file to disk but can be extended to do so.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; data = {</span>
+<span class="sd">        ...    "geometry": [3.84, 3.84, 3.84, 90, 90, 90],</span>
+<span class="sd">        ...    "compound": "Si",</span>
+<span class="sd">        ...    "auid": "aflow:12345",</span>
+<span class="sd">        ...    "positions_fractional":</span>
+<span class="sd">               [[0.000000, 0.000000, 0.000000], [0.250000, 0.250000, 0.250000]]</span>
+<span class="sd">        ... }</span>
+<span class="sd">        &gt;&gt;&gt; structure = poscar_create(data)</span>
+<span class="sd">        &gt;&gt;&gt; print(structure)</span>
+<span class="sd">        Full Formula (Si2)</span>
+<span class="sd">        Reduced Formula: Si</span>
+<span class="sd">        abc   :   3.840198   3.840198   3.840198</span>
+<span class="sd">        angles:  90.000000  90.000000  90.000000</span>
+<span class="sd">        Sites (2)</span>
+<span class="sd">          #  SP           auid</span>
+<span class="sd">        ---  ----  -------------</span>
+<span class="sd">          0  Si    aflow:12345</span>
+<span class="sd">          1  Si    aflow:12345</span>
 <span class="sd">    """</span>
+    <span class="c1"># Create lattice from lattice parameters using ASE</span>
     <span class="n">lattice</span> <span class="o">=</span> <span class="n">Cell</span><span class="o">.</span><span class="n">fromcellpar</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">'geometry'</span><span class="p">])</span><span class="o">.</span><span class="n">array</span>
-    <span class="n">comp</span> <span class="o">=</span> <span class="n">Composition</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">'compound'</span><span class="p">])</span>
-    <span class="n">aflow_id</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">'auid'</span><span class="p">]</span>
+    <span class="n">comp</span> <span class="o">=</span> <span class="n">Composition</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">'compound'</span><span class="p">])</span> <span class="c1"># Extract compound information</span>
+    <span class="n">aflow_id</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">'auid'</span><span class="p">]</span> <span class="c1"># Extract AFLOW ID</span>
     <span class="n">species</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">comp</span> <span class="o">=</span> <span class="n">comp</span><span class="o">.</span><span class="n">as_dict</span><span class="p">()</span>
+    <span class="c1"># Determine species from compound information</span>
     <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">comp</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">comp</span><span class="p">[</span><span class="n">key</span><span class="p">])):</span>
             <span class="n">species</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+    <span class="c1"># Create structure object</span>
     <span class="n">struc</span> <span class="o">=</span> <span class="n">IStructure</span><span class="p">(</span><span class="n">lattice</span><span class="p">,</span><span class="n">species</span><span class="o">=</span><span class="n">species</span><span class="p">,</span><span class="n">coords</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">'positions_fractional'</span><span class="p">],</span><span class="n">to_unit_cell</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1"># Add AFLOW ID as a site property</span>
     <span class="n">site_prop</span> <span class="o">=</span> <span class="p">[</span><span class="n">aflow_id</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">struc</span><span class="o">.</span><span class="n">sites</span><span class="p">)</span>
     <span class="n">struc</span><span class="o">.</span><span class="n">add_site_property</span><span class="p">(</span><span class="s2">"auid"</span><span class="p">,</span><span class="n">site_prop</span><span class="p">)</span>
-    <span class="c1">#poscar = struc.to("POSCAR")</span>
-    <span class="c1">#with open("POSCAR","w") as write_poscar:</span>
-    <span class="c1">#    write_poscar.write(poscar)</span>
     <span class="k">return</span> <span class="n">struc</span></div>
 
 <div class="viewcode-block" id="download">
@@ -388,37 +444,44 @@
 <span class="sd">    range of indices, constructs input files for quantum mechanical calculations,</span>
 <span class="sd">    and saves them. It also creates a file named 'mpid.in' containing information</span>
 <span class="sd">    about the downloaded structures.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; download("QE", 1, 10)</span>
 <span class="sd">    """</span>
     <span class="n">aflow_url</span> <span class="o">=</span> <span class="s2">"http://www.aflowlib.org/API/aflux/"</span>
+    <span class="c1"># Read mpid-list.in to get AFLOW IDs</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"mpid-list.in"</span><span class="p">,</span><span class="s2">"r"</span><span class="p">)</span> <span class="k">as</span> <span class="n">read_mpid</span><span class="p">:</span>
         <span class="n">mpid_data</span> <span class="o">=</span> <span class="n">read_mpid</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+    <span class="c1"># Extract data for the specified range of indices</span>
     <span class="n">mpid_data</span> <span class="o">=</span> <span class="n">mpid_data</span><span class="p">[</span><span class="n">start</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="n">end</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
     <span class="n">list_data</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c1"># Retrieve data from AFLOW for each AFLOW ID</span>
     <span class="k">for</span> <span class="n">idx</span><span class="p">,</span><span class="n">mpid</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">mpid_data</span><span class="p">):</span>
         <span class="n">aflow_id</span> <span class="o">=</span> <span class="n">mpid</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">" "</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
         <span class="n">subd</span> <span class="o">=</span> <span class="n">aflow_url</span> <span class="o">+</span> <span class="s2">"?auid('</span><span class="si">{}</span><span class="s2">'),geometry,positions_cartesian,positions_fractional,species"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">aflow_id</span><span class="p">)</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">urlopen</span><span class="p">(</span><span class="n">subd</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">)</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">ast</span><span class="o">.</span><span class="n">literal_eval</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
         <span class="n">list_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">poscar_create</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+    <span class="c1"># Group similar structures</span>
     <span class="n">unique_structures</span> <span class="o">=</span> <span class="n">StructureMatcher</span><span class="p">()</span><span class="o">.</span><span class="n">group_structures</span><span class="p">(</span><span class="n">list_data</span><span class="p">)</span>
+    <span class="c1"># Create input files and save them</span>
     <span class="k">for</span> <span class="n">index</span><span class="p">,</span><span class="n">subd</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">unique_structures</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">subd</span> <span class="o">=</span> <span class="n">subd</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="c1">#print(subd)</span>
-            <span class="c1">#aflow_id = subd['id']</span>
             <span class="n">aflow_id</span> <span class="o">=</span> <span class="n">subd</span><span class="o">.</span><span class="n">site_properties</span><span class="p">[</span><span class="s1">'auid'</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
             <span class="n">aflow_id</span> <span class="o">=</span> <span class="s2">"aflow-"</span> <span class="o">+</span> <span class="n">aflow_id</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">":"</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
-            <span class="c1">#aflow_id = "aflow-{}".format(index+1)</span>
-            <span class="c1">#oqmd_id = "aflow-" + str(oqmd_id)</span>
-            <span class="c1">#print(oqmd_id + "\n")</span>
+            <span class="c1"># Write POSCAR file</span>
             <span class="n">poscar</span> <span class="o">=</span> <span class="n">subd</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s2">"POSCAR"</span><span class="p">)</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"POSCAR"</span><span class="p">,</span><span class="s2">"w"</span><span class="p">)</span> <span class="k">as</span> <span class="n">write_poscar</span><span class="p">:</span>
                 <span class="n">write_poscar</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">poscar</span><span class="p">)</span>
             <span class="n">compound</span> <span class="o">=</span> <span class="n">subd</span><span class="o">.</span><span class="n">composition</span><span class="o">.</span><span class="n">formula</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">" "</span><span class="p">,</span><span class="s2">""</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="n">compound</span><span class="p">)</span>
+            <span class="c1"># Create input files</span>
             <span class="n">poscar_to_input</span><span class="p">(</span><span class="n">calc_type</span><span class="p">,</span><span class="n">aflow_id</span><span class="p">,</span><span class="n">compound</span><span class="p">,</span><span class="kc">False</span><span class="p">)</span>
+            <span class="c1"># Move POSCAR file if it exists</span>
             <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"POSCAR"</span><span class="p">):</span>
                 <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"mv POSCAR POSCAR-</span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">aflow_id</span><span class="p">))</span>
+            <span class="c1"># Write mpid.in file</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s1">'mpid.in'</span><span class="p">):</span>
                 <span class="n">k_ind</span> <span class="o">=</span> <span class="mi">0</span>
                 <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"mpid.in"</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">)</span> <span class="k">as</span> <span class="n">write_mpid</span><span class="p">:</span>
@@ -443,14 +506,18 @@
 <span class="sd">    arguments to determine the operation mode (search or download) and then performs</span>
 <span class="sd">    the corresponding action based on the provided inputs.</span>
 <span class="sd">    """</span>
+    <span class="c1"># Read command-line argument to determine operation mode</span>
     <span class="n">condition</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="c1"># Extract input data</span>
     <span class="n">start</span> <span class="o">=</span> <span class="n">input_data</span><span class="p">[</span><span class="s1">'inp'</span><span class="p">][</span><span class="s1">'start'</span><span class="p">]</span>
     <span class="n">end</span> <span class="o">=</span> <span class="n">input_data</span><span class="p">[</span><span class="s1">'inp'</span><span class="p">][</span><span class="s1">'end'</span><span class="p">]</span>
     <span class="n">dft</span> <span class="o">=</span> <span class="n">input_data</span><span class="p">[</span><span class="s1">'inp'</span><span class="p">][</span><span class="s1">'calc'</span><span class="p">]</span>
+    <span class="c1"># Call search_data function if the mode is search</span>
     <span class="k">if</span> <span class="n">condition</span> <span class="o">==</span> <span class="s1">'search'</span><span class="p">:</span>
         <span class="n">search_data</span><span class="p">(</span><span class="n">input_data</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">condition</span> <span class="o">==</span> <span class="s1">'download'</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">start</span><span class="p">,</span><span class="n">end</span><span class="p">,</span><span class="n">dft</span><span class="p">)</span>
+        <span class="c1"># Call download function if the mode is download</span>
         <span class="n">download</span><span class="p">(</span><span class="n">dft</span><span class="p">,</span><span class="n">start</span><span class="p">,</span><span class="n">end</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">"Either search or download is allowed</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span></div>

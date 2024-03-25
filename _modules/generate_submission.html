@@ -218,10 +218,19 @@
 
 <span class="sd">    Raises:</span>
 <span class="sd">    - ValueError: If an invalid calculation type is provided.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">    &gt;&gt;&gt; command_list = {</span>
+<span class="sd">    ...     'scf': ('pw.x', 'scf.in', 'scf.out'),</span>
+<span class="sd">    ...     'nscf': ('pw.x', 'nscf.in', 'nscf.out')</span>
+<span class="sd">    ... }</span>
+<span class="sd">    &gt;&gt;&gt; submission_files = generate_submission_files('qe', 'mpirun', '4', command_list)</span>
+<span class="sd">    &gt;&gt;&gt; print(submission_files)</span>
 <span class="sd">    """</span>
     <span class="n">npscf</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">nproc</span><span class="p">)</span>
     <span class="n">submission_files</span> <span class="o">=</span> <span class="p">{}</span>
 
+    <span class="c1"># Generate submission files based on the calculation type</span>
     <span class="k">if</span> <span class="n">which_calc</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">'qe'</span><span class="p">,</span><span class="s1">'QE'</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">command_name</span><span class="p">,</span> <span class="n">command_info</span> <span class="ow">in</span> <span class="n">command_list</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">x_command</span><span class="p">,</span> <span class="n">input_file</span><span class="p">,</span> <span class="n">output_file</span> <span class="o">=</span> <span class="n">command_info</span>
@@ -290,7 +299,7 @@
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'htepc.json'</span><span class="p">)</span> <span class="k">as</span> <span class="n">json_file</span><span class="p">:</span>
             <span class="c1">#parameters = json.load(json_file)</span>
             <span class="n">parameters</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">json_file</span><span class="p">)[</span><span class="s1">'job_script'</span><span class="p">]</span>
-
+    <span class="c1"># Commands under different processes</span>
     <span class="n">qe_elph_commands</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s1">'scf'</span><span class="p">:</span> <span class="p">(</span><span class="s1">'pw.x'</span><span class="p">,</span> <span class="s1">'scf.in'</span><span class="p">,</span> <span class="s1">'scf.out'</span><span class="p">),</span>
         <span class="s1">'band'</span><span class="p">:</span> <span class="p">(</span><span class="s1">'pw.x'</span><span class="p">,</span> <span class="s1">'scf-band.in'</span><span class="p">,</span> <span class="s1">'scf-band.out'</span><span class="p">),</span>

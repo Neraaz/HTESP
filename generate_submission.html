@@ -241,6 +241,13 @@ input file, and output file.</p></li>
 </div></blockquote>
 <p>Raises:
 - ValueError: If an invalid calculation type is provided.</p>
+<p>Example:
+&gt;&gt;&gt; command_list = {
+…     ‘scf’: (‘pw.x’, ‘scf.in’, ‘scf.out’),
+…     ‘nscf’: (‘pw.x’, ‘nscf.in’, ‘nscf.out’)
+… }
+&gt;&gt;&gt; submission_files = generate_submission_files(‘qe’, ‘mpirun’, ‘4’, command_list)
+&gt;&gt;&gt; print(submission_files)</p>
 </dd></dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="generate_submission.main">

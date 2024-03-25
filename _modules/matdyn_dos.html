@@ -208,17 +208,21 @@
 <span class="sd">    Returns:</span>
 <span class="sd">    Creates input file named matdyn-mpid-compound-dos.in.</span>
 <span class="sd">    """</span>
+    <span class="c1"># Get command-line arguments</span>
     <span class="n">mpid</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
     <span class="n">compound</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
     <span class="n">prefix2</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+    <span class="c1"># File names</span>
     <span class="n">freq</span> <span class="o">=</span> <span class="n">prefix2</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"'"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"-dos.freq"</span>
     <span class="n">frc</span> <span class="o">=</span> <span class="n">prefix2</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"'"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span> <span class="o">+</span> <span class="s2">".fc"</span>
+    <span class="c1"># Determine the number of atoms</span>
     <span class="n">mass</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s1">'mass.dat'</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">mass</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">nat</span> <span class="o">=</span> <span class="n">mass</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">nat</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="n">mass</span> <span class="o">=</span> <span class="p">[</span><span class="n">mass</span><span class="p">]</span>
+    <span class="c1"># Write input file</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"matdyn-</span><span class="si">{}</span><span class="s2">-</span><span class="si">{}</span><span class="s2">-dos.in"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">compound</span><span class="p">),</span> <span class="s1">'w'</span><span class="p">)</span> <span class="k">as</span> <span class="n">matdos</span><span class="p">:</span>
         <span class="n">matdos</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"&amp;input"</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
         <span class="n">matdos</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"asr='simple',"</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>

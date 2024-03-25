@@ -212,6 +212,7 @@
 <span class="sd">    parameters</span>
 <span class="sd">    --------------</span>
 <span class="sd">    mass_file : mass.in file automatically created in 'create-inputs' bash script</span>
+<span class="sd">                It has mass in a.m.u in each line as in QE scf.in file</span>
 <span class="sd">    qpoint_file : qpoint.in file provided</span>
 <span class="sd">    mpid : MP id</span>
 <span class="sd">    compound : MP compound name</span>
@@ -219,27 +220,36 @@
 <span class="sd">    Returns: None</span>
 <span class="sd">    --------------</span>
 <span class="sd">    write a file in 'ph-mpid-compound.in' format</span>
+<span class="sd">    Example:</span>
+<span class="sd">    &gt;&gt;&gt; phonon_input('mass.in', 'qpoint.in', 'mp-123', 'SiO2', 'si2o4')</span>
 <span class="sd">    """</span>
+    <span class="c1"># Load mass data from mass_file</span>
     <span class="n">mass</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">mass_file</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"ph-q.in"</span><span class="p">):</span>
         <span class="n">qpt</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">qpoint_file</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">"q-mesh: </span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">qpt</span><span class="p">))</span>
+    <span class="c1"># Determine unqiue species in the system</span>
     <span class="k">if</span> <span class="n">mass</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">nat</span> <span class="o">=</span> <span class="n">mass</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">nat</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="n">mass</span> <span class="o">=</span> <span class="p">[</span><span class="n">mass</span><span class="p">]</span>
+    <span class="c1"># Set the name of the dynamical matrix file</span>
     <span class="n">dynmat</span> <span class="o">=</span> <span class="n">prefix</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"'"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span> <span class="o">+</span> <span class="s2">".dyn"</span>
+    <span class="c1"># Write the input file for phonon calculation</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"ph-</span><span class="si">{}</span><span class="s2">-</span><span class="si">{}</span><span class="s2">.in"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">compound</span><span class="p">),</span> <span class="s1">'w'</span><span class="p">)</span> <span class="k">as</span> <span class="n">ph_write</span><span class="p">:</span>
         <span class="n">ph_write</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"phonon calculation </span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
         <span class="n">ph_write</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"&amp;inputph"</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
         <span class="n">ph_write</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"tr2_ph=1.0d-16,"</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
         <span class="n">ph_write</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"prefix=</span><span class="si">{}</span><span class="s2">,"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
         <span class="n">ph_write</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"fildvscf='dvscf',"</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+        <span class="c1"># Write atomic masses for each atom</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">nat</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
             <span class="n">ph_write</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"amass(</span><span class="si">{}</span><span class="s2">)=</span><span class="si">{}</span><span class="s2">,"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">mass</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
         <span class="n">ph_write</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"outdir='./',"</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
         <span class="n">ph_write</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"fildyn='</span><span class="si">{}</span><span class="s2">',"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dynmat</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+        <span class="c1"># Extract a generic q-point from ph-q.in file if provided</span>
+        <span class="c1"># Otherwise, use q-point mesh from qpoint.in file</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"ph-q.in"</span><span class="p">):</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">"No ph-q.in file provided</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">"calculations will be performed for metal and qpoint obtained from qpoint.in</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
@@ -260,6 +270,7 @@
                 <span class="n">ph_write</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">nqpoint</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="n">nqpoint</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="n">nqpoint</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">ph_write</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"reduce_io = .true.</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+                <span class="c1"># For non metal at q = 0 0 0, turn epsil flag .true.</span>
                 <span class="n">ph_write</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"epsil = .true.</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
                 <span class="n">ph_write</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"/"</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
                 <span class="n">ph_write</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">nqpoint</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="n">nqpoint</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="n">nqpoint</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span></div>
@@ -272,10 +283,14 @@
 <span class="sd">    parameters</span>
 <span class="sd">    ---------------</span>
 <span class="sd">    grid_file: kmesh.grid file automatically created from bash scripts</span>
+<span class="sd">               It just has 3 numbers, representing the k-mesh, nkx nky nkz (no offset)</span>
 <span class="sd">    what : type of nscf grid. 'wan' is nscf grid for wannierization</span>
 <span class="sd">    Returns : None</span>
 <span class="sd">    ---------------</span>
 <span class="sd">    write a file with kmesh grid for non-scf calculation</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">    &gt;&gt;&gt; prepare_nscf('kmesh.grid', what='wan')</span>
 <span class="sd">    """</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">"******************************************************"</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">"******************************************************</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
@@ -283,8 +298,10 @@
     <span class="nb">print</span><span class="p">(</span><span class="s2">"_____________________________________________________</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
     <span class="n">grid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">grid_file</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">what</span> <span class="o">==</span> <span class="s1">'wan'</span><span class="p">:</span>
+        <span class="c1"># Generate the nscf grid for wannierization</span>
         <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"kmesh_nscf.py </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> wan"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">grid</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">grid</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">grid</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="s2">"&gt;"</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="s2">"wann_grid.out"</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Generate the standard nscf grid</span>
         <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"kmesh_nscf.py </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">grid</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">grid</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">grid</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="s2">"&gt;"</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="s2">"nscf_grid.out"</span><span class="p">)</span></div>
 
 
@@ -301,8 +318,15 @@
 <span class="sd">    Returns : None</span>
 <span class="sd">    --------------</span>
 <span class="sd">    write a file in 'projwfc-mpid-compound.in' format</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; projwfc('prefix', 'mp-123', 'FeS2')</span>
+<span class="sd">    This will create a file named 'projwfc-mp-123-FeS2.in' with the necessary parameters.</span>
 <span class="sd">    """</span>
+    <span class="c1"># Define the name for the projected wavefunction file</span>
     <span class="n">dynmat</span> <span class="o">=</span> <span class="n">prefix</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"'"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span> <span class="o">+</span> <span class="s2">".proj"</span>
+    <span class="c1"># Write projwfc.in file to be executed by projwfc.x</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"projwfc-</span><span class="si">{}</span><span class="s2">-</span><span class="si">{}</span><span class="s2">.in"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">compound</span><span class="p">),</span> <span class="s1">'w'</span><span class="p">)</span> <span class="k">as</span> <span class="n">projwfc_write</span><span class="p">:</span>
         <span class="n">projwfc_write</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"&amp;projwfc</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
         <span class="n">projwfc_write</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"prefix=</span><span class="si">{}</span><span class="s2">,"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
@@ -367,24 +391,38 @@
 <span class="sd">    Returns</span>
 <span class="sd">    --------------</span>
 <span class="sd">    mu_scdm, sigma_scdm parameters</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; scdmfit(erfc, 'data.csv', 'mp-123', 'FeS2', 5.0, entang='erfc')</span>
+<span class="sd">    This will fit the erfc function to the data in 'data.csv',</span>
+<span class="sd">    calculate SCDM parameters, and return mu and sigma.</span>
 <span class="sd">    """</span>
+    <span class="c1"># Create a model for fitting</span>
     <span class="n">gmodel</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+    <span class="c1"># Load data</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span>
+    <span class="c1"># Find the index close to mean of the distribution</span>
     <span class="k">if</span> <span class="n">entang</span> <span class="o">==</span> <span class="s1">'erfc'</span><span class="p">:</span>
         <span class="n">idx</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">data</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="mf">0.5</span><span class="p">))</span><span class="o">.</span><span class="n">argmin</span><span class="p">()</span>
     <span class="k">elif</span> <span class="n">entang</span> <span class="o">==</span> <span class="s1">'gauss'</span><span class="p">:</span>
         <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">data</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">data</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]))</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">'Either erfc or gauss option available for entanglement</span><span class="se">\n</span><span class="s1">'</span><span class="p">)</span>
+    <span class="c1"># Set initial parameters for fitting</span>
     <span class="n">params</span> <span class="o">=</span> <span class="n">gmodel</span><span class="o">.</span><span class="n">make_params</span><span class="p">(</span><span class="n">aparam</span><span class="o">=</span><span class="n">data</span><span class="p">[:,</span><span class="mi">0</span><span class="p">][</span><span class="n">idx</span><span class="p">],</span> <span class="n">bparam</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+    <span class="c1"># Fit the model to the data</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">gmodel</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">data</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="n">params</span><span class="p">,</span> <span class="n">xdata</span><span class="o">=</span><span class="n">data</span><span class="p">[:,</span><span class="mi">0</span><span class="p">])</span>
+    <span class="c1"># Calculate SCDM parameters</span>
     <span class="n">afit</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">best_values</span><span class="p">[</span><span class="s1">'aparam'</span><span class="p">]</span>
     <span class="n">bfit</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">best_values</span><span class="p">[</span><span class="s1">'bparam'</span><span class="p">]</span>
     <span class="n">mu_scdm</span> <span class="o">=</span> <span class="n">afit</span> <span class="o">-</span> <span class="mi">3</span><span class="o">*</span><span class="n">bfit</span>
     <span class="n">sigma_scdm</span> <span class="o">=</span> <span class="n">bfit</span>
+    <span class="c1"># Write fitted data to a file</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"p_vs_e_fit-</span><span class="si">{}</span><span class="s2">-</span><span class="si">{}</span><span class="s2">.csv"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">compound</span><span class="p">),</span> <span class="s2">"w"</span><span class="p">)</span> <span class="k">as</span> <span class="n">pe_fit</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
             <span class="n">pe_fit</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"</span><span class="si">{}</span><span class="s2">,</span><span class="si">{}</span><span class="s2">,</span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data</span><span class="p">[:,</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span><span class="p">],</span><span class="n">data</span><span class="p">[:,</span><span class="mi">1</span><span class="p">][</span><span class="n">i</span><span class="p">],</span><span class="n">result</span><span class="o">.</span><span class="n">best_fit</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+    <span class="c1"># Plot fitted data</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">data</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">data</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="s1">'bo'</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">'projection'</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">data</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">result</span><span class="o">.</span><span class="n">best_fit</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"red"</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">"solid"</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">'fit'</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">fermi</span><span class="p">,</span><span class="n">fermi</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]),</span> <span class="n">color</span><span class="o">=</span><span class="s2">"blue"</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">"dashed"</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"E-fermi"</span><span class="p">)</span>
@@ -410,10 +448,16 @@
 <span class="sd">    -------------</span>
 <span class="sd">    mpid : Materials id</span>
 <span class="sd">    compound : compound name</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">    &gt;&gt;&gt; band_file_epw("mp-1234", "Si")</span>
 <span class="sd">    """</span>
+    <span class="c1"># Check if the scf.in file for bandstructure calculation exists</span>
     <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"scf_dir/scf-</span><span class="si">{}</span><span class="s2">-</span><span class="si">{}</span><span class="s2">-band.in"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">compound</span><span class="p">)):</span>
+        <span class="c1"># Add 'nosym = .true.' to the scf.in file</span>
         <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"sed '/&amp;SYSTEM/a   nosym = .true.,'"</span> <span class="o">+</span> <span class="s2">" scf_dir/scf-</span><span class="si">{}</span><span class="s2">-</span><span class="si">{}</span><span class="s2">-band.in"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">compound</span><span class="p">)</span>  <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="s2">"&gt;"</span> <span class="o">+</span> <span class="s2">"scf_dir/</span><span class="si">{}</span><span class="s2">-</span><span class="si">{}</span><span class="s2">-band.in"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">compound</span><span class="p">))</span>
     <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Print an error message if the file is not found</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">"scf-</span><span class="si">{}</span><span class="s2">-</span><span class="si">{}</span><span class="s2">-band.in not found inside scf_dir.</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">"Run the script 'mainprogram.py process', with process from 1 to 4"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">compound</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">"Check 'mainprogram.py qe-info' to find what processes from 1 to 4 do.</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span></div>
@@ -433,13 +477,21 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------------</span>
 <span class="sd">    write 'pw2wan-mpid-compound.in' file</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">    &gt;&gt;&gt; pw2wan_input("mp-1234", "Si", "Si", proj="scdm")</span>
 <span class="sd">    """</span>
-    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"scdm_dir/scdm-</span><span class="si">{}</span><span class="s2">-</span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">compound</span><span class="p">)):</span>
-        <span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s2">"scdm_dir/scdm-</span><span class="si">{}</span><span class="s2">-</span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">compound</span><span class="p">))</span>
-        <span class="n">mu_scdm</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">sigma_scdm</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="c1"># Check if the SCDM projection file exists</span>
+    <span class="k">if</span> <span class="n">proj</span> <span class="o">==</span> <span class="s2">"scdm"</span><span class="p">:</span>
+        <span class="c1"># Load SCDM parameters if the file exists</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"scdm_dir/scdm-</span><span class="si">{}</span><span class="s2">-</span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">compound</span><span class="p">)):</span>
+            <span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s2">"scdm_dir/scdm-</span><span class="si">{}</span><span class="s2">-</span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">compound</span><span class="p">))</span>
+            <span class="n">mu_scdm</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">sigma_scdm</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="c1"># Create a directory for epw_dir if it doesn't exist</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="s1">'epw_dir'</span><span class="p">):</span>
         <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"mkdir epw_dir"</span><span class="p">)</span>
+    <span class="c1"># Write pw2wan input file</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"epw_dir/pw2wan-</span><span class="si">{}</span><span class="s2">-</span><span class="si">{}</span><span class="s2">.in"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">compound</span><span class="p">),</span> <span class="s2">"w"</span><span class="p">)</span> <span class="k">as</span> <span class="n">pw2wan_write</span><span class="p">:</span>
         <span class="n">pw2wan_write</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"&amp;inputpp"</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
         <span class="n">pw2wan_write</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"prefix=</span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
@@ -456,96 +508,6 @@
         <span class="n">pw2wan_write</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"/"</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span></div>
 
 
-<span class="c1">#def epw_bandcheck(infile='scf.in',out="ex.win",proj=" ",num_iter=300,dis_num_iter=200):</span>
-<span class="c1">#    """</span>
-<span class="c1">#    function to write input file for wannier90 calculations. Default: 'ex.win'</span>
-<span class="c1">#</span>
-<span class="c1">#    parameters</span>
-<span class="c1">#    -------------</span>
-<span class="c1">#    infile : input file for scf calculation</span>
-<span class="c1">#    out : output file. Default: 'ex.win'</span>
-<span class="c1">#    proj : 'scdm' if used SCDM projection, '' otherwise</span>
-<span class="c1">#    num_iter : number of iteration for wannierization</span>
-<span class="c1">#    dis_num_iter : number of iteration for disentanglement process</span>
-<span class="c1">#</span>
-<span class="c1">#</span>
-<span class="c1">#    """</span>
-<span class="c1">#    if os.path.isfile("scf_dir/{}".format(infile)):</span>
-<span class="c1">#        data = espresso.read_espresso_in("scf_dir/{}".format(infile))</span>
-<span class="c1">#    else:</span>
-<span class="c1">#        print("No {} inside scf_dir".format(infile) + "\n")</span>
-<span class="c1">#    #l=data.cell.get_bravais_lattice()</span>
-<span class="c1">#    cell=data.cell</span>
-<span class="c1">#    symbol=data.get_chemical_symbols()</span>
-<span class="c1">#    pos=data.get_scaled_positions()</span>
-<span class="c1">#    kmesh = np.loadtxt('kmesh.grid')</span>
-<span class="c1">#</span>
-<span class="c1">#    with open(out, 'w') as epw_write:</span>
-<span class="c1">#        epw_write.write("use_ws_distance = .true.\n")</span>
-<span class="c1">#        epw_write.write("dis_num_iter = {}".format(dis_num_iter) + "\n")</span>
-<span class="c1">#        epw_write.write("write_hr = .true.\n")</span>
-<span class="c1">#        epw_write.write("iprint = 2\n")</span>
-<span class="c1">#        epw_write.write("spinors = .false.\n")</span>
-<span class="c1">#        if proj == 'scdm':</span>
-<span class="c1">#            epw_write.write("auto_projections = .true.\n")</span>
-<span class="c1">#        elif proj == "fromfile":</span>
-<span class="c1">#            if os.path.isfile("projection.in"):</span>
-<span class="c1">#                with open("projection.in", "r") as gfile:</span>
-<span class="c1">#                    lines = gfile.readlines()</span>
-<span class="c1">#                len_l = len(lines)</span>
-<span class="c1">#                epw_write.write("begin projections\n")</span>
-<span class="c1">#                for i in range(len_l):</span>
-<span class="c1">#                    #f.write("proj({})".format(i+1) + "=" + "'{}'".format(lines[i].split("\n")[0]) + "\n")</span>
-<span class="c1">#                    epw_write.write("{}".format(lines[i].split("\n")[0]) + "\n")</span>
-<span class="c1">#                epw_write.write("end projections\n")</span>
-<span class="c1">#            else:</span>
-<span class="c1">#                print("projection.in file not found\n")</span>
-<span class="c1">#                print("write projections in different line, 'X:s', 'Y:pz', ... so on\n")</span>
-<span class="c1">#        else:</span>
-<span class="c1">#            epw_write.write("begin projections\n")</span>
-<span class="c1">#            epw_write.write("random\n")</span>
-<span class="c1">#            epw_write.write("end projections\n")</span>
-<span class="c1">#        epw_write.write("\n")</span>
-<span class="c1">#        epw_write.write("num_bands = XXX\n")</span>
-<span class="c1">#        epw_write.write("num_wann = XXX\n")</span>
-<span class="c1">#        epw_write.write("num_iter = {}".format(num_iter) + "\n")</span>
-<span class="c1">#        epw_write.write("dis_froz_min = XXX ! obtain from electronic bandstructure\n")</span>
-<span class="c1">#        epw_write.write("dis_froz_max = XXX\n")</span>
-<span class="c1">#        epw_write.write("dis_win_min = XXX\n")</span>
-<span class="c1">#        epw_write.write("dis_win_max = XXX\n")</span>
-<span class="c1">#        epw_write.write("\n")</span>
-<span class="c1">#        epw_write.write("Begin Kpoint_Path\n")</span>
-<span class="c1">#        with open("wannier_kpath.in", "r") as gfile:</span>
-<span class="c1">#            lines = gfile.readlines()</span>
-<span class="c1">#        for i,line in enumerate(lines):</span>
-<span class="c1">#            epw_write.write(line)</span>
-<span class="c1">#        epw_write.write("End Kpoint_Path\n")</span>
-<span class="c1">#        epw_write.write("\n")</span>
-<span class="c1">#        epw_write.write("fermi_surface_plot = .true.\n")</span>
-<span class="c1">#        epw_write.write("bands_plot = .true.\n")</span>
-<span class="c1">#        epw_write.write("wannier_plot = .true.\n")</span>
-<span class="c1">#        epw_write.write("wannier_plot_supercell = 3\n")</span>
-<span class="c1">#        epw_write.write("\n")</span>
-<span class="c1">#        epw_write.write("begin unit_cell_cart\n")</span>
-<span class="c1">#        epw_write.write("Ang\n")</span>
-<span class="c1">#        for lat in cell:</span>
-<span class="c1">#            epw_write.write(str(lat[0]) + " " + str(lat[1]) + " " + str(lat[2]) + "\n")</span>
-<span class="c1">#        epw_write.write("end unit_cell_cart\n")</span>
-<span class="c1">#        epw_write.write("\n")</span>
-<span class="c1">#        epw_write.write("begin atoms_frac\n")</span>
-<span class="c1">#        for sym,pos in zip(symbol,pos):</span>
-<span class="c1">#            epw_write.write(sym + " " + str(pos[0]) + " " + str(pos[1]) + " " + str(pos[2]) + "\n")</span>
-<span class="c1">#        epw_write.write("end atoms_frac\n")</span>
-<span class="c1">#        epw_write.write("\n")</span>
-<span class="c1">#        epw_write.write("mp_grid : {} {} {}".format(int(kmesh[0]),int(kmesh[1]),int(kmesh[2])) + "\n")</span>
-<span class="c1">#        epw_write.write("begin kpoints\n")</span>
-<span class="c1">#        with open('wann_grid.out', 'r') as gfile:</span>
-<span class="c1">#            lines = gfile.readlines()</span>
-<span class="c1">#        for line in lines:</span>
-<span class="c1">#            epw_write.write(line)</span>
-<span class="c1">#        epw_write.write("end kpoints\n")</span>
-
-
 <div class="viewcode-block" id="epw_sc_from_json">
 <a class="viewcode-back" href="../create_epw_inputs.html#create_epw_inputs.epw_sc_from_json">[docs]</a>
 <span class="k">def</span> <span class="nf">epw_sc_from_json</span><span class="p">(</span><span class="n">json_file</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="s2">"epw.in"</span><span class="p">):</span>
@@ -558,13 +520,14 @@
 <span class="sd">        Path to the JSON configuration file.</span>
 <span class="sd">    out : str, optional</span>
 <span class="sd">        EPW input file name. Default is 'epw.in'.</span>
+<span class="sd">    Example:</span>
+<span class="sd">    &gt;&gt;&gt; epw_sc_from_json("epw.json", out="epw.in")</span>
 <span class="sd">    """</span>
+    <span class="c1"># Load JSON data</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">json_file</span><span class="p">,</span> <span class="s1">'r'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
         <span class="n">config</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-
+    <span class="c1"># Write EPW input file</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="s2">"a"</span><span class="p">)</span> <span class="k">as</span> <span class="n">epw_write</span><span class="p">:</span>
-        <span class="c1">#epw_write.write("--\n")</span>
-        <span class="c1">#epw_write.write("&amp;inputepw\n")</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">config</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
                 <span class="n">epw_write</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"</span><span class="si">{}</span><span class="s2"> = .</span><span class="si">{}</span><span class="s2">.</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()))</span>
@@ -596,27 +559,18 @@
 <span class="sd">    proj: projection types</span>
 <span class="sd">    out : epw input file</span>
 
+<span class="sd">    Example:</span>
+<span class="sd">    &gt;&gt;&gt; epw_sc("mp-123", "SiO2", "Si2O4", "qpoint.in", "kpoint.in", proj="", out="epw.in")</span>
 <span class="sd">    """</span>
+    <span class="c1"># Load q-point and k-point files</span>
     <span class="n">qpt</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">qpoint_file</span><span class="p">)</span>
     <span class="n">kpt</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">kpoint_file</span><span class="p">)</span>
+    <span class="c1"># Write EPW input file</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">)</span> <span class="k">as</span> <span class="n">epw_write</span><span class="p">:</span>
         <span class="n">epw_write</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"--</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
         <span class="n">epw_write</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"&amp;inputepw</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
         <span class="n">epw_write</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"prefix=</span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
         <span class="n">epw_write</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"outdir = './'"</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
-        <span class="c1">#epw_write.write("dvscf_dir = '../phonon/save'" + "\n")</span>
-        <span class="c1">#epw_write.write("ep_coupling = .true.\n")</span>
-        <span class="c1">#epw_write.write("elph = .true.\n")</span>
-        <span class="c1">#epw_write.write("epwwrite = .true.\n")</span>
-        <span class="c1">#epw_write.write("epwread = .false.\n")</span>
-        <span class="c1">#epw_write.write("etf_mem = 1\n")</span>
-        <span class="c1">#epw_write.write("\n")</span>
-        <span class="c1">#epw_write.write("wannierize = .true.\n")</span>
-        <span class="c1">#epw_write.write("nbndsub = {} ! change according to your need".format(nbndsub) + "\n")</span>
-        <span class="c1">#epw_write.write("bands_skipped = 'exclude_bands = 1:{}' ! If possible exclude bands based on bandstructure".format(band_skip) + "\n")</span>
-        <span class="c1">#epw_write.write("wdata(1) = 'fermi_surface_plot = .true.'\n")</span>
-        <span class="c1">#epw_write.write("wdata(2) = 'dis_num_iter = {}'".format(dis_num_iter) + "\n")</span>
-        <span class="c1">#epw_write.write("max_memlt = XXX !determine the memory requirement\n")</span>
         <span class="k">if</span> <span class="n">proj</span> <span class="o">==</span> <span class="s2">"scdm"</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">"perform epw1, epw2, epw3, epw4, and proj calculations</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
             <span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s2">"scdm_dir/scdm-</span><span class="si">{}</span><span class="s2">-</span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">compound</span><span class="p">))</span>
@@ -628,6 +582,7 @@
             <span class="n">epw_write</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"scdm_mu = </span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mu_scdm</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
             <span class="n">epw_write</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"scdm_sigma = </span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sigma_scdm</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">proj</span> <span class="o">==</span> <span class="s2">"fromfile"</span><span class="p">:</span>
+            <span class="c1"># Use projections from a file</span>
             <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"projection.in"</span><span class="p">):</span>
                 <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"projection.in"</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">)</span> <span class="k">as</span> <span class="n">gfile</span><span class="p">:</span>
                     <span class="n">lines</span> <span class="o">=</span> <span class="n">gfile</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
@@ -640,58 +595,10 @@
 
     <span class="n">epw_write</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
     <span class="n">epw_write</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"#From epw.json file</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+    <span class="c1"># Write input from epw.json file</span>
     <span class="n">epw_sc_from_json</span><span class="p">(</span><span class="s2">"epw.json"</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="s1">'epw.in'</span><span class="p">)</span>
-        <span class="c1">#epw_write.write("num_iter = {}".format(num_iter) + "\n")</span>
-        <span class="c1">#epw_write.write("dis_froz_min = XXX ! obtain from electronic bandstructure\n")</span>
-        <span class="c1">#epw_write.write("dis_froz_max = XXX\n")</span>
-        <span class="c1">#epw_write.write("dis_win_min = XXX ! not necessary after defining exclude_bands\n")</span>
-        <span class="c1">#epw_write.write("dis_win_max = XXX\n")</span>
-        <span class="c1">#epw_write.write("\n")</span>
-        <span class="c1">#epw_write.write("iverbosity = 2\n")</span>
-        <span class="c1">#epw_write.write("fsthick = 0.2\n")</span>
-        <span class="c1">#epw_write.write("degaussw = 0.05\n")</span>
-        <span class="c1">#epw_write.write("ephwrite = .true.\n")</span>
-        <span class="c1">#epw_write.write("eliashberg = .true.\n")</span>
-        <span class="c1">#epw_write.write("\n")</span>
-        <span class="c1">#epw_write.write("{} = .true.".format(elphtype) + "\n")</span>
-        <span class="c1">#epw_write.write("limag = .true.\n")</span>
-        <span class="c1">#epw_write.write("lpade = .true.\n")</span>
-        <span class="c1">#epw_write.write("lacon = .false.\n")</span>
-        <span class="c1">#epw_write.write("\n")</span>
-        <span class="c1">#epw_write.write("nsiter = 300 \n")</span>
-        <span class="c1">#epw_write.write("conv_thr_iaxis = 1.0d-4\n")</span>
-        <span class="c1">#epw_write.write("wscut = 1.0 ! 10 times of maximum phonon frequency.\n")</span>
-        <span class="c1">#epw_write.write("muc = 0.16\n")</span>
-        <span class="c1">#epw_write.write("nstemp = 10\n")</span>
-        <span class="c1">#epw_write.write("temps = 10 55\n")</span>
-        <span class="c1">#epw_write.write("\n")</span>
-        <span class="c1">#epw_write.write("! Other properties\n")</span>
-        <span class="c1">#epw_write.write("!#Calculate the electron spectral function from the e-ph interaction\n")</span>
-        <span class="c1">#epw_write.write("specfun_el = .false.\n")</span>
-        <span class="c1">#epw_write.write("scattering = .false. !computes scattering rates\n")</span>
-        <span class="c1">#epw_write.write("!scattering rates are calculated using 0th order relaxation time approximation.\n")</span>
-        <span class="c1">#epw_write.write("scattering_0rta = .false.\n")</span>
-        <span class="c1">#epw_write.write("!scattering rates in the self-energy relaxation time approximation.\n")</span>
-        <span class="c1">#epw_write.write("scattering_serta = .false.\n")</span>
-        <span class="c1">#epw_write.write("!el-ph matrix elements are screened by the RPA or TF dielectric function\n")</span>
-        <span class="c1">#epw_write.write("lscreen = .false.\n")</span>
-        <span class="c1">#epw_write.write("!Lindhard screening, if 1 the Thomas-Fermi screening. Only relevant if lscreen = .true.\n")</span>
-        <span class="c1">#epw_write.write("scr_typ = 0 \n")</span>
-        <span class="c1">#epw_write.write("!phonon self-energy from the el-ph interaction.\n")</span>
-        <span class="c1">#epw_write.write("phonselfen = .false.\n")</span>
-        <span class="c1">#epw_write.write("!Eliashberg spectral function, 𝛼2𝐹(𝜔), transport Eliashberg spectral function 𝛼2𝐹tr(𝜔)\n")</span>
-        <span class="c1">#epw_write.write("!phonon density of states 𝐹(𝜔). Only allowed in the case of phonselfen = .true.\n")</span>
-        <span class="c1">#epw_write.write("a2f = .false.\n")</span>
-        <span class="c1">#epw_write.write("!Calculate the electronic nesting function.\n")</span>
-        <span class="c1">#epw_write.write("nest_fn = .false.\n")</span>
-        <span class="c1">#epw_write.write("!enable the correct Wannier interpolation in the case of polar material.\n")</span>
-        <span class="c1">#epw_write.write("lpolar = .false. \n")</span>
-        <span class="c1">#epw_write.write("!only the long-range part of the electron-phonon matrix elements are calculated\n")</span>
-        <span class="c1">#epw_write.write("!works only with lpolar=.true.\n")</span>
-        <span class="c1">#epw_write.write("longrange = .false.\n")</span>
-        <span class="c1">#epw_write.write("!Calculate the electron self-energy from the el-ph interaction\n")</span>
-        <span class="c1">#epw_write.write("elecselfen = .false.\n")</span>
     <span class="n">epw_write</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+    <span class="c1"># Write k-point and q-point information</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="s2">"a"</span><span class="p">)</span> <span class="k">as</span> <span class="n">epw_write</span><span class="p">:</span>
         <span class="n">epw_write</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"nk1 = </span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">kpt</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
         <span class="n">epw_write</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"nk2 = </span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">kpt</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
@@ -718,6 +625,7 @@
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    main function</span>
 <span class="sd">    """</span>
+    <span class="c1"># Load input data from JSON file</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">pwd</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">pwd</span><span class="o">+</span><span class="s2">"/htepc.json"</span><span class="p">):</span>
@@ -728,10 +636,12 @@
             <span class="n">input_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">readjson</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">"htepc.json file not found</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+    <span class="c1"># Extract relevant data from input</span>
     <span class="n">dft</span> <span class="o">=</span> <span class="n">input_data</span><span class="p">[</span><span class="s1">'download'</span><span class="p">][</span><span class="s1">'inp'</span><span class="p">][</span><span class="s1">'calc'</span><span class="p">]</span>
     <span class="n">mpid</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
     <span class="n">compound</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
     <span class="n">prefix</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+    <span class="c1"># Perform tasks based on input conditions</span>
     <span class="k">if</span> <span class="n">dft</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"QE"</span><span class="p">,</span><span class="s2">"qe"</span><span class="p">):</span>
         <span class="n">projwfc</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span><span class="n">mpid</span><span class="p">,</span><span class="n">compound</span><span class="p">)</span>
     <span class="n">condition</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
@@ -744,16 +654,19 @@
         <span class="n">prepare_nscf</span><span class="p">(</span><span class="s1">'kmesh.grid'</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">"Generating file for non self consistent calculations</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">condition</span> <span class="o">==</span> <span class="s2">"ciftoxsf"</span><span class="p">:</span>
+        <span class="c1"># Convert CIF file to XSF format</span>
         <span class="n">pwd</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
         <span class="n">file_path</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">pwd</span><span class="o">+</span><span class="s2">"/**/cif/</span><span class="si">{}</span><span class="s2">.cif"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mpid</span><span class="p">),</span> <span class="n">recursive</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
         <span class="n">outfile</span> <span class="o">=</span> <span class="n">pwd</span> <span class="o">+</span> <span class="s2">"/scf_dir/"</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">mpid</span><span class="p">)</span> <span class="o">+</span> <span class="s2">".xsf"</span>
         <span class="n">ciftoxsf</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span><span class="n">outfile</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">condition</span> <span class="o">==</span> <span class="s2">"projection"</span><span class="p">:</span>
+        <span class="c1"># Generate input file for projwfc.x</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">"inside proj"</span><span class="p">)</span>
         <span class="n">projwfc</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span><span class="n">mpid</span><span class="p">,</span><span class="n">compound</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">"Generating input file for projwfc.x</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">condition</span> <span class="o">==</span> <span class="s2">"scdm"</span><span class="p">:</span>
+        <span class="c1"># Perform SCDM parameter fitting</span>
         <span class="n">fermi</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span>
         <span class="n">file_name</span> <span class="o">=</span> <span class="s2">"R</span><span class="si">{}</span><span class="s2">-</span><span class="si">{}</span><span class="s2">/epw/p_vs_e.dat"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">compound</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">"Obtaining SCDM parameters from </span><span class="si">{}</span><span class="s2"> projectibility"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">compound</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
@@ -764,11 +677,14 @@
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"scdm-</span><span class="si">{}</span><span class="s2">-</span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">compound</span><span class="p">),</span> <span class="s2">"w"</span><span class="p">)</span> <span class="k">as</span> <span class="n">file1</span><span class="p">:</span>
             <span class="n">file1</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"</span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">aconst</span><span class="p">,</span><span class="n">bconst</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">condition</span> <span class="o">==</span> <span class="s2">"band"</span><span class="p">:</span>
+        <span class="c1"># Modify band file</span>
         <span class="n">band_file_epw</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">compound</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">condition</span> <span class="o">==</span> <span class="s2">"pw2wan"</span><span class="p">:</span>
+        <span class="c1"># Generate input file for pw2wannier90.x</span>
         <span class="n">projection</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
         <span class="n">pw2wan_input</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">compound</span><span class="p">,</span><span class="n">prefix</span><span class="p">,</span><span class="n">proj</span><span class="o">=</span><span class="n">projection</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">condition</span> <span class="o">==</span> <span class="s2">"kpathwan"</span><span class="p">:</span>
+        <span class="c1"># Generate k-path for plotting Wannierized bands</span>
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"scf_dir/scf-</span><span class="si">{}</span><span class="s2">-</span><span class="si">{}</span><span class="s2">.in"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">compound</span><span class="p">)):</span>
             <span class="n">file_name</span><span class="o">=</span><span class="s2">"scf_dir/scf-</span><span class="si">{}</span><span class="s2">-</span><span class="si">{}</span><span class="s2">.in"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">compound</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -776,11 +692,10 @@
             <span class="nb">print</span><span class="p">(</span><span class="s2">"Complete mainprogram.py from 0 to 6</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
         <span class="n">kpoint_path</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">condition</span> <span class="o">==</span> <span class="s2">"wankmesh"</span><span class="p">:</span>
+        <span class="c1"># Generate k-mesh for Wannierization</span>
         <span class="n">prepare_nscf</span><span class="p">(</span><span class="s1">'kmesh.grid'</span><span class="p">,</span><span class="n">what</span><span class="o">=</span><span class="s2">"wan"</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">condition</span> <span class="o">==</span> <span class="s2">"epw_band"</span><span class="p">:</span>
-        <span class="c1">#with open("band.dat", "r") as file:</span>
-        <span class="c1">#    lines = file.readlines()</span>
-        <span class="c1">#num_bands = int(lines[0].split("\n")[0].split("=")[1].split(",")[0])</span>
+        <span class="c1"># Prepare wannier90 input file</span>
         <span class="n">projection</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">dft</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">'QE'</span><span class="p">,</span> <span class="s1">'qe'</span><span class="p">):</span>
             <span class="n">epw_bandcheck</span><span class="p">(</span><span class="s2">"scf-</span><span class="si">{}</span><span class="s2">-</span><span class="si">{}</span><span class="s2">.in"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">compound</span><span class="p">),</span><span class="n">proj</span><span class="o">=</span><span class="n">projection</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="s2">"ex.win"</span><span class="p">,</span><span class="n">dft</span><span class="o">=</span><span class="n">dft</span><span class="p">)</span>
@@ -789,8 +704,7 @@
             <span class="n">epw_bandcheck</span><span class="p">(</span><span class="s2">"POSCAR"</span><span class="p">,</span><span class="n">proj</span><span class="o">=</span><span class="n">projection</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="s2">"ex.win"</span><span class="p">,</span><span class="n">dft</span><span class="o">=</span><span class="n">dft</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">condition</span> <span class="o">==</span> <span class="s2">"epw"</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">"creating epw inputs for superconductivity</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
-        <span class="c1">#with open("band.dat", "r") as file1:</span>
-        <span class="c1">#    lines = file1.readlines()</span>
+        <span class="c1"># Create EPW inputs for superconductivity</span>
         <span class="n">projection</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
         <span class="n">epw_sc</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">compound</span><span class="p">,</span><span class="n">prefix</span><span class="p">,</span><span class="s1">'qpoint.dat'</span><span class="p">,</span><span class="s1">'kpoint.dat'</span><span class="p">,</span><span class="n">proj</span><span class="o">=</span><span class="n">projection</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="s2">"epw.in"</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>

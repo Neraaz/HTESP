@@ -233,33 +233,15 @@
         <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="s2">"input_cif"</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"</span><span class="si">{}</span><span class="s2">.cif"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mpid</span><span class="p">)):</span>
         <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"mv </span><span class="si">{}</span><span class="s2">.cif input_cif/"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mpid</span><span class="p">))</span>
-    <span class="c1">#Create poscar separately</span>
-    <span class="c1">#from pymatgen.io.vasp.inputs import Poscar</span>
-    <span class="c1">#poscar = Poscar(structure=struct,comment="MgB2")</span>
-    <span class="c1">#poscar = Poscar(structure=obj.structure,comment="MgB2")</span>
-    <span class="c1">#poscar</span>
-    <span class="c1">#poscar.write_file(filename="POSCAR")</span>
     <span class="c1">#obtain vasp inputs from MPRelaxSet</span>
     <span class="n">structure</span> <span class="o">=</span> <span class="n">SpacegroupAnalyzer</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">structure</span><span class="p">,</span> <span class="n">symprec</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span><span class="o">.</span><span class="n">get_primitive_standard_structure</span><span class="p">()</span>
-    <span class="c1">#relax_set = MPRelaxSet(structure=obj.structure)</span>
     <span class="n">relax_set</span> <span class="o">=</span> <span class="n">MPRelaxSet</span><span class="p">(</span><span class="n">structure</span><span class="o">=</span><span class="n">structure</span><span class="p">)</span>
-    <span class="c1">#process 1</span>
-    <span class="c1">#For POTCAR. Suppose we have POTCARS as  POT_GGA_PAW_PBE/Mg_p/POTCAR</span>
-    <span class="c1">#Mg_p can be found in POTCAR.spec</span>
-    <span class="c1">#pmg config -p /home/nnepal/bin/POT_GGA_PAW_PBE PBE52</span>
-    <span class="c1"># After that add path to .pmgrc.yaml</span>
-    <span class="c1">#pmg config --add PMG_VASP_PSP_DIR PBE52</span>
-    <span class="c1">#write INCAR and POSCAR separately</span>
-    <span class="c1">#incar = relax_set.incar</span>
-    <span class="c1">#incar.write_file('INCAR')</span>
     <span class="c1">#create a folder with structures</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="s2">"R</span><span class="si">{}</span><span class="s2">-</span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">compound</span><span class="p">)):</span>
         <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="s2">"R</span><span class="si">{}</span><span class="s2">-</span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">compound</span><span class="p">))</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="s2">"R</span><span class="si">{}</span><span class="s2">-</span><span class="si">{}</span><span class="s2">/relax"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">compound</span><span class="p">)):</span>
         <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="s2">"R</span><span class="si">{}</span><span class="s2">-</span><span class="si">{}</span><span class="s2">/relax"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">compound</span><span class="p">))</span>
     <span class="n">relax_set</span><span class="o">.</span><span class="n">write_input</span><span class="p">(</span><span class="n">output_dir</span><span class="o">=</span><span class="s2">"R</span><span class="si">{}</span><span class="s2">-</span><span class="si">{}</span><span class="s2">/relax"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">compound</span><span class="p">))</span>
-    <span class="c1">#once we complete process 1, we can write POTCAR file as</span>
-    <span class="c1">#relax_set.potcar.write_file("R{}-{}/relax/POTCAR".format(mpid,compound))</span>
     <span class="n">relax_set</span><span class="o">.</span><span class="n">poscar</span><span class="o">.</span><span class="n">write_file</span><span class="p">(</span><span class="s2">"R</span><span class="si">{}</span><span class="s2">-</span><span class="si">{}</span><span class="s2">/relax/POSCAR"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">compound</span><span class="p">))</span>
     <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"htepc.json"</span><span class="p">):</span>
         <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"cp htepc.json R</span><span class="si">{}</span><span class="s2">-</span><span class="si">{}</span><span class="s2">/relax/"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">compound</span><span class="p">))</span>
@@ -296,8 +278,6 @@
 <span class="sd">    main function</span>
 <span class="sd">    """</span>
     <span class="n">mpid</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-    <span class="c1">#MPID_LIST = MPID.split("-")[0:2]</span>
-    <span class="c1">#MPID = MPID_LIST[0] + "-" + MPID_LIST[1]</span>
     <span class="n">compound</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
     <span class="n">vasp_input</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">compound</span><span class="p">)</span></div>
 

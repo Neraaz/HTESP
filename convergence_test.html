@@ -243,6 +243,11 @@ Runs with ‘mainprogram convtest’</p>
 - compound (str): The name of the compound.</p>
 <p>Returns:
 - None</p>
+<p>Example:
+To write kpoints for a convergence calculation:
+&gt;&gt;&gt; kpoint_vasp([2, 2, 2], kconv=True)</p>
+<p>To write kpoints for a regular calculation:
+&gt;&gt;&gt; kpoint_vasp([4, 4, 4])</p>
 </dd></dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="convergence_test.submission">
@@ -258,7 +263,11 @@ Runs with ‘mainprogram convtest’</p>
 <div><p>if param is ‘kpoint’, it’s a list (e.g., (kx, ky, kz)).</p>
 </div></blockquote>
 <p>Returns:
-None</p>
+None
+Example:</p>
+<p>To submit a jobscript named ‘myjob.sh’ for computation with parameter type ‘ecut’,
+Materials Id ‘mp-123’, compound name ‘Si’, and parameter value ‘500’:
+&gt;&gt;&gt; submission(‘ecut’, ‘myjob.sh’, ‘mp-123’, ‘Si’, ‘500’)</p>
 </dd></dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="convergence_test.main_vasp">
@@ -273,6 +282,9 @@ None</p>
 - None</p>
 <p>This function iterates through the specified range of indices and performs convergence test calculations.
 It modifies input files, creates directories, and submits jobs based on the provided parameter.</p>
+<p>Example:
+To perform a convergence test for kinetic energy cutoff (‘ecut’) from index 1 to 10:
+&gt;&gt;&gt; main_vasp(“mpid.in”, “ecut”, 1, 10)</p>
 </dd></dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="convergence_test.kpoint_qe">
@@ -283,6 +295,8 @@ It modifies input files, creates directories, and submits jobs based on the prov
 - mpid (str): The ID of the compound.</p>
 <p>Returns:
 - None</p>
+<p>Example:
+&gt;&gt;&gt; kpoint_qe([0.5, 0.5, 0.5], “mp-12345”)</p>
 </dd></dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="convergence_test.main_qe">
@@ -297,6 +311,8 @@ It modifies input files, creates directories, and submits jobs based on the prov
 - None</p>
 <p>This function iterates through the specified range of indices and performs convergence test calculations.
 It modifies input files, creates directories, and submits jobs based on the provided parameter.</p>
+<p>Example:
+&gt;&gt;&gt; main_qe(“mpid.in”, “ecut”, 1, 5)</p>
 </dd></dl>
 </section>
 

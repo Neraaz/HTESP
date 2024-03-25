@@ -54,7 +54,7 @@
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="antiferro" href="antiferro.html" />
+    <link rel="next" title="magnetic" href="magnetic.html" />
     <link rel="prev" title="element_extract" href="element_extract.html" />
   
    
@@ -240,6 +240,25 @@
 dict_param (dict): A dictionary from the htepc.json file containing search criteria.</p>
 <p>Returns:
 str: A string representing the search criteria for URL.</p>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">criteria_dict</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">... </span>   <span class="s2">"aflow"</span><span class="p">:</span> <span class="p">{</span>
+<span class="gp">... </span>       <span class="s2">"filter"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+<span class="gp">... </span>       <span class="s2">"elm"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"Cu"</span><span class="p">,</span> <span class="s2">"Zn"</span><span class="p">],</span>
+<span class="gp">... </span>       <span class="s2">"nsites"</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+<span class="gp">... </span>       <span class="s2">"metal"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+<span class="gp">... </span>       <span class="s2">"FE"</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+<span class="gp">... </span>       <span class="s2">"spacegroup"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+<span class="gp">... </span>       <span class="s2">"limit"</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+<span class="gp">... </span>       <span class="s2">"prop"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"energy"</span><span class="p">,</span> <span class="s2">"bandgap"</span><span class="p">]</span>
+<span class="gp">... </span>   <span class="p">}</span>
+<span class="gp">... </span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">criteria_string</span> <span class="o">=</span> <span class="n">properties_string</span><span class="p">(</span><span class="n">criteria_dict</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">criteria_string</span><span class="p">)</span>
+<span class="go">'species(Cu,Zn),natoms(1*,*4),Egap(0),enthalpy_formation_atom(*),spacegroup_relax(*),</span>
+<span class="go">$paging(1,10),energy,bandgap'</span>
+</pre></div>
+</div>
 </dd></dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="aflow_extract.search_data">
@@ -253,6 +272,22 @@ None</p>
 in dict_param and retrieves data from the AFLOW database. It saves the
 retrieved data as a CSV file in the ‘download’ directory and also
 generates an ‘mpid-list.in’ file containing relevant data.</p>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">search_criteria</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">... </span>   <span class="s2">"aflow"</span><span class="p">:</span> <span class="p">{</span>
+<span class="gp">... </span>       <span class="s2">"filter"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+<span class="gp">... </span>       <span class="s2">"elm"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"Cu"</span><span class="p">,</span> <span class="s2">"Zn"</span><span class="p">],</span>
+<span class="gp">... </span>       <span class="s2">"nsites"</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+<span class="gp">... </span>       <span class="s2">"metal"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+<span class="gp">... </span>       <span class="s2">"FE"</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+<span class="gp">... </span>       <span class="s2">"spacegroup"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+<span class="gp">... </span>       <span class="s2">"limit"</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+<span class="gp">... </span>       <span class="s2">"prop"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"energy"</span><span class="p">,</span> <span class="s2">"bandgap"</span><span class="p">]</span>
+<span class="gp">... </span>   <span class="p">}</span>
+<span class="gp">... </span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">search_data</span><span class="p">(</span><span class="n">search_criteria</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="aflow_extract.poscar_create">
@@ -266,6 +301,27 @@ Structure: A pymatgen Structure object representing the structure.</p>
 fractional positions, and creates a pymatgen Structure object. It then returns
 the Structure object representing the structure. This function currently does
 not write the POSCAR file to disk but can be extended to do so.</p>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">... </span>   <span class="s2">"geometry"</span><span class="p">:</span> <span class="p">[</span><span class="mf">3.84</span><span class="p">,</span> <span class="mf">3.84</span><span class="p">,</span> <span class="mf">3.84</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">90</span><span class="p">],</span>
+<span class="gp">... </span>   <span class="s2">"compound"</span><span class="p">:</span> <span class="s2">"Si"</span><span class="p">,</span>
+<span class="gp">... </span>   <span class="s2">"auid"</span><span class="p">:</span> <span class="s2">"aflow:12345"</span><span class="p">,</span>
+<span class="gp">... </span>   <span class="s2">"positions_fractional"</span><span class="p">:</span>
+<span class="go">       [[0.000000, 0.000000, 0.000000], [0.250000, 0.250000, 0.250000]]</span>
+<span class="go">... }</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">structure</span> <span class="o">=</span> <span class="n">poscar_create</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">structure</span><span class="p">)</span>
+<span class="go">Full Formula (Si2)</span>
+<span class="go">Reduced Formula: Si</span>
+<span class="go">abc   :   3.840198   3.840198   3.840198</span>
+<span class="go">angles:  90.000000  90.000000  90.000000</span>
+<span class="go">Sites (2)</span>
+<span class="go">  #  SP           auid</span>
+<span class="go">---  ----  -------------</span>
+<span class="go">  0  Si    aflow:12345</span>
+<span class="go">  1  Si    aflow:12345</span>
+</pre></div>
+</div>
 </dd></dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="aflow_extract.download">
@@ -281,6 +337,10 @@ None</p>
 range of indices, constructs input files for quantum mechanical calculations,
 and saves them. It also creates a file named ‘mpid.in’ containing information
 about the downloaded structures.</p>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">download</span><span class="p">(</span><span class="s2">"QE"</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="aflow_extract.main">
@@ -316,12 +376,12 @@ the corresponding action based on the provided inputs.</p>
             </a>
           
           
-            <a href="antiferro.html" title="antiferro"
+            <a href="magnetic.html" title="magnetic"
                class="md-flex md-footer-nav__link md-footer-nav__link--next"
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> "Next" </span> antiferro </span>
+                class="md-footer-nav__direction"> "Next" </span> magnetic </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>

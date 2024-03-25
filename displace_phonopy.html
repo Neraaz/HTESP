@@ -272,6 +272,24 @@ To obtain eigenvectors on band.yaml, switch on eigenvector tag to true in band.c
 </dd>
 </dl>
 </dd></dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">displace</span> <span class="o">=</span> <span class="n">DisplacePhonopy</span><span class="p">(</span><span class="s2">"band.conf"</span><span class="p">)</span> <span class="c1">#create an object</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">displace</span><span class="o">.</span><span class="n">parse</span><span class="p">()</span> <span class="c1">#parsing band.conf</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">displace</span><span class="o">.</span><span class="n">print_qpt</span><span class="p">()</span> <span class="c1">#print qpoints and its index</span>
+<span class="go">0 [0.0, 0.0, 0.0]</span>
+<span class="go">1 [0.1, 0.1, 0.1]</span>
+<span class="go">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">displace</span><span class="o">.</span><span class="n">print_mode</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c1">#print band energies for a qpoint</span>
+<span class="go">1 0.0</span>
+<span class="go">2 0.1</span>
+<span class="go">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">displace</span><span class="o">.</span><span class="n">negative_freq</span><span class="p">()</span> <span class="c1">#returns dictionary of qpoints, band index, and phonon frequency</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#Easy to locate qpoint (iq) and band index (inu) for negative frequencies</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">displace</span><span class="o">.</span><span class="n">geteigenvec</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="c1">#get eigen vector corresponding to particular iq and inu.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">displace</span><span class="o">.</span><span class="n">applydisplace</span><span class="p">()</span> <span class="c1">#Apply distortion to the structure, provided an undistorted</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#structure exists as POSCAR file</span>
+</pre></div>
+</div>
 <dl class="py method">
 <dt class="sig sig-object py" id="displace_phonopy.DisplacePhonopy.parse">
 <span class="sig-name descname"><span class="pre">parse</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/displace_phonopy.html#DisplacePhonopy.parse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#displace_phonopy.DisplacePhonopy.parse" title="Link to this definition">¶</a></dt>

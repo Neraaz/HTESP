@@ -205,7 +205,6 @@
 <span class="kn">from</span> <span class="nn">pymatgen.core</span> <span class="kn">import</span> <span class="n">structure</span>
 <span class="kn">from</span> <span class="nn">pymatgen.analysis.elasticity</span> <span class="kn">import</span> <span class="n">diff_fit</span><span class="p">,</span><span class="n">ElasticTensor</span><span class="p">,</span><span class="n">Stress</span>
 <span class="kn">from</span> <span class="nn">pymatgen.analysis.elasticity</span> <span class="kn">import</span> <span class="n">DeformedStructureSet</span><span class="p">,</span><span class="n">find_eq_stress</span>
-<span class="kn">from</span> <span class="nn">pymatgen.analysis.magnetism</span> <span class="kn">import</span> <span class="n">MagneticStructureEnumerator</span>
 <span class="kn">from</span> <span class="nn">cif_to_gsinput</span> <span class="kn">import</span> <span class="n">pos_to_kpt</span>
 <span class="kn">from</span> <span class="nn">write_potcar</span> <span class="kn">import</span> <span class="n">poscar2potcar</span>
 <span class="kn">from</span> <span class="nn">htepc</span> <span class="kn">import</span> <span class="n">MpConnect</span>
@@ -246,18 +245,34 @@
 <span class="sd">    Returns:</span>
 <span class="sd">    --------</span>
 <span class="sd">    None</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from mpconnect import MpConnect</span>
+<span class="sd">    &gt;&gt;&gt; from pymatgen import Structure</span>
+<span class="sd">    &gt;&gt;&gt; from pymatgen.io.vasp import Poscar</span>
+<span class="sd">    &gt;&gt;&gt; obj = MpConnect()</span>
+<span class="sd">    &gt;&gt;&gt; mpid = "mp-1234"</span>
+<span class="sd">    &gt;&gt;&gt; orig_prefix = "Si2"</span>
+<span class="sd">    &gt;&gt;&gt; deformed_struc = ...  # Object containing deformed structures</span>
+<span class="sd">    &gt;&gt;&gt; # obtained with pymatgen.analysis.elasticity.DeformedStructureSet</span>
+<span class="sd">    &gt;&gt;&gt; deformation(mpid, obj, "vasp", orig_prefix, deformed_struc)</span>
 <span class="sd">    """</span>
+    <span class="c1"># Extracting deformed structures</span>
     <span class="n">list_str</span> <span class="o">=</span> <span class="n">deformed_struc</span><span class="o">.</span><span class="n">deformed_structures</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="s1">'scf_dir'</span><span class="p">):</span>
         <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="s2">"scf_dir"</span><span class="p">)</span>
+    <span class="c1"># Initialize index when mpid-deformed.in file not found</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s1">'mpid-deformed.in'</span><span class="p">):</span>
         <span class="n">entry</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'mpid-deformed.in'</span><span class="p">,</span> <span class="s1">'r'</span><span class="p">)</span> <span class="k">as</span> <span class="n">mpid_read</span><span class="p">:</span>
             <span class="n">lines</span> <span class="o">=</span> <span class="n">mpid_read</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
         <span class="n">entry</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+    <span class="c1"># Loop over deformed structures</span>
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">struc</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">list_str</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">dft</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">'vasp'</span><span class="p">,</span> <span class="s1">'VASP'</span><span class="p">):</span>
+            <span class="c1"># Write VASP input files inside R{mpid}-{i+1}-{name}/relax</span>
             <span class="n">obj</span><span class="o">.</span><span class="n">prefix</span> <span class="o">=</span> <span class="n">struc</span><span class="o">.</span><span class="n">composition</span><span class="o">.</span><span class="n">alphabetical_formula</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">" "</span><span class="p">,</span><span class="s2">""</span><span class="p">)</span>
             <span class="n">poscar</span> <span class="o">=</span> <span class="n">Poscar</span><span class="p">(</span><span class="n">structure</span><span class="o">=</span><span class="n">struc</span><span class="p">,</span><span class="n">comment</span><span class="o">=</span><span class="n">obj</span><span class="o">.</span><span class="n">prefix</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="s2">"R</span><span class="si">{}</span><span class="s2">-</span><span class="si">{}</span><span class="s2">-</span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">obj</span><span class="o">.</span><span class="n">prefix</span><span class="p">)):</span>
@@ -286,19 +301,24 @@
             <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"htepc.json"</span><span class="p">):</span>
                 <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"cp htepc.json R</span><span class="si">{}</span><span class="s2">-</span><span class="si">{}</span><span class="s2">-</span><span class="si">{}</span><span class="s2">/relax/"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">obj</span><span class="o">.</span><span class="n">prefix</span><span class="p">))</span>
             <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="s2">"R</span><span class="si">{}</span><span class="s2">-</span><span class="si">{}</span><span class="s2">-</span><span class="si">{}</span><span class="s2">/relax/"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">obj</span><span class="o">.</span><span class="n">prefix</span><span class="p">))</span>
+            <span class="c1"># Write POTCAR from POSCAR</span>
             <span class="n">poscar2potcar</span><span class="p">()</span>
+            <span class="c1"># process INCAR file with vasp.in file</span>
             <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"vasp_process.py POSCAR"</span><span class="p">)</span>
             <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"""sed -i '/ISIF/d' INCAR"""</span><span class="p">)</span>
             <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"""echo "ISIF = 2" &gt;&gt; INCAR"""</span><span class="p">)</span>
             <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="s2">"../../"</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Read magnetic flag from pwscf_in dictionary</span>
             <span class="n">magnetic</span> <span class="o">=</span> <span class="n">input_data</span><span class="p">[</span><span class="s1">'pwscf_in'</span><span class="p">][</span><span class="s1">'magnetic'</span><span class="p">]</span>
+            <span class="c1"># Create input files with FM ordering if magnetic flag is true</span>
             <span class="k">if</span> <span class="n">magnetic</span><span class="p">:</span>
                 <span class="n">default_magmoms</span> <span class="o">=</span> <span class="n">input_data</span><span class="p">[</span><span class="s1">'magmom'</span><span class="p">][</span><span class="s1">'magmom'</span><span class="p">]</span>
                 <span class="n">struc</span> <span class="o">=</span> <span class="n">MagneticStructureEnumerator</span><span class="p">(</span><span class="n">struc</span><span class="p">,</span><span class="n">default_magmoms</span><span class="o">=</span><span class="n">default_magmoms</span><span class="p">,</span><span class="n">strategies</span><span class="o">=</span><span class="p">[</span><span class="s1">'ferromagnetic'</span><span class="p">],</span><span class="n">truncate_by_symmetry</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">ordered_structures</span>
                 <span class="n">obj</span><span class="o">.</span><span class="n">structure</span> <span class="o">=</span> <span class="n">struc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">obj</span><span class="o">.</span><span class="n">structure</span> <span class="o">=</span> <span class="n">struc</span>
+            <span class="c1"># Create scf.in file</span>
             <span class="n">comp_list</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">composition</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">structure</span><span class="o">.</span><span class="n">composition</span><span class="o">.</span><span class="n">elements</span><span class="p">:</span>
                 <span class="n">comp_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">composition</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
@@ -337,25 +357,31 @@
 <span class="sd">    --------</span>
 <span class="sd">    None</span>
 <span class="sd">    """</span>
-    <span class="c1">#mpid = sys.argv[1]</span>
-    <span class="c1">#orig_prefix=sys.argv[2]</span>
     <span class="n">mode</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
     <span class="n">dft</span> <span class="o">=</span> <span class="n">input_data</span><span class="p">[</span><span class="s1">'download'</span><span class="p">][</span><span class="s1">'inp'</span><span class="p">][</span><span class="s1">'calc'</span><span class="p">]</span>
     <span class="n">obj</span> <span class="o">=</span> <span class="n">MpConnect</span><span class="p">()</span>
+    <span class="c1"># Determine strain based on file existence</span>
     <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"htepc.json"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"../../htepc.json"</span><span class="p">):</span>
         <span class="n">strain</span> <span class="o">=</span> <span class="n">input_data</span><span class="p">[</span><span class="s1">'strain'</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">strain</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">0.01</span><span class="p">,</span><span class="o">-</span><span class="mf">0.005</span><span class="p">,</span><span class="mf">0.005</span><span class="p">,</span><span class="mf">0.01</span><span class="p">]</span>
     <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Try loading the structure from relaxed POSCAR</span>
         <span class="n">obj</span><span class="o">.</span><span class="n">structure</span> <span class="o">=</span> <span class="n">structure</span><span class="o">.</span><span class="n">Structure</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="s2">"R</span><span class="si">{}</span><span class="s2">-</span><span class="si">{}</span><span class="s2">/relax/POSCAR"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">orig_prefix</span><span class="p">))</span>
     <span class="k">except</span><span class="p">:</span>
+        <span class="c1"># Load structure from SCF input file if relaxed POSCAR doesn't exist</span>
         <span class="n">obj</span><span class="o">.</span><span class="n">structure</span> <span class="o">=</span> <span class="n">pwscf</span><span class="o">.</span><span class="n">PWInput</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="s2">"scf_dir/scf-</span><span class="si">{}</span><span class="s2">.in"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mpid</span><span class="p">))</span><span class="o">.</span><span class="n">structure</span>
+    <span class="c1"># Get conventional standardized structure</span>
     <span class="n">structure_sym</span> <span class="o">=</span> <span class="n">SpacegroupAnalyzer</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">structure</span><span class="p">,</span> <span class="n">symprec</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span><span class="o">.</span><span class="n">get_conventional_standard_structure</span><span class="p">()</span>
     <span class="n">prefix_conv</span> <span class="o">=</span> <span class="n">structure_sym</span><span class="o">.</span><span class="n">composition</span><span class="o">.</span><span class="n">alphabetical_formula</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">" "</span><span class="p">,</span><span class="s2">""</span><span class="p">)</span>
+    <span class="c1"># Generate deformed structure set</span>
     <span class="n">deformed_struc</span> <span class="o">=</span> <span class="n">DeformedStructureSet</span><span class="p">(</span><span class="n">structure_sym</span><span class="p">,</span><span class="n">norm_strains</span><span class="o">=</span><span class="n">strain</span><span class="p">)</span>
+    <span class="c1"># Handle different modes of operation</span>
     <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">"input"</span><span class="p">:</span>
+        <span class="c1"># Prepare inputs and submit calculations</span>
         <span class="n">deformation</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">obj</span><span class="p">,</span><span class="n">dft</span><span class="p">,</span><span class="n">orig_prefix</span><span class="p">,</span><span class="n">deformed_struc</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">"compute_elastic"</span><span class="p">:</span>
+        <span class="c1"># Compute elastic constants</span>
         <span class="n">nstruc</span> <span class="o">=</span> <span class="mi">6</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">strain</span><span class="p">)</span>
         <span class="n">deformation_mat</span> <span class="o">=</span> <span class="n">deformed_struc</span><span class="o">.</span><span class="n">deformations</span>
         <span class="n">deform_list</span> <span class="o">=</span> <span class="p">[]</span>
@@ -363,6 +389,7 @@
         <span class="c1">#dataeq = Vasprun("R{}-{}/relax/vasprun.xml".format(mpid,orig_prefix))</span>
         <span class="c1">#stresseq = -1.0*np.array(dataeq.as_dict()['output']['ionic_steps'][0]['stress'])</span>
         <span class="c1">#print(stresseq)</span>
+        <span class="c1"># Loop over inputs and extract stress from deformed structures after relaxation</span>
         <span class="k">for</span> <span class="n">istruc</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nstruc</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">dft</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">'VASP'</span><span class="p">,</span><span class="s1">'vasp'</span><span class="p">):</span>
                 <span class="n">data</span> <span class="o">=</span> <span class="n">Vasprun</span><span class="p">(</span><span class="s2">"R</span><span class="si">{}</span><span class="s2">-</span><span class="si">{}</span><span class="s2">-</span><span class="si">{}</span><span class="s2">/relax/vasprun.xml"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">istruc</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">prefix_conv</span><span class="p">))</span>
@@ -372,19 +399,23 @@
                 <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s2">"stress-qe"</span><span class="p">)[:,:</span><span class="mi">3</span><span class="p">]</span>
                 <span class="n">calc_stress</span> <span class="o">=</span> <span class="n">data</span><span class="o">*</span><span class="mf">21798.7</span> <span class="c1">#1 Ry/angstrom^3 to 1 kbar conversion</span>
                 <span class="c1">#print("Currently supporting only for VASP.\n")</span>
+            <span class="c1"># Creates stress object</span>
             <span class="n">stress_obj</span> <span class="o">=</span> <span class="n">Stress</span><span class="p">(</span><span class="n">calc_stress</span><span class="p">)</span>
             <span class="n">pk2stress</span> <span class="o">=</span> <span class="n">stress_obj</span><span class="o">.</span><span class="n">piola_kirchoff_2</span><span class="p">(</span><span class="n">deformation_mat</span><span class="p">[</span><span class="n">istruc</span><span class="p">])</span>
             <span class="c1">#pk2stress = calc_stress</span>
             <span class="n">stress</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pk2stress</span><span class="p">)</span>
+            <span class="c1"># Extracts green lagrange strain</span>
             <span class="n">deform_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">deformation_mat</span><span class="p">[</span><span class="n">istruc</span><span class="p">]</span><span class="o">.</span><span class="n">green_lagrange_strain</span><span class="p">)</span>
         <span class="n">stress</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">stress</span><span class="p">)</span>
         <span class="n">strain</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">deform_list</span><span class="p">)</span>
+        <span class="c1"># Fitting to obtain elastic tensor</span>
         <span class="n">elastic_tens</span> <span class="o">=</span> <span class="n">diff_fit</span><span class="p">(</span><span class="n">strain</span><span class="p">,</span><span class="n">stress</span><span class="p">,</span><span class="n">order</span><span class="o">=</span><span class="mi">2</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">elastic_obj</span> <span class="o">=</span> <span class="n">ElasticTensor</span><span class="p">(</span><span class="n">elastic_tens</span><span class="p">)</span>
         <span class="c1">#print(ELASTIC_OBJ.property_dict)</span>
         <span class="n">properties</span> <span class="o">=</span> <span class="n">elastic_obj</span><span class="o">.</span><span class="n">get_structure_property_dict</span><span class="p">(</span><span class="n">structure_sym</span><span class="p">)</span>
         <span class="n">propname</span> <span class="o">=</span> <span class="n">properties</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">propname</span><span class="p">)</span>
+        <span class="c1"># Save elastic properties in elastic.csv file</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"elastic.csv"</span><span class="p">,</span><span class="s2">"a"</span><span class="p">)</span> <span class="k">as</span> <span class="n">write_elastic</span><span class="p">:</span>
             <span class="n">write_elastic</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"</span><span class="si">{}</span><span class="s2">,</span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">orig_prefix</span><span class="p">))</span>
             <span class="k">for</span> <span class="n">prop</span> <span class="ow">in</span> <span class="n">properties</span><span class="p">:</span>

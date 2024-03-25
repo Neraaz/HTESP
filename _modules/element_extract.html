@@ -252,18 +252,25 @@
 <span class="sd">    --------</span>
 <span class="sd">    data : pandas DataFrame</span>
 <span class="sd">        DataFrame containing the extracted data.</span>
+<span class="sd">    Example:</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; download('H', 2, ['O', 'F'], ['material_id', 'formation_energy_per_atom'])</span>
 <span class="sd">    """</span>
     <span class="n">parent_folder</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
     <span class="n">create_folder</span><span class="p">(</span><span class="n">parent_folder</span><span class="p">)</span>
+    <span class="c1"># Check for the presence of the API key file</span>
     <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"htepc.json"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"../../htepc.json"</span><span class="p">):</span>
         <span class="n">key</span> <span class="o">=</span> <span class="n">input_data</span><span class="p">[</span><span class="s2">"mpi_key"</span><span class="p">][</span><span class="s2">"API_KEY"</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">"htepc.json file not found. Please provide with your materials project api key</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+    <span class="c1"># Initialize MPRester with API key</span>
     <span class="n">mpr</span> <span class="o">=</span> <span class="n">MPRester</span><span class="p">(</span><span class="n">key</span><span class="p">[</span><span class="s2">"key"</span><span class="p">])</span>
+    <span class="c1"># Search for materials matching specified criteria</span>
     <span class="n">mpr_search</span> <span class="o">=</span> <span class="n">mpr</span><span class="o">.</span><span class="n">materials</span><span class="o">.</span><span class="n">summary</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">elements</span><span class="o">=</span><span class="p">[</span><span class="n">elm</span><span class="p">],</span>
                                      <span class="n">exclude_elements</span><span class="o">=</span><span class="n">exclude_el</span><span class="p">,</span>
                                      <span class="n">fields</span><span class="o">=</span><span class="n">properties</span><span class="p">,</span>
                                      <span class="n">num_elements</span><span class="o">=</span><span class="n">num_el</span><span class="p">)</span>
+    <span class="c1"># Write extracted data to CSV file</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">parent_folder</span><span class="o">+</span><span class="s2">"/download/"</span><span class="o">+</span> <span class="s2">"data-"</span><span class="o">+</span> <span class="n">elm</span> <span class="o">+</span><span class="s2">".csv"</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">)</span> <span class="k">as</span> <span class="n">data_elm</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">propti</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">properties</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">propti</span> <span class="o">==</span> <span class="s2">"structure"</span><span class="p">:</span>
@@ -291,6 +298,7 @@
                     <span class="n">data_elm</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">prop</span><span class="p">)</span> <span class="o">+</span> <span class="s2">","</span><span class="p">)</span>
             <span class="n">data_elm</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">search</span><span class="o">.</span><span class="n">structure</span><span class="o">.</span><span class="n">composition</span><span class="o">.</span><span class="n">formula</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">" "</span><span class="p">,</span> <span class="s2">""</span><span class="p">)))</span>
             <span class="n">data_elm</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+    <span class="c1"># Read the CSV file into a DataFrame</span>
     <span class="n">data</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">parent_folder</span><span class="o">+</span><span class="s2">"/download/"</span><span class="o">+</span><span class="s2">"data-"</span> <span class="o">+</span> <span class="n">elm</span> <span class="o">+</span> <span class="s2">".csv"</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">'material_id'</span><span class="p">])</span>
     <span class="k">return</span> <span class="n">data</span></div>
@@ -638,6 +646,7 @@
     <span class="n">parent_folder</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
     <span class="n">create_folder</span><span class="p">(</span><span class="n">parent_folder</span><span class="p">)</span>
     <span class="n">obj</span> <span class="o">=</span> <span class="n">MpConnect</span><span class="p">()</span>
+    <span class="c1"># Create condition for must_include elements</span>
     <span class="n">must_in</span> <span class="o">=</span> <span class="s2">""</span>
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">elm</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">must_include</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">must_include</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
@@ -645,8 +654,10 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">must_in</span> <span class="o">+=</span> <span class="s2">"'</span><span class="si">{}</span><span class="s2">'"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">elm</span><span class="p">)</span> <span class="o">+</span> <span class="s2">" in elm_list or "</span>
     <span class="n">must_in</span> <span class="o">=</span> <span class="s2">"nelm &lt; ntype_constraint and "</span> <span class="o">+</span> <span class="s2">"(</span><span class="si">{}</span><span class="s2">)"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">must_in</span><span class="p">)</span>
+    <span class="c1"># Get entries in chemical system</span>
     <span class="n">entries</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">mpr</span><span class="o">.</span><span class="n">get_entries_in_chemsys</span><span class="p">(</span><span class="n">entries</span><span class="p">)</span>
     <span class="n">entry</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="c1"># Write header to CSV file</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">parent_folder</span><span class="o">+</span><span class="s2">"/download/"</span><span class="o">+</span> <span class="s2">"download.csv"</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">)</span> <span class="k">as</span> <span class="n">data_elm</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">propti</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">properties</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">propti</span> <span class="o">==</span> <span class="s2">"structure"</span><span class="p">:</span>
@@ -658,7 +669,9 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">data_elm</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">propty</span><span class="p">)</span>
         <span class="n">data_elm</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+    <span class="c1"># Iterate over entries</span>
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">_</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">entries</span><span class="p">):</span>
+        <span class="c1"># Extract data for each entries</span>
         <span class="n">mpid</span> <span class="o">=</span> <span class="n">entries</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'material_id'</span><span class="p">]</span>
         <span class="n">obj</span><span class="o">.</span><span class="n">setting</span><span class="p">(</span><span class="n">mpid</span><span class="p">)</span>
         <span class="n">band_gap</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'band_gap'</span><span class="p">]</span>
@@ -668,6 +681,7 @@
         <span class="n">comp</span> <span class="o">=</span> <span class="n">entries</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">composition</span><span class="o">.</span><span class="n">formula</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">' '</span><span class="p">,</span><span class="s1">''</span><span class="p">)</span>
         <span class="n">count</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">entries</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">composition</span><span class="o">.</span><span class="n">num_atoms</span><span class="p">)</span>
         <span class="n">elm_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">entries</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">composition</span><span class="o">.</span><span class="n">as_dict</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="c1"># Define logic for filtering based on optional parameters</span>
         <span class="k">if</span> <span class="n">metal</span><span class="p">:</span>
             <span class="n">gap_logic</span> <span class="o">=</span> <span class="n">band_gap</span> <span class="o">&lt;</span> <span class="mf">0.0001</span>
         <span class="k">else</span><span class="p">:</span>
@@ -685,6 +699,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">sg_logic</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'symmetry'</span><span class="p">][</span><span class="s1">'symbol'</span><span class="p">]</span> <span class="o">==</span> <span class="n">spacegroup</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">"Extracting </span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">comp</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+        <span class="c1"># Write data to input file and CSV file if conditions are met</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"mpid-list.in"</span><span class="p">,</span> <span class="s2">"a"</span><span class="p">)</span> <span class="k">as</span> <span class="n">mplist_write</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">count</span> <span class="o">&lt;</span> <span class="n">size_constraint</span> <span class="ow">and</span> <span class="n">gap_logic</span> <span class="ow">and</span> <span class="n">fe_logic</span> <span class="ow">and</span> <span class="n">mag_logic</span> <span class="ow">and</span> <span class="n">sg_logic</span><span class="p">:</span>
                 <span class="k">if</span> <span class="nb">eval</span><span class="p">(</span><span class="n">must_in</span><span class="p">):</span>
@@ -721,12 +736,11 @@
 <span class="sd">    -----------------</span>
 <span class="sd">    None</span>
 <span class="sd">    """</span>
-    <span class="c1">#ntype = 8 #Number of different types of element in the compound.</span>
-    <span class="c1">#properties=["formula_pretty","material_id", "formation_energy_per_atom", "band_gap"]</span>
-    <span class="c1">#data = extract(ntype,properties,metal=True,neg_fe=True,nelm=2,elm=['B', 'C'])</span>
+    <span class="c1"># Check if 'mpid-list.in' file exists</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"mpid-list.in"</span><span class="p">):</span>
+        <span class="c1"># Check if 'htepc.json' exists</span>
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"htepc.json"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"../../htepc.json"</span><span class="p">):</span>
-            <span class="c1">#import download as d</span>
+            <span class="c1"># Read settings from 'htepc.json' to create 'mpid-list.in' file</span>
             <span class="n">d</span> <span class="o">=</span> <span class="n">input_data</span><span class="p">[</span><span class="s2">"download"</span><span class="p">]</span>
             <span class="n">mode</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s1">'info'</span><span class="p">][</span><span class="s1">'mode'</span><span class="p">]</span>
             <span class="n">ntype</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s1">'info'</span><span class="p">][</span><span class="s1">'ntype'</span><span class="p">]</span>
@@ -741,7 +755,8 @@
             <span class="n">nsites</span><span class="o">=</span><span class="n">d</span><span class="p">[</span><span class="s1">'info'</span><span class="p">][</span><span class="s1">'nsites'</span><span class="p">]</span>
             <span class="n">spacegroup</span><span class="o">=</span><span class="n">d</span><span class="p">[</span><span class="s1">'info'</span><span class="p">][</span><span class="s1">'spacegroup'</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">"input file download.py not found</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="c1"># Provide default settings if 'htepc.json' doesn't exist</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"input file htepc.json not found</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">"Create one with following format</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
             <span class="n">msg</span><span class="o">=</span><span class="s2">"""info={'mode':'element','metal':True, 'FE':True, 'exclude':["O", "N", "F", "Cl", "Br", "I"],'ntype':(1,2), 'elm':['B'], 'prop':["material_id", "formula_pretty", "structure", "formation_energy_per_atom", "band_gap", "energy_above_hull","nsites","ordering","nsites"],'ordering':'NM','nsites':10,'spacegroup':None}</span>
 <span class="s2">inp=    {'start':1, 'end':50, 'nkpt':200, 'evenkpt': False, 'plot':'phband', 'calc':'QE'}</span>
@@ -769,12 +784,11 @@
                  <span class="s1">'inp'</span><span class="p">:</span><span class="n">default2</span><span class="p">,</span>
                  <span class="s1">'chemsys'</span><span class="p">:</span><span class="n">chemsys</span>
                  <span class="p">}</span>
-            <span class="c1">#with open("download.py", "w") as h:</span>
-            <span class="c1">#    h.write("info="+str(default1) + "\n")</span>
-            <span class="c1">#    h.write("inp="+str(default2) + "\n")</span>
-            <span class="c1">#    h.write("chemsys="+str(chemsys) + "\n")</span>
+            <span class="c1"># Default mode is 'element'</span>
             <span class="n">mode</span> <span class="o">=</span> <span class="s1">'element'</span>
+        <span class="c1"># Perform actions based on mode</span>
         <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s1">'element'</span><span class="p">:</span>
+            <span class="c1"># Extract data and create input files</span>
             <span class="n">data</span> <span class="o">=</span> <span class="n">extract</span><span class="p">(</span><span class="n">ntype</span><span class="p">,</span><span class="n">properties</span><span class="p">,</span><span class="n">elm_list</span><span class="p">,</span><span class="n">exclude_el</span><span class="p">,</span>
                            <span class="n">nelm</span><span class="o">=</span><span class="n">nelm</span><span class="p">,</span>
                            <span class="n">metal</span><span class="o">=</span><span class="n">metal</span><span class="p">,</span>
@@ -785,25 +799,26 @@
                            <span class="n">spacegroup</span><span class="o">=</span><span class="n">spacegroup</span><span class="p">)</span>
             <span class="n">create_input</span><span class="p">()</span>
         <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="s1">'chemsys'</span><span class="p">:</span>
+            <span class="c1"># Download data for compounds based on chemical system</span>
             <span class="n">download_by_entry</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s1">'chemsys'</span><span class="p">][</span><span class="s1">'entries'</span><span class="p">],</span><span class="n">d</span><span class="p">[</span><span class="s1">'chemsys'</span><span class="p">][</span><span class="s1">'must_include'</span><span class="p">],</span><span class="n">d</span><span class="p">[</span><span class="s1">'chemsys'</span><span class="p">][</span><span class="s1">'size_constraint'</span><span class="p">],</span><span class="n">d</span><span class="p">[</span><span class="s1">'chemsys'</span><span class="p">][</span><span class="s1">'ntype_constraint'</span><span class="p">],</span>
                               <span class="n">d</span><span class="p">[</span><span class="s1">'chemsys'</span><span class="p">][</span><span class="s1">'form_en'</span><span class="p">],</span><span class="n">d</span><span class="p">[</span><span class="s1">'chemsys'</span><span class="p">][</span><span class="s1">'metal'</span><span class="p">],</span><span class="n">d</span><span class="p">[</span><span class="s1">'chemsys'</span><span class="p">][</span><span class="s1">'magnetic'</span><span class="p">],</span><span class="n">d</span><span class="p">[</span><span class="s1">'chemsys'</span><span class="p">][</span><span class="s1">'spacegroup'</span><span class="p">],</span><span class="n">properties</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="s1">'fromcif'</span><span class="p">:</span>
+            <span class="c1"># List CIF files</span>
             <span class="n">list_cif</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">"*.cif"</span><span class="p">,</span><span class="n">recursive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">list_cif</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s2">"These cif files are found</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
                 <span class="k">for</span> <span class="n">cif</span> <span class="ow">in</span> <span class="n">list_cif</span><span class="p">:</span>
                     <span class="nb">print</span><span class="p">(</span><span class="n">cif</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="s1">'fromvasp'</span><span class="p">:</span>
+            <span class="c1"># List VASP files</span>
             <span class="n">list_vasp</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">"*.vasp"</span><span class="p">,</span><span class="n">recursive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">list_vasp</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s2">"These .vasp files are found</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
                 <span class="k">for</span> <span class="n">vasp</span> <span class="ow">in</span> <span class="n">list_vasp</span><span class="p">:</span>
                     <span class="nb">print</span><span class="p">(</span><span class="n">vasp</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">"mode = element, chemsys, or fromcif available</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span></div>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"mode = element, chemsys, fromcif, or fromvasp available</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span></div>
 
-    <span class="c1">#for single element compounds, suppose Boron</span>
-    <span class="c1">#data = data_one_element_compound('B')</span>
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
     <span class="n">main</span><span class="p">()</span>
 </pre></div>

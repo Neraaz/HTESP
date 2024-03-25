@@ -229,7 +229,10 @@
 (if POSCAR-slab is available).</p>
 <p>Parameters:
 - filename (str): The filename of the QE input file ‘scf.in’ or VASP ‘POSCAR’ file.</p>
-<p>Returns: None</p>
+<p>Returns: None
+Example:
+———
+&gt;&gt;&gt; kpoint_path(“scf.in”)</p>
 </dd></dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="create_wt_inputs.wt_body">
@@ -240,7 +243,10 @@ given in wanniertool_input keyword within htepc.json file.</p>
 - mpid (str): Materials ID.
 - compound (str): Compound name used in mpid-list.in.
 - surface (bool): If True, includes cards printed for surface calculations. Default is False.</p>
-<p>Returns: None</p>
+<p>Returns: None
+Example:
+———
+&gt;&gt;&gt; wt_body(“mp-1234567”, “Si2”) for bulk properties calculation</p>
 </dd></dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="create_wt_inputs.main">

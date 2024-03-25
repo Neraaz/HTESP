@@ -55,7 +55,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="create_epw_inputs" href="create_epw_inputs.html" />
-    <link rel="prev" title="antiferro" href="antiferro.html" />
+    <link rel="prev" title="magnetic" href="magnetic.html" />
   
    
 
@@ -234,9 +234,17 @@
 <p>Parameters:
 - structure_filename (str): Path to the structure file (QE scf.in or VASP POSCAR).
 - kpoint_density (float): Desired k-point density.
-- evenkpt (bool): Flag indicating whether to enforce an even number of k-points along each axis. Default is False.</p>
+- evenkpt (bool): Flag indicating whether to enforce an even number of k-points along each axis.</p>
+<blockquote>
+<div><p>Default is False.</p>
+</div></blockquote>
 <p>Returns:
-- kmesh (list): K-point mesh according to the k-point density.</p>
+- kmesh (list): K-point mesh according to the k-point density.
+.. rubric:: Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Generating a k-point mesh for a VASP POSCAR with a k-point density of 0.05</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pos_to_kpt</span><span class="p">(</span><span class="s2">"POSCAR"</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">,</span> <span class="n">evenkpt</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="cif_to_gsinput.pymatgen_cif">
@@ -245,7 +253,12 @@
 <p>Parameters:
 - infile (str): Path to the input CIF file.</p>
 <p>Returns:
-- structure (Structure): Pymatgen Structure object representing the CIF structure.</p>
+- structure (Structure): Pymatgen Structure object representing the CIF structure.
+.. rubric:: Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Convert a CIF file named 'example.cif' to pymatgen format</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pymatgen_cif</span><span class="p">(</span><span class="s2">"example.cif"</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="cif_to_gsinput.ciftoscf">
@@ -258,7 +271,12 @@
 - keven (bool): If True, even k-mesh is used. Default is False.</p>
 <p>Returns:
 - compound (str): The compound name.</p>
-<p>Writes the ‘scf-mpid.in’ file.</p>
+<p>Writes the ‘scf-mpid.in’ file.
+.. rubric:: Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Convert a CIF file to a Quantum ESPRESSO input file</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ciftoscf</span><span class="p">(</span><span class="s2">"QE"</span><span class="p">,</span> <span class="s2">"mp-1234"</span><span class="p">,</span> <span class="n">cif2cell</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">keven</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="cif_to_gsinput.main">
@@ -285,7 +303,7 @@
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
           
-            <a href="antiferro.html" title="antiferro"
+            <a href="magnetic.html" title="magnetic"
                class="md-flex md-footer-nav__link md-footer-nav__link--prev"
                rel="prev">
               <div class="md-flex__cell md-flex__cell--shrink">
@@ -294,7 +312,7 @@
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> "Previous" </span> antiferro </span>
+                      class="md-footer-nav__direction"> "Previous" </span> magnetic </span>
               </div>
             </a>
           

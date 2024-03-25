@@ -196,18 +196,14 @@
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">glob</span>
 <span class="kn">import</span> <span class="nn">json</span>
-<span class="c1">#import re</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">import</span> <span class="nn">scipy.linalg</span> <span class="k">as</span> <span class="nn">alg</span>
-<span class="c1">#from ase import Atoms</span>
 <span class="kn">from</span> <span class="nn">ase.io</span> <span class="kn">import</span> <span class="n">vasp</span>
-<span class="c1">#from ase.data import atomic_masses,chemical_symbols</span>
 <span class="kn">from</span> <span class="nn">pymatgen.io.cif</span> <span class="kn">import</span> <span class="n">CifParser</span><span class="p">,</span> <span class="n">CifWriter</span>
 <span class="kn">from</span> <span class="nn">pymatgen.io.vasp.sets</span> <span class="kn">import</span> <span class="n">MPRelaxSet</span>
 <span class="kn">from</span> <span class="nn">pymatgen.symmetry.analyzer</span> <span class="kn">import</span> <span class="n">SpacegroupAnalyzer</span>
 <span class="kn">from</span> <span class="nn">pymatgen.analysis.magnetism</span> <span class="kn">import</span> <span class="n">MagneticStructureEnumerator</span>
 <span class="kn">from</span> <span class="nn">pymatgen.core</span> <span class="kn">import</span> <span class="n">structure</span>
-<span class="c1">#from pymatgen.io import pwscf</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">write_potcar</span> <span class="kn">import</span> <span class="n">poscar2potcar</span>
 <span class="kn">from</span> <span class="nn">htepc</span> <span class="kn">import</span> <span class="n">MpConnect</span>
@@ -221,12 +217,6 @@
         <span class="n">input_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">readjson</span><span class="p">)</span>
 <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">"htepc.json file not found</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
-<span class="c1">#try:</span>
-<span class="c1">#    with open("htepc.json", "r") as readjson:</span>
-<span class="c1">#        input_data = json.load(readjson)</span>
-<span class="c1">#except FileNotFoundError:</span>
-<span class="c1">#    print("htepc.json file not found\n")</span>
-
 <div class="viewcode-block" id="pos_to_kpt">
 <a class="viewcode-back" href="../cif_to_gsinput.html#cif_to_gsinput.pos_to_kpt">[docs]</a>
 <span class="k">def</span> <span class="nf">pos_to_kpt</span><span class="p">(</span><span class="n">structure_filename</span><span class="p">,</span><span class="n">kpoint_density</span><span class="p">,</span><span class="n">evenkpt</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -236,15 +226,20 @@
 <span class="sd">    Parameters:</span>
 <span class="sd">    - structure_filename (str): Path to the structure file (QE scf.in or VASP POSCAR).</span>
 <span class="sd">    - kpoint_density (float): Desired k-point density.</span>
-<span class="sd">    - evenkpt (bool): Flag indicating whether to enforce an even number of k-points along each axis. Default is False.</span>
+<span class="sd">    - evenkpt (bool): Flag indicating whether to enforce an even number of k-points along each axis.</span>
+<span class="sd">      Default is False.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">    - kmesh (list): K-point mesh according to the k-point density.</span>
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; # Generating a k-point mesh for a VASP POSCAR with a k-point density of 0.05</span>
+<span class="sd">        &gt;&gt;&gt; pos_to_kpt("POSCAR", 0.05, evenkpt=True)</span>
 <span class="sd">    """</span>
     <span class="n">kptsp</span> <span class="o">=</span> <span class="n">kpoint_density</span>
+    <span class="c1"># Read the structure file</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">structure_filename</span><span class="p">,</span><span class="s2">"r"</span><span class="p">)</span> <span class="k">as</span> <span class="n">read_struc</span><span class="p">:</span>
         <span class="n">lines</span> <span class="o">=</span> <span class="n">read_struc</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
-    <span class="c1"># Get cell vectors</span>
+    <span class="c1"># Get cell vectors and compute reciprocal lattice vectors</span>
     <span class="n">line</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
     <span class="n">latscl</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
     <span class="n">ain</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
@@ -258,20 +253,21 @@
             <span class="n">amat</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">ain</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span>
         <span class="n">anorm</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">ain</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">ain</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">ain</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
     <span class="n">bmat</span> <span class="o">=</span> <span class="n">alg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">amat</span><span class="p">)</span>
-    <span class="n">bnorm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+    <span class="c1">#bnorm = np.zeros(3)</span>
+    <span class="c1"># Compute the length of reciprocal lattice vectors</span>
     <span class="n">bnorm</span> <span class="o">=</span> <span class="n">alg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">bmat</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">kratio</span> <span class="o">=</span> <span class="p">[</span><span class="n">bnorm</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">/</span> <span class="n">bnorm</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)]</span>
+    <span class="c1"># Compute the k-point mesh</span>
     <span class="n">klat</span> <span class="o">=</span> <span class="n">bnorm</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">kptsp</span>
     <span class="n">kmesh</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">kratio</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">klat</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span> <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">kratio</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">klat</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)]</span>
-    <span class="n">kratio</span> <span class="o">=</span> <span class="p">[</span><span class="n">bnorm</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">/</span> <span class="n">bnorm</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)]</span>
-    <span class="n">klat</span> <span class="o">=</span> <span class="n">bnorm</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">kptsp</span>
-    <span class="n">kmesh</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">kratio</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">klat</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span> <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">kratio</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">klat</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)]</span>
+    <span class="c1"># Enforce even number of kpoints if evenkpt flag is true</span>
     <span class="k">if</span> <span class="n">evenkpt</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">kmesh</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">%</span><span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">kmesh</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">kmesh</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">kmesh</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">kmesh</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="c1"># Write KPOINTS file</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"KPOINTS"</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">)</span> <span class="k">as</span> <span class="n">write_kpt</span><span class="p">:</span>
         <span class="n">write_kpt</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"KPOINTS automatic"</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
         <span class="n">write_kpt</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"0"</span><span class="o">+</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
@@ -291,11 +287,25 @@
 
 <span class="sd">    Returns:</span>
 <span class="sd">    - structure (Structure): Pymatgen Structure object representing the CIF structure.</span>
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; # Convert a CIF file named 'example.cif' to pymatgen format</span>
+<span class="sd">        &gt;&gt;&gt; pymatgen_cif("example.cif")</span>
 <span class="sd">    """</span>
+    <span class="c1"># Parse the CIF file using CifParser</span>
     <span class="n">cif_parser</span> <span class="o">=</span> <span class="n">CifParser</span><span class="p">(</span><span class="n">infile</span><span class="p">)</span>
     <span class="n">structure</span> <span class="o">=</span> <span class="n">cif_parser</span><span class="o">.</span><span class="n">get_structures</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># Assuming there's only one structure in the CIF</span>
+    <span class="n">oxidation</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="c1"># Check the oxidation states and merge sites if present</span>
+    <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">structure</span><span class="o">.</span><span class="n">elements</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s1">'+'</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">elem</span><span class="p">):</span>
+            <span class="n">oxidation</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">if</span> <span class="n">oxidation</span><span class="p">:</span>
+        <span class="n">structure</span><span class="o">.</span><span class="n">merge_sites</span><span class="p">()</span>
+        <span class="n">structure</span> <span class="o">=</span> <span class="n">structure</span><span class="o">.</span><span class="n">remove_oxidation_states</span><span class="p">()</span>
+    <span class="c1"># Write the CIF file using CifWriter</span>
     <span class="n">cif_writer</span> <span class="o">=</span> <span class="n">CifWriter</span><span class="p">(</span><span class="n">structure</span><span class="p">,</span> <span class="n">symprec</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
     <span class="n">cif_writer</span><span class="o">.</span><span class="n">write_file</span><span class="p">(</span><span class="n">infile</span><span class="p">)</span>
+    <span class="c1"># Get the primitive standard structure using SpacegroupAnalyzer</span>
     <span class="n">structure</span> <span class="o">=</span> <span class="n">SpacegroupAnalyzer</span><span class="p">(</span><span class="n">structure</span><span class="o">=</span><span class="n">structure</span><span class="p">,</span><span class="n">symprec</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span><span class="o">.</span><span class="n">get_primitive_standard_structure</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">structure</span></div>
 
@@ -315,15 +325,23 @@
 <span class="sd">    - compound (str): The compound name.</span>
 
 <span class="sd">    Writes the 'scf-mpid.in' file.</span>
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; # Convert a CIF file to a Quantum ESPRESSO input file</span>
+<span class="sd">        &gt;&gt;&gt; ciftoscf("QE", "mp-1234", cif2cell=False, keven=False)</span>
 <span class="sd">    """</span>
+    <span class="c1"># Get current directory</span>
     <span class="n">pwd</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
+    <span class="c1"># Check if CIF file exists in the current directory</span>
     <span class="n">check_pwd</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">"</span><span class="si">{}</span><span class="s2">.cif"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mpid</span><span class="p">)))</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">check_pwd</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">file_path</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">pwd</span><span class="o">+</span><span class="s2">"/</span><span class="si">{}</span><span class="s2">.cif"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mpid</span><span class="p">),</span> <span class="n">recursive</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">"File </span><span class="si">{}</span><span class="s2">.cif not found"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mpid</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+    <span class="c1"># Process CIF file using cif2cell if use_cif2cell flag is true</span>
+    <span class="c1"># Otherwise, it uses pymatgen</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">cif2cell</span><span class="p">:</span>
+        <span class="c1"># Use pymatgen to process CIF file and obtain structure</span>
         <span class="n">struc_poscar</span> <span class="o">=</span> <span class="n">pymatgen_cif</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
         <span class="n">cell</span> <span class="o">=</span> <span class="n">struc_poscar</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">matrix</span>
         <span class="n">compound</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">struc_poscar</span><span class="o">.</span><span class="n">composition</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">" "</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span>
@@ -331,27 +349,7 @@
         <span class="n">symbol</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span> <span class="n">struc_poscar</span><span class="o">.</span><span class="n">sites</span><span class="p">:</span>
             <span class="n">symbol</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">site</span><span class="o">.</span><span class="n">specie</span><span class="p">))</span>
-        <span class="c1">#with open(file_path, 'r') as file:</span>
-        <span class="c1">#    lines = file.readlines()</span>
-        <span class="c1">#cell = []</span>
-        <span class="c1">#pos=[]</span>
-        <span class="c1">#symbol = []</span>
-        <span class="c1">#for line in lines:</span>
-        <span class="c1">#    if 'length' in line or 'angle' in line:</span>
-        <span class="c1">#        cell.append(float(line.split()[1]))</span>
-        <span class="c1">#    #if '_chemical_formula_structural' in line:</span>
-        <span class="c1">#    if "_chemical_formula_sum" in line:</span>
-        <span class="c1">#        compound = line.split("\n")[0].split("  ")[1].replace(" ","").replace("'","")</span>
-        <span class="c1">#    #    compound = line.split('\n')[0].split()[1]</span>
-        <span class="c1">#index = lines.index(' _atom_site_occupancy\n')</span>
-        <span class="c1">#lines = lines[index+1:]</span>
-        <span class="c1">#for line in lines:</span>
-        <span class="c1">#    sym = line.split()[0]</span>
-        <span class="c1">#    sym = re.sub(r'[^A-Za-z\s]', '', sym)</span>
-        <span class="c1">#    symbol.append(sym)</span>
-        <span class="c1">#    pos.append([float(line.split()[3]), float(line.split()[4]),float(line.split()[5])])</span>
-        <span class="c1">#crystal = Atoms(symbols=symbol, positions=pos, cell=cell,pbc=True)</span>
-        <span class="c1">#cell = crystal.cell</span>
+        <span class="c1"># Write POSCAR file</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"POSCAR"</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">)</span> <span class="k">as</span> <span class="n">write_poscar</span><span class="p">:</span>
             <span class="n">write_poscar</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"Structure for </span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mpid</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
             <span class="n">write_poscar</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"1.0</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
@@ -374,6 +372,7 @@
                 <span class="n">write_poscar</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="s2">" "</span><span class="p">)</span>
                 <span class="n">write_poscar</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">2</span><span class="p">])</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="n">symbol</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Run cif2cell to generate POSCAR</span>
         <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"""cif2cell </span><span class="si">{}</span><span class="s2"> -p vasp --vasp-cartesian-lattice-vectors"""</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">file_path</span><span class="p">))</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"POSCAR"</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">)</span> <span class="k">as</span> <span class="n">read_poscar</span><span class="p">:</span>
             <span class="n">lines</span> <span class="o">=</span> <span class="n">read_poscar</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
@@ -390,32 +389,36 @@
         <span class="n">symbol</span> <span class="o">=</span> <span class="n">ion_name</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">vasp</span><span class="o">.</span><span class="n">read_vasp</span><span class="p">(</span><span class="s1">'POSCAR'</span><span class="p">)</span>
         <span class="n">compound</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">symbols</span><span class="p">)</span>
-    <span class="c1">#if os.path.isfile("download.py"):</span>
-    <span class="c1">#    import download as d</span>
+    <span class="c1"># Obtain k-point mesh</span>
     <span class="n">evenkpt</span> <span class="o">=</span> <span class="n">input_data</span><span class="p">[</span><span class="s1">'download'</span><span class="p">][</span><span class="s1">'inp'</span><span class="p">][</span><span class="s1">'evenkpt'</span><span class="p">]</span>
     <span class="n">kptden</span> <span class="o">=</span> <span class="n">input_data</span><span class="p">[</span><span class="s1">'kptden'</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">evenkpt</span><span class="p">:</span>
         <span class="n">k_mesh</span> <span class="o">=</span> <span class="n">pos_to_kpt</span><span class="p">(</span><span class="s2">"POSCAR"</span><span class="p">,</span><span class="n">kptden</span><span class="p">,</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">k_mesh</span> <span class="o">=</span> <span class="n">pos_to_kpt</span><span class="p">(</span><span class="s2">"POSCAR"</span><span class="p">,</span><span class="n">kptden</span><span class="p">)</span>
+    <span class="c1"># Generate VASP input set</span>
     <span class="k">if</span> <span class="n">calc_type</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">'VASP'</span><span class="p">,</span><span class="s1">'vasp'</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="s1">'R</span><span class="si">{}</span><span class="s1">-</span><span class="si">{}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">compound</span><span class="p">)):</span>
             <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"mkdir R</span><span class="si">{}</span><span class="s2">-</span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">compound</span><span class="p">))</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="s1">'R</span><span class="si">{}</span><span class="s1">-</span><span class="si">{}</span><span class="s1">/relax/'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">compound</span><span class="p">)):</span>
             <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"mkdir R</span><span class="si">{}</span><span class="s2">-</span><span class="si">{}</span><span class="s2">/relax/"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">compound</span><span class="p">))</span>
         <span class="n">structure_file</span> <span class="o">=</span> <span class="n">structure</span><span class="o">.</span><span class="n">Structure</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="s2">"POSCAR"</span><span class="p">)</span>
+        <span class="c1"># Generate MPRelaxSet object</span>
         <span class="n">relax_set</span> <span class="o">=</span> <span class="n">MPRelaxSet</span><span class="p">(</span><span class="n">structure</span><span class="o">=</span><span class="n">structure_file</span><span class="p">)</span>
-        <span class="c1">#relax_set.potcar.write_file("POTCAR")</span>
         <span class="n">relax_set</span><span class="o">.</span><span class="n">poscar</span><span class="o">.</span><span class="n">write_file</span><span class="p">(</span><span class="s2">"POSCAR"</span><span class="p">)</span>
+        <span class="c1"># Generate POTCAR from POSCAR file</span>
         <span class="n">poscar2potcar</span><span class="p">()</span>
         <span class="n">relax_set</span><span class="o">.</span><span class="n">incar</span><span class="o">.</span><span class="n">write_file</span><span class="p">(</span><span class="s2">"INCAR"</span><span class="p">)</span>
         <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"mv KPOINTS POSCAR INCAR POTCAR R</span><span class="si">{}</span><span class="s2">-</span><span class="si">{}</span><span class="s2">/relax/"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">compound</span><span class="p">))</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">compound</span><span class="p">)</span>
+        <span class="c1"># Copy vasp.in file if it exists</span>
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"vasp.in"</span><span class="p">):</span>
             <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"cp vasp.in R</span><span class="si">{}</span><span class="s2">-</span><span class="si">{}</span><span class="s2">/relax"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">compound</span><span class="p">))</span>
             <span class="n">pwd</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
             <span class="n">relax_folder</span> <span class="o">=</span> <span class="n">pwd</span> <span class="o">+</span> <span class="s2">"/R</span><span class="si">{}</span><span class="s2">-</span><span class="si">{}</span><span class="s2">/relax"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">compound</span><span class="p">)</span>
             <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">relax_folder</span><span class="p">)</span>
+            <span class="c1"># Process VASP input files reading vasp.in file if it exists</span>
+            <span class="c1"># Otherwise, it will simply print INCAR from MPRelaxSet</span>
             <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"vasp_process.py POSCAR"</span><span class="p">)</span>
             <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">pwd</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
@@ -426,99 +429,43 @@
                 <span class="n">k_mesh</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">k_mesh</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">k_mesh</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">k_mesh</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="c1"># QE calculation setup</span>
     <span class="k">if</span> <span class="n">calc_type</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">'QE'</span><span class="p">,</span><span class="s1">'qe'</span><span class="p">):</span>
         <span class="n">obj</span> <span class="o">=</span> <span class="n">MpConnect</span><span class="p">()</span>
         <span class="n">structure_file</span> <span class="o">=</span> <span class="n">structure</span><span class="o">.</span><span class="n">Structure</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="s2">"POSCAR"</span><span class="p">)</span>
         <span class="n">magnetic</span> <span class="o">=</span> <span class="n">input_data</span><span class="p">[</span><span class="s1">'pwscf_in'</span><span class="p">][</span><span class="s1">'magnetic'</span><span class="p">]</span>
+        <span class="c1"># Magnetic (FM) structure generation if magnetic flag is true</span>
         <span class="k">if</span> <span class="n">magnetic</span><span class="p">:</span>
+            <span class="c1"># Reading magnetic moments from input file</span>
             <span class="n">default_magmoms</span> <span class="o">=</span> <span class="n">input_data</span><span class="p">[</span><span class="s1">'magmom'</span><span class="p">][</span><span class="s1">'magmom'</span><span class="p">]</span>
+            <span class="c1"># Obtaining Ferromagnetic structure</span>
             <span class="n">struc</span> <span class="o">=</span> <span class="n">MagneticStructureEnumerator</span><span class="p">(</span><span class="n">structure_file</span><span class="p">,</span><span class="n">default_magmoms</span><span class="o">=</span><span class="n">default_magmoms</span><span class="p">,</span><span class="n">strategies</span><span class="o">=</span><span class="p">[</span><span class="s1">'ferromagnetic'</span><span class="p">],</span><span class="n">truncate_by_symmetry</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">ordered_structures</span>
             <span class="n">obj</span><span class="o">.</span><span class="n">structure</span> <span class="o">=</span> <span class="n">struc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">obj</span><span class="o">.</span><span class="n">structure</span> <span class="o">=</span> <span class="n">struc</span>
+            <span class="n">obj</span><span class="o">.</span><span class="n">structure</span> <span class="o">=</span> <span class="n">structure_file</span>
+        <span class="c1"># Get composition list</span>
         <span class="n">comp_list</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">composition</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">structure</span><span class="o">.</span><span class="n">composition</span><span class="o">.</span><span class="n">elements</span><span class="p">:</span>
             <span class="n">comp_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">composition</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
         <span class="n">obj</span><span class="o">.</span><span class="n">comp_list</span> <span class="o">=</span> <span class="n">comp_list</span>
+        <span class="c1"># Getting k-point mesh</span>
         <span class="n">obj</span><span class="o">.</span><span class="n">getkpt</span><span class="p">()</span>
         <span class="n">evenkpt</span> <span class="o">=</span> <span class="n">input_data</span><span class="p">[</span><span class="s1">'download'</span><span class="p">][</span><span class="s1">'inp'</span><span class="p">][</span><span class="s1">'evenkpt'</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">evenkpt</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">"Utilizing even kpoint mesh</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
             <span class="n">obj</span><span class="o">.</span><span class="n">getevenkpt</span><span class="p">()</span>
+        <span class="c1"># Getting maximum kinetic energy cutoff among elements</span>
         <span class="n">obj</span><span class="o">.</span><span class="n">maxecut_sssp</span><span class="p">()</span>
-        <span class="c1">#obj.prefix = struc.composition.alphabetical_formula.replace(" ","")</span>
         <span class="n">obj</span><span class="o">.</span><span class="n">prefix</span> <span class="o">=</span> <span class="n">compound</span>
         <span class="n">obj</span><span class="o">.</span><span class="n">mpid</span> <span class="o">=</span> <span class="n">mpid</span>
+        <span class="c1"># Writing QE input scf.in file</span>
         <span class="k">if</span> <span class="n">magnetic</span><span class="p">:</span>
             <span class="n">obj</span><span class="o">.</span><span class="n">setting_qeinput</span><span class="p">(</span><span class="n">magnetic</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">pseudo_dir</span><span class="o">=</span><span class="s1">'../../pp'</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">obj</span><span class="o">.</span><span class="n">setting_qeinput</span><span class="p">(</span><span class="n">pseudo_dir</span><span class="o">=</span><span class="s1">'../../pp'</span><span class="p">)</span>
-        <span class="c1">#os.system("""mv scf-None.in""" + """ scf_dir/scf-{}-{}.in""".format(mpid,i+1))</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="s2">"scf_dir"</span><span class="p">):</span>
             <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"mkdir scf_dir"</span><span class="p">)</span>
         <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"mv scf-</span><span class="si">{}</span><span class="s2">.in scf_dir"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mpid</span><span class="p">))</span>
-        <span class="c1">#structure_file = SpacegroupAnalyzer(structure_file, symprec=0.1).get_primitive_standard_structure()</span>
-        <span class="c1">#if os.path.isfile("htepc.json") or os.path.isfile("../../htepc.json"):</span>
-        <span class="c1">#    psd_data = input_data['pseudo']</span>
-        <span class="c1">#    dict_element = psd_data.PSEUDO</span>
-        <span class="c1">#else:</span>
-        <span class="c1">#    print("htepc.json file not found\n")</span>
-        <span class="c1">#    print("Creating one with default values from SSSP efficiency set\n")</span>
-        <span class="c1">#    print("https://www.materialscloud.org/discover/sssp/table/efficiency\n")</span>
-        <span class="c1">#    dict_element = {'H': 60, 'Li': 40, 'Be': 40, 'N': 60, 'F': 45, 'Na': 40, 'Mg': 30, 'Al': 30, 'Si': 30, 'P': 30, 'S': 35, 'Cl': 40, 'K': 60, 'Ca': 30, 'Sc': 40, 'Ti': 35, 'V': 35, 'Cr': 40, 'Mn': 65, 'Fe': 90, 'Co': 45, 'Ni': 45, 'Cu': 55, 'Zn': 40, 'Ga': 70, 'Ge': 40, 'As': 35, 'Br': 30, 'Rb': 30, 'Sr': 30, 'Y': 35, 'Zr': 30, 'Nb': 40, 'Mo': 35, 'Tc': 30, 'Ru': 35, 'Rh': 35, 'Pd': 45, 'Ag': 50, 'Cd': 60, 'In': 50, 'Sn': 60, 'Sb': 40, 'Te': 30, 'I': 35, 'Cs': 30, 'Ba': 30, 'La': 40, 'Hf': 50, 'Ta': 45, 'W': 30, 'Re': 30, 'Os': 40, 'Ir': 55, 'Pt': 35, 'Hg': 50, 'Tl': 50, 'Pb': 40, 'Bi': 45, 'B': 35, 'C': 45, 'Au': 45, 'Se': 30, 'O': 60}</span>
-        <span class="c1">#    with open("pseudo.txt", "w") as write_pseudo:</span>
-        <span class="c1">#        write_pseudo.write("PSEUDO={}".format(dict_element))</span>
-        <span class="c1">##pseudo = pd.read_csv('pseudo.csv')</span>
-        <span class="c1">##print(pseudo)</span>
-        <span class="c1">##element_list = pseudo['Element'].tolist()</span>
-        <span class="c1">##SSSP_cutoff_list = pseudo['SSSPcutoff'].tolist()</span>
-        <span class="c1">##element_list = list(pseudo.keys())</span>
-        <span class="c1">##SSSP_cutoff_list = list(pseudo.values())</span>
-        <span class="c1">##nlist = len(element_list)</span>
-        <span class="c1">##dict_element = {}</span>
-        <span class="c1">##for i in range(nlist):</span>
-        <span class="c1">##    dict_element[element_list[i]] = SSSP_cutoff_list[i]</span>
-        <span class="c1">##</span>
-        <span class="c1">#dict_mass = {}</span>
-        <span class="c1">#nel = len(atomic_masses)</span>
-        <span class="c1">#for i in range(nel):</span>
-        <span class="c1">#    dict_mass[chemical_symbols[i]] = atomic_masses[i]</span>
-        <span class="c1">#cutoff_list = [dict_element[el] for el in symbol]</span>
-        <span class="c1">#cutoff = max(cutoff_list)</span>
-        <span class="c1">#rhocutoff = 8 * cutoff</span>
-        <span class="c1">#prefix = compound</span>
-        <span class="c1">#pseudo1 = {el:el+'.upf' for el in set(symbol)}</span>
-        <span class="c1">#if check_pwd &gt; 0:</span>
-        <span class="c1">#    if os.path.isfile("htepc.json") or os.path.isfile("../../htepc.json"):</span>
-        <span class="c1">#        pwscf_in = input_data['pwscf_in']</span>
-        <span class="c1">#        control = pwscf_in['control']</span>
-        <span class="c1">#        system = pwscf_in['system']</span>
-        <span class="c1">#        electrons = pwscf_in['electrons']</span>
-        <span class="c1">#    else:</span>
-        <span class="c1">#        control = {'calculation':'vc-relax', 'nstep':300, 'restart_mode':'from_scratch', 'pseudo_dir':'../../pp', 'outdir':'./', 'tprnfor':'.true.','tstress':'.true.', 'etot_conv_thr':0.00001, 'forc_conv_thr':0.0001}</span>
-        <span class="c1">#        system = {'smearing':'gauss', 'occupations':'smearing', 'degauss':0.02}</span>
-        <span class="c1">#        electrons = {'diagonalization':'david', 'mixing_mode':'plain', 'mixing_beta':0.7, 'conv_thr': 1e-16, 'electron_maxstep':300}</span>
-        <span class="c1">#        with open("pwscf_in.txt", "w") as pw_in:</span>
-        <span class="c1">#            pw_in.write("control={}".format(control) + "\n")</span>
-        <span class="c1">#            pw_in.write("system={}".format(system) + "\n")</span>
-        <span class="c1">#            pw_in.write("electrons={}".format(electrons) + "\n")</span>
-        <span class="c1">#    system['ecutwfc'] = cutoff</span>
-        <span class="c1">#    system['ecutrho'] = rhocutoff</span>
-        <span class="c1">#    control['prefix'] = prefix</span>
-        <span class="c1">#    filename = pwscf.PWInput(structure_file, pseudo=pseudo1, control=control, system=system,electrons=electrons, kpoints_grid=tuple(k_mesh), ions={'ion_dynamics':'bfgs'}, cell={'cell_dynamics':'bfgs','press_conv_thr':0.05})</span>
-        <span class="c1">#    filename.write_file("temp.in")</span>
-        <span class="c1">#    os.system("""sed "s/'.true.'/.true./" {} &gt; {}""".format("temp.in","scf-{}.in".format(mpid)))</span>
-        <span class="c1">#    os.system("sed -n '/K_POINTS automatic/,/CELL_PARAMETERS angstrom/p' scf-{}.in | sed '$d' &gt; kpoint-{}.dat".format(mpid,mpid))</span>
-        <span class="c1">#    obj = INPUTscf("scf-{}.in".format(mpid))</span>
-        <span class="c1">#    obj.standardize(mpid,output="temp.dat")</span>
-        <span class="c1">#    os.system("sed -n '/&amp;CONTROL/,/ATOMIC_SPECIES/p' scf-{}.in | sed '$d' &gt; scf.header".format(mpid))</span>
-        <span class="c1">#    os.system("sed -n '/ATOMIC_SPECIES/,/ATOMIC_POSITIONS crystal/p' scf-{}.in | sed '$d' &gt; species".format(mpid))</span>
-        <span class="c1">#    os.system("rm temp.in")</span>
-        <span class="c1">#    os.system("cat scf.header species temp.dat &gt; scf-{}.in".format(mpid))</span>
-        <span class="c1">#    os.system("rm POSCAR scf.header species temp.dat kpoint*")</span>
-        <span class="c1">#if not os.path.isdir("scf_dir"):</span>
-        <span class="c1">#    os.system("mkdir scf_dir")</span>
-        <span class="c1">#os.system("mv scf-{}.in scf_dir".format(mpid))</span>
     <span class="k">return</span> <span class="n">compound</span></div>
 
 <div class="viewcode-block" id="main">
@@ -539,8 +486,11 @@
 <span class="sd">    Returns: None</span>
 <span class="sd">    """</span>
     <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">'ignore'</span><span class="p">)</span>
+    <span class="c1"># Get a list of CIF files in the current directory</span>
     <span class="n">list_cif</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">"*.cif"</span><span class="p">,</span><span class="n">recursive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">k_ind</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="c1"># Initialize index for 'mpid.in' entries</span>
+    <span class="c1">#k_ind = 1</span>
+    <span class="c1"># Read calculation type from command line argument</span>
     <span class="n">calc_type</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
     <span class="c1"># CIF2CELL if True, uses cif2cell package to create POSCAR from given .cif files.</span>
     <span class="c1"># if False, It uses pymatgen cifparser to read and produce cif output, which then explicitely</span>
@@ -548,14 +498,18 @@
     <span class="n">cif2cell</span> <span class="o">=</span> <span class="n">input_data</span><span class="p">[</span><span class="s1">'download'</span><span class="p">][</span><span class="s1">'inp'</span><span class="p">][</span><span class="s1">'use_cif2cell'</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">cif2cell</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">"CIF2CELL is True. Using cif2cell package....</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+    <span class="c1"># Iterate over CIF files</span>
     <span class="k">for</span> <span class="n">cif</span> <span class="ow">in</span> <span class="n">list_cif</span><span class="p">:</span>
-        <span class="n">mpid</span> <span class="o">=</span> <span class="n">cif</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'.'</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">mpid</span> <span class="o">=</span> <span class="n">cif</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'.'</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># Extract Material ID from file name</span>
+        <span class="c1"># Convert CIF to QE input file</span>
         <span class="n">compound</span> <span class="o">=</span> <span class="n">ciftoscf</span><span class="p">(</span><span class="n">calc_type</span><span class="p">,</span><span class="n">mpid</span><span class="p">,</span><span class="n">cif2cell</span><span class="p">,</span><span class="kc">False</span><span class="p">)</span>
+        <span class="c1"># If mpid.in does not exist, initialize index</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s1">'mpid.in'</span><span class="p">):</span>
             <span class="n">k_ind</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"mpid.in"</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">)</span> <span class="k">as</span> <span class="n">write_mpid</span><span class="p">:</span>
                 <span class="n">write_mpid</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"v</span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k_ind</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="n">mpid</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="n">compound</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># If mpid.in exists, append data with new index</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'mpid.in'</span><span class="p">,</span> <span class="s1">'r'</span><span class="p">)</span> <span class="k">as</span> <span class="n">read_mpid</span><span class="p">:</span>
                 <span class="n">lines</span> <span class="o">=</span> <span class="n">read_mpid</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
             <span class="n">k_ind</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>

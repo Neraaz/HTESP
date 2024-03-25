@@ -210,6 +210,7 @@
 <span class="sd">    Returns:</span>
 <span class="sd">    None</span>
 <span class="sd">    """</span>
+    <span class="c1"># Write input parameters to band.in file</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"scf_dir/band-</span><span class="si">{}</span><span class="s2">-</span><span class="si">{}</span><span class="s2">.in"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">material_id</span><span class="p">,</span><span class="n">compound_name</span><span class="p">),</span> <span class="s1">'w'</span><span class="p">)</span> <span class="k">as</span> <span class="n">band_in</span><span class="p">:</span>
         <span class="n">band_in</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"&amp;BANDS</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
         <span class="n">band_in</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">"prefix=</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">,</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>

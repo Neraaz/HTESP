@@ -243,12 +243,14 @@
 </dd>
 </dl>
 <p class="rubric">Notes</p>
-<p>This function reads a POSCAR file and generates input files required for ground-state calculations
+<p>This function reads a POSCAR file and generates input files
+required for ground-state calculations
 using either Quantum Espresso (QE) or VASP software.</p>
 <p>It checks if ‘htepc.json’ exists, and if so, it retrieves settings such as k-point density and
 download configurations.</p>
 <p>Based on the calculation type, it creates input files and directories accordingly. For VASP,
-it prepares INCAR, POSCAR, and POTCAR files and potentially runs VASP processing scripts if available.
+it prepares INCAR, POSCAR, and POTCAR files and
+potentially runs VASP processing scripts if available.
 For QE, it creates input files with appropriate settings.</p>
 <p>Finally, it moves input files to the designated directories.</p>
 </dd></dl>
@@ -268,8 +270,16 @@ For QE, it creates input files with appropriate settings.</p>
 <p>This function uses QMPYRester to retrieve data from the OQMD (Open Quantum Materials Database) website.
 It attempts to get data with the provided query parameters. If the limit is reached, it decreases the limit
 and retries until successful.</p>
-<p>It then writes the retrieved data to ‘download.csv’ file, including IDs and properties specified in the list
-‘properties’. It also creates ‘mpid-list.in’ file containing IDs, names, and compounds for each entry.</p>
+<p>It then writes the retrieved data to ‘download.csv’ file,
+including IDs and properties specified in the list
+‘properties’. It also creates ‘mpid-list.in’ file containing
+IDs, names, and compounds for each entry.</p>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'element_set'</span><span class="p">:</span> <span class="s1">'(Fe-Mn),B'</span><span class="p">,</span> <span class="s1">'stability'</span><span class="p">:</span> <span class="s1">'&lt;-0.1'</span><span class="p">,</span> <span class="s1">'natom'</span><span class="p">:</span> <span class="s1">'&lt;10'</span><span class="p">,</span> <span class="s1">'limit'</span><span class="p">:</span> <span class="mi">100</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">properties</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'entry_id'</span><span class="p">,</span> <span class="s1">'name'</span><span class="p">,</span> <span class="s1">'enthalpy'</span><span class="p">,</span> <span class="s1">'composition'</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">search</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">properties</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="oqmd_extract.download">
