@@ -58,6 +58,7 @@ for ((ii=$begin; ii<$last; ++ii)); do
        rm R$A-$B/relax/EIGENVAL
      fi
      cd R$A-$B/relax/
+      cp INCAR INCAR_backup
       vasp_process.py POSCAR
      cd ../../
    fi

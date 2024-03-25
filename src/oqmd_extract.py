@@ -7,15 +7,14 @@ import json
 import re
 from collections import Counter
 from ase.io.vasp import read_vasp
-from ase.data import atomic_masses,chemical_symbols
 from pymatgen.io.vasp.sets import MPRelaxSet
 from pymatgen.core import structure
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
-from pymatgen.io import pwscf
+from pymatgen.analysis.magnetism import MagneticStructureEnumerator
 import qmpy_rester as qr
 from cif_to_gsinput import pos_to_kpt
 from write_potcar import poscar2potcar
-from htepc import INPUTscf
+from htepc import MpConnect
 try:
     PWD = os.getcwd()
     if os.path.isfile(PWD+"/htepc.json"):
@@ -49,14 +48,16 @@ def poscar_to_input(calc_type,mpid,compound,keven):
 
     Notes
     -----
-    This function reads a POSCAR file and generates input files required for ground-state calculations
+    This function reads a POSCAR file and generates input files
+    required for ground-state calculations
     using either Quantum Espresso (QE) or VASP software.
 
     It checks if 'htepc.json' exists, and if so, it retrieves settings such as k-point density and
     download configurations.
 
     Based on the calculation type, it creates input files and directories accordingly. For VASP,
-    it prepares INCAR, POSCAR, and POTCAR files and potentially runs VASP processing scripts if available.
+    it prepares INCAR, POSCAR, and POTCAR files and
+    potentially runs VASP processing scripts if available.
     For QE, it creates input files with appropriate settings.
 
     Finally, it moves input files to the designated directories.
@@ -66,28 +67,32 @@ def poscar_to_input(calc_type,mpid,compound,keven):
         d = input_data['download']
     evenkpt = d['inp']['evenkpt']
     kptden = input_data['kptden']
+    # Check if even kpoint mesh is required
+    # Calculate k-mesh grid from POSCAR
     if evenkpt:
         print("Even kpoint mesh is utilized\n")
         k_mesh = pos_to_kpt("POSCAR",kptden,True)
     else:
         k_mesh = pos_to_kpt("POSCAR",kptden)
+    # Read POSCAR with ASE
     data = read_vasp("POSCAR")
     symbol = list(data.symbols)
-    #print(symbol)
+    # Creates input for VASP
     if calc_type in ('VASP','vasp'):
         if not os.path.isdir('R{}-{}'.format(mpid,compound)):
             os.system("mkdir R{}-{}".format(mpid,compound))
         if not os.path.isdir('R{}-{}/relax/'.format(mpid,compound)):
             os.system("mkdir R{}-{}/relax/".format(mpid,compound))
+        # Write VASP input files
         structure_file = structure.Structure.from_file("POSCAR")
         structure_file = SpacegroupAnalyzer(structure_file, symprec=0.1).get_primitive_standard_structure()
         relax_set = MPRelaxSet(structure=structure_file)
-        #relax_set.potcar.write_file("POTCAR")
         relax_set.poscar.write_file("POSCAR")
         poscar2potcar()
         relax_set.incar.write_file("INCAR")
+        # Copy files to R{mpid}-{compound}/relax/ folder
         os.system("mv KPOINTS POSCAR INCAR POTCAR R{}-{}/relax/".format(mpid,compound))
-        #os.system("mv KPOINTS POSCAR INCAR R{}-{}/relax/".format(mpid,compound))
+        # Update INCAR with vasp.in
         if os.path.isfile("vasp.in"):
             os.system("cp vasp.in R{}-{}/relax".format(mpid,compound))
             pwd = os.getcwd()
@@ -104,62 +109,41 @@ def poscar_to_input(calc_type,mpid,compound,keven):
             else:
                 k_mesh[i] = k_mesh[i] + 1
     if calc_type in ('QE','qe'):
+        obj = MpConnect()
         structure_file = structure.Structure.from_file("POSCAR")
-        if os.path.isfile("htepc.json"):
-            psd_data = input_data['pseudo']
-            dict_element = psd_data['PSEUDO']
+        magnetic = input_data['pwscf_in']['magnetic']
+        # Magnetic (FM) structure generation if magnetic flag is true
+        if magnetic:
+            # Reading magnetic moments from input file
+            default_magmoms = input_data['magmom']['magmom']
+            # Obtaining Ferromagnetic structure
+            struc = MagneticStructureEnumerator(structure_file,default_magmoms=default_magmoms,strategies=['ferromagnetic'],truncate_by_symmetry=True).ordered_structures
+            obj.structure = struc[0]
         else:
-            print("pseudo not found\n")
-            print("Creating one with default values from SSSP efficiency set\n")
-            print("https://www.materialscloud.org/discover/sssp/table/efficiency\n")
-            dict_element = {'H': 60, 'Li': 40, 'Be': 40, 'N': 60, 'F': 45, 'Na': 40, 'Mg': 30, 'Al': 30, 'Si': 30, 'P': 30, 'S': 35, 'Cl': 40, 'K': 60, 'Ca': 30, 'Sc': 40, 'Ti': 35, 'V': 35, 'Cr': 40, 'Mn': 65, 'Fe': 90, 'Co': 45, 'Ni': 45, 'Cu': 55, 'Zn': 40, 'Ga': 70, 'Ge': 40, 'As': 35, 'Br': 30, 'Rb': 30, 'Sr': 30, 'Y': 35, 'Zr': 30, 'Nb': 40, 'Mo': 35, 'Tc': 30, 'Ru': 35, 'Rh': 35, 'Pd': 45, 'Ag': 50, 'Cd': 60, 'In': 50, 'Sn': 60, 'Sb': 40, 'Te': 30, 'I': 35, 'Cs': 30, 'Ba': 30, 'La': 40, 'Hf': 50, 'Ta': 45, 'W': 30, 'Re': 30, 'Os': 40, 'Ir': 55, 'Pt': 35, 'Hg': 50, 'Tl': 50, 'Pb': 40, 'Bi': 45, 'B': 35, 'C': 45, 'Au': 45, 'Se': 30, 'O': 60}
-            #with open("pseudo.py", "w") as write_pseudo:
-            #    write_pseudo.write("PSEUDO={}".format(dict_element))
-        dict_mass = {}
-        nel = len(atomic_masses)
-        for i in range(nel):
-            dict_mass[chemical_symbols[i]] = atomic_masses[i]
-        try:
-            cutoff_list = [dict_element[el] for el in symbol]
-        except:
-            print("energy cutoff not provided for some of the elements. Please check htepc.json\n")
-        cutoff = max(cutoff_list)
-        rhocutoff = 8 * cutoff
-        prefix = compound
-        pseudo1 = {el:el+'.upf' for el in set(symbol)}
-        check_pwd = 1
-        if check_pwd > 0:
-            try:
-                pwscf_in = input_data['pwscf_in']
-                control = pwscf_in['control']
-                system = pwscf_in['system']
-                electrons = pwscf_in['electrons']
-            except ModuleNotFoundError:
-                control = {'calculation':'vc-relax', 'nstep':300, 'restart_mode':'from_scratch', 'pseudo_dir':'../../pp', 'outdir':'./', 'tprnfor':'.true.','tstress':'.true.', 'etot_conv_thr':0.00001, 'forc_conv_thr':0.0001}
-                system = {'smearing':'gauss', 'occupations':'smearing', 'degauss':0.02}
-                electrons = {'diagonalization':'david', 'mixing_mode':'plain', 'mixing_beta':0.7, 'conv_thr': 1e-16, 'electron_maxstep':300}
-                #with open("pwscf_in.py", "w") as pw_in:
-                #    pw_in.write("control={}".format(control) + "\n")
-                #    pw_in.write("system={}".format(system) + "\n")
-                #    pw_in.write("electrons={}".format(electrons) + "\n")
-            system['ecutwfc'] = cutoff
-            system['ecutrho'] = rhocutoff
-            control['prefix'] = prefix
-            filename = pwscf.PWInput(structure_file, pseudo=pseudo1, control=control, system=system,electrons=electrons, kpoints_grid=tuple(k_mesh), ions={'ion_dynamics':'bfgs'}, cell={'cell_dynamics':'bfgs','press_conv_thr':0.05})
-            filename.write_file("temp.in")
-            os.system("""sed "s/'.true.'/.true./" {} > {}""".format("temp.in","scf-{}.in".format(mpid)))
-            os.system("sed -n '/K_POINTS automatic/,/CELL_PARAMETERS angstrom/p' scf-{}.in | sed '$d' > kpoint-{}.dat".format(mpid,mpid))
-            obj = INPUTscf("scf-{}.in".format(mpid))
-            obj.standardize(mpid,output="temp.dat")
-            os.system("sed -n '/&CONTROL/,/ATOMIC_SPECIES/p' scf-{}.in | sed '$d' > scf.header".format(mpid))
-            os.system("sed -n '/ATOMIC_SPECIES/,/ATOMIC_POSITIONS crystal/p' scf-{}.in | sed '$d' > species".format(mpid))
-            os.system("rm temp.in")
-            os.system("cat scf.header species temp.dat > scf-{}.in".format(mpid))
-            os.system("rm POSCAR scf.header species temp.dat kpoint*")
+            obj.structure = structure_file
+        # Get composition list
+        comp_list = []
+        for composition in obj.structure.composition.elements:
+            comp_list.append(composition.name)
+        obj.comp_list = comp_list
+        # Getting k-point mesh
+        obj.getkpt()
+        evenkpt = input_data['download']['inp']['evenkpt']
+        if evenkpt:
+            print("Utilizing even kpoint mesh\n")
+            obj.getevenkpt()
+        # Getting maximum kinetic energy cutoff among elements
+        obj.maxecut_sssp()
+        obj.prefix = compound
+        obj.mpid = mpid
+        # Writing QE input scf.in file
+        if magnetic:
+            obj.setting_qeinput(magnetic=True,pseudo_dir='../../pp')
+        else:
+            obj.setting_qeinput(pseudo_dir='../../pp')
         if not os.path.isdir("scf_dir"):
             os.system("mkdir scf_dir")
         os.system("mv scf-{}.in scf_dir".format(mpid))
-    #return compound
 def search(kwargs,properties):
     """
     Function to search compounds.
@@ -177,24 +161,40 @@ def search(kwargs,properties):
     It attempts to get data with the provided query parameters. If the limit is reached, it decreases the limit
     and retries until successful.
 
-    It then writes the retrieved data to 'download.csv' file, including IDs and properties specified in the list
-    'properties'. It also creates 'mpid-list.in' file containing IDs, names, and compounds for each entry.
+    It then writes the retrieved data to 'download.csv' file,
+    including IDs and properties specified in the list
+    'properties'. It also creates 'mpid-list.in' file containing
+    IDs, names, and compounds for each entry.
+    Example
+    -------
+    >>> kwargs = {'element_set': '(Fe-Mn),B', 'stability': '<-0.1', 'natom': '<10', 'limit': 100}
+    >>> properties = ['entry_id', 'name', 'enthalpy', 'composition']
+    >>> search(kwargs, properties)
     """
+    # Initialize QMPYRester object
     obj = qr.QMPYRester()
     limit = kwargs['limit']
     orig_limit = limit
+    # Loop to retry with a decreased limit if the initial attempt fails
     while limit > 0:
         try:
+            # Attempt to retrieve data from OQMD with provided query parameters
             data = obj.get_oqmd_phases(**kwargs)
+            # Extract data from response
             data = data['data']
+            # Exit loop if data retrieval is successful
             break
         except:
+            # If retrieval fails, decrease the limit and retry
             limit -= int(orig_limit*0.1)
             kwargs['limit'] = limit
             continue
+    # Counter for entries
     ind = 1
+    # Create 'download' directory if it doesn't exist
     if not os.path.isdir("download"):
         os.mkdir("download")
+    # Write data to CSV file and create 'mpid-list.in' file
     with open("download/download-oqmd.csv", "w") as write_download:
         write_download.write("ID,")
         for i,prop in enumerate(properties):
@@ -212,9 +212,8 @@ def search(kwargs,properties):
             strings = re.findall(r'[A-Z][a-z]*', strings)
             elements = kwargs['element_set']
             elements = re.findall(r'[A-Za-z]+', elements)
-            #elements = re.findall(r'[A-Za-z]+', elements)
-            #print(strings,elements)
             exists_in_string = any(string not in elements for string in strings)
+            # Write entry to 'mpid-list.in' and CSV file if it meets the criteria
             if not exists_in_string:
                 write_mpid.write("v{}".format(ind) + " " + "oqmd-"+str(subdata['entry_id']) + " " + subdata['name'] + "\n")
                 ind += 1
@@ -257,30 +256,28 @@ def download(calc_type,start,end):
     #    'natom': '<10',                  # number of atoms less than 10
     #    }
     obj = qr.QMPYRester()
+    # Read the material IDs and compounds from 'mpid-list.in' file
     with open("mpid-list.in","r") as read_mpid:
         mpid_data = read_mpid.readlines()
     mpid_data = mpid_data[start-1:end-1]
+    # Loop through the specified range of compounds
     for mpid in mpid_data:
-        #print(mpid)
         oqmd_id = int(mpid.split(" ")[1].split("-")[1])
         subd = obj.get_entry_by_id(oqmd_id)
-    #data = obj.get_oqmd_phases(**kwargs)
-    #for subd in data['data']:
         try:
+            # Extract necessary data from the OQMD entry
             oqmd_id = subd['id']
             oqmd_id = "oqmd-" + str(oqmd_id)
-            #print(oqmd_id + "\n")
             compound = subd['name']
+            # Write POSCAR file with the compound structure
             with open('POSCAR', 'w') as write_poscar:
                 write_poscar.write(compound + '\n')
                 write_poscar.write("1.0 \n")
                 unit_cell = subd['unit_cell']
                 for lattice in unit_cell:
                     write_poscar.write(str(lattice[0]) + " " + str(lattice[1]) + " " + str(lattice[2]) + "\n")
-                #basis = d1['cartesian_site_positions']
                 basis = []
                 elements = []
-                #print(subd['sites'])
                 for i,elm in enumerate(subd['sites']):
                     elements.append(subd['sites'][i].split("@")[0].split(" ")[0])
                     basis.append(subd['sites'][i].split("@")[1].split(" ")[1:])
@@ -294,9 +291,11 @@ def download(calc_type,start,end):
                 write_poscar.write("Direct\n")
                 for i,bas in enumerate(basis):
                     write_poscar.write(bas[0] + " " + bas[1] + " " + bas[2] + " " + elements[i] + "\n")
+            # Generate input files for QE or VASP calculations
             poscar_to_input(calc_type,oqmd_id,compound,False)
             if os.path.isfile("POSCAR"):
                 os.system("mv POSCAR POSCAR-{}".format(oqmd_id))
+            # Update 'mpid.in' file with downloaded compounds
             if not os.path.isfile('mpid.in'):
                 k_ind = 0
                 with open("mpid.in", "w") as write_mpid:
@@ -313,6 +312,7 @@ def download(calc_type,start,end):
             continue
 if __name__ == "__main__":
     CONDITION = sys.argv[1]
+    # Read htepc.json file and creates KWARGS dictionary
     if os.path.isfile("htepc.json"):
         d = input_data['download']
         START = d['inp']['start']
@@ -399,10 +399,6 @@ if __name__ == "__main__":
                    'ntypes': NTYPE,
                    'limit' : LIMIT,
                   }
-        #with open("download.py", "w") as h:
-        #    h.write("info="+str(default1) + "\n")
-        #    h.write("inp="+str(default2) + "\n")
-        #    h.write("chemsys="+str(chemsys) + "\n")
     if CONDITION == 'search':
         search(KWARGS,PROPERTIES)
     elif CONDITION == 'download':

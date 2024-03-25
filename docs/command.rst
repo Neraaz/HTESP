@@ -249,7 +249,7 @@ Let's look at the "process-info" command,
       using pymatgen with 'econv_vasp.csv' file
     
     - process = phono1, to make supercell and submit scf calculations for different displacement.
-      To specify the dimensions of the supercell, utilize the "setting.conf" file. Without this specification, the code will default to creating a 2 x 2 x 2 supercell.
+      To specify the dimensions of the supercell, utilize the "setting.conf" file. Without this specification, the code will default to creating a 2 x 2 x 2 supercell. Note: Consider starting from primitive cell to create supercell.
     
     - process = phono2, computing force constant
     

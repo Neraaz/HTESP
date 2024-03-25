@@ -87,10 +87,12 @@ def main():
             if download['info']['mode'] in ('element', 'chemsys'):
                 os.system("download-input" + " " + str(start) + " " + str(end) + " " + element)
             elif download['info']['mode'] == 'fromcif':
+                cif2cell=download['inp']['use_cif2cell']
                 print("\n")
                 print("--------------------------------------------------------------\n")
                 print("processing .cif files for {} calculations".format(download['inp']['calc']) + "\n")
-                print("Install cif2cell package using 'pip install cif2cell'\n")
+                if cif2cell:
+                    print("Install cif2cell package using 'pip install cif2cell'\n")
                 # Check CIF2CELL parameters in cif_to_gsinput.py
                 # CIF2CELL if True, uses cif2cell package to create POSCAR from given .cif files.
                 # if False, It uses pymatgen cifparser to read and produce cif output, which then explicitely
@@ -131,7 +133,7 @@ def main():
         elif process == 'compute-elastic':
             os.system("elastic.py compute_elastic")
         elif process == 'magenum':
-            os.system("antiferro.py")
+            os.system("magnetic.py")
         elif process == 'search':
             if os.path.isfile('htepc.json') or os.path.isfile("../../htepc.json"):
                 download = input_data['download']
@@ -259,7 +261,6 @@ def main():
             with open(element, "r") as read_elm:
                 lines = read_elm.readlines()
             folders = lines[start-1:end-1]
-            #folders = glob.glob("*/relax")
             currdir = os.getcwd()
             for fold in folders:
                 fold_list = fold.split("\n")[0].split(" ")

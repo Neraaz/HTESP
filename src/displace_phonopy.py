@@ -24,6 +24,24 @@ class DisplacePhonopy:
         The parsed data from the YAML file.
     eigen : list
         List containing eigenvalues.
+
+    Example
+    -------
+    >>> displace = DisplacePhonopy("band.conf") #create an object
+    >>> displace.parse() #parsing band.conf
+    >>> displace.print_qpt() #print qpoints and its index
+    0 [0.0, 0.0, 0.0]
+    1 [0.1, 0.1, 0.1]
+    ...
+    >>> displace.print_mode(0) #print band energies for a qpoint
+    1 0.0
+    2 0.1
+    ...
+    >>> displace.negative_freq() #returns dictionary of qpoints, band index, and phonon frequency
+    >>> #Easy to locate qpoint (iq) and band index (inu) for negative frequencies
+    >>> displace.geteigenvec(0, 0) #get eigen vector corresponding to particular iq and inu.
+    >>> displace.applydisplace() #Apply distortion to the structure, provided an undistorted
+    >>> #structure exists as POSCAR file
     """
     def __init__(self,filename):
         self.filename = filename

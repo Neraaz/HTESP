@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
+# Written by Niraj K. Nepal, Ph.D.
 """
 Program to write vasp inputfiles from poscars in mpid.vasp format
 """

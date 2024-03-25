@@ -40,33 +40,15 @@ def vasp_input(mpid,compound):
         os.mkdir("input_cif")
     if os.path.isfile("{}.cif".format(mpid)):
         os.system("mv {}.cif input_cif/".format(mpid))
-    #Create poscar separately
-    #from pymatgen.io.vasp.inputs import Poscar
-    #poscar = Poscar(structure=struct,comment="MgB2")
-    #poscar = Poscar(structure=obj.structure,comment="MgB2")
-    #poscar
-    #poscar.write_file(filename="POSCAR")
     #obtain vasp inputs from MPRelaxSet
     structure = SpacegroupAnalyzer(obj.structure, symprec=0.1).get_primitive_standard_structure()
-    #relax_set = MPRelaxSet(structure=obj.structure)
     relax_set = MPRelaxSet(structure=structure)
-    #process 1
-    #For POTCAR. Suppose we have POTCARS as  POT_GGA_PAW_PBE/Mg_p/POTCAR
-    #Mg_p can be found in POTCAR.spec
-    #pmg config -p /home/nnepal/bin/POT_GGA_PAW_PBE PBE52
-    # After that add path to .pmgrc.yaml
-    #pmg config --add PMG_VASP_PSP_DIR PBE52
-    #write INCAR and POSCAR separately
-    #incar = relax_set.incar
-    #incar.write_file('INCAR')
     #create a folder with structures
     if not os.path.isdir("R{}-{}".format(mpid,compound)):
         os.mkdir("R{}-{}".format(mpid,compound))
     if not os.path.isdir("R{}-{}/relax".format(mpid,compound)):
         os.mkdir("R{}-{}/relax".format(mpid,compound))
     relax_set.write_input(output_dir="R{}-{}/relax".format(mpid,compound))
-    #once we complete process 1, we can write POTCAR file as
-    #relax_set.potcar.write_file("R{}-{}/relax/POTCAR".format(mpid,compound))
     relax_set.poscar.write_file("R{}-{}/relax/POSCAR".format(mpid,compound))
     if os.path.isfile("htepc.json"):
         os.system("cp htepc.json R{}-{}/relax/".format(mpid,compound))
@@ -100,8 +82,6 @@ def main():
     main function
     """
     mpid = sys.argv[1]
-    #MPID_LIST = MPID.split("-")[0:2]
-    #MPID = MPID_LIST[0] + "-" + MPID_LIST[1]
     compound = sys.argv[2]
     vasp_input(mpid,compound)
 if __name__ == "__main__":

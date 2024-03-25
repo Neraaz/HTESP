@@ -30,7 +30,6 @@ def plot_phase(data):
     - convexhull.pdf : PDF file containing the convex hull phase diagram.
 
     """
-    #data = pd.read_csv(energyfile)
     entries = []
     for i in range(data.shape[0]):
         if os.path.isfile("R{}-{}/relax/POSCAR".format(data.ID[i],data.comp[i])):
@@ -39,12 +38,7 @@ def plot_phase(data):
             struc = pwscf.PWInput.from_file("R{}-{}/relax/scf.in".format(data.ID[i],data.comp[i])).structure
         else:
             print("Neither scf.in nor POSCAR present inside R{}-{}/relax/".format(data.ID[i],data.comp[i]) + "\n")
-        #print(i)
         num_atoms = len(struc)
-        ##struc = structure.IStructure(np.array(struc.cell),
-        #                             list(struc.symbols),
-        #                             struc.positions.tolist())
-        #struc = structure.Structure(struc.lattice,struc.species,struc.frac_coords)
         pd_entry = PDEntry(struc,data.energy[i]*int(num_atoms))
         entries.append(pd_entry)
     phase_diag = PhaseDiagram(entries)
@@ -56,13 +50,13 @@ def plot_phase(data):
             write_convexhull.write(str(round(phase_diag.get_form_energy_per_atom(entry),4)))
             write_convexhull.write("," + str(round(phase_diag.get_e_above_hull(entry),4)) + "\n")
             #write_convexhull.write("," + str(phase_diag.get_decomposition(entry.composition)) + "\n")
-    #plotter = PDPlotter(pd,show_unstable=True,backend="matplotlib")
-    plotter = PDPlotter(phase_diag,show_unstable=0.02,backend="matplotlib")
-    #plotter = PDPlotter(phase_diag,show_unstable=0.1,backend="matplotlib")
+    plotter = PDPlotter(phase_diag,show_unstable=True,backend="matplotlib")
+    #plotter = PDPlotter(phase_diag,show_unstable=0.25,backend="matplotlib")
     plt1 = plotter.get_plot()
-    #plt.show()
     plt1.figure.savefig("convexhull.pdf")
-    #plotter.write_image("x.pdf",ordering=['Ca','B','N2'])
+    # Uncomment below if you want to extract data from materials project
+    # If it exists
+
     #print("Adding formation energy and energy above hull from MP database for comparison ....\n")
     #data = pand.read_csv('convexhull.csv')
     #data = pand.DataFrame(data)

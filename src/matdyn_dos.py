@@ -15,17 +15,21 @@ def matdyn_dos():
     Returns:
     Creates input file named matdyn-mpid-compound-dos.in.
     """
+    # Get command-line arguments
     mpid = sys.argv[1]
     compound = sys.argv[2]
     prefix2=sys.argv[3]
+    # File names
     freq = prefix2.replace("'", "") + "-dos.freq"
     frc = prefix2.replace("'", "") + ".fc"
+    # Determine the number of atoms
     mass=np.loadtxt('mass.dat')
     if mass.ndim > 0:
         nat = mass.shape[0]
     else:
         nat = 1
         mass = [mass]
+    # Write input file
     with open("matdyn-{}-{}-dos.in".format(mpid,compound), 'w') as matdos:
         matdos.write("&input" + "\n")
         matdos.write("asr='simple'," + "\n")

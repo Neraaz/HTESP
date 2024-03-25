@@ -26,7 +26,6 @@ def main():
     scale = float(sys.argv[3])
     with open(input_filename, 'r') as infile:
         lines = infile.readlines()
-    #nstep = int(lines[0].split()[1])
     nion = int(lines[7].split()[0])
     print("CELL_PARAMETERS angstrom")
     for i in range(3):

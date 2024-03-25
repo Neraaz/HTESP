@@ -11,7 +11,7 @@ Modules
     htepc
     element_extract
     aflow_extract
-    antiferro
+    magnetic
     cif_to_gsinput
     create_epw_inputs
     band

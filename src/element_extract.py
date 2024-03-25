@@ -56,18 +56,25 @@ def download(elm,num_el,exclude_el,properties):
     --------
     data : pandas DataFrame
         DataFrame containing the extracted data.
+    Example:
+    --------
+    >>> download('H', 2, ['O', 'F'], ['material_id', 'formation_energy_per_atom'])
     """
     parent_folder=os.getcwd()
     create_folder(parent_folder)
+    # Check for the presence of the API key file
     if os.path.isfile("htepc.json") or os.path.isfile("../../htepc.json"):
         key = input_data["mpi_key"]["API_KEY"]
     else:
         print("htepc.json file not found. Please provide with your materials project api key\n")
+    # Initialize MPRester with API key
     mpr = MPRester(key["key"])
+    # Search for materials matching specified criteria
     mpr_search = mpr.materials.summary.search(elements=[elm],
                                      exclude_elements=exclude_el,
                                      fields=properties,
                                      num_elements=num_el)
+    # Write extracted data to CSV file
     with open(parent_folder+"/download/"+ "data-"+ elm +".csv", "w") as data_elm:
         for i,propti in enumerate(properties):
             if propti == "structure":
@@ -95,6 +102,7 @@ def download(elm,num_el,exclude_el,properties):
                     data_elm.write(str(prop) + ",")
             data_elm.write(str(search.structure.composition.formula.replace(" ", "")))
             data_elm.write("\n")
+    # Read the CSV file into a DataFrame
     data=pd.read_csv(parent_folder+"/download/"+"data-" + elm + ".csv")
     print(data['material_id'])
     return data
@@ -412,6 +420,7 @@ def download_by_entry(entries,must_include,size_constraint=20,ntype_constraint=5
     parent_folder=os.getcwd()
     create_folder(parent_folder)
     obj = MpConnect()
+    # Create condition for must_include elements
     must_in = ""
     for i,elm in enumerate(must_include):
         if i == len(must_include) - 1:
@@ -419,8 +428,10 @@ def download_by_entry(entries,must_include,size_constraint=20,ntype_constraint=5
         else:
             must_in += "'{}'".format(elm) + " in elm_list or "
     must_in = "nelm < ntype_constraint and " + "({})".format(must_in)
+    # Get entries in chemical system
     entries = obj.mpr.get_entries_in_chemsys(entries)
     entry = 1
+    # Write header to CSV file
     with open(parent_folder+"/download/"+ "download.csv", "w") as data_elm:
         for i,propti in enumerate(properties):
             if propti == "structure":
@@ -432,7 +443,9 @@ def download_by_entry(entries,must_include,size_constraint=20,ntype_constraint=5
             else:
                 data_elm.write(propty)
         data_elm.write("\n")
+    # Iterate over entries
     for i,_ in enumerate(entries):
+        # Extract data for each entries
         mpid = entries[i].data['material_id']
         obj.setting(mpid)
         band_gap = obj.data['band_gap']
@@ -442,6 +455,7 @@ def download_by_entry(entries,must_include,size_constraint=20,ntype_constraint=5
         comp = entries[i].composition.formula.replace(' ','')
         count = int(entries[i].composition.num_atoms)
         elm_list = list(entries[i].composition.as_dict().keys())
+        # Define logic for filtering based on optional parameters
         if metal:
             gap_logic = band_gap < 0.0001
         else:
@@ -459,6 +473,7 @@ def download_by_entry(entries,must_include,size_constraint=20,ntype_constraint=5
         else:
             sg_logic = obj.data['symmetry']['symbol'] == spacegroup
         print("Extracting {}".format(comp) + "\n")
+        # Write data to input file and CSV file if conditions are met
         with open("mpid-list.in", "a") as mplist_write:
             if count < size_constraint and gap_logic and fe_logic and mag_logic and sg_logic:
                 if eval(must_in):
@@ -492,12 +507,11 @@ def main():
     -----------------
     None
     """
-    #ntype = 8 #Number of different types of element in the compound.
-    #properties=["formula_pretty","material_id", "formation_energy_per_atom", "band_gap"]
-    #data = extract(ntype,properties,metal=True,neg_fe=True,nelm=2,elm=['B', 'C'])
+    # Check if 'mpid-list.in' file exists
     if not os.path.isfile("mpid-list.in"):
+        # Check if 'htepc.json' exists
         if os.path.isfile("htepc.json") or os.path.isfile("../../htepc.json"):
-            #import download as d
+            # Read settings from 'htepc.json' to create 'mpid-list.in' file
             d = input_data["download"]
             mode = d['info']['mode']
             ntype = d['info']['ntype']
@@ -512,7 +526,8 @@ def main():
             nsites=d['info']['nsites']
             spacegroup=d['info']['spacegroup']
         else:
-            print("input file download.py not found\n")
+            # Provide default settings if 'htepc.json' doesn't exist
+            print("input file htepc.json not found\n")
             print("Create one with following format\n")
             msg="""info={'mode':'element','metal':True, 'FE':True, 'exclude':["O", "N", "F", "Cl", "Br", "I"],'ntype':(1,2), 'elm':['B'], 'prop':["material_id", "formula_pretty", "structure", "formation_energy_per_atom", "band_gap", "energy_above_hull","nsites","ordering","nsites"],'ordering':'NM','nsites':10,'spacegroup':None}
 inp=    {'start':1, 'end':50, 'nkpt':200, 'evenkpt': False, 'plot':'phband', 'calc':'QE'}
@@ -540,12 +555,11 @@ chemsys={'entries':['B'],'size_constraint':20,'ntype_constraint':5,'must_include
                  'inp':default2,
                  'chemsys':chemsys
                  }
-            #with open("download.py", "w") as h:
-            #    h.write("info="+str(default1) + "\n")
-            #    h.write("inp="+str(default2) + "\n")
-            #    h.write("chemsys="+str(chemsys) + "\n")
+            # Default mode is 'element'
             mode = 'element'
+        # Perform actions based on mode
         if mode == 'element':
+            # Extract data and create input files
             data = extract(ntype,properties,elm_list,exclude_el,
                            nelm=nelm,
                            metal=metal,
@@ -556,23 +570,24 @@ chemsys={'entries':['B'],'size_constraint':20,'ntype_constraint':5,'must_include
                            spacegroup=spacegroup)
             create_input()
         elif mode == 'chemsys':
+            # Download data for compounds based on chemical system
             download_by_entry(d['chemsys']['entries'],d['chemsys']['must_include'],d['chemsys']['size_constraint'],d['chemsys']['ntype_constraint'],
                               d['chemsys']['form_en'],d['chemsys']['metal'],d['chemsys']['magnetic'],d['chemsys']['spacegroup'],properties)
         elif mode == 'fromcif':
+            # List CIF files
             list_cif = glob.glob("*.cif",recursive=True)
             if len(list_cif) > 0:
                 print("These cif files are found\n")
                 for cif in list_cif:
                     print(cif + "\n")
         elif mode == 'fromvasp':
+            # List VASP files
             list_vasp = glob.glob("*.vasp",recursive=True)
             if len(list_vasp) > 0:
                 print("These .vasp files are found\n")
                 for vasp in list_vasp:
                     print(vasp + "\n")
         else:
-            print("mode = element, chemsys, or fromcif available\n")
-    #for single element compounds, suppose Boron
-    #data = data_one_element_compound('B')
+            print("mode = element, chemsys, fromcif, or fromvasp available\n")
 if __name__ == "__main__":
     main()

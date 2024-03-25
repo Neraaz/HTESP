@@ -25,10 +25,19 @@ def generate_submission_files(which_calc, parallel_command, nproc, command_list)
 
     Raises:
     - ValueError: If an invalid calculation type is provided.
+
+    Example:
+    >>> command_list = {
+    ...     'scf': ('pw.x', 'scf.in', 'scf.out'),
+    ...     'nscf': ('pw.x', 'nscf.in', 'nscf.out')
+    ... }
+    >>> submission_files = generate_submission_files('qe', 'mpirun', '4', command_list)
+    >>> print(submission_files)
     """
     npscf = int(nproc)
     submission_files = {}
 
+    # Generate submission files based on the calculation type
     if which_calc in ('qe','QE'):
         for command_name, command_info in command_list.items():
             x_command, input_file, output_file = command_info
@@ -94,7 +103,7 @@ def main():
         with open('htepc.json') as json_file:
             #parameters = json.load(json_file)
             parameters = json.load(json_file)['job_script']
-
+    # Commands under different processes
     qe_elph_commands = {
         'scf': ('pw.x', 'scf.in', 'scf.out'),
         'band': ('pw.x', 'scf-band.in', 'scf-band.out'),

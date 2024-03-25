@@ -37,28 +37,35 @@ def magnetic_structure(obj,mpid,compound,magconfig,dft):
 
     Look for pymatgen.analysis.magnetism.MagneticStructureEnumerator class for more details.
     Install Enumlib library: https://github.com/msg-byu/enumlib to run this module.
+
+    Example:
+    >>> obj = MpConnect()
+    >>> magnetic_structure(obj, 'mp-123', 'MnO', ['ferromagnetic', 'antiferromagnetic'], 'VASP')
     """
+    # load the structure
     try:
         strucinit = structure.Structure.from_file("R{}-{}/relax/POSCAR".format(mpid,compound))
     except FileNotFoundError:
         strucinit = PWInput.from_file("R{}-{}/relax/scf.in".format(mpid,compound)).structure
+    # Obtain magnetic structures based on given magnetic configurations
     if os.path.isfile("htepc.json"):
-        #from magmom import magmom, order
         default_magmoms = input_data['magmom']['magmom']
         order = input_data['magmom']['order']
-        #print(magmom,order)
         newstructure = MagneticStructureEnumerator(strucinit,default_magmoms=default_magmoms,strategies=order,truncate_by_symmetry=True).ordered_structures
     else:
         newstructure = MagneticStructureEnumerator(strucinit,strategies=magconfig,truncate_by_symmetry=True).ordered_structures
     print(len(newstructure))
+    # Check the entry number
     if not os.path.isfile('mpid-magnetic.in'):
         entry = 0
     else:
         with open('mpid-magnetic.in', 'r') as mpid_read:
             lines = mpid_read.readlines()
         entry = len(lines)
+    # Process each generated structure
     if len(newstructure) > 0:
         for i,struc in enumerate(newstructure):
+            # Refine the structure
             struc = SpacegroupAnalyzer(struc,symprec=0.1).get_refined_structure()
             if dft in ('vasp', 'VASP'):
                 obj.prefix = struc.composition.alphabetical_formula.replace(" ","")
@@ -71,10 +78,6 @@ def magnetic_structure(obj,mpid,compound,magconfig,dft):
                 orig_prefix = compound
                 os.system("cp R{}-{}/relax/INCAR {}/R{}-{}-{}/relax/".format(mpid,orig_prefix,pwd,mpid,i+1,obj.prefix))
                 poscar.write_file(filename="R{}-{}-{}/relax/POSCAR".format(mpid,i+1,obj.prefix))
-                #os.system("cp R{}-{}/relax/KPOINTS {}/R{}-{}-{}/relax/".format(mpid,orig_prefix,pwd,mpid,i+1,obj.prefix))
-                #if os.path.isfile("download.py"):
-                #    import download as d
-                #d = input_data['download']
                 evenkpt = input_data['download']['inp']['evenkpt']
                 if evenkpt:
                     print("Even kpoint mesh is utilized\n")
@@ -82,18 +85,15 @@ def magnetic_structure(obj,mpid,compound,magconfig,dft):
                 else:
                     pos_to_kpt("R{}-{}-{}/relax/POSCAR".format(mpid,i+1,obj.prefix),0.025)
                 os.system("mv KPOINTS R{}-{}-{}/relax/".format(mpid,i+1,obj.prefix))
-                #structure_file = structure.Structure.from_file("R{}-{}-{}/relax/POSCAR".format(mpid,i+1,obj.prefix))
-                #relax_set = MPRelaxSet(structure=structure_file)
-                #relax_set.potcar.write_file("R{}-{}-{}/relax/POTCAR".format(mpid,i+1,obj.prefix))
                 if os.path.isfile("vasp.in"):
                     os.system("cp vasp.in R{}-{}-{}/relax/".format(mpid,i+1,obj.prefix))
-                #if os.path.isfile("magmom.py"):
-                #    os.system("cp magmom.py R{}-{}-{}/relax/".format(mpid,i+1,obj.prefix))
                 if os.path.isfile("htepc.json"):
                     os.system("cp htepc.json R{}-{}-{}/relax/".format(mpid,i+1,obj.prefix))
                 os.chdir("R{}-{}-{}/relax/".format(mpid,i+1,obj.prefix))
+                # Process POTCAR and INCAR
                 poscar2potcar()
                 os.system("vasp_process.py POSCAR")
+                # Modify INCAR for magnetic calculations
                 with open("INCAR", "r") as read_incar:
                     incar = read_incar.readlines()
                 for j,line in enumerate(incar):
@@ -126,10 +126,8 @@ def magnetic_structure(obj,mpid,compound,magconfig,dft):
                 if not os.path.isdir("scf_dir"):
                     os.system("mkdir scf_dir")
                 os.system("""mv scf-None.in""" + """ scf_dir/scf-{}-{}.in""".format(mpid,i+1))
-            #print(mpid,obj.prefix)
             with open("mpid-magnetic.in", "a") as mpid_append:
                 mpid_append.write("v{}".format(entry+1+i) + " " + mpid + "-{}".format(i+1) + " " + obj.prefix + "\n")
-                #mpid_append.write("v{}".format(entry+1+i) + " " + obj.mpid  + " " + obj.prefix + "\n")
     else:
         print("Structures not created\n")
 def changeaxis(mpid,comp):
@@ -149,22 +147,30 @@ def changeaxis(mpid,comp):
         with open('mpid-magnetic.in', 'r') as mpid_read:
             lines = mpid_read.readlines()
         entry = len(lines)
+    # Define magnetic axis configurations
     saxis = input_data['magmom']['saxis']
+    # Process each magnetic axis configuration
     for i,axis in enumerate(saxis):
         sx = int(axis[0])
         sy = int(axis[1])
         sz = int(axis[2])
+         # Create directory for the current magnetic axis configuration
         if not os.path.isdir("R{}-saxis-{}{}{}-{}".format(mpid,sx,sy,sz,comp)):
             os.mkdir("R{}-saxis-{}{}{}-{}".format(mpid,sx,sy,sz,comp))
         if not os.path.isdir("R{}-saxis-{}{}{}-{}/relax".format(mpid,sx,sy,sz,comp)):
             os.mkdir("R{}-saxis-{}{}{}-{}/relax".format(mpid,sx,sy,sz,comp))
         os.chdir("R{}-{}/relax/".format(mpid,comp))
+        # Copy necessary input files
         os.system("cp INCAR POTCAR POSCAR KPOINTS ../../R{}-saxis-{}{}{}-{}/relax/".format(mpid,sx,sy,sz,comp))
-        os.system("cp CHGCAR ../../R{}-saxis-{}{}{}-{}/relax/".format(mpid,sx,sy,sz,comp))
+        if os.path.isfile("CHGCAR"):
+            os.system("cp CHGCAR ../../R{}-saxis-{}{}{}-{}/relax/".format(mpid,sx,sy,sz,comp))
         os.chdir("../../")
+        # Uncomment following if calculations read from previous CHGCAR
+        #os.system(f"""echo 'ICHARG = 11' >> R{}-saxis-{}{}{}-{}/relax/INCAR""".format(mpid,sx,sy,sz,comp))
+        # Update INCAR with the new magnetic axis
         os.system("""sed -i '/SAXIS/d' R{}-saxis-{}{}{}-{}/relax/INCAR""".format(mpid,sx,sy,sz,comp))
         os.system("""echo 'SAXIS = {} {} {}' >> R{}-saxis-{}{}{}-{}/relax/INCAR""".format(sx,sy,sz,mpid,sx,sy,sz,comp))
-        #os.system("""echo 'ICHARG = 11' >> R{}-saxis-{}{}{}-{}/relax/INCAR""".format(sx,sy,sz,mpid,sx,sy,sz,comp))
+        # Append to the mpid-magnetic.in file
         with open("mpid-magnetic.in", "a") as mpid_append:
             mpid_append.write("v{}".format(entry+1+i) + " " + mpid + "-saxis-{}{}{}".format(sx,sy,sz) + " " + comp + "\n")
         if os.path.isfile("htepc.json"):
@@ -187,11 +193,11 @@ def main():
     Returns:
     None
     """
-    #mpid = sys.argv[1]
-    #comp = sys.argv[2]
-    #dft = sys.argv[3]
+    # DFT calculation type
     dft = input_data['download']['inp']['calc']
+    # Ordering or anisotropy ?
     mag_type = input_data['magmom']['type']
+    # Read input.in to obtain list of materials
     with open("input.in","r") as read_in:
         lines = read_in.readlines()
     start = int(lines[0].split("\n")[0])
@@ -200,13 +206,17 @@ def main():
     with open(filename,'r') as read_mpid:
         lines = read_mpid.readlines()
     lines = lines[start-1:end-1]
+    # Initiate MpConnect object
     obj = MpConnect()
     config = ['ferromagnetic','antiferromagnetic']
+    # Loop over materials
     for line in lines:
         mpid = line.split(" ")[1]
         comp = line.split(" ")[2].split("\n")[0]
+        # Creating different magnetic ordering
         if mag_type == "ordering":
             magnetic_structure(obj,mpid,comp,config,dft)
+        # Creating input files with different SAXIS
         elif mag_type == "anisotropy":
             changeaxis(mpid,comp)
         else:

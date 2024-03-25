@@ -67,7 +67,6 @@ def substitution(mpid,obj):
         dft = sys.argv[2]
         orig_prefix=sys.argv[3]
         sb = input_data['substitute']
-        #obj.setting(mpid)
         mode = sb['mode']
         try:
             obj.structure = structure.Structure.from_file("R{}-{}/relax/POSCAR".format(mpid,orig_prefix))
@@ -82,7 +81,6 @@ def substitution(mpid,obj):
                 for sub_i in sb.sub:
                     list_str += us(structure_sym,sb.elm,sub_i)
         elif mode == 2:
-            #print("inside mode 2\n")
             new_sub = sb['new_sub']
             nelement = len(structure_sym)
             for i in range(nelement):
@@ -112,7 +110,6 @@ def substitution(mpid,obj):
                 pwd=os.getcwd()
                 os.system("cp R{}-{}/relax/INCAR {}/R{}-{}-{}/relax/".format(mpid,orig_prefix,pwd,mpid,i+1,obj.prefix))
                 poscar.write_file(filename="R{}-{}-{}/relax/POSCAR".format(mpid,i+1,obj.prefix))
-                #os.system("cp R{}-{}/relax/KPOINTS {}/R{}-{}-{}/relax/".format(mpid,orig_prefix,pwd,mpid,i+1,obj.prefix))
                 if os.path.isfile("htepc.json") or os.path.isfile("../../htepc.json"):
                     d = input_data['download']
                 evenkpt = d['inp']['evenkpt']
@@ -125,13 +122,10 @@ def substitution(mpid,obj):
                 os.system("mv KPOINTS R{}-{}-{}/relax/".format(mpid,i+1,obj.prefix))
                 structure_file = structure.Structure.from_file("R{}-{}-{}/relax/POSCAR".format(mpid,i+1,obj.prefix))
                 relax_set = MPRelaxSet(structure=structure_file)
-                #relax_set.potcar.write_file("R{}-{}-{}/relax/POTCAR".format(mpid,i+1,obj.prefix))
                 if os.path.isfile("vasp.in"):
                     os.system("cp vasp.in R{}-{}-{}/relax/".format(mpid,i+1,obj.prefix))
                 if os.path.isfile("htepc.json"):
                     os.system("cp htepc.json R{}-{}-{}/relax/".format(mpid,i+1,obj.prefix))
-                #if os.path.isfile("pseudo.py"):
-                #    os.system("cp pseudo.py R{}-{}-{}/relax/".format(mpid,i+1,obj.prefix))
                 os.chdir("R{}-{}-{}/relax/".format(mpid,i+1,obj.prefix))
                 poscar2potcar()
                 os.system("vasp_process.py POSCAR")
@@ -163,10 +157,6 @@ def substitution(mpid,obj):
             print(mpid,obj.prefix)
             with open("mpid-substitute.in", "a") as mpid_append:
                 mpid_append.write("v{}".format(entry+1+i) + " " + mpid + "-{}".format(i+1) + " " + obj.prefix + "\n")
-                #mpid_append.write("v{}".format(entry+1+i) + " " + obj.mpid  + " " + obj.prefix + "\n")
-        #if dft in ('vasp','VASP'):
-        #    orig_prefix = sys.argv[3]
-        #    os.system("rm -r R{}-{}".format(mpid,orig_prefix))
 def main():
     """
     main function

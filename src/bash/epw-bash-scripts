@@ -169,11 +169,17 @@ for ((ii=$1; ii<$2; ++ii)); do
       elif [ $process == 'epw3' ]; then
        echo "-----------------------------------------------------------------------------------------------"
          echo "epw step 3: Copying necessary file for epw calculations to 'save' folder"
+         echo "copy ~/path_to_QE/EPW/bin/pp.py scripts to HTESP/src/"
+         echo "Add import sys, and provide, prefix = str(sys.argv[1]) instead"
+         echo "user_input = input('Enter the prefix used for PH calculations (e.g. diam)\n')"
+         echo "prefix = str(user_input)"
+         echo "recompile the package" 
+         echo "Uncomment following codes for usage"
        echo "-----------------------------------------------------------------------------------------------"
          prefix=$(grep "prefix = " scf_dir/scf-$A.in | awk '{print $3}' | sed 's/.$//' | sed "s/'//g" )
-         cd R$A-$B/phonon
-           pp.py $prefix
-         cd ../../
+         #cd R$A-$B/phonon
+         #  pp.py $prefix
+         #cd ../../
       elif [ $process == 'cpcharge' ]; then
          echo "Saving charge density for nscf calculations"
          if [[ ! -d R$A-$B/epw ]]; then

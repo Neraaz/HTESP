@@ -141,6 +141,25 @@ Now, execute the following commands to generate input files.
 Inputs with magnetic ordering
 -------------------------------------
 
+For QE, one can generate input file with FM ordering by setting ``magnetic`` flag to ``true``.
+
+.. code-block:: json
+
+    "pwscf_in": {
+      "magnetic": true,
+      "control": {},
+      "systems": {},
+      "electrons": {}}
+
+Now, any command used to generate Quantum Espresso (QE) input files will create inputs with "FM" (ferromagnetic) ordering.
+
+.. code-block:: bash
+
+    mainprogram download # aflow-download, oqmd-download, substitutiton, ....
+
+For VASP, follow :ref:`this <magenum-label>`, or use ``vasp.in`` to update ``INCAR`` file.
+
+
 ---------------------------------------
 Combining data from different database
 ---------------------------------------
@@ -429,11 +448,6 @@ A new ``mpid-new.in`` has following data:
     v67 mp-1056702 Mg1
     v68 mp-153 Mg2
 
-------------
-Statistics
-------------
-
-
 -------------------------------------
 Convergence tests
 -------------------------------------
@@ -650,6 +664,7 @@ To obtain unique relaxed energies, follow these steps:
 
 3. This process extracts unique ground-state energies for any compound and stores the results in the ``distorted-energy.csv`` file.    
 
+.. _pressure-label:
 
 --------------------------------------
   Pressure calculation
@@ -852,6 +867,8 @@ to collect the total energy per atom. It will create ``econv_vasp.csv`` file. Fi
     mainprogram vp-pd
 
 to compute phase diagram. Data are stored in ``convexhull.csv`` and ``convexhull.pdf`` plot is created. 
+
+.. _magenum-label:
 
 -----------------------
 Magnetic enumeration
@@ -1059,10 +1076,56 @@ For this method, we utilize Phonopy with either Quantum ESPRESSO (QE) or VASP. P
 Equation of states
 --------------------------
 
+To collect energy-volume data for different pressures and perform relaxation, use the ``ev-collect`` command. This command generates an ``e-v.dat`` file in each directory corresponding to a specific pressure. Follow the steps below:
+
+1. First, create input files for different pressures and perform relaxation (:ref:`repeat this <pressure-label>`).
+
+2. After relaxation, execute the main program ``ev-collect`` to extract energy-volume data. This program automatically generates an ``e-v.dat`` file in each directory corresponding to a specific pressure.
+
+.. code-block:: bash
+
+    mainprogram ev-collect
+
+The ``eos-bm`` command is used to obtain the equation of state (EOS) using the Birch-Murnaghan EOS. To use this command, follow these steps:
+
+**Generate Energy-Volume Data:** Before using ``eos-bm``, ensure you have collected energy-volume data using the ``ev-collect`` command.
+
+Execute the main program ``eos-bm`` to analyze the energy-volume data and obtain the equation of state using the Birch-Murnaghan EOS.
+
+.. code-block:: bash
+
+    mainprogram eos-bm
+
+To plot various volume-energy, pressure-volume, and pressure-enthalpy curves, follow these steps:
+
+1. **Copy Plotting Script:** Copy the script ``birch_murnaghan_enthalpy.py`` from the utility ``useful_scripts`` directory.
+
+2. **Execute the Script:** Execute the copied script using the command ``python birch_murnaghan_enthalpy.py``. Use the "help" option to get started and understand the plotting options available.
+
+3. **Rename ``e-v.dat`` Files:** Ensure that each ``e-v.dat`` file from different directories is renamed to follow the format ``e-v-1.dat``, ``e-v-2.dat``, and so on. This ensures that the script can process multiple energy-volume datasets.
+
 
 --------------------------
 Charged calculations
 --------------------------
+
+First prepare :ref:`charge.in <charge-input>`.
+
+Execute:
+
+.. code-block:: bash
+
+    mainprogram charge-input
+
+To create input files with different net charges:
+
+For QE:
+- Input files named ``scf-{mpid}-{icharge}.in`` are created within the ``scf_dir`` folder, where ``{icharge}`` takes values from 1 onwards.
+
+For VASP:
+- Folders named ``R{mpid}-{icharge}`` are created, each containing the necessary input files for a specific net charge.
+
+In both cases, a file named ``mpid-charge.in`` is generated to list the material ID and compound name of these input files.
 
 
 ------------------------------

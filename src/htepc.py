@@ -124,22 +124,20 @@ class MpConnect:
         Dictionary containing kinetic energy cutoffs for different elements.
     comp_list : list
         List of elements in the compound.
+
+    Example of using MpConnect class:
+    >>> obj = MpConnect()  # Initialize MpConnect object
+    >>> obj.setting('mp-763')  # Set Materials ID to 'mp-763'
+    >>> obj.getkpt()  # Get k-points for the structure
+    >>> obj.maxecut_sssp()  # Calculate maximum recommended energy cutoff using SSSP
+    >>> obj.setting_qeinput()  # Set up Quantum Espresso input files based on the retrieved data
     """
-    #def __init__(self,key="J5fFknl84LrMvXi3"):
+    # Intialize the class
     def __init__(self):
         if os.path.isfile("htepc.json") or os.path.isfile("../../htepc.json"):
             key = input_data["mpi_key"]["API_KEY"]
         else:
             print("htepc.json file not found. Please provide with your materials project api key\n")
-        #try:
-        #    from mpi_key import API_KEY as key
-        #    print("mpi_key.py found with API to materials project database\n")
-        #except ModuleNotFoundError:
-        #    print("mpi_key.py file not found. One is created. Please, replace the XXX with your key\n")
-        #    with open("mpi_key.py", "w") as key_write:
-        #        api = {'key':"XXX"}
-        #        key_write.write("API_KEY={}".format(api) + "\n")
-        #    from mpi_key import API_KEY as key
         try:
             self.key = key['key']
             self.mpr = MPRester(self.key)
@@ -185,30 +183,34 @@ class MpConnect:
         ---------------------
         This function initializes the process with a Materials ID. It retrieves the data related to the given ID from the Materials Project (MP) database, sets up necessary parameters, and prepares the structure for further calculations.
         """
+        # Set the Material ID
         self.comp=comp
-        #self.data = self.mpr.get_data(self.comp)[0]
-        #self.data = self.mpr.summary.get_data_by_id(self.comp).dict()
-        #self.data = self.mpr.materials.get_data_by_id(self.comp).dict()
+        # Retrieve available properties from Materials Project database
+        # We only store properties except for last 29 elements
+        # Mostly related to elastic properties, absent for many systems
         self.prop = self.mpr.materials.summary.available_fields[:-29]
+        # Check if htepc.json file exists
         if os.path.isfile("htepc.json") or os.path.isfile("../../htepc.json"):
+            # Load settings from input_data dictionary
             d = input_data["download"]
+        # Append additional properties specified in the settings to the properties list
         for prop in d['info']['prop']:
             if prop not in self.prop:
                 self.prop.append(prop)
         #self.data = self.mpr.materials.summary.get_data_by_id(self.comp,fields=self.prop).dict()
+        # Fetch data for the given Materials ID from the Materials Project database
         self.data = self.mpr.materials.summary.search(material_ids=[self.comp],fields=self.prop)[0]
         self.structure = self.data.structure
         self.data = self.data.dict()
+        # Extract relevant information from the fetched data
         self.mpid = self.data['material_id']
         symbol_comp = ""
         elm = list(self.data['composition'].keys())
         count = list(self.data['composition'].values())
+        # Construct a prefix based on elemental composition
         for i,_ in enumerate(elm):
             symbol_comp += elm[i]+str(int(count[i]))
         self.prefix = symbol_comp
-        #self.prefix = self.data['composition'].alphabetical_formula.replace(" ", "")
-        #self.structure = self.mpr.get_structure_by_material_id(self.mpid)
-        #self.structure = self.mpr.materials.summary.search(material_ids=[self.comp],fields=['structure'])[0].structure
         #print("******************************************\n")
         #print("Use property method to extract the following info\n")
         #print("property('name') or get_properties(['name1', 'name2', ..])\n")
@@ -245,7 +247,6 @@ class MpConnect:
         """
         if filetype == 'cif':
             unsym_struc = self.structure
-            #unsym_struc = self.mpr.get_structure_by_material_id(self.mpid)
             CifWriter(unsym_struc, symprec=0.1).write_file('{}.cif'.format(self.mpid))
     def property(self,name):
         """
@@ -293,14 +294,9 @@ class MpConnect:
             print("Default kptden of 0.05 being utilized\n")
             kptden = 0.05
         self.kpt = pos_to_kpt("POSCAR",kptden)
-        #kpoints3=MPHSERelaxSet(self.structure).kpoints
-        #kpoints3=MPRelaxSet(self.structure).kpoints
-        #kpoint_dict=kpoints3.as_dict()
         self.kptype = "automatic"
         self.kpshift = [0, 0, 0]
         os.system("rm POSCAR")
-        #kptden = input_data['kptden']
-        #self.kpt = kpoint_dict['kpoints'][0]
         print("*********************************\n")
         print("KPOINT with kpoint density of {} \n".format(kptden))
         print("*********************************\n")
@@ -356,8 +352,6 @@ class MpConnect:
             print("htepc.json file not found, using default values from SSSP efficiency set\n")
             #print("https://www.materialscloud.org/discover/sssp/table/efficiency\n")
             self.dict_element = {'H': 60, 'Li': 40, 'Be': 40, 'N': 60, 'F': 45, 'Na': 40, 'Mg': 30, 'Al': 30, 'Si': 30, 'P': 30, 'S': 35, 'Cl': 40, 'K': 60, 'Ca': 30, 'Sc': 40, 'Ti': 35, 'V': 35, 'Cr': 40, 'Mn': 65, 'Fe': 90, 'Co': 45, 'Ni': 45, 'Cu': 55, 'Zn': 40, 'Ga': 70, 'Ge': 40, 'As': 35, 'Br': 30, 'Rb': 30, 'Sr': 30, 'Y': 35, 'Zr': 30, 'Nb': 40, 'Mo': 35, 'Tc': 30, 'Ru': 35, 'Rh': 35, 'Pd': 45, 'Ag': 50, 'Cd': 60, 'In': 50, 'Sn': 60, 'Sb': 40, 'Te': 30, 'I': 35, 'Cs': 30, 'Ba': 30, 'La': 40, 'Hf': 50, 'Ta': 45, 'W': 30, 'Re': 30, 'Os': 40, 'Ir': 55, 'Pt': 35, 'Hg': 50, 'Tl': 50, 'Pb': 40, 'Bi': 45, 'B': 35, 'C': 45, 'Au': 45, 'Se': 30, 'O': 60}
-            #with open("pseudo.py", "w") as write_pseudo:
-            #    write_pseudo.write("PSEUDO={}".format(self.dict_element))
         return self.dict_element[element]
     def maxecut_sssp(self):
         """
@@ -372,24 +366,31 @@ class MpConnect:
         Notes:
         -----------------
         This function finds the maximum kinetic energy cutoff for compound elements,
-        then prints tested cutoffs for waveFunction and density.
+        then returs the cutoffs for waveFunction and density.
         """
+        # Try to retrieve elements from the fetched data
         try:
             self.comp_list = self.data['elements']
+            # Get the kinetic energy cutoff for each element in the compound
             cutoff_list = [self.getecut_sssp(el) for el in self.comp_list]
         except KeyError:
+            # If 'elements' key is not found in the fetched data, extract elements from the structure
             self.comp_list = [str(el) for el in self.structure.elements]
             cutoff_list = [self.getecut_sssp(el) for el in self.comp_list]
         except:
-            elements_spin = self.structure.elements 
+            elements_spin = self.structure.elements
             cutoff_list = []
             for elm_spin in elements_spin:
                 elm_spin = str(elm_spin)
+                # Check if the element contains additional spin information (e.g., 'Mn, Spin=5')
                 if "," in elm_spin:
+                    # If additional spin information is present, extract the element name
                     cutoff_list.append(self.getecut_sssp(elm_spin.split(",")[0]))
                 else:
                     cutoff_list.append(self.getecut_sssp(elm_spin))
+        # Determine the maximum kinetic energy cutoff for waveFunction
         self.ecutwfc= max(cutoff_list)
+        # Determine the maximum kinetic energy cutoff for charge density
         self.ecutrho = 8 * self.ecutwfc
         print("******************************************\n")
         print("SSSP tested K.E. cutoffs for waveFunction and density\n")
@@ -412,7 +413,7 @@ class MpConnect:
         try:
             cutoff_list = [self.getecut_sssp(el) for el in self.comp_list]
         except:
-            elements_spin = self.structure.elements 
+            elements_spin = self.structure.elements
             cutoff_list = []
             for elm_spin in elements_spin:
                 elm_spin = str(elm_spin)
@@ -467,8 +468,9 @@ class MpConnect:
         Returns:
         Creates input files in scf-mpid.in format inside scf_dir/.
         """
+        # If magnetic calculation is enabled, handle pseudopotentials and magnetizations
         if magnetic:
-            elements_spin = self.structure.elements 
+            elements_spin = self.structure.elements
             pseudo1 = {}
             magnetization = []
             magdict = OrderedDict()
@@ -498,11 +500,9 @@ class MpConnect:
                     magdict[elm_spin] = 0
         else:
             pseudo1 = {el:el+'.upf' for el in self.comp_list}
-        #try:
-        #    prefix = self.data['composition'].alphabetical_formula
-        #except:
-        #    prefix = self.data['pretty_formula']
+        # Set prefix for output files
         prefix = self.prefix
+        # Set up control, system, and electrons parameters
         if os.path.isfile("htepc.json") or os.path.isfile("../../htpec.json"):
             pwscf_in = input_data["pwscf_in"]
             control = pwscf_in['control']
@@ -512,25 +512,24 @@ class MpConnect:
             control = {'calculation':calculation, 'nstep':300, 'restart_mode':restart_mode, 'pseudo_dir':pseudo_dir, 'outdir':'./', 'tprnfor':'.true.','tstress':'.true.', 'etot_conv_thr':etot_conv_thr, 'forc_conv_thr':forc_conv_thr}
             system = {'smearing':smearing_type, 'occupations':occupations, 'degauss':smearing}
             electrons = {'diagonalization':'david', 'mixing_mode':'plain', 'mixing_beta':0.7, 'conv_thr': conv_thr, 'electron_maxstep':300}
-            #with open("pwscf_in.py", "w") as pw_in:
-            #    pw_in.write("control={}".format(control) + "\n")
-            #    pw_in.write("system={}".format(system) + "\n")
-            #    pw_in.write("electrons={}".format(electrons) + "\n")
+        # Set kinetic energy cutoffs
         system['ecutwfc'] = self.ecutwfc
         system['ecutrho'] = self.ecutrho
         control['prefix'] = prefix
         # lW  2010_SC has monoclinic conventional cell with alpha<90, beta=gamma=90, different from international beta=90
         tmpanalyzer = SpacegroupAnalyzer(self.structure)
         tmpstructure = tmpanalyzer.get_primitive_standard_structure(international_monoclinic=False)
-        #print(tmpstructure)
         self.structure = tmpstructure
+        # Generate the input file based on the chosen calculation type
         if calculation == 'vc-relax':
             filename = pwscf.PWInput(self.structure, pseudo=pseudo1, control=control, system=system,electrons=electrons, kpoints_grid=self.kpt, ions={'ion_dynamics':ion_dynamics}, cell={'cell_dynamics':cell_dynamics,'press_conv_thr':0.05})
         elif calculation == 'relax':
             filename = pwscf.PWInput(self.structure, pseudo=pseudo1, control=control, system=system,electrons=electrons, kpoints_grid=self.kpt, ions={'ion_dynamics':ion_dynamics})
         else:
             filename = pwscf.PWInput(self.structure, pseudo=pseudo1, control=control, system=system,electrons=electrons, kpoints_grid=self.kpt)
+        # Write input file
         filename.write_file("temp.in")
+        # Adjust the input file format and save it with the appropriate filename
         os.system("""sed "s/'.true.'/.true./" {} > {}""".format("temp.in","scf-{}.in".format(self.mpid)))
         os.system("sed -n '/K_POINTS automatic/,/CELL_PARAMETERS angstrom/p' scf-{}.in | sed '$d' > kpoint-{}.dat".format(self.mpid,self.mpid))
         obj = INPUTscf("scf-{}.in".format(self.mpid))
@@ -548,6 +547,8 @@ class MpConnect:
             print("Input for band calculation. Provide nband = <n> within SYSTEM section. Use sufficient <n>.")
         else:
             os.system("cat scf.header species temp.dat > scf-{}.in".format(self.mpid))
+        # If magnetic calculation is enabled, modify the input file accordingly
+        # to incorporate magnetic keywords in the input files
         if magnetic:
             maglist = list(magdict.values())
             os.system(f"""sed -i '/&SYSTEM/a nspin = 2,' scf-{self.mpid}.in""")
@@ -576,6 +577,7 @@ class MpConnect:
                 os.system(f"""sed -i '{atom_start+2+j}s/{old_species[j]}/{new_species[j]}/' scf-{self.mpid}.in""")
             for j,_ in enumerate(maglist):
                 os.system(f"""sed -i '/&SYSTEM/a starting_magnetization({nsites-j}) = {maglist[nsites-j-1]}' scf-{self.mpid}.in""")
+        # Clean up temporary files
         os.system("rm scf.header species temp.dat kpoint*")
 def reorder_dictionary(original_dict, new_order):
     """
@@ -589,9 +591,9 @@ def reorder_dictionary(original_dict, new_order):
     - list: The list of keys of the reordered dictionary based on the new order.
 
     Example:
-    original_dict = {'a': 1, 'b': 2, 'c': 3, 'd': 4}
-    new_order = ['c', 'a', 'd', 'b']
-    reorder_dictionary(original_dict, new_order)
+    >>> original_dict = {'a': 1, 'b': 2, 'c': 3, 'd': 4}
+    >>> new_order = ['c', 'a', 'd', 'b']
+    >>> reorder_dictionary(original_dict, new_order)
     """
     # Create a new OrderedDict with the keys ordered according to the new list
     ordered_dict = OrderedDict((key, original_dict[key]) for key in new_order if key in original_dict)
@@ -613,8 +615,8 @@ def convert_species_list(original_list):
     - Replace elements with generic names followed by occurrence counts.
 
     Example:
-     original_list = ['Fe,spin=5', 'Fe,spin=-5', 'pd', 'pd', 'I,spin=1', 'I,spin=-1']
-     convert_species_list(original_list)
+    >>> original_list = ['Fe,spin=5', 'Fe,spin=-5', 'pd', 'pd', 'I,spin=1', 'I,spin=-1']
+    >>> convert_species_list(original_list)
     ['Fe1', 'Fe2', 'pd', 'pd', 'I1', 'I2']
     """
     counter = defaultdict(int)
@@ -688,13 +690,11 @@ class INPUTscf:
         """
         finalpos = self.file2.get_scaled_positions()
         finalcell = self.braiv_latt.tocell()
-        #finalcell = self.cell
         specieslist = self.file2.symbols
         with open("kpoint-{}.dat".format(mpid), "r") as kpoint:
             kplines = kpoint.readlines()
         with open(output, "w") as struc:
             struc.write("ATOMIC_POSITIONS crystal\n")
-            #for i in range(len(specieslist)):
             for i,_ in enumerate(specieslist):
                 struc.write(specieslist[i] + " " + str(finalpos[i][0])+ " ")
                 struc.write(str(finalpos[i][1]) + " " + str(finalpos[i][2]) + "\n")

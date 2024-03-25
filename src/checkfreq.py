@@ -14,9 +14,11 @@ def check_freq(filename):
     Returns:
     None
     """
+    # Load the frequency data from the provided filename
     data = np.loadtxt(filename)
     data = data[:, 1:]
-    if np.any(data < -33.356):
+    # Check if any frequency is less than -1 THz
+    if np.any(data < -33.356): # -33.356 corresponds to -1 THz
         print("{}:".format(filename) + " Negative frequency smaller than -1.0 THz present\n")
         with open('freq.dat', 'w') as write_freq:
             write_freq.write("Negative frequencies\n")

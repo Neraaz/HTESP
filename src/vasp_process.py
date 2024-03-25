@@ -25,13 +25,16 @@ def encut_check():
     Function to check ENCUT in INCAR file and replace
     with 1.3xENCUTMAX of POTCAR, when ENCUT is less than that.
     """
+    # Obtain ENMAX from POTCAR
     os.system("""grep ENMAX POTCAR | awk '{ print $3 }' | sed "s/;//" > encut.txt""")
     with open("encut.txt", "r") as read_encut:
         lines = read_encut.readlines()
     encut = []
     for line in lines:
         encut.append(float(line.split("\n")[0]))
+    # Calculate 1.3 times of maximum ENCUT in found in POTCAR
     encutmax = max(encut)*1.3
+    # Get ENCUT from current INCAR, set 0 if not found
     try:
         os.system("grep ENCUT INCAR | awk '{ print $3 }' > encut")
         with open("encut", "r") as read_ecut:
@@ -41,6 +44,7 @@ def encut_check():
         print("No ENCUT parameters found in INCAR or vasp.in\n")
         print("1.3 times ENMAX is used from POTCAR\n")
         encut = 0.0
+    # If ENCUT in INCAR is less than encutmax, update it with ecutmax
     if encut < encutmax:
         print("------------------------------------------------------\n")
         print("ENCUT less than 1.3 times ENCUTMAX in POTCAR found\n")
@@ -64,14 +68,18 @@ def vasp_process():
     Returns:
         None
     """
+    # Get the type of magnetic enumeration
     magenum = input_data['magmom']['type']
+    # Check if 'vasp.in' file exists
     if os.path.isfile("vasp.in"):
         if magenum == 'anisotropy':
             print("anisotropy type found in magmom dictionary\n")
+            # If magnetic enumeration is anisotropy, remove NSW from 'vasp.in'
             os.system("""sed -i '/NSW/d' vasp.in""")
+        # Read 'vasp.in' file
         with open("vasp.in", 'r') as read_vasp:
             lines = read_vasp.readlines()
-        #len_l = len(lines)
+        # Extract keys and values from 'vasp.in'
         key = []
         values = []
         for line in lines:
@@ -88,6 +96,7 @@ def vasp_process():
                     k_str += line_i
             if k_str != '':
                 values.append(k_str)
+        # Remove all the keys in INCAR which is found in vasp.in
         for k_i in key:
             os.system("""sed -i '/{}/d' INCAR""".format(k_i))
         with open("INCAR", "r") as read_incar:
@@ -103,18 +112,20 @@ def vasp_process():
                 backupkey['MAGMOM'] = True
             else:
                 backupkey = backupkey
+        # Remove MAGMOM keyword if exists and magenum is not 'anisotropy'
         if backupkey['MAGMOM'] and magenum != 'anisotropy':
             os.system("""sed -i '/MAGMOM/d' INCAR""")
+        # Remove NSW keyword if magenum is 'anisotropy'
         if magenum == 'anisotropy':
             os.system("""sed -i '/NSW/d' INCAR""")
         if backupkey['LORBIT']:
             os.system("""sed -i '/LORBIT/d' INCAR""")
+        # Write new keys and values to 'INCAR'
         with open("INCAR", "a") as change_incar:
             for i,_ in enumerate(values):
+                # If ISPIN=2, update MAGMOM keyword if htepc.json exists
                 if (key[i] == "ISPIN" and int(values[i]) == 2) or backupkey['ISPIN'] == 2:
                     change_incar.write(key[i] + " = " + str(values[i]) + "\n")
-                    #os.system("""sed -i '/MAGMOM/d' INCAR""")
-                    #os.system("""sed -i '/LORBIT/d' INCAR""")
                     if os.path.isfile("htepc.json") or os.path.isfile("../../htepc.json"):
                         m=input_data['magmom']['magmom']
                         struc = structure.Structure.from_file("POSCAR")
@@ -122,8 +133,8 @@ def vasp_process():
                         magmom_string = ""
                         for j,site in enumerate(sites):
                             element = str(site.specie)
-                            #print(j,element)
                             if j < len(sites) - 1:
+                                # if LSORBIT key found, rewrite MAGMOM in mx my mz format
                                 if 'LSORBIT' not in key:
                                     magmom_string += str(m[element]) + " "
                                 else:
@@ -138,7 +149,6 @@ def vasp_process():
                             change_incar.write("LORBIT = 11\n")
                         else:
                             print("type is anisotropy, therefore doesn't update MAGMOM keyword\n")
-                            #change_incar.write("NSW = 0\n")
                     else:
                         print("magmom values not provided in htepc.json\n")
                         print("Provide magnetic moment values as dictionary magmom={'A':2, 'B':3}\n")
@@ -147,9 +157,11 @@ def vasp_process():
                         change_incar.write(key[i] + " = " + str(values[i]) + "\n")
                     except IndexError:
                         continue
+                # Add LMIXTAU = .TRUE. if METAGGA is present in INCAR
                 if key[i] == "METAGGA":
                     change_incar.write("LMIXTAU = .TRUE.\n")
                     change_incar.write("LASPH = .TRUE.\n")
+    # Check and adjust ENCUT
     encut_check()
 def eigen_process():
     """
@@ -269,10 +281,13 @@ def main():
     if filename == 'POSCAR':
         band_phonopy(filename)
         vasp_process()
+        # remove EIGENVAL if you only update INCAR and KPOINTS
         if os.path.isfile("EIGENVAL"):
             os.system("cp KPOINTS KPOINTS_band")
             eigen_process()
         pos_to_kpt(filename,kptden)
+    # Change POSCAR to conventional unit cell
+    # and update KPOINTS
     elif filename == 'conventional':
         data = structure.Structure.from_file("POSCAR")
         data = SpacegroupAnalyzer(data,symprec=0.1).get_conventional_standard_structure()
@@ -280,6 +295,7 @@ def main():
         pos_to_kpt("POSCAR",kptden)
     elif filename == 'eigen':
         os.system("mv KPOINTS_band KPOINTS")
+    # Symmetrize the POSCAR
     elif filename == 'symmetrize':
         print("Symmetrizing the primitive structure\n")
         data = structure.Structure.from_file("POSCAR")

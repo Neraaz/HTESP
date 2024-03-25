@@ -240,6 +240,8 @@ For VASP
 
 Here, we don't have cell_dofree parameters. Default is using pressure in kbar.
 
+.. _charge-input:
+
 ---------------------
 charge.in
 ---------------------

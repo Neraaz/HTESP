@@ -27,36 +27,50 @@ def kpath(filename,npoint,kcutoff):
     - kpt (list): K-point in linear axis without processing.
     - spt (list): K-point in linear axis without processing at high-symmetry points.
     - sym (list): Naming for spt.
+    Example:
+    >>> kpoints, sympoint, symname, kpt, sym, spt = kpath("POSCAR", 100, 0)
     """
     try:
+        # Attempt to read the input file as an espresso file.
         file_name = espresso.read_espresso_in(filename)
     except:
+        # If reading as an espresso file fails, try VASP file.
         file_name = vasp.read_vasp(filename)
+    # Get the band path from the cell.
     bandpath = file_name.cell.bandpath()
+    # Determine the path based on the provided cutoff.
     if kcutoff > 0:
         path=bandpath.path[:kcutoff]
     else:
         path=bandpath.path[:None]
+    # Generate the band path with the specified number of points.
     bandpath = file_name.cell.bandpath(path,npoints=npoint)
     file_name.cell.bandpath().plot()
     pylab.savefig("BZ.pdf", format='pdf', bbox_inches='tight')
+    # Retrieve k-points, linear axis, and symmetry names.
     kpoints = bandpath.kpts
     sympoint = bandpath.get_linear_kpoint_axis()[1]
     symname = bandpath.get_linear_kpoint_axis()[2]
+    # Process the combined labels.
     sympoint2 = []
     idx = []
     for i in range(sympoint.shape[0]):
+        # Check if the current point has the same position as the previous one.
         if sympoint[i-1] == sympoint[i]:
+            # Append the previous label to the current point.
             symadd = symname[i-1] + "|" + symname[i]
             symname[i] = symadd
+            # Store the index of the previous point to be removed.
             idx.append(i-1)
         else:
             sympoint2.append(round(sympoint[i],8))
+    # Remove the redundant labels from the list.
     rmv = len(idx)
     while rmv > 0:
         symname.pop(idx[rmv-1])
         rmv = rmv - 1
     sympoint = sympoint2
+    # Retrieve additional data.
     spt = bandpath.get_linear_kpoint_axis()[1]
     sym = bandpath.get_linear_kpoint_axis()[2]
     kpt = bandpath.get_linear_kpoint_axis()[0]
@@ -131,8 +145,8 @@ def make_line_kpt():
     """
     nkpt=int(sys.argv[2])
     struct = Structure.from_file("POSCAR")
-    kpath = HighSymmKpath(struct)
-    kpts = Kpoints.automatic_linemode(divisions=nkpt,ibz=kpath)
+    k_path = HighSymmKpath(struct)
+    kpts = Kpoints.automatic_linemode(divisions=nkpt,ibz=k_path)
     kpts.write_file("KPOINTS")
 def main():
     """

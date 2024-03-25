@@ -5,8 +5,8 @@
 Writing POTCAR file from POSCAR
 """
 import os
-from pymatgen.core import structure
 import json
+from pymatgen.core import structure
 from pymatgen.io.vasp.sets import Potcar
 try:
     PWD = os.getcwd()

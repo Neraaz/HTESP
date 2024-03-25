@@ -9,7 +9,7 @@ import pandas as pd
 from ase.io import espresso,vasp
 from ase.cell import Cell
 from kpath import kpath
-
+# Read wanniertools inputs from htepc.json
 try:
     PWD = os.getcwd()
     if os.path.isfile(PWD+"/htepc.json"):
@@ -31,18 +31,6 @@ except FileNotFoundError:
                 'parameters':parameters,
                 'system':system,
                 'surface':surface_dict}
-#try:
-#    import wanniertool_input as wt_input
-#except FileNotFoundError:
-#    print("wanniertool_input.py not found, creating a default one\n")
-#    with open("wanniertool_input.py", "w") as f:
-#        f.write("tb_file={}".format(tb_file) + "\n")
-#        f.write("control={}".format(control) + "\n")
-#        f.write("parameters={}".format(parameters) + "\n")
-#        f.write("system={}".format(system) + "\n")
-#        f.write("surface={}".format(surface_dict) + "\n")
-#    import wanniertool_input as wt_input
-
 def kpoint_path(filename):
     """
     Extracts Brillouin zone high symmetry path using ASE modules for bulk and slab systems
@@ -52,21 +40,28 @@ def kpoint_path(filename):
     - filename (str): The filename of the QE input file 'scf.in' or VASP 'POSCAR' file.
 
     Returns: None
+    Example:
+    ---------
+    >>> kpoint_path("scf.in")
     """
+    # Read input file and get band path data
     _,_,_,_,sym,_ = kpath(filename,1,0)
     data = espresso.read_espresso_in(filename)
     band = Cell.bandpath(data.cell)
     band_dict = band.special_points
+    # Create a dictionary mapping special points to coordinates
     key = []
     value = []
     for i,sym_i in enumerate(sym):
         key.append(sym_i)
         value.append(band_dict[sym_i])
+    # Write high symmetry k-point path to 'wannier_kpath.in'
     with open('wannier_kpath.in', 'w') as wtfile_write:
         for i,_ in enumerate(key):
             if i < len(key) - 1:
                 wtfile_write.write("{} {} {} {}  ".format(key[i],round(value[i][0],5),round(value[i][1],5),round(value[i][2],5)))
                 wtfile_write.write("{} {} {} {}".format(key[i+1],round(value[i+1][0],5),round(value[i+1][1],5),round(value[i+1][2],5)) + "\n")
+    # Check if POSCAR-slab is available for getting 2D Brillouin zone path
     if os.path.isfile("POSCAR-slab"):
         slab = vasp.read_vasp("POSCAR-slab")
         band_s = Cell.bandpath(slab.cell,pbc=[1,1,0])
@@ -77,6 +72,7 @@ def kpoint_path(filename):
         for i,sym_i in enumerate(sym_s):
             key_s.append(sym_i)
             value_s.append(bands_dict[sym_i])
+        # Write high symmetry k-point path for slab to 'wannier_kpath_slab.in'
         with open('wannier_kpath_slab.in', 'w') as wtfile_write:
             for i,_ in enumerate(key_s):
                 if i < len(key_s) - 1:
@@ -93,7 +89,11 @@ def wt_body(mpid,compound,surface=False):
     - surface (bool): If True, includes cards printed for surface calculations. Default is False.
 
     Returns: None
+    Example:
+    ---------
+    >>> wt_body("mp-1234567", "Si2") for bulk properties calculation
     """
+    # Check if the input file exists for either QE or VASP and load to structure
     if os.path.isfile("R{}-{}/relax/scf.in".format(mpid,compound)):
         input_file="R{}-{}/relax/scf.in".format(mpid,compound)
         data = espresso.read_espresso_in(input_file)
@@ -102,15 +102,19 @@ def wt_body(mpid,compound,surface=False):
         data = vasp.read_vasp(input_file)
     else:
         print("No input file found, either vasp or QE" + "\n")
+    # Extract wannier center data from ex.wout and save to wannier.csv
     os.system("sed -n '/Final State/,/Sum of centres and spreads/p'" + " R{}-{}/epw/ex.wout".format(mpid,compound) + "| awk '{ print $7 $8 $9}' > wannier.csv")
     os.system("sed -i '1s/^/x,y,z/' wannier.csv")
     os.system("sed -i '$d' wannier.csv")
-    #l=data.cell.get_bravais_lattice()
+    # Extract cell, symbols, and positions data
     cell=data.cell
     symbol=data.get_chemical_symbols()
     pos=data.get_scaled_positions()
+    # Dictionary mapping orbital symbols to orbitals
     dict_orb = {'s':'s', 'p': 'pz px py', 'd': 'dz2 dxz dyz dx2-y2 dxy'}
+    # Write data to wt-mpid-compound.in file
     with open("wt-{}-{}.in".format(mpid,compound), "w") as wtfile_write:
+        # Write tb_file section from wanniertool_input
         wtfile_write.write("&TB_FILE\n")
         keys = list(wt_input['tb_file'].keys())
         values = list(wt_input['tb_file'].values())
@@ -118,6 +122,7 @@ def wt_body(mpid,compound,surface=False):
             wtfile_write.write(keys[tb_i] + "=" + values[tb_i] + "\n")
         wtfile_write.write("/\n")
         wtfile_write.write("\n")
+        # Write control section from wanniertool_input
         wtfile_write.write("&CONTROL\n")
         keys = list(wt_input['control'].keys())
         values = list(wt_input['control'].values())
@@ -125,6 +130,7 @@ def wt_body(mpid,compound,surface=False):
             wtfile_write.write(keys[control_i] + "=" + values[control_i] + "\n")
         wtfile_write.write("/\n")
         wtfile_write.write("\n")
+        # Write system section from wanniertool_input
         wtfile_write.write("&SYSTEM\n")
         keys = list(wt_input['system'].keys())
         values = list(wt_input['system'].values())
@@ -132,6 +138,7 @@ def wt_body(mpid,compound,surface=False):
             wtfile_write.write(keys[system_i] + "=" + values[system_i] + "\n")
         wtfile_write.write("/\n")
         wtfile_write.write("\n")
+        # Write parameters section from wanniertool_input
         wtfile_write.write("&PARAMETERS\n")
         keys = list(wt_input['parameters'].keys())
         values = list(wt_input['parameters'].values())
@@ -139,11 +146,13 @@ def wt_body(mpid,compound,surface=False):
             wtfile_write.write(keys[param_i] + "=" + values[param_i] + "\n")
         wtfile_write.write("/\n")
         wtfile_write.write("\n")
+        # Write lattice section
         wtfile_write.write("LATTICE\n")
         wtfile_write.write("Angstrom\n")
         for lat in cell:
             wtfile_write.write(str(lat[0]) + " " + str(lat[1]) + " " + str(lat[2]) + "\n")
         wtfile_write.write("\n")
+        # Write atom positions section
         wtfile_write.write("ATOM_POSITIONS\n")
         wtfile_write.write(str(len(symbol)) + "\n")
         wtfile_write.write('Direct\n')
@@ -151,9 +160,12 @@ def wt_body(mpid,compound,surface=False):
             wtfile_write.write(symbol[s_i] + " " + str(np.round(pos_i[0],10)) + " ")
             wtfile_write.write(str(np.round(pos_i[1],10)) + " " + str(np.round(pos_i[2],10)) + "\n")
         wtfile_write.write("\n")
+        # Write projectors section
         wtfile_write.write("PROJECTORS\n")
+        # Check if proj-wt.in file exists
         if os.path.isfile('proj-wt.in'):
             print("proj-wt.in file found, Reading .....")
+            # Parse data and write to wt-mpid-compound.in file
             with open("proj-wt.in", "r") as gfile:
                 lines = gfile.readlines()
             dict_elm = {}
@@ -179,6 +191,7 @@ def wt_body(mpid,compound,surface=False):
                         orb_str = orb_str + " " + orb
                 wtfile_write.write(sym + " " + orb_str + "\n")
         else:
+            # Write default s orbital if proj-wt.in file not found
             print("proj-wt.in file not found, writing only s orbital .....")
             for sym in symbol:
                 wtfile_write.write("1 ")
@@ -186,12 +199,15 @@ def wt_body(mpid,compound,surface=False):
             for sym in symbol:
                 wtfile_write.write(sym + " s" + "\n")
         wtfile_write.write("\n")
+        # Write surface section
         if surface:
             wtfile_write.write("SURFACE\n")
+            # Check if htepc.json or surface-wt.in file exists
             if os.path.isfile("htepc.json") or os.path.isfile("../../htepc.json"):
                 print("Taking surface from htepc.json\n")
                 for surf_lat in wt_input['surface']['surface']:
                     wtfile_write.write(str(surf_lat[0]) + " " + str(surf_lat[1]) + " " + str(surf_lat[2]) + "\n")
+            # Read surface data from surface-wt.in file
             elif os.path.isfile("surface-wt.in"):
                 print("surface-wt.in file found")
                 with open('surface-wt.in', 'r') as gfile:
@@ -199,10 +215,11 @@ def wt_body(mpid,compound,surface=False):
                 for line in lines:
                     wtfile_write.write(line)
             else:
-                print("surface-wt.in and surface inside wanniertoo_input.py file not found, printing default values")
+                print("surface-wt.in and surface inside wanniertools_input not found, printing default values")
                 wtfile_write.write("1 0 0 ! write vectors determining surfaces\n")
                 wtfile_write.write("0 1 0 \n")
         wtfile_write.write("\n")
+        # Write bulk k-path section
         wtfile_write.write("KPATH_BULK\n")
         with open("R{}-{}/epw/ex.win".format(mpid,compound), "r") as hfile:
             lines = hfile.readlines()
@@ -214,6 +231,7 @@ def wt_body(mpid,compound,surface=False):
         for i,line in enumerate(lines):
             wtfile_write.write(line)
         wtfile_write.write("\n")
+        # Write slab k-path section if surface is True
         if surface:
             if os.path.isfile("wannier_kpath_slab.in"):
                 with open("wannier_kpath_slab.in", "r") as wanpath:
@@ -223,8 +241,10 @@ def wt_body(mpid,compound,surface=False):
                 for line in kpath_2d:
                     wtfile_write.write(line)
                 wtfile_write.write("\n")
+        # Write wannier centers section
         wtfile_write.write("WANNIER_CENTRES\n")
         wtfile_write.write("Cartesian\n")
+        # Read wannier.csv file and write to wt-mpid-compound.in file
         wannier = pd.read_csv("wannier.csv")
         for i in range(wannier.shape[0]):
             wtfile_write.write(str(wannier.x[i]) + " " + str(wannier.y[i]) + " " + str(wannier.z[i]) + "\n")
@@ -241,18 +261,22 @@ def main():
 
     Returns: None
     """
+    # Extract command-line arguments
     mpid = sys.argv[1]
     compound = sys.argv[2]
     prefix = sys.argv[3]
     condition = sys.argv[4]
     if condition == "kpathwan":
+        # Check if scf file exists for the specified material and compound
         if os.path.isfile("scf_dir/scf-{}-{}.in".format(mpid,compound)):
             file_name="scf_dir/scf-{}-{}.in".format(mpid,compound)
         else:
             print("scf-{}-{}.in not found in scf_dir/".format(mpid,compound) + "\n")
             print("Complete mainprogram.py from 1 to 4\n")
+        # Call kpoint_path function
         kpoint_path(file_name)
     elif condition == "body":
+        # Determine if surface property should be included
         surface_prop = sys.argv[5]
         if surface_prop == 'T':
             wt_body(mpid,compound,surface=True)

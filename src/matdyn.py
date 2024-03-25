@@ -15,6 +15,7 @@ def matdyn_in():
     Returns:
     Creates input file named matdyn-mpid-compound.in.
     """
+    # Look for matdyn_dos.py
     mpid = sys.argv[1]
     compound = sys.argv[2]
     prefix2=sys.argv[3]

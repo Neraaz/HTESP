@@ -17,6 +17,7 @@ def write_band_input(material_id, compound_name, prefix, dynamic_matrix):
     Returns:
     None
     """
+    # Write input parameters to band.in file
     with open("scf_dir/band-{}-{}.in".format(material_id,compound_name), 'w') as band_in:
         band_in.write("&BANDS\n")
         band_in.write(f"prefix={prefix},\n")

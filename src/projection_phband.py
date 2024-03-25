@@ -154,7 +154,6 @@ def parse_input(filename,nat,nqpt):
             eigvec=[complex(float(line_split[1]),float(line_split[2])), complex(float(line_split[3]), float(line_split[4])), complex(float(line_split[5]),float(line_split[6]))]
             modes.append(eigvec)
     modes = np.array(modes)
-    #nmodes = 3*nat
     pol_q_mode = []
     for iqpt in range(nqpt):
         modeq = modes[iqpt*3*nat*nat:(iqpt+1)*3*nat*nat]
@@ -219,7 +218,6 @@ def print_to_file():
     with open("phonon-{}.proj.gp".format(filename.split(".")[0]), "w") as phon_proj:
         for _,ion in enumerate(ions.keys()):
             proj = projection(modes,ion,ions[ion])
-            #f.write("#{}".format(x) + "\n")
             phon_proj.write(str(proj).replace(' [', '').replace('[', '').replace(']', '').replace(' ]','')+"\n")
             phon_proj.write("\n")
     return list(ions.keys())
