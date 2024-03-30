@@ -263,9 +263,9 @@
             <span class="n">x_command</span><span class="p">,</span> <span class="n">input_file</span><span class="p">,</span> <span class="n">output_file</span> <span class="o">=</span> <span class="n">command_info</span>
             <span class="k">if</span> <span class="n">command_name</span> <span class="o">==</span> <span class="s1">'ifermi'</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
-                    <span class="n">submission_files</span><span class="p">[</span><span class="n">command_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">ifermi</span><span class="p">(</span><span class="s2">"plot"</span><span class="p">,</span><span class="s2">"htepc.json"</span><span class="p">)</span>
+                    <span class="n">submission_files</span><span class="p">[</span><span class="n">command_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">ifermi</span><span class="p">(</span><span class="s2">"plot"</span><span class="p">,</span><span class="s2">"ifermi.json"</span><span class="p">)</span>
                 <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="s2">"htepc.json not found</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">"config.json not found</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">command_name</span> <span class="o">==</span> <span class="s1">'wannier'</span><span class="p">:</span>
                 <span class="n">submission_files</span><span class="p">[</span><span class="n">command_name</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"wannier90.x wannier90"</span>
             <span class="k">else</span><span class="p">:</span>
@@ -284,7 +284,7 @@
 <span class="sd">    Load parameters from a JSON file, generate submission files based on the specified calculation type,</span>
 <span class="sd">    and create a script containing the submission commands.</span>
 
-<span class="sd">    Reads parameters from 'htepc.json' and defines command dictionaries for different calculation types.</span>
+<span class="sd">    Reads parameters from 'config.json' and defines command dictionaries for different calculation types.</span>
 <span class="sd">    Generates submission files based on the provided calculation type and prints the submission commands.</span>
 <span class="sd">    Creates a script containing the submission commands named 'run-&lt;calculation_type&gt;.sh'.</span>
 
@@ -295,8 +295,8 @@
 <span class="sd">    None</span>
 <span class="sd">    """</span>
     <span class="c1"># Load parameters from JSON file</span>
-    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"htepc.json"</span><span class="p">):</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'htepc.json'</span><span class="p">)</span> <span class="k">as</span> <span class="n">json_file</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"config.json"</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'config.json'</span><span class="p">)</span> <span class="k">as</span> <span class="n">json_file</span><span class="p">:</span>
             <span class="c1">#parameters = json.load(json_file)</span>
             <span class="n">parameters</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">json_file</span><span class="p">)[</span><span class="s1">'job_script'</span><span class="p">]</span>
     <span class="c1"># Commands under different processes</span>

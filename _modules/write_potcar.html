@@ -201,31 +201,31 @@
 <span class="kn">from</span> <span class="nn">pymatgen.io.vasp.sets</span> <span class="kn">import</span> <span class="n">Potcar</span>
 <span class="k">try</span><span class="p">:</span>
     <span class="n">PWD</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">PWD</span><span class="o">+</span><span class="s2">"/htepc.json"</span><span class="p">):</span>
-        <span class="n">JSONFILE</span> <span class="o">=</span> <span class="n">PWD</span><span class="o">+</span><span class="s2">"/htepc.json"</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">PWD</span><span class="o">+</span><span class="s2">"/config.json"</span><span class="p">):</span>
+        <span class="n">JSONFILE</span> <span class="o">=</span> <span class="n">PWD</span><span class="o">+</span><span class="s2">"/config.json"</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">JSONFILE</span> <span class="o">=</span> <span class="s2">"../../htepc.json"</span>
+        <span class="n">JSONFILE</span> <span class="o">=</span> <span class="s2">"../../config.json"</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">JSONFILE</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">)</span> <span class="k">as</span> <span class="n">readjson</span><span class="p">:</span>
         <span class="n">input_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">readjson</span><span class="p">)</span>
 <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">"htepc.json file not found</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"config.json file not found</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
 <div class="viewcode-block" id="poscar2potcar">
 <a class="viewcode-back" href="../write_potcar.html#write_potcar.poscar2potcar">[docs]</a>
 <span class="k">def</span> <span class="nf">poscar2potcar</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Function to generate the POTCAR file based on the element potentials provided in</span>
-<span class="sd">    htepc.json file.</span>
+<span class="sd">    config.json file.</span>
 
-<span class="sd">    If htepc.json file is present in the current directory or its parent directory, the function retrieves</span>
-<span class="sd">    the potential dictionary from the 'pseudo' key in the htepc.json file.</span>
+<span class="sd">    If config.json file is present in the current directory or its parent directory, the function retrieves</span>
+<span class="sd">    the potential dictionary from the 'pseudo' key in the config.json file.</span>
 
-<span class="sd">    If the htepc.json file is not found, a message indicating the absence of the 'pseudo' keyword is displayed.</span>
+<span class="sd">    If the config.json file is not found, a message indicating the absence of the 'pseudo' keyword is displayed.</span>
 
 <span class="sd">    The function reads the POSCAR file to determine the elements present in the structure and generates the</span>
 <span class="sd">    corresponding POTCAR file based on the potential dictionary.</span>
 
 <span class="sd">    """</span>
-    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"htepc.json"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"../../htepc.json"</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"config.json"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"../../config.json"</span><span class="p">):</span>
         <span class="n">pot1</span> <span class="o">=</span> <span class="n">input_data</span><span class="p">[</span><span class="s1">'pseudo'</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">"pseudo keyword not found</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>

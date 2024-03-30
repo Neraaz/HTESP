@@ -245,7 +245,7 @@ with 1.3xENCUTMAX of POTCAR, when ENCUT is less than that.</p>
 Look for ‘vasp.in’ file in the utility folder as a demo.</p>
 <p>If ‘vasp.in’ is found, it reads the file and replaces corresponding keys in the ‘INCAR’ file with the provided values.
 Existing keys such as ISPIN, MAGMOM, and LORBIT in ‘INCAR’ are removed to avoid conflicts.
-If magnetic moment values are provided in ‘htepc.json’, it updates the ‘MAGMOM’ keyword accordingly.
+If magnetic moment values are provided in ‘config.json’, it updates the ‘MAGMOM’ keyword accordingly.
 If ‘METAGGA’ is present, ‘LMIXTAU = .TRUE.’ is added to ‘INCAR’.
 To remove unwanted keywords from ‘INCAR’, put those keywords at the bottom in ‘vasp.in’ file after the keyword that has values.</p>
 <dl class="field-list simple">

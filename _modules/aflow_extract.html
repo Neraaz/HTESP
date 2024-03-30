@@ -213,22 +213,22 @@
 <span class="kn">from</span> <span class="nn">htepc</span> <span class="kn">import</span> <span class="n">INPUTscf</span>
 <span class="k">try</span><span class="p">:</span>
     <span class="n">PWD</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">PWD</span><span class="o">+</span><span class="s2">"/htepc.json"</span><span class="p">):</span>
-        <span class="n">JSONFILE</span> <span class="o">=</span> <span class="n">PWD</span><span class="o">+</span><span class="s2">"/htepc.json"</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">PWD</span><span class="o">+</span><span class="s2">"/config.json"</span><span class="p">):</span>
+        <span class="n">JSONFILE</span> <span class="o">=</span> <span class="n">PWD</span><span class="o">+</span><span class="s2">"/config.json"</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">JSONFILE</span> <span class="o">=</span> <span class="s2">"../../htepc.json"</span>
+        <span class="n">JSONFILE</span> <span class="o">=</span> <span class="s2">"../../config.json"</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">JSONFILE</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">)</span> <span class="k">as</span> <span class="n">readjson</span><span class="p">:</span>
         <span class="n">input_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">readjson</span><span class="p">)[</span><span class="s1">'download'</span><span class="p">]</span>
 <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">"htepc.json file not found</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"config.json file not found</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
 <div class="viewcode-block" id="properties_string">
 <a class="viewcode-back" href="../aflow_extract.html#aflow_extract.properties_string">[docs]</a>
 <span class="k">def</span> <span class="nf">properties_string</span><span class="p">(</span><span class="n">dict_param</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
-<span class="sd">    Function to create a string for URL search from the dictionary provided in htepc.json.</span>
+<span class="sd">    Function to create a string for URL search from the dictionary provided in config.json.</span>
 
 <span class="sd">    Parameters:</span>
-<span class="sd">    dict_param (dict): A dictionary from the htepc.json file containing search criteria.</span>
+<span class="sd">    dict_param (dict): A dictionary from the config.json file containing search criteria.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">    str: A string representing the search criteria for URL.</span>

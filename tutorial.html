@@ -270,7 +270,7 @@ submission<span class="w"> </span>here
 <p>It generates bunch of submission scripts for electron-phonon coupling (EPC) with QE package.</p>
 <p>Other available options are epw-elph, wannier_band, and vasp.</p>
 <p><strong>command line</strong>:</p>
-<p>This requires adjusting appropriate keys and values in <a class="reference internal" href="param.html#job-label"><span class="std std-ref">jobscript</span></a> dictionary in htepc.json file.</p>
+<p>This requires adjusting appropriate keys and values in <a class="reference internal" href="param.html#job-label"><span class="std std-ref">jobscript</span></a> dictionary in config.json file.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mainprogram<span class="w"> </span>jobscript
 </pre></div>
 </div>
@@ -283,8 +283,8 @@ submission<span class="w"> </span>here
 <span class="nb">cd</span><span class="w"> </span>work_dir
 </pre></div>
 </div>
-<p>2.Locate the <code class="docutils literal notranslate"><span class="pre">htepc.json</span></code> file from the <code class="docutils literal notranslate"><span class="pre">utility/input_files</span></code> directory, referenced as <a class="reference internal" href="param.html#json-label"><span class="std std-ref">htepc.json</span></a>, which functions as the code’s input file.</p>
-<p>3.In addition to the <code class="docutils literal notranslate"><span class="pre">htepc.json</span></code> file, there exist several input files in the “.in” format, intended for direct processing by bash scripts. For VASP calculations, utilize the <a class="reference internal" href="otherinput.html#vasp-label"><span class="std std-ref">vasp.in</span></a> file.</p>
+<p>2.Locate the <code class="docutils literal notranslate"><span class="pre">config.json</span></code> file from the <code class="docutils literal notranslate"><span class="pre">utility/input_files</span></code> directory, referenced as <a class="reference internal" href="param.html#json-label"><span class="std std-ref">config.json</span></a>, which functions as the code’s input file.</p>
+<p>3.In addition to the <code class="docutils literal notranslate"><span class="pre">config.json</span></code> file, there exist several input files in the “.in” format, intended for direct processing by bash scripts. For VASP calculations, utilize the <a class="reference internal" href="otherinput.html#vasp-label"><span class="std std-ref">vasp.in</span></a> file.</p>
 <p>4.Execute the</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mainprogram<span class="w"> </span>search
 </pre></div>
@@ -364,7 +364,7 @@ mainprogram<span class="w"> </span>download
 </section>
 <section id="combining-data-from-different-database">
 <h1 id="combining-data-from-different-database">Combining data from different database<a class="headerlink" href="#combining-data-from-different-database" title="Link to this heading">¶</a></h1>
-<p>In this section, we explored techniques for extracting data and generating input files from three distinct databases, subsequently amalgamating them. To facilitate this process, we employed the following <code class="docutils literal notranslate"><span class="pre">download</span></code> keyword in the <a class="reference internal" href="param.html#json-label"><span class="std std-ref">htepc.json</span></a> input configuration. In this context, we will delve into the phase diagram of MgB2 using the convex hull method. To achieve this, we require the ground-state configurations of Mg, B, and Mg-B compounds, which we can extract from databases that offer extensive resources.</p>
+<p>In this section, we explored techniques for extracting data and generating input files from three distinct databases, subsequently amalgamating them. To facilitate this process, we employed the following <code class="docutils literal notranslate"><span class="pre">download</span></code> keyword in the <a class="reference internal" href="param.html#json-label"><span class="std std-ref">config.json</span></a> input configuration. In this context, we will delve into the phase diagram of MgB2 using the convex hull method. To achieve this, we require the ground-state configurations of Mg, B, and Mg-B compounds, which we can extract from databases that offer extensive resources.</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="nt">"download"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="nt">"info"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nt">"mode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"chemsys"</span><span class="p">,</span>
@@ -829,7 +829,7 @@ mainprogram<span class="w"> </span><span class="m">27</span>:<span class="w"> </
 <section id="substitution-calculations">
 <h1 id="substitution-calculations">Substitution calculations<a class="headerlink" href="#substitution-calculations" title="Link to this heading">¶</a></h1>
 <p>To access help, type <code class="docutils literal notranslate"><span class="pre">site_subs.py</span> <span class="pre">h</span></code>.</p>
-<p>In the <code class="docutils literal notranslate"><span class="pre">htepc.json</span></code> file, ensure the existence of the <a class="reference internal" href="param.html#substitute-label"><span class="std std-ref">substitute</span></a>  keyword. To execute the substitution, run:</p>
+<p>In the <code class="docutils literal notranslate"><span class="pre">config.json</span></code> file, ensure the existence of the <a class="reference internal" href="param.html#substitute-label"><span class="std std-ref">substitute</span></a>  keyword. To execute the substitution, run:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mainprogram<span class="w"> </span><span class="m">29</span>
 </pre></div>
 </div>
@@ -876,7 +876,7 @@ execute:</p>
 <section id="thermodynamic-stability-convex-hull">
 <h1 id="thermodynamic-stability-convex-hull">Thermodynamic stability (Convex Hull)<a class="headerlink" href="#thermodynamic-stability-convex-hull" title="Link to this heading">¶</a></h1>
 <p>A.Prepare input files</p>
-<p>Suppose we are computing phase diagram of <code class="docutils literal notranslate"><span class="pre">MgB2</span></code>, then we need to download all the elemental solids, binary solids corresponding to composition <code class="docutils literal notranslate"><span class="pre">Mg-B</span></code>. We do that by switching on the <code class="docutils literal notranslate"><span class="pre">chemsys</span></code> mode in <a class="reference internal" href="param.html#download-label"><span class="std std-ref">download</span></a> keyword in <a class="reference internal" href="param.html#json-label"><span class="std std-ref">htepc.json</span></a>.</p>
+<p>Suppose we are computing phase diagram of <code class="docutils literal notranslate"><span class="pre">MgB2</span></code>, then we need to download all the elemental solids, binary solids corresponding to composition <code class="docutils literal notranslate"><span class="pre">Mg-B</span></code>. We do that by switching on the <code class="docutils literal notranslate"><span class="pre">chemsys</span></code> mode in <a class="reference internal" href="param.html#download-label"><span class="std std-ref">download</span></a> keyword in <a class="reference internal" href="param.html#json-label"><span class="std std-ref">config.json</span></a>.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="s2">"download"</span>:<span class="w"> </span><span class="o">{</span>
 <span class="s2">"info"</span>:<span class="w"> </span><span class="o">{</span>
 <span class="w">  </span><span class="s2">"mode"</span>:<span class="w"> </span><span class="s2">"element"</span>,<span class="w"> </span><span class="o">==</span>&gt;<span class="w"> </span>change<span class="w"> </span>this<span class="w"> </span>to<span class="w"> </span><span class="s2">"chemsys"</span>
@@ -887,7 +887,7 @@ execute:</p>
 <span class="w">  </span>......<span class="o">}</span>
 </pre></div>
 </div>
-<p>Now edit following portion of the <code class="docutils literal notranslate"><span class="pre">htepc.json</span></code> file:</p>
+<p>Now edit following portion of the <code class="docutils literal notranslate"><span class="pre">config.json</span></code> file:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="s2">"chemsys"</span>:<span class="w"> </span><span class="o">{</span>
 <span class="w">  </span><span class="s2">"entries"</span>:<span class="w"> </span><span class="o">[</span><span class="s2">"Mg"</span>,<span class="w"> </span><span class="s2">"B"</span><span class="o">]</span>,
 <span class="w">  </span><span class="s2">"size_constraint"</span>:<span class="w"> </span><span class="m">60</span>,<span class="w"> </span><span class="o">==</span>&gt;<span class="w"> </span>Optimal<span class="w"> </span>size<span class="w"> </span>of<span class="w"> </span>the<span class="w"> </span>compounds.
@@ -973,7 +973,7 @@ queries on Materials Project database by executing:</p>
 <section id="computing-elastic-constants">
 <h1 id="computing-elastic-constants">Computing elastic constants<a class="headerlink" href="#computing-elastic-constants" title="Link to this heading">¶</a></h1>
 <p>Perform <a class="reference internal" href="#relax-label"><span class="std std-ref">structure relaxation</span></a>.</p>
-<p>To execute strain calculations, modify the <code class="docutils literal notranslate"><span class="pre">strain</span></code> keyword in the <a class="reference internal" href="param.html#json-label"><span class="std std-ref">htepc.json</span></a> file. Then, using the <code class="docutils literal notranslate"><span class="pre">input.in</span></code> and <code class="docutils literal notranslate"><span class="pre">mpid.in</span></code> files, execute the following commands:</p>
+<p>To execute strain calculations, modify the <code class="docutils literal notranslate"><span class="pre">strain</span></code> keyword in the <a class="reference internal" href="param.html#json-label"><span class="std std-ref">config.json</span></a> file. Then, using the <code class="docutils literal notranslate"><span class="pre">input.in</span></code> and <code class="docutils literal notranslate"><span class="pre">mpid.in</span></code> files, execute the following commands:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mainprogram<span class="w"> </span>elastic-input
 </pre></div>
 </div>

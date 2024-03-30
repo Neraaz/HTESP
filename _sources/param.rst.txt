@@ -12,7 +12,7 @@ When initializing the calculations, the contents of the working folder would res
 
     .
     ├── batch.header (content of batch jobmission script except commands)
-    ├── htepc.json (Main input file)
+    ├── config.json (Main input file)
     ├── input.in (Main control file for calculations)
     ├── mpid-list.in (Files to stored {id} and {name} of compounds before download process)
     ├── mpid.in (after download process)
@@ -60,7 +60,7 @@ These lines constitute standard content for any batch submission script.
 .. _json-label:
 
 -------------------
-htepc.json
+config.json
 -------------------
 
 This `JSON <https://docs.python.org/3/library/json.html>`_ file serves as the main input file of the package. It contains a dictionary with various keys to configure different aspects of the package's functionality.

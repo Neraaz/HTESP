@@ -186,7 +186,7 @@
         </li>
         <li class="md-nav__item"><a href="#batch-header" class="md-nav__link">batch.header</a>
         </li>
-        <li class="md-nav__item"><a href="#htepc-json" class="md-nav__link">htepc.json</a>
+        <li class="md-nav__item"><a href="#config-json" class="md-nav__link">config.json</a>
         </li>
         <li class="md-nav__item"><a href="#job-script" class="md-nav__link">job_script</a>
         </li>
@@ -231,7 +231,7 @@
 <p>When initializing the calculations, the contents of the working folder would resemble the following:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>.
 ├──<span class="w"> </span>batch.header<span class="w"> </span><span class="o">(</span>content<span class="w"> </span>of<span class="w"> </span>batch<span class="w"> </span>jobmission<span class="w"> </span>script<span class="w"> </span>except<span class="w"> </span>commands<span class="o">)</span>
-├──<span class="w"> </span>htepc.json<span class="w"> </span><span class="o">(</span>Main<span class="w"> </span>input<span class="w"> </span>file<span class="o">)</span>
+├──<span class="w"> </span>config.json<span class="w"> </span><span class="o">(</span>Main<span class="w"> </span>input<span class="w"> </span>file<span class="o">)</span>
 ├──<span class="w"> </span>input.in<span class="w"> </span><span class="o">(</span>Main<span class="w"> </span>control<span class="w"> </span>file<span class="w"> </span><span class="k">for</span><span class="w"> </span>calculations<span class="o">)</span>
 ├──<span class="w"> </span>mpid-list.in<span class="w"> </span><span class="o">(</span>Files<span class="w"> </span>to<span class="w"> </span>stored<span class="w"> </span><span class="o">{</span>id<span class="o">}</span><span class="w"> </span>and<span class="w"> </span><span class="o">{</span>name<span class="o">}</span><span class="w"> </span>of<span class="w"> </span>compounds<span class="w"> </span>before<span class="w"> </span>download<span class="w"> </span>process<span class="o">)</span>
 ├──<span class="w"> </span>mpid.in<span class="w"> </span><span class="o">(</span>after<span class="w"> </span>download<span class="w"> </span>process<span class="o">)</span>
@@ -269,8 +269,8 @@
 </div>
 <p>These lines constitute standard content for any batch submission script.</p>
 </section>
-<section id="htepc-json">
-<span id="json-label"></span><h1 id="htepc-json">htepc.json<a class="headerlink" href="#htepc-json" title="Link to this heading">¶</a></h1>
+<section id="config-json">
+<span id="json-label"></span><h1 id="config-json">config.json<a class="headerlink" href="#config-json" title="Link to this heading">¶</a></h1>
 <p>This <a class="reference external" href="https://docs.python.org/3/library/json.html">JSON</a> file serves as the main input file of the package. It contains a dictionary with various keys to configure different aspects of the package’s functionality.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">JSON</span><span class="p">:</span> <span class="p">{</span>
     <span class="s2">"name"</span><span class="p">:</span> <span class="s2">"John"</span><span class="p">,</span>

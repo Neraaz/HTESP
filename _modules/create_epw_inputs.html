@@ -628,14 +628,14 @@
     <span class="c1"># Load input data from JSON file</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">pwd</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">pwd</span><span class="o">+</span><span class="s2">"/htepc.json"</span><span class="p">):</span>
-            <span class="n">jsonfile</span> <span class="o">=</span> <span class="n">pwd</span><span class="o">+</span><span class="s2">"/htepc.json"</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">pwd</span><span class="o">+</span><span class="s2">"/config.json"</span><span class="p">):</span>
+            <span class="n">jsonfile</span> <span class="o">=</span> <span class="n">pwd</span><span class="o">+</span><span class="s2">"/config.json"</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">jsonfile</span> <span class="o">=</span> <span class="s2">"../../htepc.json"</span>
+            <span class="n">jsonfile</span> <span class="o">=</span> <span class="s2">"../../config.json"</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">jsonfile</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">)</span> <span class="k">as</span> <span class="n">readjson</span><span class="p">:</span>
             <span class="n">input_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">readjson</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">"htepc.json file not found</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"config.json file not found</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
     <span class="c1"># Extract relevant data from input</span>
     <span class="n">dft</span> <span class="o">=</span> <span class="n">input_data</span><span class="p">[</span><span class="s1">'download'</span><span class="p">][</span><span class="s1">'inp'</span><span class="p">][</span><span class="s1">'calc'</span><span class="p">]</span>
     <span class="n">mpid</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>

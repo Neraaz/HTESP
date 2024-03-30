@@ -208,14 +208,14 @@
 <span class="kn">from</span> <span class="nn">htepc</span> <span class="kn">import</span> <span class="n">MpConnect</span>
 <span class="k">try</span><span class="p">:</span>
     <span class="n">PWD</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">PWD</span><span class="o">+</span><span class="s2">"/htepc.json"</span><span class="p">):</span>
-        <span class="n">JSONFILE</span> <span class="o">=</span> <span class="n">PWD</span><span class="o">+</span><span class="s2">"/htepc.json"</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">PWD</span><span class="o">+</span><span class="s2">"/config.json"</span><span class="p">):</span>
+        <span class="n">JSONFILE</span> <span class="o">=</span> <span class="n">PWD</span><span class="o">+</span><span class="s2">"/config.json"</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">JSONFILE</span> <span class="o">=</span> <span class="s2">"../../htepc.json"</span>
+        <span class="n">JSONFILE</span> <span class="o">=</span> <span class="s2">"../../config.json"</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">JSONFILE</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">)</span> <span class="k">as</span> <span class="n">readjson</span><span class="p">:</span>
         <span class="n">input_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">readjson</span><span class="p">)</span>
 <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">"htepc.json file not found</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"config.json file not found</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
 
 <div class="viewcode-block" id="poscar_to_input">
 <a class="viewcode-back" href="../oqmd_extract.html#oqmd_extract.poscar_to_input">[docs]</a>
@@ -245,7 +245,7 @@
 <span class="sd">    required for ground-state calculations</span>
 <span class="sd">    using either Quantum Espresso (QE) or VASP software.</span>
 
-<span class="sd">    It checks if 'htepc.json' exists, and if so, it retrieves settings such as k-point density and</span>
+<span class="sd">    It checks if 'config.json' exists, and if so, it retrieves settings such as k-point density and</span>
 <span class="sd">    download configurations.</span>
 
 <span class="sd">    Based on the calculation type, it creates input files and directories accordingly. For VASP,</span>
@@ -256,7 +256,7 @@
 <span class="sd">    Finally, it moves input files to the designated directories.</span>
 
 <span class="sd">    """</span>
-    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"htepc.json"</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"config.json"</span><span class="p">):</span>
         <span class="n">d</span> <span class="o">=</span> <span class="n">input_data</span><span class="p">[</span><span class="s1">'download'</span><span class="p">]</span>
     <span class="n">evenkpt</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s1">'inp'</span><span class="p">][</span><span class="s1">'evenkpt'</span><span class="p">]</span>
     <span class="n">kptden</span> <span class="o">=</span> <span class="n">input_data</span><span class="p">[</span><span class="s1">'kptden'</span><span class="p">]</span>
@@ -512,8 +512,8 @@
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
     <span class="n">CONDITION</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-    <span class="c1"># Read htepc.json file and creates KWARGS dictionary</span>
-    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"htepc.json"</span><span class="p">):</span>
+    <span class="c1"># Read config.json file and creates KWARGS dictionary</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"config.json"</span><span class="p">):</span>
         <span class="n">d</span> <span class="o">=</span> <span class="n">input_data</span><span class="p">[</span><span class="s1">'download'</span><span class="p">]</span>
         <span class="n">START</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s1">'inp'</span><span class="p">][</span><span class="s1">'start'</span><span class="p">]</span>
         <span class="n">END</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s1">'inp'</span><span class="p">][</span><span class="s1">'end'</span><span class="p">]</span>
@@ -577,7 +577,7 @@
         <span class="n">CALC_TYPE</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s1">'inp'</span><span class="p">][</span><span class="s1">'calc'</span><span class="p">]</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">CALC_TYPE</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">"input file htepc.json not found</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"input file config.json not found</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">"Utilizing default settings</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
         <span class="n">NTYPE</span> <span class="o">=</span> <span class="s1">'&lt;5'</span> <span class="c1">#Number of different types of element in the compound.</span>
         <span class="n">NSITES</span> <span class="o">=</span> <span class="s1">'&lt;10'</span>

@@ -209,14 +209,14 @@
 <span class="kn">from</span> <span class="nn">htepc</span> <span class="kn">import</span> <span class="n">MpConnect</span>
 <span class="k">try</span><span class="p">:</span>
     <span class="n">PWD</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">PWD</span><span class="o">+</span><span class="s2">"/htepc.json"</span><span class="p">):</span>
-        <span class="n">JSONFILE</span> <span class="o">=</span> <span class="n">PWD</span><span class="o">+</span><span class="s2">"/htepc.json"</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">PWD</span><span class="o">+</span><span class="s2">"/config.json"</span><span class="p">):</span>
+        <span class="n">JSONFILE</span> <span class="o">=</span> <span class="n">PWD</span><span class="o">+</span><span class="s2">"/config.json"</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">JSONFILE</span> <span class="o">=</span> <span class="s2">"../../htepc.json"</span>
+        <span class="n">JSONFILE</span> <span class="o">=</span> <span class="s2">"../../config.json"</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">JSONFILE</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">)</span> <span class="k">as</span> <span class="n">readjson</span><span class="p">:</span>
         <span class="n">input_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">readjson</span><span class="p">)</span>
 <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">"htepc.json file not found</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"config.json file not found</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
 <div class="viewcode-block" id="pos_to_kpt">
 <a class="viewcode-back" href="../cif_to_gsinput.html#cif_to_gsinput.pos_to_kpt">[docs]</a>
 <span class="k">def</span> <span class="nf">pos_to_kpt</span><span class="p">(</span><span class="n">structure_filename</span><span class="p">,</span><span class="n">kpoint_density</span><span class="p">,</span><span class="n">evenkpt</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>

@@ -208,7 +208,7 @@
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#write_potcar.poscar2potcar" title="write_potcar.poscar2potcar"><code class="xref py py-obj docutils literal notranslate"><span class="pre">poscar2potcar</span></code></a>()</p></td>
-<td><p>Function to generate the POTCAR file based on the element potentials provided in htepc.json file.</p></td>
+<td><p>Function to generate the POTCAR file based on the element potentials provided in config.json file.</p></td>
 </tr>
 </tbody>
 </table>
@@ -216,10 +216,10 @@
 <dt class="sig sig-object py" id="write_potcar.poscar2potcar">
 <span class="sig-prename descclassname"><span class="pre">write_potcar.</span></span><span class="sig-name descname"><span class="pre">poscar2potcar</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/write_potcar.html#poscar2potcar"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#write_potcar.poscar2potcar" title="Link to this definition">¶</a></dt>
 <dd><p>Function to generate the POTCAR file based on the element potentials provided in
-htepc.json file.</p>
-<p>If htepc.json file is present in the current directory or its parent directory, the function retrieves
-the potential dictionary from the ‘pseudo’ key in the htepc.json file.</p>
-<p>If the htepc.json file is not found, a message indicating the absence of the ‘pseudo’ keyword is displayed.</p>
+config.json file.</p>
+<p>If config.json file is present in the current directory or its parent directory, the function retrieves
+the potential dictionary from the ‘pseudo’ key in the config.json file.</p>
+<p>If the config.json file is not found, a message indicating the absence of the ‘pseudo’ keyword is displayed.</p>
 <p>The function reads the POSCAR file to determine the elements present in the structure and generates the
 corresponding POTCAR file based on the potential dictionary.</p>
 </dd></dl>

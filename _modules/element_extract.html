@@ -205,14 +205,14 @@
 <span class="c1">#get API_KEY from material projects, go to dashboard and generate the key.</span>
 <span class="k">try</span><span class="p">:</span>
     <span class="n">PWD</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">PWD</span><span class="o">+</span><span class="s2">"/htepc.json"</span><span class="p">):</span>
-        <span class="n">JSONFILE</span> <span class="o">=</span> <span class="n">PWD</span><span class="o">+</span><span class="s2">"/htepc.json"</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">PWD</span><span class="o">+</span><span class="s2">"/config.json"</span><span class="p">):</span>
+        <span class="n">JSONFILE</span> <span class="o">=</span> <span class="n">PWD</span><span class="o">+</span><span class="s2">"/config.json"</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">JSONFILE</span> <span class="o">=</span> <span class="s2">"../../htepc.json"</span>
+        <span class="n">JSONFILE</span> <span class="o">=</span> <span class="s2">"../../config.json"</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">JSONFILE</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">)</span> <span class="k">as</span> <span class="n">readjson</span><span class="p">:</span>
         <span class="n">input_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">readjson</span><span class="p">)</span>
 <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">"htepc.json file not found</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"config.json file not found</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
 
 <div class="viewcode-block" id="create_folder">
 <a class="viewcode-back" href="../element_extract.html#element_extract.create_folder">[docs]</a>
@@ -259,10 +259,10 @@
     <span class="n">parent_folder</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
     <span class="n">create_folder</span><span class="p">(</span><span class="n">parent_folder</span><span class="p">)</span>
     <span class="c1"># Check for the presence of the API key file</span>
-    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"htepc.json"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"../../htepc.json"</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"config.json"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"../../config.json"</span><span class="p">):</span>
         <span class="n">key</span> <span class="o">=</span> <span class="n">input_data</span><span class="p">[</span><span class="s2">"mpi_key"</span><span class="p">][</span><span class="s2">"API_KEY"</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">"htepc.json file not found. Please provide with your materials project api key</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"config.json file not found. Please provide with your materials project api key</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
     <span class="c1"># Initialize MPRester with API key</span>
     <span class="n">mpr</span> <span class="o">=</span> <span class="n">MPRester</span><span class="p">(</span><span class="n">key</span><span class="p">[</span><span class="s2">"key"</span><span class="p">])</span>
     <span class="c1"># Search for materials matching specified criteria</span>
@@ -517,7 +517,7 @@
             <span class="n">comp</span> <span class="o">=</span> <span class="n">data_file</span><span class="p">[</span><span class="s1">'composition'</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
             <span class="n">mpfile_append</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"v</span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">mpid</span><span class="p">,</span><span class="n">comp</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'input.in'</span><span class="p">,</span> <span class="s1">'w'</span><span class="p">)</span> <span class="k">as</span> <span class="n">input_write</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"htepc.json"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"../../htepc.json"</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"config.json"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"../../config.json"</span><span class="p">):</span>
             <span class="c1">#import download as d</span>
             <span class="n">d</span> <span class="o">=</span> <span class="n">input_data</span><span class="p">[</span><span class="s1">'download'</span><span class="p">]</span>
             <span class="n">input_write</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s1">'inp'</span><span class="p">][</span><span class="s1">'start'</span><span class="p">])</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
@@ -725,7 +725,7 @@
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Main function to orchestrate the data extraction and input file creation process.</span>
 
-<span class="sd">    If 'mpid-list.in' file does not exist, the function reads settings from 'htepc.json' to</span>
+<span class="sd">    If 'mpid-list.in' file does not exist, the function reads settings from 'config.json' to</span>
 <span class="sd">    create mpid-list.in file.</span>
 
 <span class="sd">    Parameters:</span>
@@ -738,9 +738,9 @@
 <span class="sd">    """</span>
     <span class="c1"># Check if 'mpid-list.in' file exists</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"mpid-list.in"</span><span class="p">):</span>
-        <span class="c1"># Check if 'htepc.json' exists</span>
-        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"htepc.json"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"../../htepc.json"</span><span class="p">):</span>
-            <span class="c1"># Read settings from 'htepc.json' to create 'mpid-list.in' file</span>
+        <span class="c1"># Check if 'config.json' exists</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"config.json"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"../../config.json"</span><span class="p">):</span>
+            <span class="c1"># Read settings from 'config.json' to create 'mpid-list.in' file</span>
             <span class="n">d</span> <span class="o">=</span> <span class="n">input_data</span><span class="p">[</span><span class="s2">"download"</span><span class="p">]</span>
             <span class="n">mode</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s1">'info'</span><span class="p">][</span><span class="s1">'mode'</span><span class="p">]</span>
             <span class="n">ntype</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s1">'info'</span><span class="p">][</span><span class="s1">'ntype'</span><span class="p">]</span>
@@ -755,8 +755,8 @@
             <span class="n">nsites</span><span class="o">=</span><span class="n">d</span><span class="p">[</span><span class="s1">'info'</span><span class="p">][</span><span class="s1">'nsites'</span><span class="p">]</span>
             <span class="n">spacegroup</span><span class="o">=</span><span class="n">d</span><span class="p">[</span><span class="s1">'info'</span><span class="p">][</span><span class="s1">'spacegroup'</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># Provide default settings if 'htepc.json' doesn't exist</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">"input file htepc.json not found</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="c1"># Provide default settings if 'config.json' doesn't exist</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"input file config.json not found</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">"Create one with following format</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
             <span class="n">msg</span><span class="o">=</span><span class="s2">"""info={'mode':'element','metal':True, 'FE':True, 'exclude':["O", "N", "F", "Cl", "Br", "I"],'ntype':(1,2), 'elm':['B'], 'prop':["material_id", "formula_pretty", "structure", "formation_energy_per_atom", "band_gap", "energy_above_hull","nsites","ordering","nsites"],'ordering':'NM','nsites':10,'spacegroup':None}</span>
 <span class="s2">inp=    {'start':1, 'end':50, 'nkpt':200, 'evenkpt': False, 'plot':'phband', 'calc':'QE'}</span>
