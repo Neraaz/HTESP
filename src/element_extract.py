@@ -14,14 +14,14 @@ warnings.filterwarnings('ignore')
 #get API_KEY from material projects, go to dashboard and generate the key.
 try:
     PWD = os.getcwd()
-    if os.path.isfile(PWD+"/htepc.json"):
-        JSONFILE = PWD+"/htepc.json"
+    if os.path.isfile(PWD+"/config.json"):
+        JSONFILE = PWD+"/config.json"
     else:
-        JSONFILE = "../../htepc.json"
+        JSONFILE = "../../config.json"
     with open(JSONFILE, "r") as readjson:
         input_data = json.load(readjson)
 except FileNotFoundError:
-    print("htepc.json file not found\n")
+    print("config.json file not found\n")
 
 def create_folder(parent_folder):
     """
@@ -63,10 +63,10 @@ def download(elm,num_el,exclude_el,properties):
     parent_folder=os.getcwd()
     create_folder(parent_folder)
     # Check for the presence of the API key file
-    if os.path.isfile("htepc.json") or os.path.isfile("../../htepc.json"):
+    if os.path.isfile("config.json") or os.path.isfile("../../config.json"):
         key = input_data["mpi_key"]["API_KEY"]
     else:
-        print("htepc.json file not found. Please provide with your materials project api key\n")
+        print("config.json file not found. Please provide with your materials project api key\n")
     # Initialize MPRester with API key
     mpr = MPRester(key["key"])
     # Search for materials matching specified criteria
@@ -297,7 +297,7 @@ def create_input():
             comp = data_file['composition'][i]
             mpfile_append.write("v{} {} {}".format(i+1,mpid,comp) + "\n")
     with open('input.in', 'w') as input_write:
-        if os.path.isfile("htepc.json") or os.path.isfile("../../htepc.json"):
+        if os.path.isfile("config.json") or os.path.isfile("../../config.json"):
             #import download as d
             d = input_data['download']
             input_write.write(str(d['inp']['start']) + "\n")
@@ -496,7 +496,7 @@ def main():
     """
     Main function to orchestrate the data extraction and input file creation process.
 
-    If 'mpid-list.in' file does not exist, the function reads settings from 'htepc.json' to
+    If 'mpid-list.in' file does not exist, the function reads settings from 'config.json' to
     create mpid-list.in file.
 
     Parameters:
@@ -509,9 +509,9 @@ def main():
     """
     # Check if 'mpid-list.in' file exists
     if not os.path.isfile("mpid-list.in"):
-        # Check if 'htepc.json' exists
-        if os.path.isfile("htepc.json") or os.path.isfile("../../htepc.json"):
-            # Read settings from 'htepc.json' to create 'mpid-list.in' file
+        # Check if 'config.json' exists
+        if os.path.isfile("config.json") or os.path.isfile("../../config.json"):
+            # Read settings from 'config.json' to create 'mpid-list.in' file
             d = input_data["download"]
             mode = d['info']['mode']
             ntype = d['info']['ntype']
@@ -526,8 +526,8 @@ def main():
             nsites=d['info']['nsites']
             spacegroup=d['info']['spacegroup']
         else:
-            # Provide default settings if 'htepc.json' doesn't exist
-            print("input file htepc.json not found\n")
+            # Provide default settings if 'config.json' doesn't exist
+            print("input file config.json not found\n")
             print("Create one with following format\n")
             msg="""info={'mode':'element','metal':True, 'FE':True, 'exclude':["O", "N", "F", "Cl", "Br", "I"],'ntype':(1,2), 'elm':['B'], 'prop':["material_id", "formula_pretty", "structure", "formation_energy_per_atom", "band_gap", "energy_above_hull","nsites","ordering","nsites"],'ordering':'NM','nsites':10,'spacegroup':None}
 inp=    {'start':1, 'end':50, 'nkpt':200, 'evenkpt': False, 'plot':'phband', 'calc':'QE'}

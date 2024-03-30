@@ -9,17 +9,17 @@ import pandas as pd
 from ase.io import espresso,vasp
 from ase.cell import Cell
 from kpath import kpath
-# Read wanniertools inputs from htepc.json
+# Read wanniertools inputs from config.json
 try:
     PWD = os.getcwd()
-    if os.path.isfile(PWD+"/htepc.json"):
-        JSONFILE = PWD+"/htepc.json"
+    if os.path.isfile(PWD+"/config.json"):
+        JSONFILE = PWD+"/config.json"
     else:
-        JSONFILE = "../../htepc.json"
+        JSONFILE = "../../config.json"
     with open(JSONFILE, "r") as readjson:
         wt_input = json.load(readjson)['wanniertool_input']
 except FileNotFoundError:
-    print("htepc.json file not found, writting wanniertool_input.json file with default values\n")
+    print("config.json file not found, writting wanniertool_input.json file with default values\n")
     tb_file={'Hrfile':"'ex_hr.dat'", "Package":"'QE'"}
     control={"BulkBand_calc":"T","BulkFS_calc":"F","BulkGap_cube_calc":"F","BulkGap_plane_calc":"F","FindNodes_calc":"F","SlabBand_calc":"F","WireBand_calc":"F","Dos_calc":"F","JDos_calc":"F","SlabSS_calc":"F","SlabArc_calc":"F","SlabQPI_calc":"F","SlabSpintexture_calc":"F","wanniercenter_calc":"F","Z2_3D_calc":"F","Chern_3D_calc":"F","WeylChirality_calc":"F","BerryPhase_calc":"F","BerryCurvature_calc":"F","AHC_calc":"F"}
     parameters={"E_arc":"0.0","Eta_Arc":"0.001","OmegaMin":"0.0","OmegaMax":"0.0","OmegaNum":"100","Nk1":"10","Nk2":"10","Nk3":"10","NP":"2","Gap_threshold":"0.1"}
@@ -81,7 +81,7 @@ def kpoint_path(filename):
 def wt_body(mpid,compound,surface=False):
     """
     Writes wt.in file in the format of 'wt-mpid-compound.in' inside WT_dir, based on information
-    given in wanniertool_input keyword within htepc.json file.
+    given in wanniertool_input keyword within config.json file.
 
     Parameters:
     - mpid (str): Materials ID.
@@ -202,9 +202,9 @@ def wt_body(mpid,compound,surface=False):
         # Write surface section
         if surface:
             wtfile_write.write("SURFACE\n")
-            # Check if htepc.json or surface-wt.in file exists
-            if os.path.isfile("htepc.json") or os.path.isfile("../../htepc.json"):
-                print("Taking surface from htepc.json\n")
+            # Check if config.json or surface-wt.in file exists
+            if os.path.isfile("config.json") or os.path.isfile("../../config.json"):
+                print("Taking surface from config.json\n")
                 for surf_lat in wt_input['surface']['surface']:
                     wtfile_write.write(str(surf_lat[0]) + " " + str(surf_lat[1]) + " " + str(surf_lat[2]) + "\n")
             # Read surface data from surface-wt.in file

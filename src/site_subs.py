@@ -16,20 +16,20 @@ from write_potcar import poscar2potcar
 from htepc import MpConnect
 try:
     PWD = os.getcwd()
-    if os.path.isfile(PWD+"/htepc.json"):
-        JSONFILE = PWD+"/htepc.json"
+    if os.path.isfile(PWD+"/config.json"):
+        JSONFILE = PWD+"/config.json"
     else:
-        JSONFILE = "../../htepc.json"
+        JSONFILE = "../../config.json"
     with open(JSONFILE, "r") as readjson:
         input_data = json.load(readjson)
 except FileNotFoundError:
-    print("htepc.json file not found\n")
+    print("config.json file not found\n")
 
 def substitution(mpid,obj):
     """
     Substitute elements using the bsym package.
 
-    This function substitutes elements using the bsym package. It requires a 'substitute' key in the htepc.json file.
+    This function substitutes elements using the bsym package. It requires a 'substitute' key in the config.json file.
     Inside that, the user needs to define 'mode', 'elm', 'sub', and 'new_sub' as explained below:
 
     Parameters:
@@ -53,7 +53,7 @@ def substitution(mpid,obj):
     """
     if mpid in ('help', 'h'):
         msg="""required package: bsym 'pip install bsym'
-               put substitute dictionary file in the htepc.json file. Inside that define
+               put substitute dictionary file in the config.json file. Inside that define
                'mode':2 # 'mode':1 for unique_structure_substitutions
                # 'mode':3 for new_structure_from_substitution function of bsym.interface.pymatgen
                'elm':'X', (element to be substituted)
@@ -110,7 +110,7 @@ def substitution(mpid,obj):
                 pwd=os.getcwd()
                 os.system("cp R{}-{}/relax/INCAR {}/R{}-{}-{}/relax/".format(mpid,orig_prefix,pwd,mpid,i+1,obj.prefix))
                 poscar.write_file(filename="R{}-{}-{}/relax/POSCAR".format(mpid,i+1,obj.prefix))
-                if os.path.isfile("htepc.json") or os.path.isfile("../../htepc.json"):
+                if os.path.isfile("config.json") or os.path.isfile("../../config.json"):
                     d = input_data['download']
                 evenkpt = d['inp']['evenkpt']
                 kptden = input_data['kptden']
@@ -124,8 +124,8 @@ def substitution(mpid,obj):
                 relax_set = MPRelaxSet(structure=structure_file)
                 if os.path.isfile("vasp.in"):
                     os.system("cp vasp.in R{}-{}-{}/relax/".format(mpid,i+1,obj.prefix))
-                if os.path.isfile("htepc.json"):
-                    os.system("cp htepc.json R{}-{}-{}/relax/".format(mpid,i+1,obj.prefix))
+                if os.path.isfile("config.json"):
+                    os.system("cp config.json R{}-{}-{}/relax/".format(mpid,i+1,obj.prefix))
                 os.chdir("R{}-{}-{}/relax/".format(mpid,i+1,obj.prefix))
                 poscar2potcar()
                 os.system("vasp_process.py POSCAR")

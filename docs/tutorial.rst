@@ -34,7 +34,7 @@ Other available options are epw-elph, wannier_band, and vasp.
 
 **command line**:
 
-This requires adjusting appropriate keys and values in :ref:`jobscript <job-label>` dictionary in htepc.json file.
+This requires adjusting appropriate keys and values in :ref:`jobscript <job-label>` dictionary in config.json file.
 
 .. code-block:: bash
 
@@ -53,9 +53,9 @@ This requires adjusting appropriate keys and values in :ref:`jobscript <job-labe
 
     cd work_dir
 
-2.Locate the ``htepc.json`` file from the ``utility/input_files`` directory, referenced as :ref:`htepc.json <json-label>`, which functions as the code's input file.
+2.Locate the ``config.json`` file from the ``utility/input_files`` directory, referenced as :ref:`config.json <json-label>`, which functions as the code's input file.
 
-3.In addition to the ``htepc.json`` file, there exist several input files in the ".in" format, intended for direct processing by bash scripts. For VASP calculations, utilize the :ref:`vasp.in <vasp-label>` file.
+3.In addition to the ``config.json`` file, there exist several input files in the ".in" format, intended for direct processing by bash scripts. For VASP calculations, utilize the :ref:`vasp.in <vasp-label>` file.
 
 4.Execute the 
 
@@ -164,7 +164,7 @@ For VASP, follow :ref:`this <magenum-label>`, or use ``vasp.in`` to update ``INC
 Combining data from different database
 ---------------------------------------
 
-In this section, we explored techniques for extracting data and generating input files from three distinct databases, subsequently amalgamating them. To facilitate this process, we employed the following ``download`` keyword in the :ref:`htepc.json <json-label>` input configuration. In this context, we will delve into the phase diagram of MgB2 using the convex hull method. To achieve this, we require the ground-state configurations of Mg, B, and Mg-B compounds, which we can extract from databases that offer extensive resources.
+In this section, we explored techniques for extracting data and generating input files from three distinct databases, subsequently amalgamating them. To facilitate this process, we employed the following ``download`` keyword in the :ref:`config.json <json-label>` input configuration. In this context, we will delve into the phase diagram of MgB2 using the convex hull method. To achieve this, we require the ground-state configurations of Mg, B, and Mg-B compounds, which we can extract from databases that offer extensive resources.
 
 
 .. code-block:: json
@@ -737,7 +737,7 @@ Execute ``mainprogram 28`` to clean pressure folders.
 
 To access help, type ``site_subs.py h``.
 
-In the ``htepc.json`` file, ensure the existence of the :ref:`substitute <substitute-label>`  keyword. To execute the substitution, run:
+In the ``config.json`` file, ensure the existence of the :ref:`substitute <substitute-label>`  keyword. To execute the substitution, run:
 
 .. code-block:: bash
 
@@ -808,7 +808,7 @@ Thermodynamic stability (Convex Hull)
 
 A.Prepare input files
 
-Suppose we are computing phase diagram of ``MgB2``, then we need to download all the elemental solids, binary solids corresponding to composition ``Mg-B``. We do that by switching on the ``chemsys`` mode in :ref:`download <download-label>` keyword in :ref:`htepc.json <json-label>`.
+Suppose we are computing phase diagram of ``MgB2``, then we need to download all the elemental solids, binary solids corresponding to composition ``Mg-B``. We do that by switching on the ``chemsys`` mode in :ref:`download <download-label>` keyword in :ref:`config.json <json-label>`.
 
 .. code-block:: bash
 
@@ -821,7 +821,7 @@ Suppose we are computing phase diagram of ``MgB2``, then we need to download all
       ......
       ......}
 
-Now edit following portion of the ``htepc.json`` file:
+Now edit following portion of the ``config.json`` file:
 
 .. code-block:: bash
 
@@ -937,7 +937,7 @@ Computing elastic constants
 
 Perform :ref:`structure relaxation <relax-label>`.
 
-To execute strain calculations, modify the ``strain`` keyword in the :ref:`htepc.json <json-label>` file. Then, using the ``input.in`` and ``mpid.in`` files, execute the following commands:
+To execute strain calculations, modify the ``strain`` keyword in the :ref:`config.json <json-label>` file. Then, using the ``input.in`` and ``mpid.in`` files, execute the following commands:
 
 .. code-block:: bash
 

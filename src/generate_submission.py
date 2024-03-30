@@ -70,9 +70,9 @@ def generate_submission_files(which_calc, parallel_command, nproc, command_list)
             x_command, input_file, output_file = command_info
             if command_name == 'ifermi':
                 try:
-                    submission_files[command_name] = ifermi("plot","htepc.json")
+                    submission_files[command_name] = ifermi("plot","ifermi.json")
                 except FileNotFoundError:
-                    print("htepc.json not found\n")
+                    print("config.json not found\n")
             elif command_name == 'wannier':
                 submission_files[command_name] = "wannier90.x wannier90"
             else:
@@ -88,7 +88,7 @@ def main():
     Load parameters from a JSON file, generate submission files based on the specified calculation type,
     and create a script containing the submission commands.
 
-    Reads parameters from 'htepc.json' and defines command dictionaries for different calculation types.
+    Reads parameters from 'config.json' and defines command dictionaries for different calculation types.
     Generates submission files based on the provided calculation type and prints the submission commands.
     Creates a script containing the submission commands named 'run-<calculation_type>.sh'.
 
@@ -99,8 +99,8 @@ def main():
     None
     """
     # Load parameters from JSON file
-    if os.path.isfile("htepc.json"):
-        with open('htepc.json') as json_file:
+    if os.path.isfile("config.json"):
+        with open('config.json') as json_file:
             #parameters = json.load(json_file)
             parameters = json.load(json_file)['job_script']
     # Commands under different processes

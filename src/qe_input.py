@@ -9,14 +9,14 @@ from pymatgen.analysis.magnetism import MagneticStructureEnumerator
 from htepc import MpConnect
 try:
     PWD = os.getcwd()
-    if os.path.isfile(PWD+"/htepc.json"):
-        JSONFILE = PWD+"/htepc.json"
+    if os.path.isfile(PWD+"/config.json"):
+        JSONFILE = PWD+"/config.json"
     else:
-        JSONFILE = "../../htepc.json"
+        JSONFILE = "../../config.json"
     with open(JSONFILE, "r") as readjson:
         input_data = json.load(readjson)
 except FileNotFoundError:
-    print("htepc.json file not found\n")
+    print("config.json file not found\n")
 
 def qe_input(mpid):
     """
@@ -42,7 +42,7 @@ def qe_input(mpid):
         default_magmoms = input_data['magmom']['magmom']
         struc = MagneticStructureEnumerator(obj.structure,default_magmoms=default_magmoms,strategies=['ferromagnetic'],truncate_by_symmetry=True).ordered_structures
         obj.structure = struc[0]
-    if os.path.isfile("htepc.json") or os.path.isfile("../../htepc.json"):
+    if os.path.isfile("config.json") or os.path.isfile("../../config.json"):
         d = input_data['download']
     evenkpt = d['inp']['evenkpt']
     if evenkpt:

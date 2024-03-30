@@ -10,29 +10,29 @@ from pymatgen.core import structure
 from pymatgen.io.vasp.sets import Potcar
 try:
     PWD = os.getcwd()
-    if os.path.isfile(PWD+"/htepc.json"):
-        JSONFILE = PWD+"/htepc.json"
+    if os.path.isfile(PWD+"/config.json"):
+        JSONFILE = PWD+"/config.json"
     else:
-        JSONFILE = "../../htepc.json"
+        JSONFILE = "../../config.json"
     with open(JSONFILE, "r") as readjson:
         input_data = json.load(readjson)
 except FileNotFoundError:
-    print("htepc.json file not found\n")
+    print("config.json file not found\n")
 def poscar2potcar():
     """
     Function to generate the POTCAR file based on the element potentials provided in
-    htepc.json file.
+    config.json file.
 
-    If htepc.json file is present in the current directory or its parent directory, the function retrieves
-    the potential dictionary from the 'pseudo' key in the htepc.json file.
+    If config.json file is present in the current directory or its parent directory, the function retrieves
+    the potential dictionary from the 'pseudo' key in the config.json file.
 
-    If the htepc.json file is not found, a message indicating the absence of the 'pseudo' keyword is displayed.
+    If the config.json file is not found, a message indicating the absence of the 'pseudo' keyword is displayed.
 
     The function reads the POSCAR file to determine the elements present in the structure and generates the
     corresponding POTCAR file based on the potential dictionary.
 
     """
-    if os.path.isfile("htepc.json") or os.path.isfile("../../htepc.json"):
+    if os.path.isfile("config.json") or os.path.isfile("../../config.json"):
         pot1 = input_data['pseudo']
     else:
         print("pseudo keyword not found\n")

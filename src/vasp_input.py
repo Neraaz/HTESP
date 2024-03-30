@@ -15,14 +15,14 @@ from htepc import MpConnect
 warnings.filterwarnings("ignore")
 try:
     PWD = os.getcwd()
-    if os.path.isfile(PWD+"/htepc.json"):
-        JSONFILE = PWD+"/htepc.json"
+    if os.path.isfile(PWD+"/config.json"):
+        JSONFILE = PWD+"/config.json"
     else:
-        JSONFILE = "../../htepc.json"
+        JSONFILE = "../../config.json"
     with open(JSONFILE, "r") as readjson:
         input_data = json.load(readjson)
 except FileNotFoundError:
-    print("htepc.json file not found\n")
+    print("config.json file not found\n")
 def vasp_input(mpid,compound):
     """
     Download VASP input files from the Materials Project.
@@ -50,12 +50,12 @@ def vasp_input(mpid,compound):
         os.mkdir("R{}-{}/relax".format(mpid,compound))
     relax_set.write_input(output_dir="R{}-{}/relax".format(mpid,compound))
     relax_set.poscar.write_file("R{}-{}/relax/POSCAR".format(mpid,compound))
-    if os.path.isfile("htepc.json"):
-        os.system("cp htepc.json R{}-{}/relax/".format(mpid,compound))
+    if os.path.isfile("config.json"):
+        os.system("cp config.json R{}-{}/relax/".format(mpid,compound))
     os.chdir("R{}-{}/relax/".format(mpid,compound))
     poscar2potcar()
     os.chdir("../../")
-    if os.path.isfile("htepc.json") or os.path.isfile("../../htepc.json"):
+    if os.path.isfile("config.json") or os.path.isfile("../../config.json"):
         d = input_data['download']
     evenkpt = d['inp']['evenkpt']
     kptden = input_data['kptden']

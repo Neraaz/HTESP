@@ -405,14 +405,14 @@ def main():
     # Load input data from JSON file
     try:
         pwd = os.getcwd()
-        if os.path.isfile(pwd+"/htepc.json"):
-            jsonfile = pwd+"/htepc.json"
+        if os.path.isfile(pwd+"/config.json"):
+            jsonfile = pwd+"/config.json"
         else:
-            jsonfile = "../../htepc.json"
+            jsonfile = "../../config.json"
         with open(jsonfile, "r") as readjson:
             input_data = json.load(readjson)
     except FileNotFoundError:
-        print("htepc.json file not found\n")
+        print("config.json file not found\n")
     # Extract relevant data from input
     dft = input_data['download']['inp']['calc']
     mpid = sys.argv[1]

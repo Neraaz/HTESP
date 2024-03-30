@@ -45,7 +45,7 @@ Inputs and Parameters
 
    param
 
-Inputs other than htepc.json
+Inputs other than config.json
 -----------------------------
 
 .. toctree::

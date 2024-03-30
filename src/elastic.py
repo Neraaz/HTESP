@@ -19,14 +19,14 @@ from write_potcar import poscar2potcar
 from htepc import MpConnect
 try:
     PWD = os.getcwd()
-    if os.path.isfile(PWD+"/htepc.json"):
-        JSONFILE = PWD+"/htepc.json"
+    if os.path.isfile(PWD+"/config.json"):
+        JSONFILE = PWD+"/config.json"
     else:
-        JSONFILE = "../../htepc.json"
+        JSONFILE = "../../config.json"
     with open(JSONFILE, "r") as readjson:
         input_data = json.load(readjson)
 except FileNotFoundError:
-    print("htepc.json file not found\n")
+    print("config.json file not found\n")
 
 def deformation(mpid,obj,dft,orig_prefix,deformed_struc):
     """
@@ -90,7 +90,7 @@ def deformation(mpid,obj,dft,orig_prefix,deformed_struc):
             os.system("cp R{}-{}/relax/INCAR {}/R{}-{}-{}/relax/".format(mpid,orig_prefix,pwd,mpid,i+1,obj.prefix))
             poscar.write_file(filename="R{}-{}-{}/relax/POSCAR".format(mpid,i+1,obj.prefix))
             #os.system("cp R{}-{}/relax/KPOINTS {}/R{}-{}-{}/relax/".format(mpid,orig_prefix,pwd,mpid,i+1,obj.prefix))
-            if os.path.isfile("htepc.json") or os.path.isfile("../../htepc.json"):
+            if os.path.isfile("config.json") or os.path.isfile("../../config.json"):
                 dwn = input_data['download']
             evenkpt = dwn['inp']['evenkpt']
             kptden = input_data['kptden']
@@ -105,8 +105,8 @@ def deformation(mpid,obj,dft,orig_prefix,deformed_struc):
             #relax_set.potcar.write_file("R{}-{}-{}/relax/POTCAR".format(mpid,i+1,obj.prefix))
             if os.path.isfile("vasp.in"):
                 os.system("cp vasp.in R{}-{}-{}/relax/".format(mpid,i+1,obj.prefix))
-            if os.path.isfile("htepc.json"):
-                os.system("cp htepc.json R{}-{}-{}/relax/".format(mpid,i+1,obj.prefix))
+            if os.path.isfile("config.json"):
+                os.system("cp config.json R{}-{}-{}/relax/".format(mpid,i+1,obj.prefix))
             os.chdir("R{}-{}-{}/relax/".format(mpid,i+1,obj.prefix))
             # Write POTCAR from POSCAR
             poscar2potcar()
@@ -165,7 +165,7 @@ def main(mpid,orig_prefix):
     dft = input_data['download']['inp']['calc']
     obj = MpConnect()
     # Determine strain based on file existence
-    if os.path.isfile("htepc.json") or os.path.isfile("../../htepc.json"):
+    if os.path.isfile("config.json") or os.path.isfile("../../config.json"):
         strain = input_data['strain']
     else:
         strain = [-0.01,-0.005,0.005,0.01]

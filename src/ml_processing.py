@@ -18,14 +18,14 @@ from mp_api.client import MPRester
 from htepc import MpConnect
 try:
     PWD = os.getcwd()
-    if os.path.isfile(PWD+"/htepc.json"):
-        JSONFILE = PWD+"/htepc.json"
+    if os.path.isfile(PWD+"/config.json"):
+        JSONFILE = PWD+"/config.json"
     else:
-        JSONFILE = "../../htepc.json"
+        JSONFILE = "../../config.json"
     with open(JSONFILE, "r") as readjson:
         input_data = json.load(readjson)
 except FileNotFoundError:
-    print("htepc.json file not found\n")
+    print("config.json file not found\n")
 class MlProcess:
     """
     This class processes output files from HTEPC package.
@@ -135,18 +135,18 @@ class MlProcess:
         This method retrieves structures using Materials Project API based on material IDs.
         It then adds Jarvis features using JarvisCFID from the matminer package.
 
-        If the file 'htepc.json' or its relative path exists, it assumes it contains an API key
+        If the file 'config.json' or its relative path exists, it assumes it contains an API key
         for the Materials Project database. It retrieves the key and uses it to authenticate with
-        MPRester. If the file does not exist, it prints a message indicating that 'htepc.json' is
+        MPRester. If the file does not exist, it prints a message indicating that 'config.json' is
         not found.
 
         The resulting dataframe with Jarvis features is saved to the specified outfile.
         """
-        if os.path.isfile("htepc.json") or os.path.isfile("../../htepc.json"):
+        if os.path.isfile("config.json") or os.path.isfile("../../config.json"):
             key = input_data['mpi_key']['API_KEY']
             mpr = MPRester(key['key'])
         else:
-            print("htepc.json not found")
+            print("config.json not found")
             #print(" Please, replace the XXX with your key\n")
             #with open("mpi_key.py", "w") as k:
             #    api = {'key':"XXX"}

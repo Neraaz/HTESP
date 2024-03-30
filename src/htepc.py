@@ -16,14 +16,14 @@ from mp_api.client import MPRester
 from kpath import kpath
 try:
     PWD = os.getcwd()
-    if os.path.isfile(PWD+"/htepc.json"):
-        JSONFILE = PWD+"/htepc.json"
+    if os.path.isfile(PWD+"/config.json"):
+        JSONFILE = PWD+"/config.json"
     else:
-        JSONFILE = "../../htepc.json"
+        JSONFILE = "../../config.json"
     with open(JSONFILE, "r") as readjson:
         input_data = json.load(readjson)
 except FileNotFoundError:
-    print("htepc.json file not found\n")
+    print("config.json file not found\n")
 #connect to materials project and extract various informations. including QE inputs.
 def pos_to_kpt(structure_filename,kpoint_density):
     """
@@ -75,8 +75,8 @@ class MpConnect:
     Parameters:
     --------------
     key : str, optional
-        MP API KEY. Use your own key. If not provided, it should be available in htepc.json
-        or ../../htepc.json file.
+        MP API KEY. Use your own key. If not provided, it should be available in config.json
+        or ../../config.json file.
 
     Attributes:
     --------------
@@ -134,10 +134,10 @@ class MpConnect:
     """
     # Intialize the class
     def __init__(self):
-        if os.path.isfile("htepc.json") or os.path.isfile("../../htepc.json"):
+        if os.path.isfile("config.json") or os.path.isfile("../../config.json"):
             key = input_data["mpi_key"]["API_KEY"]
         else:
-            print("htepc.json file not found. Please provide with your materials project api key\n")
+            print("config.json file not found. Please provide with your materials project api key\n")
         try:
             self.key = key['key']
             self.mpr = MPRester(self.key)
@@ -189,8 +189,8 @@ class MpConnect:
         # We only store properties except for last 29 elements
         # Mostly related to elastic properties, absent for many systems
         self.prop = self.mpr.materials.summary.available_fields[:-29]
-        # Check if htepc.json file exists
-        if os.path.isfile("htepc.json") or os.path.isfile("../../htepc.json"):
+        # Check if config.json file exists
+        if os.path.isfile("config.json") or os.path.isfile("../../config.json"):
             # Load settings from input_data dictionary
             d = input_data["download"]
         # Append additional properties specified in the settings to the properties list
@@ -343,13 +343,13 @@ class MpConnect:
 
         Notes:
         ----------------------
-        Gets cutoff values for elements from htepc.json or defaults from SSSP efficiency set if not found.
+        Gets cutoff values for elements from config.json or defaults from SSSP efficiency set if not found.
         """
-        if os.path.isfile("htepc.json") or os.path.isfile("../../htpec.json"):
+        if os.path.isfile("config.json") or os.path.isfile("../../config.json"):
             psd_data = input_data["pseudo"]
             self.dict_element = psd_data['PSEUDO']
         else:
-            print("htepc.json file not found, using default values from SSSP efficiency set\n")
+            print("config.json file not found, using default values from SSSP efficiency set\n")
             #print("https://www.materialscloud.org/discover/sssp/table/efficiency\n")
             self.dict_element = {'H': 60, 'Li': 40, 'Be': 40, 'N': 60, 'F': 45, 'Na': 40, 'Mg': 30, 'Al': 30, 'Si': 30, 'P': 30, 'S': 35, 'Cl': 40, 'K': 60, 'Ca': 30, 'Sc': 40, 'Ti': 35, 'V': 35, 'Cr': 40, 'Mn': 65, 'Fe': 90, 'Co': 45, 'Ni': 45, 'Cu': 55, 'Zn': 40, 'Ga': 70, 'Ge': 40, 'As': 35, 'Br': 30, 'Rb': 30, 'Sr': 30, 'Y': 35, 'Zr': 30, 'Nb': 40, 'Mo': 35, 'Tc': 30, 'Ru': 35, 'Rh': 35, 'Pd': 45, 'Ag': 50, 'Cd': 60, 'In': 50, 'Sn': 60, 'Sb': 40, 'Te': 30, 'I': 35, 'Cs': 30, 'Ba': 30, 'La': 40, 'Hf': 50, 'Ta': 45, 'W': 30, 'Re': 30, 'Os': 40, 'Ir': 55, 'Pt': 35, 'Hg': 50, 'Tl': 50, 'Pb': 40, 'Bi': 45, 'B': 35, 'C': 45, 'Au': 45, 'Se': 30, 'O': 60}
         return self.dict_element[element]
@@ -503,7 +503,7 @@ class MpConnect:
         # Set prefix for output files
         prefix = self.prefix
         # Set up control, system, and electrons parameters
-        if os.path.isfile("htepc.json") or os.path.isfile("../../htpec.json"):
+        if os.path.isfile("config.json") or os.path.isfile("../../config.json"):
             pwscf_in = input_data["pwscf_in"]
             control = pwscf_in['control']
             system = pwscf_in['system']

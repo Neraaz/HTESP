@@ -22,20 +22,20 @@ from write_potcar import poscar2potcar
 from htepc import INPUTscf
 try:
     PWD = os.getcwd()
-    if os.path.isfile(PWD+"/htepc.json"):
-        JSONFILE = PWD+"/htepc.json"
+    if os.path.isfile(PWD+"/config.json"):
+        JSONFILE = PWD+"/config.json"
     else:
-        JSONFILE = "../../htepc.json"
+        JSONFILE = "../../config.json"
     with open(JSONFILE, "r") as readjson:
         input_data = json.load(readjson)['download']
 except FileNotFoundError:
-    print("htepc.json file not found\n")
+    print("config.json file not found\n")
 def properties_string(dict_param):
     """
-    Function to create a string for URL search from the dictionary provided in htepc.json.
+    Function to create a string for URL search from the dictionary provided in config.json.
 
     Parameters:
-    dict_param (dict): A dictionary from the htepc.json file containing search criteria.
+    dict_param (dict): A dictionary from the config.json file containing search criteria.
 
     Returns:
     str: A string representing the search criteria for URL.

@@ -51,8 +51,8 @@ for ((ii=$begin; ii<$last; ++ii)); do
      if [[ -f vasp.in ]]; then
       cp vasp.in R$A-$B/relax/
      fi
-     if [[ -f htepc.json ]]; then
-      cp htepc.json R$A-$B/relax/
+     if [[ -f config.json ]]; then
+      cp config.json R$A-$B/relax/
      fi
      if [[ -f R$A-$B/relax/EIGENVAL ]]; then
        rm R$A-$B/relax/EIGENVAL

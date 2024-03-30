@@ -12,14 +12,14 @@ from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 from cif_to_gsinput import pos_to_kpt
 try:
     PWD = os.getcwd()
-    if os.path.isfile(PWD+"/htepc.json"):
-        JSONFILE = PWD+"/htepc.json"
+    if os.path.isfile(PWD+"/config.json"):
+        JSONFILE = PWD+"/config.json"
     else:
-        JSONFILE = "../../htepc.json"
+        JSONFILE = "../../config.json"
     with open(JSONFILE, "r") as readjson:
         input_data = json.load(readjson)
 except FileNotFoundError:
-    print("htepc.json file not found\n")
+    print("config.json file not found\n")
 def encut_check():
     """
     Function to check ENCUT in INCAR file and replace
@@ -61,7 +61,7 @@ def vasp_process():
 
     If 'vasp.in' is found, it reads the file and replaces corresponding keys in the 'INCAR' file with the provided values.
     Existing keys such as ISPIN, MAGMOM, and LORBIT in 'INCAR' are removed to avoid conflicts.
-    If magnetic moment values are provided in 'htepc.json', it updates the 'MAGMOM' keyword accordingly.
+    If magnetic moment values are provided in 'config.json', it updates the 'MAGMOM' keyword accordingly.
     If 'METAGGA' is present, 'LMIXTAU = .TRUE.' is added to 'INCAR'.
     To remove unwanted keywords from 'INCAR', put those keywords at the bottom in 'vasp.in' file after the keyword that has values.
 
@@ -123,10 +123,10 @@ def vasp_process():
         # Write new keys and values to 'INCAR'
         with open("INCAR", "a") as change_incar:
             for i,_ in enumerate(values):
-                # If ISPIN=2, update MAGMOM keyword if htepc.json exists
+                # If ISPIN=2, update MAGMOM keyword if config.json exists
                 if (key[i] == "ISPIN" and int(values[i]) == 2) or backupkey['ISPIN'] == 2:
                     change_incar.write(key[i] + " = " + str(values[i]) + "\n")
-                    if os.path.isfile("htepc.json") or os.path.isfile("../../htepc.json"):
+                    if os.path.isfile("config.json") or os.path.isfile("../../config.json"):
                         m=input_data['magmom']['magmom']
                         struc = structure.Structure.from_file("POSCAR")
                         sites = struc.sites
@@ -150,7 +150,7 @@ def vasp_process():
                         else:
                             print("type is anisotropy, therefore doesn't update MAGMOM keyword\n")
                     else:
-                        print("magmom values not provided in htepc.json\n")
+                        print("magmom values not provided in config.json\n")
                         print("Provide magnetic moment values as dictionary magmom={'A':2, 'B':3}\n")
                 else:
                     try:

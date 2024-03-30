@@ -16,14 +16,14 @@ from write_potcar import poscar2potcar
 from htepc import MpConnect
 try:
     PWD = os.getcwd()
-    if os.path.isfile(PWD+"/htepc.json"):
-        JSONFILE = PWD+"/htepc.json"
+    if os.path.isfile(PWD+"/config.json"):
+        JSONFILE = PWD+"/config.json"
     else:
-        JSONFILE = "../../htepc.json"
+        JSONFILE = "../../config.json"
     with open(JSONFILE, "r") as readjson:
         input_data = json.load(readjson)
 except FileNotFoundError:
-    print("htepc.json file not found\n")
+    print("config.json file not found\n")
 def magnetic_structure(obj,mpid,compound,magconfig,dft):
     """
     Functions to generate possible magnetic structures.
@@ -48,7 +48,7 @@ def magnetic_structure(obj,mpid,compound,magconfig,dft):
     except FileNotFoundError:
         strucinit = PWInput.from_file("R{}-{}/relax/scf.in".format(mpid,compound)).structure
     # Obtain magnetic structures based on given magnetic configurations
-    if os.path.isfile("htepc.json"):
+    if os.path.isfile("config.json"):
         default_magmoms = input_data['magmom']['magmom']
         order = input_data['magmom']['order']
         newstructure = MagneticStructureEnumerator(strucinit,default_magmoms=default_magmoms,strategies=order,truncate_by_symmetry=True).ordered_structures
@@ -87,8 +87,8 @@ def magnetic_structure(obj,mpid,compound,magconfig,dft):
                 os.system("mv KPOINTS R{}-{}-{}/relax/".format(mpid,i+1,obj.prefix))
                 if os.path.isfile("vasp.in"):
                     os.system("cp vasp.in R{}-{}-{}/relax/".format(mpid,i+1,obj.prefix))
-                if os.path.isfile("htepc.json"):
-                    os.system("cp htepc.json R{}-{}-{}/relax/".format(mpid,i+1,obj.prefix))
+                if os.path.isfile("config.json"):
+                    os.system("cp config.json R{}-{}-{}/relax/".format(mpid,i+1,obj.prefix))
                 os.chdir("R{}-{}-{}/relax/".format(mpid,i+1,obj.prefix))
                 # Process POTCAR and INCAR
                 poscar2potcar()
@@ -173,8 +173,8 @@ def changeaxis(mpid,comp):
         # Append to the mpid-magnetic.in file
         with open("mpid-magnetic.in", "a") as mpid_append:
             mpid_append.write("v{}".format(entry+1+i) + " " + mpid + "-saxis-{}{}{}".format(sx,sy,sz) + " " + comp + "\n")
-        if os.path.isfile("htepc.json"):
-            os.system("""cp htepc.json R{}-saxis-{}{}{}-{}/relax/""".format(mpid,sx,sy,sz,comp))
+        if os.path.isfile("config.json"):
+            os.system("""cp config.json R{}-saxis-{}{}{}-{}/relax/""".format(mpid,sx,sy,sz,comp))
         if os.path.isfile("vasp.in"):
             os.system("""cp vasp.in R{}-saxis-{}{}{}-{}/relax/""".format(mpid,sx,sy,sz,comp))
         os.chdir("R{}-saxis-{}{}{}-{}/relax/""".format(mpid,sx,sy,sz,comp))

@@ -217,7 +217,7 @@ Let's look at the "process-info" command,
       which is used by ASE package to create 'KPATH_SLAB' for slab system
     
     - process = wt2, prepare input file for other calculations including surfaces
-  Edit 'wanniertool_input' key in htepc.json according to properties of interest
+  Edit 'wanniertool_input' key in config.json according to properties of interest
 
 .. code-block:: bash
 

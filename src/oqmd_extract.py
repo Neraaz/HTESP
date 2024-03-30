@@ -17,14 +17,14 @@ from write_potcar import poscar2potcar
 from htepc import MpConnect
 try:
     PWD = os.getcwd()
-    if os.path.isfile(PWD+"/htepc.json"):
-        JSONFILE = PWD+"/htepc.json"
+    if os.path.isfile(PWD+"/config.json"):
+        JSONFILE = PWD+"/config.json"
     else:
-        JSONFILE = "../../htepc.json"
+        JSONFILE = "../../config.json"
     with open(JSONFILE, "r") as readjson:
         input_data = json.load(readjson)
 except FileNotFoundError:
-    print("htepc.json file not found\n")
+    print("config.json file not found\n")
 
 def poscar_to_input(calc_type,mpid,compound,keven):
     """
@@ -52,7 +52,7 @@ def poscar_to_input(calc_type,mpid,compound,keven):
     required for ground-state calculations
     using either Quantum Espresso (QE) or VASP software.
 
-    It checks if 'htepc.json' exists, and if so, it retrieves settings such as k-point density and
+    It checks if 'config.json' exists, and if so, it retrieves settings such as k-point density and
     download configurations.
 
     Based on the calculation type, it creates input files and directories accordingly. For VASP,
@@ -63,7 +63,7 @@ def poscar_to_input(calc_type,mpid,compound,keven):
     Finally, it moves input files to the designated directories.
 
     """
-    if os.path.isfile("htepc.json"):
+    if os.path.isfile("config.json"):
         d = input_data['download']
     evenkpt = d['inp']['evenkpt']
     kptden = input_data['kptden']
@@ -312,8 +312,8 @@ def download(calc_type,start,end):
             continue
 if __name__ == "__main__":
     CONDITION = sys.argv[1]
-    # Read htepc.json file and creates KWARGS dictionary
-    if os.path.isfile("htepc.json"):
+    # Read config.json file and creates KWARGS dictionary
+    if os.path.isfile("config.json"):
         d = input_data['download']
         START = d['inp']['start']
         END = d['inp']['end']
@@ -377,7 +377,7 @@ if __name__ == "__main__":
         CALC_TYPE = d['inp']['calc']
         print(CALC_TYPE)
     else:
-        print("input file htepc.json not found\n")
+        print("input file config.json not found\n")
         print("Utilizing default settings\n")
         NTYPE = '<5' #Number of different types of element in the compound.
         NSITES = '<10'

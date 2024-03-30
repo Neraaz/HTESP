@@ -8,14 +8,14 @@ import json
 from cif_to_gsinput import pos_to_kpt
 try:
     PWD = os.getcwd()
-    if os.path.isfile(PWD+"/htepc.json"):
-        JSONFILE = PWD+"/htepc.json"
+    if os.path.isfile(PWD+"/config.json"):
+        JSONFILE = PWD+"/config.json"
     else:
-        JSONFILE = "../../htepc.json"
+        JSONFILE = "../../config.json"
     with open(JSONFILE, "r") as readjson:
         input_data = json.load(readjson)
 except FileNotFoundError:
-    print("htepc.json file not found\n")
+    print("config.json file not found\n")
 def main():
     """
     main function
@@ -135,7 +135,7 @@ def main():
         elif process == 'magenum':
             os.system("magnetic.py")
         elif process == 'search':
-            if os.path.isfile('htepc.json') or os.path.isfile("../../htepc.json"):
+            if os.path.isfile('config.json') or os.path.isfile("../../config.json"):
                 download = input_data['download']
                 mode = download['info']['mode']
                 print("--------------------------------------------------------------\n")
@@ -162,7 +162,7 @@ def main():
             print("**************Basic instructions**********************************\n")
             print("\n")
             print("# run 'mainprogram process'\n")
-            print("Look for htepc.json file in utility/input_files/ and copy that to the working directory\n")
+            print("Look for config.json file in utility/input_files/ and copy that to the working directory\n")
             print("process = jobscript generates the job scripts for the calculations\n")
             print("process = search, search for data in materials project database\n")
             print("For process = download, download QE and VASP input files")
@@ -357,7 +357,7 @@ def main():
             print(" so that it produces 'POSCAR-slab' file")
             print(" which is used by ASE package to create 'KPATH_SLAB' for slab system\n")
             print("process = wt2, prepare input file for other calculations including surfaces\n")
-            print("Edit 'wanniertool_input' key in htepc.json according to properties of interest\n")
+            print("Edit 'wanniertool_input' key in config.json according to properties of interest\n")
             print("************************************************************************************\n")
         elif process == "wt1":
             os.system("wt-bash-scripts" + " " + str(start) + " " + str(end) + " " + element + " " + "wt1-b")

@@ -44,12 +44,12 @@ for ((ii=$1; ii<$2; ++ii)); do
   ################
   ## SUBMIT JOB ##
   ################
-   cd R$A-$B/calc
-       nelph=$(ls elph.out* | wc -l)
-       cp elph.out elph.out$nelph
-       qerun "$A" "$B" "elph"
-      sleep $SLEEP
-   cd ../../
+       cd R$A-$B/calc
+           nelph=$(ls elph.out* | wc -l)
+           cp elph.out elph.out$nelph
+           qerun "$A" "$B" "elph"
+          sleep $SLEEP
+       cd ../../
    elif [[ $check -lt 1 ]] && [[ $dync -lt 0 ]] ; then
       cp elph_dir/elph-$A-$B.in R$A-$B/calc/elph.in
       cp run-elph.sh R$A-$B/calc/
