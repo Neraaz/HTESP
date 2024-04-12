@@ -194,7 +194,7 @@ class MpConnect:
             # Load settings from input_data dictionary
             d = input_data["download"]
         # Append additional properties specified in the settings to the properties list
-        for prop in d['info']['prop']:
+        for prop in d['element']['prop']:
             if prop not in self.prop:
                 self.prop.append(prop)
         #self.data = self.mpr.materials.summary.get_data_by_id(self.comp,fields=self.prop).dict()
@@ -475,9 +475,11 @@ class MpConnect:
             magnetization = []
             magdict = OrderedDict()
             new_species = []
+            new_coord = []
             for site in self.structure:
                 new_species.append(site.label)
-            new_species = convert_species_list(new_species)
+                new_coord.append(site.frac_coords)
+            latest_species = convert_species_list(new_species)
             pseudo_species = []
             for elm_spin in elements_spin:
                 pseudo_species.append(str(elm_spin))
@@ -556,14 +558,19 @@ class MpConnect:
             with open(f"scf-{self.mpid}.in", "r") as readscf:
                 scflines = readscf.readlines()
             old_species = []
+            old_coord = []
             natom = 0
             for i,scfl in enumerate(scflines):
                 if 'ATOMIC_POSITIONS' in scfl:
                     atom_start = i
                 if 'ATOMIC_SPECIES' in scfl:
                     pseudo_start = i
-            while natom < len(new_species):
-                old_species.append(scflines[atom_start+1].split(" ")[0])
+            while natom < len(latest_species):
+                old_species.append(scflines[atom_start+1+natom].split(" ")[0])
+                old_x = float(scflines[atom_start+1+natom].split(" ")[1])
+                old_y = float(scflines[atom_start+1+natom].split(" ")[2])
+                old_z = float(scflines[atom_start+1+natom].split(" ")[3])
+                old_coord.append([old_x,old_y,old_z])
                 natom += 1
             new_list = []
             for k,_ in enumerate(pseudo_species):
@@ -575,6 +582,7 @@ class MpConnect:
             maglist = list(reorder_dictionary(magdict,new_list).values())
             for j,_ in enumerate(old_species):
                 os.system(f"""sed -i '{atom_start+2+j}s/{old_species[j]}/{new_species[j]}/' scf-{self.mpid}.in""")
+                os.system(f"""sed -i '{atom_start+2+j}s/{old_coord[j][0]} {old_coord[j][1]} {old_coord[j][2]}/{new_coord[j][0]} {new_coord[j][1]} {new_coord[j][2]}/' scf-{self.mpid}.in""")
             for j,_ in enumerate(maglist):
                 os.system(f"""sed -i '/&SYSTEM/a starting_magnetization({nsites-j}) = {maglist[nsites-j-1]}' scf-{self.mpid}.in""")
         # Clean up temporary files

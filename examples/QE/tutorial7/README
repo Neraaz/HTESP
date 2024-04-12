@@ -1,0 +1,9 @@
+Generate QE inputs from several database in current folder.
+
+Each time, scf-{id}.in are written inside scf_dir, and their id and name are stored in mpid.in.
+
+Execute:
+
+mainprogram data-combine 
+
+to combine data.

@@ -1,0 +1,67 @@
+Here, Let's compute superconductivity for MgB2.
+
+Copy batch.header from tutorial1
+
+copy scf_dir folder, input.in, mpid.in, Rmp-763-Mg1B2 folder, config.json, pp folder from tutorial9.
+
+Make kpoint even with "kpoint.in" file. Execute:
+
+mainprogram change_k
+
+With even k-mesh, its easier to choose qmesh as integer fraction of kmesh.
+
+Also, we use "qpoint.in" file. Instead of 3 number, one can also use a number that would divide
+k-mesh to get q-mesh.
+
+Now, execute:
+
+mainprogram 4
+
+to prepare input files for various other scf and el-ph calculations.
+
+Execute:
+
+mainprogram 5
+
+to compute charge density and wavefunctions for denser mesh. Code use denser mesh
+twice that of k-mesh.
+
+To perform scf calculation on coarse grid,
+
+mainprogram 6
+
+Execute:
+
+mainprogram 7
+
+to perform electron-phonon coupling (EPC) calculations
+
+mainprogram 8
+
+to run q2r.x to get force constant in real space
+
+mainprogram 9
+
+to run matdyn.x for obtaining phonon dispersion in high-symmetry K-path.
+
+mainprogram 10 
+
+to run matdyn.x for computing phonon DOS and other EPC quantities
+
+mainprogram 11
+
+to run lambda.x for computing superconducting properties.
+
+mainprogram 12 
+
+to run phonband.x for processing phonon dispersion
+
+mainprogram 19 for plotting.
+
+In fifth line of "input.in",
+
+use "phband" keyword to plot alpha^2F and a simple phonon bandstructure
+use "gammaband" to plot mode resolved EPC projected phonon dispersion
+use "phonproj" to plot atom-projected phonon dispersion
+
+Look at the plots folder in reference for a sample.

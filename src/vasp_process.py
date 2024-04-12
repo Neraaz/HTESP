@@ -121,46 +121,50 @@ def vasp_process():
         if backupkey['LORBIT']:
             os.system("""sed -i '/LORBIT/d' INCAR""")
         # Write new keys and values to 'INCAR'
+        metagga = False
+        spinval = 1
         with open("INCAR", "a") as change_incar:
             for i,_ in enumerate(values):
-                # If ISPIN=2, update MAGMOM keyword if config.json exists
-                if (key[i] == "ISPIN" and int(values[i]) == 2) or backupkey['ISPIN'] == 2:
-                    change_incar.write(key[i] + " = " + str(values[i]) + "\n")
-                    if os.path.isfile("config.json") or os.path.isfile("../../config.json"):
-                        m=input_data['magmom']['magmom']
-                        struc = structure.Structure.from_file("POSCAR")
-                        sites = struc.sites
-                        magmom_string = ""
-                        for j,site in enumerate(sites):
-                            element = str(site.specie)
-                            if j < len(sites) - 1:
-                                # if LSORBIT key found, rewrite MAGMOM in mx my mz format
-                                if 'LSORBIT' not in key:
-                                    magmom_string += str(m[element]) + " "
-                                else:
-                                    magmom_string += "0 0 " + str(m[element]) + "  "
-                            else:
-                                if 'LSORBIT' not in key:
-                                    magmom_string += str(m[element]) + "\n"
-                                else:
-                                    magmom_string += "0 0 " + str(m[element]) + "\n"
-                        if  magenum != 'anisotropy':
-                            change_incar.write("MAGMOM = {}".format(magmom_string))
-                            change_incar.write("LORBIT = 11\n")
-                        else:
-                            print("type is anisotropy, therefore doesn't update MAGMOM keyword\n")
-                    else:
-                        print("magmom values not provided in config.json\n")
-                        print("Provide magnetic moment values as dictionary magmom={'A':2, 'B':3}\n")
-                else:
-                    try:
-                        change_incar.write(key[i] + " = " + str(values[i]) + "\n")
-                    except IndexError:
-                        continue
-                # Add LMIXTAU = .TRUE. if METAGGA is present in INCAR
+                if key[i] == "ISPIN":
+                    spinval = values[i]
                 if key[i] == "METAGGA":
-                    change_incar.write("LMIXTAU = .TRUE.\n")
-                    change_incar.write("LASPH = .TRUE.\n")
+                    metagga = True
+                try:
+                    change_incar.write(key[i] + " = " + str(values[i]) + "\n")
+                except IndexError:
+                    continue
+            # If ISPIN=2, update MAGMOM keyword if config.json exists
+            if ("ISPIN" in key and int(spinval) == 2) or backupkey['ISPIN'] == 2:
+                if os.path.isfile("config.json") or os.path.isfile("../../config.json"):
+                    m=input_data['magmom']['magmom']
+                    struc = structure.Structure.from_file("POSCAR")
+                    sites = struc.sites
+                    magmom_string = ""
+                    for j,site in enumerate(sites):
+                        element = str(site.specie)
+                        if j < len(sites) - 1:
+                            # if LSORBIT key found, rewrite MAGMOM in mx my mz format
+                            if 'LSORBIT' not in key:
+                                magmom_string += str(m[element]) + " "
+                            else:
+                                magmom_string += "0 0 " + str(m[element]) + "  "
+                        else:
+                            if 'LSORBIT' not in key:
+                                magmom_string += str(m[element]) + "\n"
+                            else:
+                                magmom_string += "0 0 " + str(m[element]) + "\n"
+                    if magenum != 'anisotropy':
+                        change_incar.write("MAGMOM = {}".format(magmom_string))
+                        change_incar.write("LORBIT = 11\n")
+                    else:
+                        print("type is anisotropy, therefore doesn't update MAGMOM keyword\n")
+                else:
+                    print("magmom values not provided in config.json\n")
+                    print("Provide magnetic moment values as dictionary magmom={'A':2, 'B':3}\n")
+            # Add LMIXTAU = .TRUE. if METAGGA is present in INCAR
+            if metagga:
+                change_incar.write("LMIXTAU = .TRUE.\n")
+                change_incar.write("LASPH = .TRUE.\n")
     # Check and adjust ENCUT
     encut_check()
 def eigen_process():
@@ -182,6 +186,7 @@ def eigen_process():
     """
     with open("../../input.in","r") as read_inputin:
         inputline = read_inputin.readlines()
+    vasp_line = False
     for line in inputline:
         if "vasp-line" in line:
             vasp_line = True

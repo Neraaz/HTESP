@@ -287,13 +287,21 @@ def plot(plottype,file,comp):
         #for tick in ax_p.yaxis.get_major_ticks():
         #    tick.label.set_fontsize(20)
         ax_p.tick_params(axis='both',labelsize=20)
-        fig.set_figheight(8)
-        fig.set_figwidth(18)
-        plt.ylim((miny,maxy))
-        plt.xlim((0.0,maxx))
-        plt.xlabel(r'$\omega$' + '(THz)', fontsize=15)
-        plt.ylabel(r'$\alpha^2F$'+r'($\omega$)', fontsize=20)
-        plt.text(maxx-20,lam+0.5, r'$\lambda$' + "=" + str(round(lam,2)), fontsize=20,fontweight='bold')
+        fig.set_figheight(6)
+        fig.set_figwidth(8)
+        ylim = input_data['plot']['ylim']
+        xlim = input_data['plot']['xlim']
+        if ylim is not None:
+            plt.ylim((ylim[0], ylim[1])) #change this depending on the energy levels.
+        else:
+            plt.ylim((miny,maxy))
+        if xlim is not None:
+            plt.xlim((xlim[0], xlim[1])) #change this depending on the energy levels.
+        else:
+            plt.xlim((0.0,maxx))
+        plt.xlabel(r'$\omega$' + '(THz)', fontsize=25)
+        plt.ylabel(r'$\alpha^2F$'+r'($\omega$)', fontsize=30)
+        plt.text(maxx-20,lam+0.5, r'$\lambda$' + "=" + str(round(lam,2)), fontsize=25,fontweight='bold')
         #plt.text(maxx-20,maxy-0.1,r'$\omega_{log}$' + "=" + str(int(omglog)) + " K", fontsize=20,fontweight='bold')
         #plt.text(maxx-20,maxy-1.5, r'$T_c$' + "=" + str(round(Tc,2))+" K", fontsize=20,fontweight='bold')
         plt.savefig(comp+"-a2f.png")
@@ -395,14 +403,18 @@ def dos_plot(filedos,out='pdos.pdf'):
     ax_p[0].set_ylabel("PDOS (states/eV/cell)",fontsize=20)
     ax_p[1].set_ylabel("DOS (states/eV/cell)",fontsize=20)
     ax_p[0].set_xticklabels([])
-    for tick in ax_p[0].yaxis.get_major_ticks():
-        tick.label.set_fontsize(30)
-    for tick in ax_p[1].yaxis.get_major_ticks():
-        tick.label.set_fontsize(30)
+    ax_p[0].tick_params(axis='x', labelsize=30)
+    ax_p[0].tick_params(axis='y', labelsize=30)
+    ax_p[1].tick_params(axis='x', labelsize=30)
+    ax_p[1].tick_params(axis='y', labelsize=30)
+    #for tick in ax_p[0].yaxis.get_major_ticks():
+    #    tick.label.set_fontsize(30)
+    #for tick in ax_p[1].yaxis.get_major_ticks():
+    #    tick.label.set_fontsize(30)
     plt.xticks([-8,-6,-4,-2,0,2,4], ["-8", "-6", "-4", "-2", "0", "2", "4"], fontsize = 30)
     #plt.yticks([0, 10, 20, 30, 40], ["0", "10", "20", "30", "40"], fontsize=30)
     fig.set_figheight(8)
-    fig.set_figwidth(18)
+    fig.set_figwidth(12)
     plt.subplots_adjust(bottom=0.15)
     ylim = input_data['plot']['ylim']
     xlim = input_data['plot']['xlim']

@@ -68,11 +68,8 @@ def generate_submission_files(which_calc, parallel_command, nproc, command_list)
     elif which_calc in ('vasp','VASP'):
         for command_name, command_info in command_list.items():
             x_command, input_file, output_file = command_info
-            if command_name == 'ifermi':
-                try:
+            if command_name == 'ifermi' and os.path.isfile("ifermi.json"):
                     submission_files[command_name] = ifermi("plot","ifermi.json")
-                except FileNotFoundError:
-                    print("config.json not found\n")
             elif command_name == 'wannier':
                 submission_files[command_name] = "wannier90.x wannier90"
             else:

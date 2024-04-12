@@ -66,8 +66,13 @@ for ((ii=$1; ii<$2; ++ii)); do
   if [[ -d R$A-$B ]]; then
     if [[ -f R$A-$B/relax/scf.out ]]; then
      relaxed=$(grep "Final scf calculation at the relaxed structure." R$A-$B/relax/scf.out | wc -l)
+     niter=$(grep ! R$A-$B/relax/scf.out | wc -l)
     else
      relaxed=$(echo 0 | bc)
+    fi
+    if [[ $niter -lt 3 ]]; then
+      echo "Structure already relaxed"
+      continue
     fi
     if [[ $relaxed -gt 0 ]]; then
       echo "Relaxed structure found for $A $B"

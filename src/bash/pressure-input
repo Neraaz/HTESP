@@ -55,20 +55,33 @@ for ((ii=$1; ii<$2; ++ii)); do
          #if [[ $pcheck < $zero ]]; then
          ##if [[ $(echo "$pcheck < $zero" | bc -l) ]]; then
       
-        #For scaling volume turn on following 2 sed command.
-         #  sed '/ISIF/d' R$A-$B/relax/INCAR | sed '1i ISIF = 4' | sed '/NSW/d' | sed '2i NSW = 200' > R$A-$P-$B/relax/INCAR
-         #  sed '2d' R$A-$B/relax/POSCAR | sed "2i $P" > R$A-$P-$B/relax/POSCAR
-        #For utilizing pressure, turn on following 3 command.
+        P=$(echo "scale=3; $P" | bc -l)
+        if [[ $P =~ \. ]]; then
+            num=1
+        else
+            num=100
+        fi
+        if [ "$num" -lt 2 ]; then 
+           #For scaling volume turn on following 2 sed command.
+           sed '/ISIF/d' R$A-$B/relax/INCAR | sed '1i ISIF = 4' | sed '/NSW/d' | sed '2i NSW = 200' > R$A-$P-$B/relax/INCAR
+           sed '2d' R$A-$B/relax/POSCAR | sed "2i $P" > R$A-$P-$B/relax/POSCAR
+        else
+          #For utilizing pressure, turn on following 3 command.
           sed '/ISIF/d' R$A-$B/relax/INCAR | sed '1i ISIF = 3' | sed '/NSW/d' | sed '2i NSW = 200' > R$A-$P-$B/relax/INCAR
           echo "PSTRESS = $P" >> R$A-$P-$B/relax/INCAR
           cp R$A-$B/relax/POSCAR R$A-$P-$B/relax/POSCAR
-        # fi
+        fi
       fi
       if [ $dft == 'QE' ] || [ $dft == 'qe' ]; then
           relax_type=$(head -n 1 pressure.in)
           P=$(echo "scale=3; $P" | bc -l)
-          cutoff=$(echo 2 | bc)
-          if [[ $(echo "$P < $cutoff" | bc -l) ]]; then
+          if [[ $P =~ \. ]]; then
+              num=1
+          else
+              num=100
+          fi
+          if [ "$num" -lt 2 ]; then 
+          #if [[ $(echo "$P < $cutoff" | bc -l) ]]; then
            sed -n '/ATOMIC_POSITIONS/,/K_POINTS automatic/p' scf_dir/scf-relax-$A-$B.in | sed '$d' > position.dat
            sed -n '/&CONTROL/,/ATOMIC_POSITIONS/p' scf_dir/scf-relax-$A-$B.in | sed '$d' | sed '/pseudo_dir/d' | sed "/calculation = 'vc-relax',/a pseudo_dir = '../../../../pp/'," | sed "/&CELL/a cell_dofree = '$relax_type'" > scf-header.in
            sed -n '/ATOMIC_SPECIES/,/ATOMIC_POSITIONS crystal/p' scf_dir/scf-relax-$A-$B.in | sed '$d' > species.in
@@ -76,35 +89,21 @@ for ((ii=$1; ii<$2; ++ii)); do
            sed -n '/CELL_PARAMETERS/,/ATOMIC_SPECIES/p' scf_dir/scf-relax-$A-$B.in | sed '1d' > cellpar.dat
            # Specify the file containing the matrix
            file_name="cellpar.dat"
-           ### Initialize an empty matrix array
-           ### Read the matrix from the file
-           #while IFS= read -r line; do
-           #    for value in $line; do
-           #        value=$(echo "scale=8;$value*$P" | bc)
-           #        echo "$value " >> newcellpar.dat
-           #    done
-           #    echo >> newcellpar.dat
-           #done < "$file"
            mapfile -t lines < "$file_name"
-
-          echo "CELL_PARAMETERS angstrom" > newcellpar.dat
-          # Loop through each line to split it into elements and add 2 to each element
-          for i in "${!lines[@]}"; do
-              read -ra elements <<< "${lines[$i]}"
-              string=''
-              for j in "${!elements[@]}"; do
-                  elem=${elements[j]}
-                  array=$(echo "scale=8;$elem * $P" | bc -l)
-                  string="$string$array "
-              done
-              echo "$string" >> newcellpar.dat
-          done
-
-           #for (( arr=0 ; arr<3 ;++arr)); do
-           #   alat1=${arrText[arr]}
-           #done
-           cat scf-header.in position.dat kpoint.dat newcellpar.dat > scf_dir/scf-$A-$P.in
-           rm scf-header.in species.in position.dat kpoint.dat newcellpar.dat
+           echo "CELL_PARAMETERS angstrom" > newcellpar.dat
+           # Loop through each line to split it into elements and add 2 to each element
+           for i in "${!lines[@]}"; do
+               read -ra elements <<< "${lines[$i]}"
+               string=''
+               for j in "${!elements[@]}"; do
+                   elem=${elements[j]}
+                   array=$(echo "scale=8;$elem * $P" | bc -l)
+                   string="$string$array "
+               done
+               echo "$string" >> newcellpar.dat
+           done
+            cat scf-header.in position.dat kpoint.dat newcellpar.dat > scf_dir/scf-$A-$P.in
+            rm scf-header.in species.in position.dat kpoint.dat newcellpar.dat
           else
             if [[ -f scf_dir/scf-relax-$A-$B.in ]]; then
               if [ $relax_type == 'all' ]; then
@@ -124,14 +123,13 @@ for ((ii=$1; ii<$2; ++ii)); do
             fi
           fi
       fi
-      echo "v$kk $A-$P $B" >> mpid-pressure-noelph.in
-      echo "v$jj $A-$P $B" >> mpid-pressure-elph.in
+      echo "v$kk $A-$P $B" >> mpid-pressure-1.in
+      echo "v$jj $A-$P $B" >> mpid-pressure-2.in
       jj=$(echo $jj + 1 | bc)
 done
 done
 echo "**************************************************************************************************"
-if [ $dft == 'qe' ] || [ $dft == 'QE' ]; then
-  echo "scf-mpid-pressure.in files created inside scf_dir, and mpid-pressure.in file created for tracking"
-  echo "For el-ph calculations, update 'input.in' file with mpid-pressure-elph.in and run 'mainprogram 1'"
-  echo "For energy-volume calculations, use 'mainprogram 26' command that uses mpid-pressure-noelph.in file."
-fi
+echo "scf-mpid-pressure.in files created inside scf_dir for QE, and Rmpid-pressure-compound/ folder created for VASP"
+echo "Here, pressure can either be volume fraction or pressure in kbar"
+echo "For energy-volume calculations, use 'mainprogram 26' command that uses mpid-pressure-1.in file."
+echo "For other calculations, update 'input.in' file with mpid-pressure-2.in and run 'mainprogram 1'"

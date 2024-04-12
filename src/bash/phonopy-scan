@@ -2,6 +2,7 @@
 # Writen by Niraj K. Nepal, Ph.D.
 # Script to submit vasp-phonon calculations.
 # Runs for 'mainprogram vp-phi', i = 1 - 7
+source jobscript.sh
 
 file=$(find * -name $3 | tail -n 1)
 step=$4
@@ -34,7 +35,7 @@ if [[ -f setting.conf ]]; then
 else
   dimension="DIM = 2 2 2"
 fi
-echo "ID,comp,NIONS,energy,niteration" > econv_vasp.csv
+echo "ID,comp,NIONS,energy,niteration" > econv.csv
 for ((ii=$1; ii<$2; ++ii)); do
   A=$(grep "v$ii\ " $file | awk '{print $2}')
   B=$(grep "v$ii\ " $file | awk '{print $3}')
@@ -262,14 +263,14 @@ for ((ii=$1; ii<$2; ++ii)); do
 
     elif [ $step == 0 ]; then
      echo "---------------------------------------------------------------------------------------------------------------"
-     echo "Extracting total energies, and stored in 'econv_vasp.csv'"
+     echo "Extracting total energies, and stored in 'econv.csv'"
      echo "---------------------------------------------------------------------------------------------------------------"
      if [ $dft == 'QE' ] || [ $dft == 'qe' ]; then
        e0=`grep ! R$A-$B/relax/scf.out | tail -n 1 | awk '{print $5}'`
        nat=$(grep "number of atoms/cell" R$A-$B/relax/scf.out | tail -n 1 | awk '{ print $5 }')
        niter=$(grep ! R$A-$B/relax/scf.out | wc -l)
        e=`echo "scale=10; $e0 * $Rytoev / $nat " | bc`
-       echo "$A,$B,$nat,$e,$niter" >> econv_vasp.csv
+       echo "$A,$B,$nat,$e,$niter" >> econv.csv
      else
        conv=$(grep "reached required accuracy - stopping structural energy minimisation" R$A-$B/relax/OUTCAR | wc -l)
        nsw_check=$(grep "NSW = 0" R$A-$B/relax/INCAR | wc -l)
@@ -279,7 +280,7 @@ for ((ii=$1; ii<$2; ++ii)); do
        nat=$(grep -a "NIONS" R$A-$B/relax/OUTCAR | awk '{ print $12}')
        e=$(echo "scale=6; $e0/$nat" | bc)
        niter=$(grep "y  w" R$A-$B/relax/OUTCAR | wc -l)
-       echo "$A,$B,$nat,$e,$niter" >> econv_vasp.csv
+       echo "$A,$B,$nat,$e,$niter" >> econv.csv
        else
          echo "not converged: $A $B"
          continue

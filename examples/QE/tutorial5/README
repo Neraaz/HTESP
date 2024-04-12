@@ -1,0 +1,11 @@
+Update input_data['download']['aflow'] dictionary according to your need.
+
+Execute:
+
+mainprogram aflow-search
+
+to search and
+
+mainprogram aflow-download
+
+to generate input files with unique spacegroups.

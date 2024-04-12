@@ -12,10 +12,12 @@ import ast
 import json
 from urllib.request import urlopen
 import pandas as pd
-from ase.cell import Cell
+#from ase.cell import Cell
 from pymatgen.core.structure import IStructure
+from pymatgen.core import structure, lattice
 from pymatgen.core.composition import Composition
 from pymatgen.analysis.structure_matcher import StructureMatcher
+from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 from oqmd_extract import poscar_to_input
 from cif_to_gsinput import pos_to_kpt
 from write_potcar import poscar2potcar
@@ -211,7 +213,15 @@ def poscar_create(data):
           1  Si    aflow:12345
     """
     # Create lattice from lattice parameters using ASE
-    lattice = Cell.fromcellpar(data['geometry']).array
+    lat_data = data['geometry']
+    a = lat_data[0]
+    b = lat_data[1]
+    c = lat_data[2]
+    alpha = lat_data[3]
+    beta = lat_data[4]
+    gamma = lat_data[5]
+    latt = lattice.Lattice.from_parameters(a,b,c,alpha,beta,gamma)
+    lattice_matrix = latt.matrix
     comp = Composition(data['compound']) # Extract compound information
     aflow_id = data['auid'] # Extract AFLOW ID
     species = []
@@ -221,7 +231,9 @@ def poscar_create(data):
         for i in range(int(comp[key])):
             species.append(key)
     # Create structure object
-    struc = IStructure(lattice,species=species,coords=data['positions_fractional'],to_unit_cell=True)
+    struc = IStructure(lattice_matrix,species=species,coords=data['positions_fractional'],to_unit_cell=True)
+    struc = structure.Structure(struc.lattice,struc.species,struc.frac_coords,to_unit_cell=True)
+    struc = SpacegroupAnalyzer(struc, symprec=0.1).get_primitive_standard_structure()
     # Add AFLOW ID as a site property
     site_prop = [aflow_id] * len(struc.sites)
     struc.add_site_property("auid",site_prop)
@@ -304,8 +316,12 @@ def main():
     # Read command-line argument to determine operation mode
     condition = sys.argv[1]
     # Extract input data
-    start = input_data['inp']['start']
-    end = input_data['inp']['end']
+    with open("input.in","r") as read_in:
+        lines = read_in.readlines()
+    start = int(lines[0].split("\n")[0])
+    end = int(lines[1].split("\n")[0])
+    #start = input_data['inp']['start']
+    #end = input_data['inp']['end']
     dft = input_data['inp']['calc']
     # Call search_data function if the mode is search
     if condition == 'search':

@@ -10,7 +10,6 @@ from pymatgen.io.vasp.sets import MPRelaxSet
 from pymatgen.io import pwscf
 from pymatgen.io.vasp.sets import Vasprun
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
-from pymatgen.analysis.magnetism import MagneticStructureEnumerator
 from pymatgen.core import structure
 from pymatgen.analysis.elasticity import diff_fit,ElasticTensor,Stress
 from pymatgen.analysis.elasticity import DeformedStructureSet,find_eq_stress
@@ -121,8 +120,8 @@ def deformation(mpid,obj,dft,orig_prefix,deformed_struc):
             # Create input files with FM ordering if magnetic flag is true
             if magnetic:
                 default_magmoms = input_data['magmom']['magmom']
-                struc = MagneticStructureEnumerator(struc,default_magmoms=default_magmoms,strategies=['ferromagnetic'],truncate_by_symmetry=True).ordered_structures
-                obj.structure = struc[0]
+                struc.add_spin_by_element(default_magmoms)
+                obj.structure = struc
             else:
                 obj.structure = struc
             # Create scf.in file
@@ -174,10 +173,11 @@ def main(mpid,orig_prefix):
         obj.structure = structure.Structure.from_file("R{}-{}/relax/POSCAR".format(mpid,orig_prefix))
     except:
         # Load structure from SCF input file if relaxed POSCAR doesn't exist
-        obj.structure = pwscf.PWInput.from_file("scf_dir/scf-{}.in".format(mpid)).structure
+        obj.structure = pwscf.PWInput.from_file(f"scf_dir/scf-relax-{mpid}-{orig_prefix}.in").structure
     # Get conventional standardized structure
     structure_sym = SpacegroupAnalyzer(obj.structure, symprec=0.1).get_conventional_standard_structure()
     prefix_conv = structure_sym.composition.alphabetical_formula.replace(" ","")
+    print(prefix_conv)
     # Generate deformed structure set
     deformed_struc = DeformedStructureSet(structure_sym,norm_strains=strain)
     # Handle different modes of operation

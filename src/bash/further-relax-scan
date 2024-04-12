@@ -25,7 +25,11 @@ for ((ii=$1; ii<$2; ++ii)); do
       cd ../../
   else
   if [[ -d R$A-$B ]] ; then
-
+  niter=$(grep ! R$A-$B/relax/scf.out | wc -l)
+  if [[ $niter -lt 3 ]]; then
+    echo "Structure already relaxed"
+    continue
+  fi
   cp scf_dir/scf-relax-$A-$B.in R$A-$B/relax/scf.in
    cp run-scf.sh R$A-$B/relax/
       echo " submitting jobs in R$A-$B/relax "

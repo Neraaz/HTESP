@@ -5,7 +5,6 @@ Script is run within 'download-input' bash script."""
 import sys
 import os
 import json
-from pymatgen.analysis.magnetism import MagneticStructureEnumerator
 from htepc import MpConnect
 try:
     PWD = os.getcwd()
@@ -40,8 +39,7 @@ def qe_input(mpid):
     obj.getkpt()
     if magnetic:
         default_magmoms = input_data['magmom']['magmom']
-        struc = MagneticStructureEnumerator(obj.structure,default_magmoms=default_magmoms,strategies=['ferromagnetic'],truncate_by_symmetry=True).ordered_structures
-        obj.structure = struc[0]
+        obj.structure.add_spin_by_element(default_magmoms)
     if os.path.isfile("config.json") or os.path.isfile("../../config.json"):
         d = input_data['download']
     evenkpt = d['inp']['evenkpt']

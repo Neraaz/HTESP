@@ -11,7 +11,6 @@ from ase.io import vasp
 from pymatgen.io.cif import CifParser, CifWriter
 from pymatgen.io.vasp.sets import MPRelaxSet
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
-from pymatgen.analysis.magnetism import MagneticStructureEnumerator
 from pymatgen.core import structure
 import numpy as np
 from write_potcar import poscar2potcar
@@ -240,8 +239,8 @@ def ciftoscf(calc_type,mpid,cif2cell=True,keven=False):
             # Reading magnetic moments from input file
             default_magmoms = input_data['magmom']['magmom']
             # Obtaining Ferromagnetic structure
-            struc = MagneticStructureEnumerator(structure_file,default_magmoms=default_magmoms,strategies=['ferromagnetic'],truncate_by_symmetry=True).ordered_structures
-            obj.structure = struc[0]
+            structure_file.add_spin_by_element(default_magmoms)
+            obj.structure = structure_file
         else:
             obj.structure = structure_file
         # Get composition list
@@ -299,6 +298,7 @@ def main():
     # Iterate over CIF files
     for cif in list_cif:
         mpid = cif.split('.')[0] # Extract Material ID from file name
+        print(mpid)
         # Convert CIF to QE input file
         compound = ciftoscf(calc_type,mpid,cif2cell,False)
         # If mpid.in does not exist, initialize index

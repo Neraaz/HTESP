@@ -1,0 +1,14 @@
+Change input_data['download']['info']['mode'] to 'chemsys'.
+With this mode, code will look into input_data['download']['chemsys'] for search parameters
+
+Execute: 
+
+mainprogram search 
+
+to search
+
+and 
+
+mainprogram download 
+
+to generate input files. All of other processes are similar to tutorial2.

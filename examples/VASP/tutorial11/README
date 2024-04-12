@@ -1,0 +1,21 @@
+Copy mpid.in, input.in, config.json, Rmp-763-Mg1B2 from tutorial9
+
+Copy vasp.in file here and set NSW to 0, and LCHARG to .TRUE.
+
+Update INCAR by executing:
+
+mainprogram download
+
+Now, submit charge density calculation by
+
+mainprogram 3
+
+Once finished, submit bandstructure calculations with
+
+mainprogram 13
+
+mainprogram 15
+
+mainprogram 19
+
+use "vasp-line" keyword in input.in for processing and plotting band structure.

@@ -3,7 +3,7 @@ import glob
 import setuptools
 setuptools.setup(
     name="HTESP",
-    version="0.0.1",
+    version="v1.0",
     author="Niraj K. Nepal",
     author_email="nnepal@ameslab.gov, niraj.nepal@temple.edu",
     license="MIT",

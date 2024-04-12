@@ -63,6 +63,7 @@ for ((ii=$1; ii<$2; ++ii)); do
     cp scf_dir/dos-$A-$B.in R$A-$B/dos/dos.in
     cp scf_dir/pdos-$A-$B.in R$A-$B/dos/pdos.in
     cp run-dos.sh R$A-$B/dos/
+    cp -r R$A-$B/bands/$B.save R$A-$B/dos/
        echo " submitting jobs in R$A-$B "
        cd R$A-$B/dos
           qerun "$A" "$B" "dos"

@@ -1,0 +1,29 @@
+input_data['download']['info'] is crucial for perform search in "element" mode.
+
+Similarly, input_data['pwscf_in'] works as parameters file for generating QE input files.
+
+input_data['pseudo']['PSEUDO'] provides kinetic energy cutoff data.
+
+
+With only config.json file in the folder, execute:
+
+mainprogram search
+
+to perform search in materials database (MP) based on parameters in input_data['download']['info'] dictionary.
+First, it will search over whole space, and apply filter based on dictionary.
+
+It will create input.in, mpid-list.in, download files and folder. Checkout these files.
+
+To generate input files, edit input.in first and second line to starting and ending indices corresponding to
+data in mpid-list.in. Execute:
+
+mainprogram download
+
+to generate input files. It will take some time. You can use job submission script with the command too.
+
+It will generates scf-{mpid}.in files inside scf_dir/ directory, and a mpid.in file is created to 
+store corresponding materials IDs and compound names.
+
+Note that, it may throw some errors if it doesn't find element and its kinetic energy cutoff in input_data['pseudo']['PSEUDO']
+dictionary. Now, one can replace mpid-list.in by mpid.in in input.in to start relaxation.
+

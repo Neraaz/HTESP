@@ -1,2 +1,0 @@
-info={'metal': False, 'FE': False, 'Thermo_stable': False, 'exclude': ['Lu'], 'ntype': (1, 2), 'elm': 'B', 'prop': ['material_id', 'formula_pretty', 'structure', 'formation_energy_per_atom', 'band_gap', 'energy_above_hull', 'total_magnetization', 'ordering', 'total_magnetization_normalized_formula_units', 'num_magnetic_sites', 'theoretical', 'composition_reduced']}
-inp={'start': 1, 'end': 2, 'nband': 200, 'plot': 'phband', 'calc': 'vasp'}

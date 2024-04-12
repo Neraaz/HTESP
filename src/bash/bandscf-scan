@@ -35,10 +35,12 @@ for ((ii=$1; ii<$2; ++ii)); do
      cd R$A-$B/bands/
        echo "Creating soft links to CHGCAR and WAVECAR of R$A-$B/relax/"
        ln -s ../relax/CHGCAR CHGCAR
-       ln -s ../relax/WAVECAR WAVECAR
        nel=$(grep "NELECT" ../relax/OUTCAR | awk '{ print $3 }')
        nel=$(echo $nel/1 | bc)
        soc=$(grep "LSORBIT = .TRUE." INCAR | wc -l)
+       if [[ -f ../../vasp-band.in ]]; then
+         soc=$(grep "LSORBIT .TRUE." ../../vasp-band.in | wc -l)
+       fi
        if [ $soc -gt 0 ]; then
            nbnd=$(echo $nel+20 | bc)
            echo "Number of band used in electronic bandstructure calculation [number of electrons ($nel) + 20]: $nbnd"
@@ -75,6 +77,7 @@ for ((ii=$1; ii<$2; ++ii)); do
          echo "METAGGA tag detected in vasp-band.in"
        elif [[ $hybrid_check -gt 0 ]]; then
          echo "LHFCALC tag detected in vasp-band.in"
+         ln -s ../relax/WAVECAR WAVECAR
        else
          echo "GGA or LDA band calculations" 
        fi

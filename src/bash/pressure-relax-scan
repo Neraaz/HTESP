@@ -18,8 +18,8 @@ for ((ii=$1; ii<$2; ++ii)); do
       mkdir R$A-$B/pressure
     fi
     NP=$(wc -l pressure.in | awk '{print $1}')
-    if [[ -f mpid-pressure-noelph.in ]] && [[ ! -f R$A-$B/pressure/mpid-pressure.in ]]; then
-      grep "$B" mpid-pressure-noelph.in | grep "$A" > R$A-$B/pressure/mpid-pressure.in
+    if [[ -f mpid-pressure-1.in ]] && [[ ! -f R$A-$B/pressure/mpid-pressure.in ]]; then
+      grep "$B" mpid-pressure-1.in | grep "$A" > R$A-$B/pressure/mpid-pressure.in
     fi
     if [ $dft == 'vasp' ] || [ $dft == 'VASP' ] ; then
       #mainprogram pressure-input

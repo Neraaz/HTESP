@@ -1,0 +1,9 @@
+Generate VASP inputs from several database in current folder.
+
+Each time, VASP input files are generated inside R{id}-{name}, and their {id} and {name} are stored in mpid.in.
+
+Execute:
+
+mainprogram data-combine 
+
+to combine data.

@@ -1,0 +1,11 @@
+Edit content of "job_script" dictionary in config.json file.
+Currently, it generate jobscripts for QE scf and phonon or (electron-phonon) calculations.
+
+Execute:
+
+mainprogram jobscript
+
+command to create jobscript files from batch.header. It simply adds the command at the end of file.
+Experiment with various keys and values within "job_script" dictionary. Also look for detail documentation
+file for available options.
+

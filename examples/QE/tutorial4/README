@@ -1,0 +1,14 @@
+Update input_data['download']['oqmd'] dictionary.
+
+Execute:
+
+mainprogram oqmd-search
+
+to search and
+
+mainprogram oqmd-download
+
+to generate input files.
+
+Here, tune "limit" keyword to define search space. If it "limit" is too high, 
+it will reduce by 0.1 times and search it again.

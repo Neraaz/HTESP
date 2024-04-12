@@ -80,6 +80,7 @@ for ((ii=$1; ii<$2; ++ii)); do
    echo "---------------------------------------------------------------------------------------------------------------"
     if [[ -d R$A-$B/dos/ ]]; then
      cd R$A-$B/dos
+     cp scf-dos.in scf.in
      plot.py pdos $A $B $x
      mv pdos-$B.pdf ../../plots/plot-pdos-$A-$B.pdf
      cd ../../

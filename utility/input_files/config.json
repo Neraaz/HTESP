@@ -14,8 +14,8 @@
     }
   },
   "download": {
-    "info": {
-      "mode": "chemsys",
+    "mode": "element",
+    "element": {
       "metal": false,
       "FE": false,
       "thermo_stable": false,
@@ -41,7 +41,7 @@
       "size_constraint": 60,
       "ntype_constraint": 3,
       "must_include": ["Mg","B"],
-      "form_en": false,
+      "FE": false,
       "metal": false,
       "magnetic": true,
       "spacegroup": null
@@ -52,7 +52,6 @@
       "size_constraint": 60,
       "ntype_constraint": 3,
       "must_include": [],
-      "form_en": true,
       "metal": false,
       "magnetic": true,
       "spacegroup": null,
@@ -261,8 +260,8 @@
       "Pu": 30,
       "Am": 30,
       "Cm": 30,
-      "B":35,
-      "C":45
+      "B": 35,
+      "C": 45
     }
   },
   "substitute": {
@@ -304,26 +303,6 @@
       "electron_maxstep": 300
     }
   },
-  "bgw_input": {
-    "kpt":[10,10,10],
-    "koffset":[0.5,0.5,0.5],
-    "fft": [24, 24, 24],
-    "random_kshift": [0.5, 0.5, 0.5],
-    "qshift": {
-      "qshift": 0.001,
-      "index": 2
-    },  
-    "time_rev": ".false.",
-    "nband": {
-      "nbnd": 30, 
-      "vbnd": 6,
-      "vbnd_fi": 4,
-      "cbnd_fi": 11, 
-      "plotband": 15
-    },  
-    "vxc_diag": [1, 14],
-    "vxc_offdiag": [0, 0]
-  },  
   "strain": [-0.01, -0.005, 0.005, 0.01],
   "wanniertools_input": {
     "tb_file": {

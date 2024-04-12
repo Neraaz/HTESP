@@ -1,6 +1,0 @@
-1
-2
-200 0
-mpid-list.txt
-phband
-DFT = QE

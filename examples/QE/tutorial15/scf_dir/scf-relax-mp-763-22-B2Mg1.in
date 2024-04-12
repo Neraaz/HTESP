@@ -1,0 +1,47 @@
+&CONTROL
+  calculation = 'vc-relax',
+  etot_conv_thr = 1d-05,
+  forc_conv_thr = 0.0001,
+  nstep = 300,
+  outdir = './',
+  prefix = 'B2Mg1',
+  pseudo_dir = '../../pp/',
+  restart_mode = 'from_scratch',
+  tprnfor = .TRUE.,
+  tstress = .TRUE.,
+/
+&SYSTEM
+  degauss = 0.02,
+  ecutrho = 280,
+  ecutwfc = 35,
+  occupations = 'smearing',
+  smearing = 'gauss',
+  ibrav = 0,
+  nat = 3,
+  ntyp = 2,
+/
+&ELECTRONS
+  conv_thr = 1d-16,
+  diagonalization = 'david',
+  electron_maxstep = 300,
+  mixing_beta = 0.7,
+  mixing_mode = 'plain',
+/
+&IONS
+  ion_dynamics = 'bfgs',
+/
+&CELL
+/
+ATOMIC_SPECIES
+  B  10.8110 B.upf
+  Mg  24.3050 Mg.upf
+ATOMIC_POSITIONS crystal
+Mg            0.0000000000        0.0000000000        0.0000000000
+B             0.6429649108        0.6429649108        0.5358188108
+B             0.3570350892        0.3570350892        0.4641811892
+K_POINTS automatic
+  15 15 11 0 0 0
+CELL_PARAMETERS angstrom
+   1.519270072   2.578289909  -0.515378758
+  -1.519270072   2.578289909  -0.515378758
+  -0.000000000   4.258766781   3.375966501

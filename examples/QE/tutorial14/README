@@ -1,0 +1,16 @@
+Key files required are,
+
+config.json, input.in, mpid.in, scf_dir/ directory with scf-{mpid}.in files
+
+There are 2 modes to substitute.
+
+1st mode, substitute by composition in compound
+
+2nd mode substitute the each key by its value pair
+
+To substitute, execute:
+
+mainprogram 29
+
+scf-{mpid}-j.in files are generated with j = 1,2,.... inside scf_dir
+mpid-substitute.in file is written. Now use this as mpid.in for further calculations

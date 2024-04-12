@@ -1,0 +1,26 @@
+Copy all files from tutorial9 with relaxed structure
+
+edit config.json file, especially, input_data['job_script'] dictionary
+
+copy also batch.header file to working directory
+
+Execute:
+
+mainprogram jobscript
+
+to obtain submission scripts for band and DOS calculations.
+
+Once relaxed, Prepare scf input files for band and DOS calculations by executing:
+
+mainprogram 4
+
+To obtain bandstructure and density of states (DOS),
+
+perform process from 13 to 18.
+
+Finally, plot can be obtain with
+
+mainprogram 19
+
+For band structure, use eband keyword in 5th line of input.in
+For DOS, use pdos keyword in 5th line of input.in

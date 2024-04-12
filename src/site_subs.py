@@ -9,7 +9,6 @@ from pymatgen.io.vasp.inputs import Poscar
 from pymatgen.io.vasp.sets import MPRelaxSet
 from pymatgen.io import pwscf
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
-from pymatgen.analysis.magnetism import MagneticStructureEnumerator
 from pymatgen.core import structure
 from cif_to_gsinput import pos_to_kpt
 from write_potcar import poscar2potcar
@@ -74,12 +73,12 @@ def substitution(mpid,obj):
             obj.structure = pwscf.PWInput.from_file("scf_dir/scf-{}.in".format(mpid)).structure
         structure_sym = SpacegroupAnalyzer(obj.structure, symprec=0.1).get_primitive_standard_structure()
         if mode == 1:
-            if isinstance(sb.sub,dict):
-                list_str = us(structure_sym,sb.elm,sb.sub)
-            elif isinstance(sb.sub,tuple):
+            if isinstance(sb['sub'],dict):
+                list_str = us(structure_sym,sb['elm'],sb['sub'])
+            elif isinstance(sb['sub'],list):
                 list_str = []
-                for sub_i in sb.sub:
-                    list_str += us(structure_sym,sb.elm,sub_i)
+                for sub_i in sb['sub']:
+                    list_str += us(structure_sym,sb['elm'],sub_i)
         elif mode == 2:
             new_sub = sb['new_sub']
             nelement = len(structure_sym)
@@ -88,6 +87,7 @@ def substitution(mpid,obj):
                     structure_sym[i].specie.symbol = new_sub[str(structure_sym[i].specie.symbol)]
                 except:
                     continue
+            #structure_sym.merge_sites()
             list_str = [structure_sym]
         else:
             print("wrong mode. Use either mode = 1 or 2 \n")
@@ -134,13 +134,13 @@ def substitution(mpid,obj):
                 magnetic = input_data['pwscf_in']['magnetic']
                 if magnetic:
                     default_magmoms = input_data['magmom']['magmom']
-                    struc = MagneticStructureEnumerator(struc,default_magmoms=default_magmoms,strategies=['ferromagnetic'],truncate_by_symmetry=True).ordered_structures
-                    obj.structure = struc[0]
+                    struc.add_spin_by_element(default_magmoms)
+                    obj.structure = struc
                 else:
                     obj.structure = struc
                 comp_list = []
-                for composition in obj.structure.composition.elements:
-                    comp_list.append(composition.name)
+                for composition in struc.composition.elements:
+                    comp_list.append(str(composition))
                 obj.comp_list = comp_list
                 obj.getkpt()
                 evenkpt = input_data['download']['inp']['evenkpt']

@@ -1,0 +1,17 @@
+check input_data['conv_test'] dictionary for convergence tests parameter.
+
+Currently, only ecut and kpoint convergence are available.
+
+change input_data['conv_test']['param'] to 'ecut' for kinetic energy cutoff convergence tests
+
+change to 'kpoint' for kpoint convergence test.
+
+To run the test, execute:
+
+mainprogram convtest
+
+To extract the result:
+
+mainprogram 22
+
+Total energy will be in Ry per unit cell. Change to eV/atom

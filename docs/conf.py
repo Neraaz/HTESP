@@ -25,7 +25,7 @@ copyright = '2024, Niraj K Nepal'
 author = 'Niraj K Nepal, Lin-Lin Wang'
 
 # The full version, including alpha/beta/rc tags
-release = '0.0.1'
+release = 'v1.0'
 
 
 # -- General configuration ---------------------------------------------------

@@ -382,7 +382,7 @@ def extract(ntype,properties,elm,exclude_el,nelm=1,metal=False,
     data.to_csv(out)
     return data
 
-def download_by_entry(entries,must_include,size_constraint=20,ntype_constraint=5,form_en=False,metal=False,magnetic=False,spacegroup=None,properties=None):
+def download_by_entry(entries,must_include,size_constraint=20,ntype_constraint=5,FE=False,metal=False,magnetic=False,spacegroup=None,properties=None):
     """
     Function to extract and create input files using "mp_api.client.MPRester.get_entries_in_chemsys" Function of the materials project API package (pip install mp_api).
     This mode is turned on when using 'mode':'chemsys' in 'download.py' file.
@@ -397,7 +397,7 @@ def download_by_entry(entries,must_include,size_constraint=20,ntype_constraint=5
         Number of different types of ions. Upper bound not included. Default is 5.
     must_include : list
         Elements that must be included in the compounds.
-    form_en : bool, optional
+    FE : bool, optional
         True if the formation energy is negative. Default is False.
     metal : bool, optional
         True if the compound is a metal. Default is False.
@@ -460,7 +460,7 @@ def download_by_entry(entries,must_include,size_constraint=20,ntype_constraint=5
             gap_logic = band_gap < 0.0001
         else:
             gap_logic = True
-        if form_en:
+        if FE:
             fe_logic = form_energy < 0.0
         else:
             fe_logic = True
@@ -513,25 +513,25 @@ def main():
         if os.path.isfile("config.json") or os.path.isfile("../../config.json"):
             # Read settings from 'config.json' to create 'mpid-list.in' file
             d = input_data["download"]
-            mode = d['info']['mode']
-            ntype = d['info']['ntype']
-            exclude_el = d['info']['exclude']
-            elm_list = d['info']['elm']
+            mode = d['mode']
+            ntype = d['element']['ntype']
+            exclude_el = d['element']['exclude']
+            elm_list = d['element']['elm']
             nelm = len(elm_list)
-            properties = d['info']['prop']
-            metal=d['info']['metal']
-            neg_fe=d['info']['FE']
-            thermo_stable=d['info']['thermo_stable']
-            ordering=d['info']['ordering']
-            nsites=d['info']['nsites']
-            spacegroup=d['info']['spacegroup']
+            properties = d['element']['prop']
+            metal=d['element']['metal']
+            neg_fe=d['element']['FE']
+            thermo_stable=d['element']['thermo_stable']
+            ordering=d['element']['ordering']
+            nsites=d['element']['nsites']
+            spacegroup=d['element']['spacegroup']
         else:
             # Provide default settings if 'config.json' doesn't exist
             print("input file config.json not found\n")
             print("Create one with following format\n")
-            msg="""info={'mode':'element','metal':True, 'FE':True, 'exclude':["O", "N", "F", "Cl", "Br", "I"],'ntype':(1,2), 'elm':['B'], 'prop':["material_id", "formula_pretty", "structure", "formation_energy_per_atom", "band_gap", "energy_above_hull","nsites","ordering","nsites"],'ordering':'NM','nsites':10,'spacegroup':None}
+            msg="""element={'metal':True, 'FE':True, 'exclude':["O", "N", "F", "Cl", "Br", "I"],'ntype':(1,2), 'elm':['B'], 'prop':["material_id", "formula_pretty", "structure", "formation_energy_per_atom", "band_gap", "energy_above_hull","nsites","ordering","nsites"],'ordering':'NM','nsites':10,'spacegroup':None}
 inp=    {'start':1, 'end':50, 'nkpt':200, 'evenkpt': False, 'plot':'phband', 'calc':'QE'}
-chemsys={'entries':['B'],'size_constraint':20,'ntype_constraint':5,'must_include':['Mg'],'form_en':False,'metal':False,'magnetic':False,'spacegroup':None}"""
+chemsys={'entries':['B'],'size_constraint':20,'ntype_constraint':5,'must_include':['Mg'],'FE':False,'metal':False,'magnetic':False,'spacegroup':None}"""
             print(msg + "\n")
             print("Utilizing default settings\n")
             ntype = (1,2) #Number of different types of element in the compound.
@@ -547,11 +547,11 @@ chemsys={'entries':['B'],'size_constraint':20,'ntype_constraint':5,'must_include
             ordering = 'FM'
             spacegroup = None
             properties=["material_id", "formula_pretty", "structure", "formation_energy_per_atom", "band_gap", "energy_above_hull","total_magnetization","ordering",'total_magnetization_normalized_formula_units', 'num_magnetic_sites','theoretical','nsites']
-            default1={'mode':'element','metal':metal,'FE':neg_fe, 'thermo_stable':thermo_stable, 'exclude':exclude_el,'ntype':(1,2),'elm':[elm],'prop':properties,'ordering':ordering,'nsites':nsites,'spacegroup':spacegroup}
+            default1={'metal':metal,'FE':neg_fe, 'thermo_stable':thermo_stable, 'exclude':exclude_el,'ntype':(1,2),'elm':[elm],'prop':properties,'ordering':ordering,'nsites':nsites,'spacegroup':spacegroup}
             default2={'start':1, 'end':2, 'nkpt':200, 'evenkpt': False, 'plot':'phband','calc':'QE'}
-            chemsys={'entries':['B','Mg'],'size_constraint':20,'ntype_constraint':5,'must_include':['Mg','B'],'form_en':False,'metal':False, 'magnetic':False,'spacegroup':spacegroup}
+            chemsys={'entries':['B','Mg'],'size_constraint':20,'ntype_constraint':5,'must_include':['Mg','B'],'FE':False,'metal':False, 'magnetic':False,'spacegroup':spacegroup}
             d = {
-                 'info':default1,
+                 'element':default1,
                  'inp':default2,
                  'chemsys':chemsys
                  }
@@ -572,7 +572,7 @@ chemsys={'entries':['B'],'size_constraint':20,'ntype_constraint':5,'must_include
         elif mode == 'chemsys':
             # Download data for compounds based on chemical system
             download_by_entry(d['chemsys']['entries'],d['chemsys']['must_include'],d['chemsys']['size_constraint'],d['chemsys']['ntype_constraint'],
-                              d['chemsys']['form_en'],d['chemsys']['metal'],d['chemsys']['magnetic'],d['chemsys']['spacegroup'],properties)
+                              d['chemsys']['FE'],d['chemsys']['metal'],d['chemsys']['magnetic'],d['chemsys']['spacegroup'],properties)
         elif mode == 'fromcif':
             # List CIF files
             list_cif = glob.glob("*.cif",recursive=True)

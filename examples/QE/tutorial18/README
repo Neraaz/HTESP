@@ -1,0 +1,26 @@
+Once structure is relaxed with tutorial9.
+
+Prepare input files for different volume using "pressure.in". This creates inputs file by
+changing volumes isotropically by executing:
+
+mainprogram pressure-input
+
+Check scf_dir folder for input files.
+
+Execute:
+
+mainprogram 26
+
+to perform scf calculations with different isotropic volumes by allowing change in shape.
+
+After finishing, execute:
+
+mainprogram ev-collect
+
+to collect volume-energy data in "e-v.dat" inside Rmp-763-Mg1B2/pressure folder.
+
+Now one can calculate equation of state quantities with
+
+mainprogram eos-bm or
+
+mainprogram eos-vinet

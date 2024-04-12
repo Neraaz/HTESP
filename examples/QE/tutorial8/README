@@ -1,0 +1,7 @@
+Copy cif files from reference to current directory.
+
+Execute:
+
+mainprogram download
+
+Here, input_data['download']['mode'] is set to 'fromcif'.

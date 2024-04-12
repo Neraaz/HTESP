@@ -76,7 +76,7 @@ def main():
     Main function to generate and plot convex hull phase diagram.
 
     This function serves as the entry point to generate a convex hull phase diagram based on
-    energy data provided in a CSV file. It reads the energy data from the 'econv_vasp.csv' file,
+    energy data provided in a CSV file. It reads the energy data from the 'econv.csv' file,
     generates the convex hull phase diagram using the plot_phase function, and prints a message
     indicating the results are stored in 'convexhull.csv' file.
 
@@ -87,7 +87,7 @@ def main():
     None
 
     """
-    energyfile = "econv_vasp.csv"
+    energyfile = "econv.csv"
     data = pand.read_csv(energyfile)
     data = pand.DataFrame(data)
     plot_phase(data)

@@ -1,0 +1,11 @@
+For volume change, one can use fractional number to scale lattice vector, such as .90, .98,....1.08
+
+For pressure change, use integer pressure in kbar such as 1, 100, 1000. Do not use float number here.
+
+Once we have relaxed structure, use "pressure.in" file to generate input files with different volume or pressure.
+
+Execute:
+
+mainprogram pressure-input
+
+to generate input files.

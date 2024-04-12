@@ -8,10 +8,10 @@ from ase.io import espresso, vasp
 
 filename = sys.argv[1]
 option = sys.argv[2]
-try:
+dft = sys.argv[3]
+if dft == 'QE':
     data = espresso.read_espresso_in(filename)
-except FileNotFoundError:
-    print("QE file not found, trying to read vasp POSCAR\n")
+else:
     data = vasp.read_vasp(filename)
 
 if option == "bandpath":
@@ -36,7 +36,10 @@ elif option == "crys2cart":
     sym = data.symbols
     with open("pos-crys-2-cart.dat", "w") as f:
         for i in range(pos.shape[0]):
-            f.write(sym[i] + " " + str(pos[i][0]))
-            f.write(" " + str(pos[i][1]) + " " + str(pos[i][2]) +  "\n")
+            if dft == 'QE':
+                f.write(sym[i] + " " + str(pos[i][0]))
+                f.write(" " + str(pos[i][1]) + " " + str(pos[i][2]) +  "\n")
+            else:
+                f.write(str(pos[i][0]) + " " + str(pos[i][1]) + " " + str(pos[i][2]) + " " + sym[i] +  "\n")
 else:
     print("option is either 'bandpath', crys2cart, or 'cart2crys'\n")

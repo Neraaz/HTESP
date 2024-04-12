@@ -61,6 +61,7 @@ for ((ii=$1; ii<$2; ++ii)); do
     nk1=$(tail -n 1 scf_dir/kpoint-$A-$B.dat | awk '{print $1}')
     nk2=$(tail -n 1 scf_dir/kpoint-$A-$B.dat | awk '{print $2}')
     nk3=$(tail -n 1 scf_dir/kpoint-$A-$B.dat | awk '{print $3}')
+    # Fine k-mesh for electron-phonon calculations
     mk1=$(echo $nk1*2 | bc)
     mk2=$(echo $nk2*2 | bc)
     mk3=$(echo $nk3*2 | bc)

@@ -1,0 +1,24 @@
+First, edit jobscript run-scf.sh to include your batch submission script.
+
+Start performing relaxation by executing:
+
+mainprogram 1
+
+after calculation finishes, extract the total energy by executing:
+
+mainprogram e0
+
+This will produce econv.csv. Check "niteration". If it is larger than 2, then resubmit calculations
+as follows.
+
+First update input file with
+
+mainprogram 2
+
+resubmit the calculations with
+
+mainprogram 3
+
+Again extract the total energy with "mainprogram e0" and check niteration.
+
+Repeat, process = 2 and 3 simultaneously until niteration becomes 2.

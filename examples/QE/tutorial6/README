@@ -1,0 +1,6 @@
+Generate input in magnetic configuration.
+
+First set input_data['pwscf_in']['magnetic'] to true
+
+
+repeat tutorial2, tutorial3, tutorial4, tutorial5,.....

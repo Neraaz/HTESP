@@ -84,9 +84,9 @@ def main():
             os.system("generate_submission.py")
         elif process == 'download':
             download = input_data['download']
-            if download['info']['mode'] in ('element', 'chemsys'):
+            if download['mode'] in ('element', 'chemsys'):
                 os.system("download-input" + " " + str(start) + " " + str(end) + " " + element)
-            elif download['info']['mode'] == 'fromcif':
+            elif download['mode'] == 'fromcif':
                 cif2cell=download['inp']['use_cif2cell']
                 print("\n")
                 print("--------------------------------------------------------------\n")
@@ -103,11 +103,13 @@ def main():
                 if download['inp']['calc'] in ('QE','qe'):
                     print("Check scf_dir folder for inputs and mpid.in tracking file\n")
                 print("--------------------------------------------------------------\n")
-            else:
+            elif download['mode'] == 'fromvasp':
                 print("\n")
                 print("--------------------------------------------------------------\n")
                 print("processing .vasp files for {} calculations".format(download['inp']['calc']) + "\n")
                 os.system("poscar_to_vasp.py")
+            else:
+                os.system("download-input" + " " + str(start) + " " + str(end) + " " + element)
         elif process == 'convtest':
             os.system("convergence_test.py calculate")
         elif process == 'pressure-input':
@@ -137,9 +139,9 @@ def main():
         elif process == 'search':
             if os.path.isfile('config.json') or os.path.isfile("../../config.json"):
                 download = input_data['download']
-                mode = download['info']['mode']
+                mode = download['mode']
                 print("--------------------------------------------------------------\n")
-                print("'{}' mode found".format(download['info']['mode']) + "\n")
+                print("'{}' mode found".format(download['mode']) + "\n")
             else:
                 mode = 'element'
             if mode not in ('fromcif','fromvasp'):
@@ -174,8 +176,7 @@ def main():
             print("For information about QE+VASP calculations, process = process-info\n")
             print("process = epw-info for EPW calculations \n")
             print("process = wt-info for wanniertools calculations \n")
-            print("process = vasp-info for vasp+phonon calculations \n")
-            print("process = elastic-input, to create vasp input files with deformations\n")
+            print("process = elastic-input, to create input files with deformations\n")
             print("process = compute-elastic, to compute elastic properties\n")
             print("process = magenum, to create vasp input files for different magnetic state\n")
             print("process = magmom_extract, extract magnetic moment\n")
@@ -196,7 +197,6 @@ def main():
             print(" Also do 'mainprogram process-info' and look for process 23-25 for automated calculations.")
             print(" Requires run-dynmat.sh, run-scf.sh, and Vasp.pm files in working directory\n")
             vasp_potcar="""#For POTCAR. Suppose we have POTCARS as  POT_GGA_PAW_PBE/Mg_p/POTCAR
-                          #Mg_p can be found in POTCAR.spec
                           #pmg config -p /path_to/POT_GGA_PAW_PBE PBE52
                           # After that add path to .pmgrc.yaml
                           #pmg config --add PMG_VASP_PSP_DIR PBE52"""
@@ -208,45 +208,8 @@ def main():
             print("First execute 'history -a' in command line before process = history.\n")
             print("For MacOs, replace it by ~/.zsh_history in the mainprogram file\n")
             print("####################################################################")
-            print("Please refer to the Online Documentation for further information and guidance.\n") 
+            print("Please refer to the Online Documentation for further information and guidance.\n")
             print("##################################################################\n")
-        elif process == 'vasp-info':
-            print("Strucutural relaxation, substitution, pressure, magnetic orderings")
-            print(" (isotropic, changing scaling factor of lattice) can be performed")
-            print(" similary as of QE, but using DFT = vasp (or VASP) in input.in file\n")
-            print("For process = 1 - 3, Structural relaxation similar to QE\n")
-            print("process = 13 ==> Submit bandstructure calculations\n")
-            print("process = 15 ==> processing bandstructure\n")
-            print("process = 16 ==> Submit DOS and pDOS calculations\n")
-            print("process = 19 ==> plotting bandstructure or DOS/pDOS")
-            print(" Use 'eband', or  'pdos' in input.in\n")
-            print("Thermodynamic quantities can be calculated using VASP and phonopy (vp-ph)\n")
-            print("process = primtoconv, to change structure into conventional unit cell")
-            print(",useful for vasp+phonopy calculations\n")
-            print("process = vp-pd, computing thermodynamic stability")
-            print(" using pymatgen with 'econv_vasp.csv' file\n")
-            print("process = phono1, to make supercell")
-            print(" and submit scf calculations for different displacement\n")
-            print("process = phono2, computing force constant\n")
-            print("process = phono3, computing and plotting thermodynamic properties\n")
-            print("process = phono4, computing and plotting phonon band\n")
-            print("process = phono5, printing symmetry analysis\n")
-            print("process = phono-qha,")
-            print(" Computing temperature and pressure dependent thermal properties\n")
-            print("process = ev-collect, extracting the total energies")
-            print(" for different isotropic volumes from VASP calculations\n")
-            print("Do 'mainprogram 26' calculation before process = ev-collect\n")
-            print("process = phono1-pressure,")
-            print(" submit phono1 calculations for different isotropic volumes\n")
-            print("process = phono2-pressure,")
-            print(" submit phono2 calculations for different isotropic volumes\n")
-            print("process = phono3-pressure,")
-            print(" submit phono3 calculations for different isotropic volumes\n")
-            print("process = phono4-pressure,")
-            print(" submit phono4 calculations for different isotropic volumes\n")
-            print("process = eos-bm, equation of state fitting using Birch-Murnaghan fit\n")
-            print("process = eos-vinet, equation of state fitting using vinet fit\n")
-            print("process = vp-ph-help, printing help page\n")
         elif process == 'phono-qha':
             os.system("phonopy-scan" + " " + str(start) + " " + str(end) + " " + element + " " + "vp-ph-qha")
         elif process == 'eos-bm':
@@ -255,7 +218,7 @@ def main():
             os.system("phonopy-scan" + " " + str(start) + " " + str(end) + " " + element + " " + "eos-vinet")
         elif process == 'ev-collect':
             os.system("phonopy-scan" + " " + str(start) + " " + str(end) + " " + element + " " + "ev-collect")
-        elif process == 'vp-pd':
+        elif process == 'pd':
             os.system("pymatgen_phase_diagram.py")
         elif process == 'primtoconv':
             with open(element, "r") as read_elm:
@@ -369,7 +332,7 @@ def main():
             print("**********************************************************************\n")
             print("Adjust start and end in input.in according to mpid-list.in\n")
             print("*************************************************************************\n")
-            print("process = e0, to extract the total energies per atom and store in econv_vasp.csv file (QE+VASP)\n")
+            print("process = e0, to extract the total energies per atom and store in econv.csv file (QE+VASP)\n")
             print("For process = 1, relax-scan. This will relax the structure for the first time (QE+VASP).\n")
             print("Now a Rmpid-compound and Rmpid-compound/relax folders are created\n")
             print("process = 2 updates the input file with new structure (QE+VASP)\n")
@@ -419,10 +382,35 @@ def main():
             print("File ph-q.in file has nq1 nq2 nq3 and metal info on different line.")
             print("if T or t are used, calculation is performed for metal.\n")
             print("For process = 28, delete pressure folder (QE)\n")
-            print("For process = 29, element substitution. check 'site_subs.py h' (QE+VASP)\n")
+            print("For process = 29, element substitution. (QE+VASP)\n")
             print("For process = 30, creating inputs for different magnetic orderings (VASP)\n")
             print("For process = convtest, perform convergence tests for Ecut and kpoint mesh (QE+VASP)\n")
             print("For process = compound, Get info about compounds (QE+VASP)\n")
+            print("process = primtoconv, to change structure into conventional unit cell")
+            print(",useful for phonopy calculations\n")
+            print("process = pd, computing thermodynamic stability (QE+VASP)")
+            print(" using pymatgen with 'econv.csv' file\n")
+            print("process = phono1, to make supercell (QE+VASP)")
+            print(" and submit scf calculations for different displacement\n")
+            print("process = phono2, computing force constant (QE+VASP)\n")
+            print("process = phono3, computing and plotting thermodynamic properties (QE+VASP)\n")
+            print("process = phono4, computing and plotting phonon band (QE+VASP)\n")
+            print("process = phono5, printing symmetry analysis (QE+VASP)\n")
+            print("process = phono-qha,")
+            print(" Computing temperature and pressure dependent thermal properties\n")
+            print("process = ev-collect, extracting the total energies (QE+VASP)")
+            print(" for different isotropic volumes from VASP calculations\n")
+            print("Do 'mainprogram 26' calculation before process = ev-collect (QE+VASP)\n")
+            print("process = phono1-pressure, (QE+VASP)")
+            print(" submit phono1 calculations for different isotropic volumes\n")
+            print("process = phono2-pressure, (QE+VASP)")
+            print(" submit phono2 calculations for different isotropic volumes\n")
+            print("process = phono3-pressure, (QE+VASP)")
+            print(" submit phono3 calculations for different isotropic volumes\n")
+            print("process = phono4-pressure, (QE+VASP)")
+            print(" submit phono4 calculations for different isotropic volumes\n")
+            print("process = eos-bm, equation of state fitting using Birch-Murnaghan fit (QE+VASP)\n")
+            print("process = eos-vinet, equation of state fitting using vinet fit (QE+VASP)\n")
             print("**********************************************************************************")
             print("*********************************************************************************\n")
         else:

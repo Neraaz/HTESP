@@ -10,7 +10,6 @@ from ase.io.vasp import read_vasp
 from pymatgen.io.vasp.sets import MPRelaxSet
 from pymatgen.core import structure
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
-from pymatgen.analysis.magnetism import MagneticStructureEnumerator
 import qmpy_rester as qr
 from cif_to_gsinput import pos_to_kpt
 from write_potcar import poscar2potcar
@@ -117,8 +116,8 @@ def poscar_to_input(calc_type,mpid,compound,keven):
             # Reading magnetic moments from input file
             default_magmoms = input_data['magmom']['magmom']
             # Obtaining Ferromagnetic structure
-            struc = MagneticStructureEnumerator(structure_file,default_magmoms=default_magmoms,strategies=['ferromagnetic'],truncate_by_symmetry=True).ordered_structures
-            obj.structure = struc[0]
+            structure_file.add_spin_by_element(default_magmoms)
+            obj.structure = structure_file
         else:
             obj.structure = structure_file
         # Get composition list
@@ -313,10 +312,14 @@ def download(calc_type,start,end):
 if __name__ == "__main__":
     CONDITION = sys.argv[1]
     # Read config.json file and creates KWARGS dictionary
+    with open("input.in","r") as read_in:
+        lines = read_in.readlines()
+    START = int(lines[0].split("\n")[0])
+    END = int(lines[1].split("\n")[0])
     if os.path.isfile("config.json"):
         d = input_data['download']
-        START = d['inp']['start']
-        END = d['inp']['end']
+        #START = d['inp']['start']
+        #END = d['inp']['end']
         doqmd = d['oqmd']
         LIMIT = doqmd['limit']
         NTYPE = doqmd['ntype_constraint']
