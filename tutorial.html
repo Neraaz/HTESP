@@ -46,10 +46,10 @@
   
   
   
-    <title>Submission scripts generation &#8212; HTESP 0.0.1 documentation</title>
+    <title>Submission scripts generation &#8212; HTESP v1.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=83e35b93" />
     <link rel="stylesheet" type="text/css" href="_static/material.css?v=79c92029" />
-    <script src="_static/documentation_options.js?v=d45e8c67"></script>
+    <script src="_static/documentation_options.js?v=e160b93e"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -79,7 +79,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="index.html" title="HTESP 0.0.1 documentation"
+        <a href="index.html" title="HTESP v1.0 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -91,7 +91,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">HTESP 0.0.1 documentation</span>
+          <span class="md-header-nav__topic">HTESP v1.0 documentation</span>
           <span class="md-header-nav__topic"> Submission scripts generation </span>
         </div>
       </div>
@@ -148,7 +148,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="index.html" class="md-tabs__link">HTESP 0.0.1 documentation</a></li>
+          <li class="md-tabs__item"><a href="index.html" class="md-tabs__link">HTESP v1.0 documentation</a></li>
       </ul>
     </div>
   </nav>
@@ -160,13 +160,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="index.html" title="HTESP 0.0.1 documentation" class="md-nav__button md-logo">
+    <a href="index.html" title="HTESP v1.0 documentation" class="md-nav__button md-logo">
       
         <img src="_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="index.html"
-       title="HTESP 0.0.1 documentation">HTESP 0.0.1 documentation</a>
+       title="HTESP v1.0 documentation">HTESP v1.0 documentation</a>
   </label>
   
 
@@ -307,15 +307,9 @@ submission<span class="w"> </span>here
 </ul>
 <p>This mode is activated when <code class="docutils literal notranslate"><span class="pre">'mode':'fromcif'</span></code> is set in the <a class="reference internal" href="param.html#download-label"><span class="std std-ref">download</span></a> section.</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="nt">"download"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="nt">"info"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">"mode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"fromcif"</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">"metal"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">"FE"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">"thermo_stable"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">"exclude"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"Lu"</span><span class="p">],</span>
-<span class="w">    </span><span class="nt">"..."</span><span class="p">:</span><span class="w"> </span><span class="s2">"..."</span>
+<span class="w">  </span><span class="nt">"mode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"fromcif"</span><span class="p">,</span>
+<span class="w">  </span><span class="err">.......</span>
 <span class="w">  </span><span class="p">}</span>
-<span class="p">}</span>
 </pre></div>
 </div>
 <p>By default, it utilizes Pymatgen to explore CIF files.</p>
@@ -366,8 +360,8 @@ mainprogram<span class="w"> </span>download
 <h1 id="combining-data-from-different-database">Combining data from different database<a class="headerlink" href="#combining-data-from-different-database" title="Link to this heading">¶</a></h1>
 <p>In this section, we explored techniques for extracting data and generating input files from three distinct databases, subsequently amalgamating them. To facilitate this process, we employed the following <code class="docutils literal notranslate"><span class="pre">download</span></code> keyword in the <a class="reference internal" href="param.html#json-label"><span class="std std-ref">config.json</span></a> input configuration. In this context, we will delve into the phase diagram of MgB2 using the convex hull method. To achieve this, we require the ground-state configurations of Mg, B, and Mg-B compounds, which we can extract from databases that offer extensive resources.</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="nt">"download"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="nt">"info"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">"mode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"chemsys"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"mode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"chemsys"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"element"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nt">"metal"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">"FE"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">"thermo_stable"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
@@ -393,7 +387,7 @@ mainprogram<span class="w"> </span>download
 <span class="w">    </span><span class="nt">"size_constraint"</span><span class="p">:</span><span class="w"> </span><span class="mi">60</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">"ntype_constraint"</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">"must_include"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"Mg"</span><span class="p">,</span><span class="s2">"B"</span><span class="p">],</span>
-<span class="w">    </span><span class="nt">"form_en"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"FE"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">"metal"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">"magnetic"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">"spacegroup"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span>
@@ -404,7 +398,6 @@ mainprogram<span class="w"> </span>download
 <span class="w">    </span><span class="nt">"size_constraint"</span><span class="p">:</span><span class="w"> </span><span class="mi">60</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">"ntype_constraint"</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">"must_include"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
-<span class="w">    </span><span class="nt">"form_en"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">"metal"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">"magnetic"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">"spacegroup"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
@@ -450,7 +443,7 @@ mainprogram<span class="w"> </span>download
 <p>Similarly, once adjusting parameters in <code class="docutils literal notranslate"><span class="pre">oqmd</span></code> dictionary, we execute following two commands:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mainprogram<span class="w"> </span>oqmd-search
 
-<span class="c1"># This creates a list of compounds and stored in ``mpid-list.in`` file. Here, instead of editing input.in, here we directly change ``start`` and ``end`` keyword in ``inp`` dictionary. To download, execute:</span>
+<span class="c1"># This creates a list of compounds and stored in ``mpid-list.in`` file. Again, edit start ``first line`` and `end `second line`` indices in input.in according to mpid-list.in. To download, execute:</span>
 
 mainprogram<span class="w"> </span>oqmd-download
 
@@ -878,12 +871,7 @@ execute:</p>
 <p>A.Prepare input files</p>
 <p>Suppose we are computing phase diagram of <code class="docutils literal notranslate"><span class="pre">MgB2</span></code>, then we need to download all the elemental solids, binary solids corresponding to composition <code class="docutils literal notranslate"><span class="pre">Mg-B</span></code>. We do that by switching on the <code class="docutils literal notranslate"><span class="pre">chemsys</span></code> mode in <a class="reference internal" href="param.html#download-label"><span class="std std-ref">download</span></a> keyword in <a class="reference internal" href="param.html#json-label"><span class="std std-ref">config.json</span></a>.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="s2">"download"</span>:<span class="w"> </span><span class="o">{</span>
-<span class="s2">"info"</span>:<span class="w"> </span><span class="o">{</span>
-<span class="w">  </span><span class="s2">"mode"</span>:<span class="w"> </span><span class="s2">"element"</span>,<span class="w"> </span><span class="o">==</span>&gt;<span class="w"> </span>change<span class="w"> </span>this<span class="w"> </span>to<span class="w"> </span><span class="s2">"chemsys"</span>
-<span class="w">  </span><span class="s2">"metal"</span>:<span class="w"> </span>false,
-<span class="w">  </span><span class="s2">"FE"</span>:<span class="w"> </span>false,
-<span class="w">  </span><span class="s2">"thermo_stable"</span>:<span class="w"> </span>false,
-<span class="w">  </span>......
+<span class="s2">"mode"</span>:<span class="w"> </span><span class="s2">"element"</span>,<span class="w"> </span><span class="o">==</span>&gt;<span class="w"> </span>change<span class="w"> </span>this<span class="w"> </span>to<span class="w"> </span><span class="s2">"chemsys"</span>
 <span class="w">  </span>......<span class="o">}</span>
 </pre></div>
 </div>
@@ -893,7 +881,7 @@ execute:</p>
 <span class="w">  </span><span class="s2">"size_constraint"</span>:<span class="w"> </span><span class="m">60</span>,<span class="w"> </span><span class="o">==</span>&gt;<span class="w"> </span>Optimal<span class="w"> </span>size<span class="w"> </span>of<span class="w"> </span>the<span class="w"> </span>compounds.
 <span class="w">  </span><span class="s2">"ntype_constraint"</span>:<span class="w"> </span><span class="m">3</span>,<span class="w">  </span><span class="o">==</span>&gt;<span class="w"> </span>Compounds<span class="w"> </span>containing<span class="w"> </span>fewer<span class="w"> </span>than<span class="w"> </span><span class="m">3</span><span class="w"> </span>different<span class="w"> </span>species,<span class="w"> </span>specifically<span class="w"> </span><span class="m">2</span>.
 <span class="w">  </span><span class="s2">"must_include"</span>:<span class="w"> </span><span class="o">[</span><span class="s2">"Mg"</span>,<span class="w"> </span><span class="s2">"B"</span><span class="o">]</span>,<span class="w"> </span><span class="o">==</span>&gt;<span class="w"> </span>If<span class="w"> </span><span class="s2">"B"</span><span class="w"> </span>is<span class="w"> </span>not<span class="w"> </span>included,<span class="w"> </span>only<span class="w"> </span>compounds<span class="w"> </span>containing<span class="w"> </span><span class="s2">"Mg"</span><span class="w"> </span>and<span class="w"> </span>the<span class="w"> </span>binary<span class="w"> </span>compound<span class="w"> </span><span class="s2">"Mg-B"</span><span class="w"> </span>are<span class="w"> </span>extracted<span class="w"> </span>since<span class="w"> </span><span class="s2">"Mg"</span><span class="w"> </span>must<span class="w"> </span>be<span class="w"> </span>included.
-<span class="w">  </span><span class="s2">"form_en"</span>:<span class="w"> </span>false,
+<span class="w">  </span><span class="s2">"FE"</span>:<span class="w"> </span>false,
 <span class="w">  </span><span class="s2">"metal"</span>:<span class="w"> </span>false,
 <span class="w">  </span><span class="s2">"magnetic"</span>:<span class="w"> </span>true,
 <span class="w">  </span><span class="s2">"spacegroup"</span>:<span class="w"> </span>null<span class="o">}</span>,
@@ -916,7 +904,7 @@ queries on Materials Project database by executing:</p>
 </pre></div>
 </div>
 <p>to collect the total energy per atom. It will create <code class="docutils literal notranslate"><span class="pre">econv_vasp.csv</span></code> file. Finally, execute:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mainprogram<span class="w"> </span>vp-pd
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mainprogram<span class="w"> </span>pd
 </pre></div>
 </div>
 <p>to compute phase diagram. Data are stored in <code class="docutils literal notranslate"><span class="pre">convexhull.csv</span></code> and <code class="docutils literal notranslate"><span class="pre">convexhull.pdf</span></code> plot is created.</p>

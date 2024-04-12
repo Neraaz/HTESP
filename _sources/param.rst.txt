@@ -107,8 +107,8 @@ This `JSON <https://docs.python.org/3/library/json.html>`_ file serves as the ma
         }
       },
       "download": {
-        "info": {
-          "mode": "chemsys",
+        "mode": "chemsys",
+        "element": {
           "metal": false,
           "FE": false,
           "thermo_stable": false,
@@ -134,7 +134,7 @@ This `JSON <https://docs.python.org/3/library/json.html>`_ file serves as the ma
           "size_constraint": 60,
           "ntype_constraint": 4,
           "must_include": ["Cr","Pd","P"],
-          "form_en": false,
+          "FE": false,
           "metal": false,
           "magnetic": true,
           "spacegroup": null
@@ -145,7 +145,6 @@ This `JSON <https://docs.python.org/3/library/json.html>`_ file serves as the ma
           "size_constraint": 60,
           "ntype_constraint": 4,
           "must_include": [],
-          "form_en": true,
           "metal": false,
           "magnetic": true,
           "spacegroup": null,
@@ -353,8 +352,8 @@ This `JSON <https://docs.python.org/3/library/json.html>`_ file serves as the ma
           "Pu": 30,
           "Am": 30,
           "Cm": 30,
-          "B":35,
-          "C":45
+          "B": 35,
+          "C": 45
         }
       },
       "substitute": {
@@ -472,7 +471,7 @@ This `JSON <https://docs.python.org/3/library/json.html>`_ file serves as the ma
 
 - **conv_test**: Parameters for performing convergence tests.
 
-- **magmom**: Specifies magnetic moment configurations for VASP calculations. This key is essential for magnetic calculations in VASP. :ref:`here <magmom-label>`
+- **magmom**: Specifies magnetic moment configurations. This key is essential for magnetic calculations. :ref:`here <magmom-label>`
 
 - **pseudo**: Pseudopotential file, with two subkeys: ``pot`` for VASP and ``PSEUDO`` for QE. :ref:`here <pseudo-label>`
 
@@ -668,8 +667,8 @@ It has a dictionary of the form.
 .. code-block:: json
 
     "download": {
-        "info": {
-          "mode": "element",
+        "mode": "element",
+        "element": {
           "metal": false,
           "FE": false,
           "thermo_stable": false,
@@ -693,7 +692,7 @@ It has a dictionary of the form.
           "size_constraint": 60,
           "ntype_constraint": 4,
           "must_include": ["Fe", "Pd", "I"],
-          "form_en": false,
+          "FE": false,
           "metal": false,
           "magnetic": true,
           "spacegroup": null},
@@ -703,7 +702,6 @@ It has a dictionary of the form.
           "size_constraint": 60,
           "ntype_constraint": 4,
           "must_include": [],
-          "form_en": true,
           "metal": false,
           "magnetic": true,
           "spacegroup": null,
@@ -722,15 +720,13 @@ It has a dictionary of the form.
           "filter": false,
           "prop": ["spacegroup_relax", "Pearson_symbol_relax"]}
 
-- **(A)info**: 
+- **(A)mode**:
 
-  - The keyword ``'info'`` controls the preparation of input files.
+  - The keyword ``'mode'`` controls the preparation of input files.
 
-  - **modes**: 
+    - There are 2 modes for preparing input files from materials project database. In addition, input preparation utilizing ``.cif`` and ``.vasp`` structure files are also available:
 
-    - There are 4 modes for preparing input files:
-
-      - **element**: Extracts data from the `Materials Project (MP) <https://next-gen.materialsproject.org/>`_ database using element-based search method. It uses the parameters within the ``info`` dictionary.
+      - **element**: Extracts data from the `Materials Project (MP) <https://next-gen.materialsproject.org/>`_ database using element-based search method. It uses the parameters within the ``element`` dictionary.
 
       - **chemsys**: Extracts data from the MP database using chemsys (e.g., Mg-O) based search method, utilizing parameters from ``chemsys`` dictionary.
 
@@ -738,8 +734,10 @@ It has a dictionary of the form.
 
       - **fromvasp**: Converts POSCAR files in .vasp format into VASP input files.
 
-      - **Note**: Once you have finished generating the input, set the flag to ``"element"`` if you wish to update the ``INCAR`` file according to ``vasp.in``.
-  
+      - **Note**: Once you have finished generating the input, set the flag to empty string ``""`` if you wish only to update the ``INCAR`` file according to ``vasp.in``.
+
+- **(B)element**: 
+
   - **metal**: 
     - ``true`` selects zero bandgap systems.
   
@@ -817,7 +815,7 @@ It has a dictionary of the form.
   - **must_include**: 
     - ``["Fe", "Pd", "I"]``: All of these elements are included in the search. If only ``["Fe", "Pd"]``, then "I" only elements are not searched.
   
-  - **form_en**: 
+  - **FE**: 
     - ``false``: If ``true``, compounds with negative formation energies are searched. Otherwise, include all.
   
   - **metal**: 
@@ -844,8 +842,6 @@ It has a dictionary of the form.
   - **ntype_constraint**: 4 - Limit of different species allowed
 
   - **must_include**: [] - List of elements must be included in the search. Here, Here, its role differs from the ``must_include`` parameter in Materials Project's ``chemsys`` mode. For instance, in the configuration ``"element_set": "(Fe-Mn),O"`` (`here <https://github.com/mohanliu/qmpy_rester>`_), the ``entries`` consist of ``["Fe", "Mn"]``, while the ``must_include`` parameter contains ``["O"]``.
-
-  - **form_en**: true - If true, searches for compounds with negative formation energies
 
   - **metal**: false - If true, searches for compounds with zero bandgap
 
@@ -1005,7 +1001,7 @@ Parents compound needed for substitution.
 
 - **keyword mode**: "Mode" of the substitution. Two options are available:
 
-  - **Mode 1**: Changes the substitution on the "elm" keyword with compositions defined by the "sub" dictionary. If multiple substitutions need to be performed, simply use a tuple of dictionaries for different compositions. This performs substitution according to `<https://bsym.readthedocs.io/en/latest/api/interface/pymatgen.html?highlight=unique%20structures#>`_.
+  - **Mode 1**: Changes the substitution on the "elm" keyword with compositions defined by the "sub" dictionary. If multiple substitutions need to be performed, simply use a list of dictionaries for different compositions. This performs substitution according to `<https://bsym.readthedocs.io/en/latest/api/interface/pymatgen.html?highlight=unique%20structures#>`_.
 
   - **Mode 2**: Simply replaces the elements using the "new_sub" dictionary. Here, each key is replaced by its corresponding value pair.
 

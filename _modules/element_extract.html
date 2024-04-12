@@ -45,10 +45,10 @@
   
   
   
-    <title>element_extract &#8212; HTESP 0.0.1 documentation</title>
+    <title>element_extract &#8212; HTESP v1.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=83e35b93" />
     <link rel="stylesheet" type="text/css" href="../_static/material.css?v=79c92029" />
-    <script src="../_static/documentation_options.js?v=d45e8c67"></script>
+    <script src="../_static/documentation_options.js?v=e160b93e"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -76,7 +76,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../index.html" title="HTESP 0.0.1 documentation"
+        <a href="../index.html" title="HTESP v1.0 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -88,7 +88,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">HTESP 0.0.1 documentation</span>
+          <span class="md-header-nav__topic">HTESP v1.0 documentation</span>
           <span class="md-header-nav__topic"> element_extract </span>
         </div>
       </div>
@@ -145,7 +145,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">HTESP 0.0.1 documentation</a></li>
+          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">HTESP v1.0 documentation</a></li>
           <li class="md-tabs__item"><a href="index.html" class="md-tabs__link">Module code</a></li>
       </ul>
     </div>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../index.html" title="HTESP 0.0.1 documentation" class="md-nav__button md-logo">
+    <a href="../index.html" title="HTESP v1.0 documentation" class="md-nav__button md-logo">
       
         <img src="../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../index.html"
-       title="HTESP 0.0.1 documentation">HTESP 0.0.1 documentation</a>
+       title="HTESP v1.0 documentation">HTESP v1.0 documentation</a>
   </label>
   
 
@@ -608,7 +608,7 @@
 
 <div class="viewcode-block" id="download_by_entry">
 <a class="viewcode-back" href="../element_extract.html#element_extract.download_by_entry">[docs]</a>
-<span class="k">def</span> <span class="nf">download_by_entry</span><span class="p">(</span><span class="n">entries</span><span class="p">,</span><span class="n">must_include</span><span class="p">,</span><span class="n">size_constraint</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span><span class="n">ntype_constraint</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span><span class="n">form_en</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">metal</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">magnetic</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">spacegroup</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">properties</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">download_by_entry</span><span class="p">(</span><span class="n">entries</span><span class="p">,</span><span class="n">must_include</span><span class="p">,</span><span class="n">size_constraint</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span><span class="n">ntype_constraint</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span><span class="n">FE</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">metal</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">magnetic</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">spacegroup</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">properties</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Function to extract and create input files using "mp_api.client.MPRester.get_entries_in_chemsys" Function of the materials project API package (pip install mp_api).</span>
 <span class="sd">    This mode is turned on when using 'mode':'chemsys' in 'download.py' file.</span>
@@ -623,7 +623,7 @@
 <span class="sd">        Number of different types of ions. Upper bound not included. Default is 5.</span>
 <span class="sd">    must_include : list</span>
 <span class="sd">        Elements that must be included in the compounds.</span>
-<span class="sd">    form_en : bool, optional</span>
+<span class="sd">    FE : bool, optional</span>
 <span class="sd">        True if the formation energy is negative. Default is False.</span>
 <span class="sd">    metal : bool, optional</span>
 <span class="sd">        True if the compound is a metal. Default is False.</span>
@@ -686,7 +686,7 @@
             <span class="n">gap_logic</span> <span class="o">=</span> <span class="n">band_gap</span> <span class="o">&lt;</span> <span class="mf">0.0001</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">gap_logic</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="k">if</span> <span class="n">form_en</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">FE</span><span class="p">:</span>
             <span class="n">fe_logic</span> <span class="o">=</span> <span class="n">form_energy</span> <span class="o">&lt;</span> <span class="mf">0.0</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">fe_logic</span> <span class="o">=</span> <span class="kc">True</span>
@@ -742,25 +742,25 @@
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"config.json"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"../../config.json"</span><span class="p">):</span>
             <span class="c1"># Read settings from 'config.json' to create 'mpid-list.in' file</span>
             <span class="n">d</span> <span class="o">=</span> <span class="n">input_data</span><span class="p">[</span><span class="s2">"download"</span><span class="p">]</span>
-            <span class="n">mode</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s1">'info'</span><span class="p">][</span><span class="s1">'mode'</span><span class="p">]</span>
-            <span class="n">ntype</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s1">'info'</span><span class="p">][</span><span class="s1">'ntype'</span><span class="p">]</span>
-            <span class="n">exclude_el</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s1">'info'</span><span class="p">][</span><span class="s1">'exclude'</span><span class="p">]</span>
-            <span class="n">elm_list</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s1">'info'</span><span class="p">][</span><span class="s1">'elm'</span><span class="p">]</span>
+            <span class="n">mode</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s1">'mode'</span><span class="p">]</span>
+            <span class="n">ntype</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s1">'element'</span><span class="p">][</span><span class="s1">'ntype'</span><span class="p">]</span>
+            <span class="n">exclude_el</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s1">'element'</span><span class="p">][</span><span class="s1">'exclude'</span><span class="p">]</span>
+            <span class="n">elm_list</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s1">'element'</span><span class="p">][</span><span class="s1">'elm'</span><span class="p">]</span>
             <span class="n">nelm</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">elm_list</span><span class="p">)</span>
-            <span class="n">properties</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s1">'info'</span><span class="p">][</span><span class="s1">'prop'</span><span class="p">]</span>
-            <span class="n">metal</span><span class="o">=</span><span class="n">d</span><span class="p">[</span><span class="s1">'info'</span><span class="p">][</span><span class="s1">'metal'</span><span class="p">]</span>
-            <span class="n">neg_fe</span><span class="o">=</span><span class="n">d</span><span class="p">[</span><span class="s1">'info'</span><span class="p">][</span><span class="s1">'FE'</span><span class="p">]</span>
-            <span class="n">thermo_stable</span><span class="o">=</span><span class="n">d</span><span class="p">[</span><span class="s1">'info'</span><span class="p">][</span><span class="s1">'thermo_stable'</span><span class="p">]</span>
-            <span class="n">ordering</span><span class="o">=</span><span class="n">d</span><span class="p">[</span><span class="s1">'info'</span><span class="p">][</span><span class="s1">'ordering'</span><span class="p">]</span>
-            <span class="n">nsites</span><span class="o">=</span><span class="n">d</span><span class="p">[</span><span class="s1">'info'</span><span class="p">][</span><span class="s1">'nsites'</span><span class="p">]</span>
-            <span class="n">spacegroup</span><span class="o">=</span><span class="n">d</span><span class="p">[</span><span class="s1">'info'</span><span class="p">][</span><span class="s1">'spacegroup'</span><span class="p">]</span>
+            <span class="n">properties</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s1">'element'</span><span class="p">][</span><span class="s1">'prop'</span><span class="p">]</span>
+            <span class="n">metal</span><span class="o">=</span><span class="n">d</span><span class="p">[</span><span class="s1">'element'</span><span class="p">][</span><span class="s1">'metal'</span><span class="p">]</span>
+            <span class="n">neg_fe</span><span class="o">=</span><span class="n">d</span><span class="p">[</span><span class="s1">'element'</span><span class="p">][</span><span class="s1">'FE'</span><span class="p">]</span>
+            <span class="n">thermo_stable</span><span class="o">=</span><span class="n">d</span><span class="p">[</span><span class="s1">'element'</span><span class="p">][</span><span class="s1">'thermo_stable'</span><span class="p">]</span>
+            <span class="n">ordering</span><span class="o">=</span><span class="n">d</span><span class="p">[</span><span class="s1">'element'</span><span class="p">][</span><span class="s1">'ordering'</span><span class="p">]</span>
+            <span class="n">nsites</span><span class="o">=</span><span class="n">d</span><span class="p">[</span><span class="s1">'element'</span><span class="p">][</span><span class="s1">'nsites'</span><span class="p">]</span>
+            <span class="n">spacegroup</span><span class="o">=</span><span class="n">d</span><span class="p">[</span><span class="s1">'element'</span><span class="p">][</span><span class="s1">'spacegroup'</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># Provide default settings if 'config.json' doesn't exist</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">"input file config.json not found</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">"Create one with following format</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
-            <span class="n">msg</span><span class="o">=</span><span class="s2">"""info={'mode':'element','metal':True, 'FE':True, 'exclude':["O", "N", "F", "Cl", "Br", "I"],'ntype':(1,2), 'elm':['B'], 'prop':["material_id", "formula_pretty", "structure", "formation_energy_per_atom", "band_gap", "energy_above_hull","nsites","ordering","nsites"],'ordering':'NM','nsites':10,'spacegroup':None}</span>
+            <span class="n">msg</span><span class="o">=</span><span class="s2">"""element={'metal':True, 'FE':True, 'exclude':["O", "N", "F", "Cl", "Br", "I"],'ntype':(1,2), 'elm':['B'], 'prop':["material_id", "formula_pretty", "structure", "formation_energy_per_atom", "band_gap", "energy_above_hull","nsites","ordering","nsites"],'ordering':'NM','nsites':10,'spacegroup':None}</span>
 <span class="s2">inp=    {'start':1, 'end':50, 'nkpt':200, 'evenkpt': False, 'plot':'phband', 'calc':'QE'}</span>
-<span class="s2">chemsys={'entries':['B'],'size_constraint':20,'ntype_constraint':5,'must_include':['Mg'],'form_en':False,'metal':False,'magnetic':False,'spacegroup':None}"""</span>
+<span class="s2">chemsys={'entries':['B'],'size_constraint':20,'ntype_constraint':5,'must_include':['Mg'],'FE':False,'metal':False,'magnetic':False,'spacegroup':None}"""</span>
             <span class="nb">print</span><span class="p">(</span><span class="n">msg</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">"Utilizing default settings</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
             <span class="n">ntype</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span> <span class="c1">#Number of different types of element in the compound.</span>
@@ -776,11 +776,11 @@
             <span class="n">ordering</span> <span class="o">=</span> <span class="s1">'FM'</span>
             <span class="n">spacegroup</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="n">properties</span><span class="o">=</span><span class="p">[</span><span class="s2">"material_id"</span><span class="p">,</span> <span class="s2">"formula_pretty"</span><span class="p">,</span> <span class="s2">"structure"</span><span class="p">,</span> <span class="s2">"formation_energy_per_atom"</span><span class="p">,</span> <span class="s2">"band_gap"</span><span class="p">,</span> <span class="s2">"energy_above_hull"</span><span class="p">,</span><span class="s2">"total_magnetization"</span><span class="p">,</span><span class="s2">"ordering"</span><span class="p">,</span><span class="s1">'total_magnetization_normalized_formula_units'</span><span class="p">,</span> <span class="s1">'num_magnetic_sites'</span><span class="p">,</span><span class="s1">'theoretical'</span><span class="p">,</span><span class="s1">'nsites'</span><span class="p">]</span>
-            <span class="n">default1</span><span class="o">=</span><span class="p">{</span><span class="s1">'mode'</span><span class="p">:</span><span class="s1">'element'</span><span class="p">,</span><span class="s1">'metal'</span><span class="p">:</span><span class="n">metal</span><span class="p">,</span><span class="s1">'FE'</span><span class="p">:</span><span class="n">neg_fe</span><span class="p">,</span> <span class="s1">'thermo_stable'</span><span class="p">:</span><span class="n">thermo_stable</span><span class="p">,</span> <span class="s1">'exclude'</span><span class="p">:</span><span class="n">exclude_el</span><span class="p">,</span><span class="s1">'ntype'</span><span class="p">:(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span><span class="s1">'elm'</span><span class="p">:[</span><span class="n">elm</span><span class="p">],</span><span class="s1">'prop'</span><span class="p">:</span><span class="n">properties</span><span class="p">,</span><span class="s1">'ordering'</span><span class="p">:</span><span class="n">ordering</span><span class="p">,</span><span class="s1">'nsites'</span><span class="p">:</span><span class="n">nsites</span><span class="p">,</span><span class="s1">'spacegroup'</span><span class="p">:</span><span class="n">spacegroup</span><span class="p">}</span>
+            <span class="n">default1</span><span class="o">=</span><span class="p">{</span><span class="s1">'metal'</span><span class="p">:</span><span class="n">metal</span><span class="p">,</span><span class="s1">'FE'</span><span class="p">:</span><span class="n">neg_fe</span><span class="p">,</span> <span class="s1">'thermo_stable'</span><span class="p">:</span><span class="n">thermo_stable</span><span class="p">,</span> <span class="s1">'exclude'</span><span class="p">:</span><span class="n">exclude_el</span><span class="p">,</span><span class="s1">'ntype'</span><span class="p">:(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span><span class="s1">'elm'</span><span class="p">:[</span><span class="n">elm</span><span class="p">],</span><span class="s1">'prop'</span><span class="p">:</span><span class="n">properties</span><span class="p">,</span><span class="s1">'ordering'</span><span class="p">:</span><span class="n">ordering</span><span class="p">,</span><span class="s1">'nsites'</span><span class="p">:</span><span class="n">nsites</span><span class="p">,</span><span class="s1">'spacegroup'</span><span class="p">:</span><span class="n">spacegroup</span><span class="p">}</span>
             <span class="n">default2</span><span class="o">=</span><span class="p">{</span><span class="s1">'start'</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span> <span class="s1">'end'</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="s1">'nkpt'</span><span class="p">:</span><span class="mi">200</span><span class="p">,</span> <span class="s1">'evenkpt'</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">'plot'</span><span class="p">:</span><span class="s1">'phband'</span><span class="p">,</span><span class="s1">'calc'</span><span class="p">:</span><span class="s1">'QE'</span><span class="p">}</span>
-            <span class="n">chemsys</span><span class="o">=</span><span class="p">{</span><span class="s1">'entries'</span><span class="p">:[</span><span class="s1">'B'</span><span class="p">,</span><span class="s1">'Mg'</span><span class="p">],</span><span class="s1">'size_constraint'</span><span class="p">:</span><span class="mi">20</span><span class="p">,</span><span class="s1">'ntype_constraint'</span><span class="p">:</span><span class="mi">5</span><span class="p">,</span><span class="s1">'must_include'</span><span class="p">:[</span><span class="s1">'Mg'</span><span class="p">,</span><span class="s1">'B'</span><span class="p">],</span><span class="s1">'form_en'</span><span class="p">:</span><span class="kc">False</span><span class="p">,</span><span class="s1">'metal'</span><span class="p">:</span><span class="kc">False</span><span class="p">,</span> <span class="s1">'magnetic'</span><span class="p">:</span><span class="kc">False</span><span class="p">,</span><span class="s1">'spacegroup'</span><span class="p">:</span><span class="n">spacegroup</span><span class="p">}</span>
+            <span class="n">chemsys</span><span class="o">=</span><span class="p">{</span><span class="s1">'entries'</span><span class="p">:[</span><span class="s1">'B'</span><span class="p">,</span><span class="s1">'Mg'</span><span class="p">],</span><span class="s1">'size_constraint'</span><span class="p">:</span><span class="mi">20</span><span class="p">,</span><span class="s1">'ntype_constraint'</span><span class="p">:</span><span class="mi">5</span><span class="p">,</span><span class="s1">'must_include'</span><span class="p">:[</span><span class="s1">'Mg'</span><span class="p">,</span><span class="s1">'B'</span><span class="p">],</span><span class="s1">'FE'</span><span class="p">:</span><span class="kc">False</span><span class="p">,</span><span class="s1">'metal'</span><span class="p">:</span><span class="kc">False</span><span class="p">,</span> <span class="s1">'magnetic'</span><span class="p">:</span><span class="kc">False</span><span class="p">,</span><span class="s1">'spacegroup'</span><span class="p">:</span><span class="n">spacegroup</span><span class="p">}</span>
             <span class="n">d</span> <span class="o">=</span> <span class="p">{</span>
-                 <span class="s1">'info'</span><span class="p">:</span><span class="n">default1</span><span class="p">,</span>
+                 <span class="s1">'element'</span><span class="p">:</span><span class="n">default1</span><span class="p">,</span>
                  <span class="s1">'inp'</span><span class="p">:</span><span class="n">default2</span><span class="p">,</span>
                  <span class="s1">'chemsys'</span><span class="p">:</span><span class="n">chemsys</span>
                  <span class="p">}</span>
@@ -801,7 +801,7 @@
         <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="s1">'chemsys'</span><span class="p">:</span>
             <span class="c1"># Download data for compounds based on chemical system</span>
             <span class="n">download_by_entry</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s1">'chemsys'</span><span class="p">][</span><span class="s1">'entries'</span><span class="p">],</span><span class="n">d</span><span class="p">[</span><span class="s1">'chemsys'</span><span class="p">][</span><span class="s1">'must_include'</span><span class="p">],</span><span class="n">d</span><span class="p">[</span><span class="s1">'chemsys'</span><span class="p">][</span><span class="s1">'size_constraint'</span><span class="p">],</span><span class="n">d</span><span class="p">[</span><span class="s1">'chemsys'</span><span class="p">][</span><span class="s1">'ntype_constraint'</span><span class="p">],</span>
-                              <span class="n">d</span><span class="p">[</span><span class="s1">'chemsys'</span><span class="p">][</span><span class="s1">'form_en'</span><span class="p">],</span><span class="n">d</span><span class="p">[</span><span class="s1">'chemsys'</span><span class="p">][</span><span class="s1">'metal'</span><span class="p">],</span><span class="n">d</span><span class="p">[</span><span class="s1">'chemsys'</span><span class="p">][</span><span class="s1">'magnetic'</span><span class="p">],</span><span class="n">d</span><span class="p">[</span><span class="s1">'chemsys'</span><span class="p">][</span><span class="s1">'spacegroup'</span><span class="p">],</span><span class="n">properties</span><span class="p">)</span>
+                              <span class="n">d</span><span class="p">[</span><span class="s1">'chemsys'</span><span class="p">][</span><span class="s1">'FE'</span><span class="p">],</span><span class="n">d</span><span class="p">[</span><span class="s1">'chemsys'</span><span class="p">][</span><span class="s1">'metal'</span><span class="p">],</span><span class="n">d</span><span class="p">[</span><span class="s1">'chemsys'</span><span class="p">][</span><span class="s1">'magnetic'</span><span class="p">],</span><span class="n">d</span><span class="p">[</span><span class="s1">'chemsys'</span><span class="p">][</span><span class="s1">'spacegroup'</span><span class="p">],</span><span class="n">properties</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="s1">'fromcif'</span><span class="p">:</span>
             <span class="c1"># List CIF files</span>
             <span class="n">list_cif</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">"*.cif"</span><span class="p">,</span><span class="n">recursive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>

@@ -45,10 +45,10 @@
   
   
   
-    <title>mainprogram &#8212; HTESP 0.0.1 documentation</title>
+    <title>mainprogram &#8212; HTESP v1.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=83e35b93" />
     <link rel="stylesheet" type="text/css" href="../_static/material.css?v=79c92029" />
-    <script src="../_static/documentation_options.js?v=d45e8c67"></script>
+    <script src="../_static/documentation_options.js?v=e160b93e"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -76,7 +76,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../index.html" title="HTESP 0.0.1 documentation"
+        <a href="../index.html" title="HTESP v1.0 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -88,7 +88,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">HTESP 0.0.1 documentation</span>
+          <span class="md-header-nav__topic">HTESP v1.0 documentation</span>
           <span class="md-header-nav__topic"> mainprogram </span>
         </div>
       </div>
@@ -145,7 +145,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">HTESP 0.0.1 documentation</a></li>
+          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">HTESP v1.0 documentation</a></li>
           <li class="md-tabs__item"><a href="index.html" class="md-tabs__link">Module code</a></li>
       </ul>
     </div>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../index.html" title="HTESP 0.0.1 documentation" class="md-nav__button md-logo">
+    <a href="../index.html" title="HTESP v1.0 documentation" class="md-nav__button md-logo">
       
         <img src="../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../index.html"
-       title="HTESP 0.0.1 documentation">HTESP 0.0.1 documentation</a>
+       title="HTESP v1.0 documentation">HTESP v1.0 documentation</a>
   </label>
   
 
@@ -277,9 +277,9 @@
             <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"generate_submission.py"</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">process</span> <span class="o">==</span> <span class="s1">'download'</span><span class="p">:</span>
             <span class="n">download</span> <span class="o">=</span> <span class="n">input_data</span><span class="p">[</span><span class="s1">'download'</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">download</span><span class="p">[</span><span class="s1">'info'</span><span class="p">][</span><span class="s1">'mode'</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">'element'</span><span class="p">,</span> <span class="s1">'chemsys'</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">download</span><span class="p">[</span><span class="s1">'mode'</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">'element'</span><span class="p">,</span> <span class="s1">'chemsys'</span><span class="p">):</span>
                 <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"download-input"</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">start</span><span class="p">)</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="p">)</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="n">element</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">download</span><span class="p">[</span><span class="s1">'info'</span><span class="p">][</span><span class="s1">'mode'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'fromcif'</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="n">download</span><span class="p">[</span><span class="s1">'mode'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'fromcif'</span><span class="p">:</span>
                 <span class="n">cif2cell</span><span class="o">=</span><span class="n">download</span><span class="p">[</span><span class="s1">'inp'</span><span class="p">][</span><span class="s1">'use_cif2cell'</span><span class="p">]</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s2">"--------------------------------------------------------------</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
@@ -296,11 +296,13 @@
                 <span class="k">if</span> <span class="n">download</span><span class="p">[</span><span class="s1">'inp'</span><span class="p">][</span><span class="s1">'calc'</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">'QE'</span><span class="p">,</span><span class="s1">'qe'</span><span class="p">):</span>
                     <span class="nb">print</span><span class="p">(</span><span class="s2">"Check scf_dir folder for inputs and mpid.in tracking file</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s2">"--------------------------------------------------------------</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="n">download</span><span class="p">[</span><span class="s1">'mode'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'fromvasp'</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s2">"--------------------------------------------------------------</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s2">"processing .vasp files for </span><span class="si">{}</span><span class="s2"> calculations"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">download</span><span class="p">[</span><span class="s1">'inp'</span><span class="p">][</span><span class="s1">'calc'</span><span class="p">])</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
                 <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"poscar_to_vasp.py"</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"download-input"</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">start</span><span class="p">)</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="p">)</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="n">element</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">process</span> <span class="o">==</span> <span class="s1">'convtest'</span><span class="p">:</span>
             <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"convergence_test.py calculate"</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">process</span> <span class="o">==</span> <span class="s1">'pressure-input'</span><span class="p">:</span>
@@ -330,9 +332,9 @@
         <span class="k">elif</span> <span class="n">process</span> <span class="o">==</span> <span class="s1">'search'</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s1">'config.json'</span><span class="p">)</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"../../config.json"</span><span class="p">):</span>
                 <span class="n">download</span> <span class="o">=</span> <span class="n">input_data</span><span class="p">[</span><span class="s1">'download'</span><span class="p">]</span>
-                <span class="n">mode</span> <span class="o">=</span> <span class="n">download</span><span class="p">[</span><span class="s1">'info'</span><span class="p">][</span><span class="s1">'mode'</span><span class="p">]</span>
+                <span class="n">mode</span> <span class="o">=</span> <span class="n">download</span><span class="p">[</span><span class="s1">'mode'</span><span class="p">]</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s2">"--------------------------------------------------------------</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s2">"'</span><span class="si">{}</span><span class="s2">' mode found"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">download</span><span class="p">[</span><span class="s1">'info'</span><span class="p">][</span><span class="s1">'mode'</span><span class="p">])</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">"'</span><span class="si">{}</span><span class="s2">' mode found"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">download</span><span class="p">[</span><span class="s1">'mode'</span><span class="p">])</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">mode</span> <span class="o">=</span> <span class="s1">'element'</span>
             <span class="k">if</span> <span class="n">mode</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">'fromcif'</span><span class="p">,</span><span class="s1">'fromvasp'</span><span class="p">):</span>
@@ -367,8 +369,7 @@
             <span class="nb">print</span><span class="p">(</span><span class="s2">"For information about QE+VASP calculations, process = process-info</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">"process = epw-info for EPW calculations </span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">"process = wt-info for wanniertools calculations </span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">"process = vasp-info for vasp+phonon calculations </span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">"process = elastic-input, to create vasp input files with deformations</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"process = elastic-input, to create input files with deformations</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">"process = compute-elastic, to compute elastic properties</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">"process = magenum, to create vasp input files for different magnetic state</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">"process = magmom_extract, extract magnetic moment</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
@@ -389,7 +390,6 @@
             <span class="nb">print</span><span class="p">(</span><span class="s2">" Also do 'mainprogram process-info' and look for process 23-25 for automated calculations."</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">" Requires run-dynmat.sh, run-scf.sh, and Vasp.pm files in working directory</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
             <span class="n">vasp_potcar</span><span class="o">=</span><span class="s2">"""#For POTCAR. Suppose we have POTCARS as  POT_GGA_PAW_PBE/Mg_p/POTCAR</span>
-<span class="s2">                          #Mg_p can be found in POTCAR.spec</span>
 <span class="s2">                          #pmg config -p /path_to/POT_GGA_PAW_PBE PBE52</span>
 <span class="s2">                          # After that add path to .pmgrc.yaml</span>
 <span class="s2">                          #pmg config --add PMG_VASP_PSP_DIR PBE52"""</span>
@@ -401,45 +401,8 @@
             <span class="nb">print</span><span class="p">(</span><span class="s2">"First execute 'history -a' in command line before process = history.</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">"For MacOs, replace it by ~/.zsh_history in the mainprogram file</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">"####################################################################"</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">"Please refer to the Online Documentation for further information and guidance.</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span> 
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"Please refer to the Online Documentation for further information and guidance.</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">"##################################################################</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">process</span> <span class="o">==</span> <span class="s1">'vasp-info'</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">"Strucutural relaxation, substitution, pressure, magnetic orderings"</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">" (isotropic, changing scaling factor of lattice) can be performed"</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">" similary as of QE, but using DFT = vasp (or VASP) in input.in file</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">"For process = 1 - 3, Structural relaxation similar to QE</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">"process = 13 ==&gt; Submit bandstructure calculations</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">"process = 15 ==&gt; processing bandstructure</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">"process = 16 ==&gt; Submit DOS and pDOS calculations</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">"process = 19 ==&gt; plotting bandstructure or DOS/pDOS"</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">" Use 'eband', or  'pdos' in input.in</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">"Thermodynamic quantities can be calculated using VASP and phonopy (vp-ph)</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">"process = primtoconv, to change structure into conventional unit cell"</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">",useful for vasp+phonopy calculations</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">"process = vp-pd, computing thermodynamic stability"</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">" using pymatgen with 'econv_vasp.csv' file</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">"process = phono1, to make supercell"</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">" and submit scf calculations for different displacement</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">"process = phono2, computing force constant</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">"process = phono3, computing and plotting thermodynamic properties</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">"process = phono4, computing and plotting phonon band</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">"process = phono5, printing symmetry analysis</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">"process = phono-qha,"</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">" Computing temperature and pressure dependent thermal properties</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">"process = ev-collect, extracting the total energies"</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">" for different isotropic volumes from VASP calculations</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">"Do 'mainprogram 26' calculation before process = ev-collect</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">"process = phono1-pressure,"</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">" submit phono1 calculations for different isotropic volumes</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">"process = phono2-pressure,"</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">" submit phono2 calculations for different isotropic volumes</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">"process = phono3-pressure,"</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">" submit phono3 calculations for different isotropic volumes</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">"process = phono4-pressure,"</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">" submit phono4 calculations for different isotropic volumes</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">"process = eos-bm, equation of state fitting using Birch-Murnaghan fit</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">"process = eos-vinet, equation of state fitting using vinet fit</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">"process = vp-ph-help, printing help page</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">process</span> <span class="o">==</span> <span class="s1">'phono-qha'</span><span class="p">:</span>
             <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"phonopy-scan"</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">start</span><span class="p">)</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="p">)</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="n">element</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="s2">"vp-ph-qha"</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">process</span> <span class="o">==</span> <span class="s1">'eos-bm'</span><span class="p">:</span>
@@ -448,7 +411,7 @@
             <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"phonopy-scan"</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">start</span><span class="p">)</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="p">)</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="n">element</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="s2">"eos-vinet"</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">process</span> <span class="o">==</span> <span class="s1">'ev-collect'</span><span class="p">:</span>
             <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"phonopy-scan"</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">start</span><span class="p">)</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="p">)</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="n">element</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="s2">"ev-collect"</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">process</span> <span class="o">==</span> <span class="s1">'vp-pd'</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">process</span> <span class="o">==</span> <span class="s1">'pd'</span><span class="p">:</span>
             <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"pymatgen_phase_diagram.py"</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">process</span> <span class="o">==</span> <span class="s1">'primtoconv'</span><span class="p">:</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">)</span> <span class="k">as</span> <span class="n">read_elm</span><span class="p">:</span>
@@ -562,7 +525,7 @@
             <span class="nb">print</span><span class="p">(</span><span class="s2">"**********************************************************************</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">"Adjust start and end in input.in according to mpid-list.in</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">"*************************************************************************</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">"process = e0, to extract the total energies per atom and store in econv_vasp.csv file (QE+VASP)</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"process = e0, to extract the total energies per atom and store in econv.csv file (QE+VASP)</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">"For process = 1, relax-scan. This will relax the structure for the first time (QE+VASP).</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">"Now a Rmpid-compound and Rmpid-compound/relax folders are created</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">"process = 2 updates the input file with new structure (QE+VASP)</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
@@ -612,10 +575,35 @@
             <span class="nb">print</span><span class="p">(</span><span class="s2">"File ph-q.in file has nq1 nq2 nq3 and metal info on different line."</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">"if T or t are used, calculation is performed for metal.</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">"For process = 28, delete pressure folder (QE)</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">"For process = 29, element substitution. check 'site_subs.py h' (QE+VASP)</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"For process = 29, element substitution. (QE+VASP)</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">"For process = 30, creating inputs for different magnetic orderings (VASP)</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">"For process = convtest, perform convergence tests for Ecut and kpoint mesh (QE+VASP)</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">"For process = compound, Get info about compounds (QE+VASP)</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"process = primtoconv, to change structure into conventional unit cell"</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">",useful for phonopy calculations</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"process = pd, computing thermodynamic stability (QE+VASP)"</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">" using pymatgen with 'econv.csv' file</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"process = phono1, to make supercell (QE+VASP)"</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">" and submit scf calculations for different displacement</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"process = phono2, computing force constant (QE+VASP)</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"process = phono3, computing and plotting thermodynamic properties (QE+VASP)</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"process = phono4, computing and plotting phonon band (QE+VASP)</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"process = phono5, printing symmetry analysis (QE+VASP)</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"process = phono-qha,"</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">" Computing temperature and pressure dependent thermal properties</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"process = ev-collect, extracting the total energies (QE+VASP)"</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">" for different isotropic volumes from VASP calculations</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"Do 'mainprogram 26' calculation before process = ev-collect (QE+VASP)</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"process = phono1-pressure, (QE+VASP)"</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">" submit phono1 calculations for different isotropic volumes</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"process = phono2-pressure, (QE+VASP)"</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">" submit phono2 calculations for different isotropic volumes</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"process = phono3-pressure, (QE+VASP)"</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">" submit phono3 calculations for different isotropic volumes</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"process = phono4-pressure, (QE+VASP)"</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">" submit phono4 calculations for different isotropic volumes</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"process = eos-bm, equation of state fitting using Birch-Murnaghan fit (QE+VASP)</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"process = eos-vinet, equation of state fitting using vinet fit (QE+VASP)</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">"**********************************************************************************"</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">"*********************************************************************************</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>

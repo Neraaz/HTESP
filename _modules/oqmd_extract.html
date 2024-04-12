@@ -45,10 +45,10 @@
   
   
   
-    <title>oqmd_extract &#8212; HTESP 0.0.1 documentation</title>
+    <title>oqmd_extract &#8212; HTESP v1.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=83e35b93" />
     <link rel="stylesheet" type="text/css" href="../_static/material.css?v=79c92029" />
-    <script src="../_static/documentation_options.js?v=d45e8c67"></script>
+    <script src="../_static/documentation_options.js?v=e160b93e"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -76,7 +76,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../index.html" title="HTESP 0.0.1 documentation"
+        <a href="../index.html" title="HTESP v1.0 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -88,7 +88,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">HTESP 0.0.1 documentation</span>
+          <span class="md-header-nav__topic">HTESP v1.0 documentation</span>
           <span class="md-header-nav__topic"> oqmd_extract </span>
         </div>
       </div>
@@ -145,7 +145,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">HTESP 0.0.1 documentation</a></li>
+          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">HTESP v1.0 documentation</a></li>
           <li class="md-tabs__item"><a href="index.html" class="md-tabs__link">Module code</a></li>
       </ul>
     </div>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../index.html" title="HTESP 0.0.1 documentation" class="md-nav__button md-logo">
+    <a href="../index.html" title="HTESP v1.0 documentation" class="md-nav__button md-logo">
       
         <img src="../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../index.html"
-       title="HTESP 0.0.1 documentation">HTESP 0.0.1 documentation</a>
+       title="HTESP v1.0 documentation">HTESP v1.0 documentation</a>
   </label>
   
 
@@ -201,7 +201,6 @@
 <span class="kn">from</span> <span class="nn">pymatgen.io.vasp.sets</span> <span class="kn">import</span> <span class="n">MPRelaxSet</span>
 <span class="kn">from</span> <span class="nn">pymatgen.core</span> <span class="kn">import</span> <span class="n">structure</span>
 <span class="kn">from</span> <span class="nn">pymatgen.symmetry.analyzer</span> <span class="kn">import</span> <span class="n">SpacegroupAnalyzer</span>
-<span class="kn">from</span> <span class="nn">pymatgen.analysis.magnetism</span> <span class="kn">import</span> <span class="n">MagneticStructureEnumerator</span>
 <span class="kn">import</span> <span class="nn">qmpy_rester</span> <span class="k">as</span> <span class="nn">qr</span>
 <span class="kn">from</span> <span class="nn">cif_to_gsinput</span> <span class="kn">import</span> <span class="n">pos_to_kpt</span>
 <span class="kn">from</span> <span class="nn">write_potcar</span> <span class="kn">import</span> <span class="n">poscar2potcar</span>
@@ -310,8 +309,8 @@
             <span class="c1"># Reading magnetic moments from input file</span>
             <span class="n">default_magmoms</span> <span class="o">=</span> <span class="n">input_data</span><span class="p">[</span><span class="s1">'magmom'</span><span class="p">][</span><span class="s1">'magmom'</span><span class="p">]</span>
             <span class="c1"># Obtaining Ferromagnetic structure</span>
-            <span class="n">struc</span> <span class="o">=</span> <span class="n">MagneticStructureEnumerator</span><span class="p">(</span><span class="n">structure_file</span><span class="p">,</span><span class="n">default_magmoms</span><span class="o">=</span><span class="n">default_magmoms</span><span class="p">,</span><span class="n">strategies</span><span class="o">=</span><span class="p">[</span><span class="s1">'ferromagnetic'</span><span class="p">],</span><span class="n">truncate_by_symmetry</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">ordered_structures</span>
-            <span class="n">obj</span><span class="o">.</span><span class="n">structure</span> <span class="o">=</span> <span class="n">struc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">structure_file</span><span class="o">.</span><span class="n">add_spin_by_element</span><span class="p">(</span><span class="n">default_magmoms</span><span class="p">)</span>
+            <span class="n">obj</span><span class="o">.</span><span class="n">structure</span> <span class="o">=</span> <span class="n">structure_file</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">obj</span><span class="o">.</span><span class="n">structure</span> <span class="o">=</span> <span class="n">structure_file</span>
         <span class="c1"># Get composition list</span>
@@ -513,10 +512,14 @@
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
     <span class="n">CONDITION</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
     <span class="c1"># Read config.json file and creates KWARGS dictionary</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"input.in"</span><span class="p">,</span><span class="s2">"r"</span><span class="p">)</span> <span class="k">as</span> <span class="n">read_in</span><span class="p">:</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="n">read_in</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+    <span class="n">START</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">END</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
     <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"config.json"</span><span class="p">):</span>
         <span class="n">d</span> <span class="o">=</span> <span class="n">input_data</span><span class="p">[</span><span class="s1">'download'</span><span class="p">]</span>
-        <span class="n">START</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s1">'inp'</span><span class="p">][</span><span class="s1">'start'</span><span class="p">]</span>
-        <span class="n">END</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s1">'inp'</span><span class="p">][</span><span class="s1">'end'</span><span class="p">]</span>
+        <span class="c1">#START = d['inp']['start']</span>
+        <span class="c1">#END = d['inp']['end']</span>
         <span class="n">doqmd</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s1">'oqmd'</span><span class="p">]</span>
         <span class="n">LIMIT</span> <span class="o">=</span> <span class="n">doqmd</span><span class="p">[</span><span class="s1">'limit'</span><span class="p">]</span>
         <span class="n">NTYPE</span> <span class="o">=</span> <span class="n">doqmd</span><span class="p">[</span><span class="s1">'ntype_constraint'</span><span class="p">]</span>

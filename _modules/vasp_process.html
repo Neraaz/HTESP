@@ -45,10 +45,10 @@
   
   
   
-    <title>vasp_process &#8212; HTESP 0.0.1 documentation</title>
+    <title>vasp_process &#8212; HTESP v1.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=83e35b93" />
     <link rel="stylesheet" type="text/css" href="../_static/material.css?v=79c92029" />
-    <script src="../_static/documentation_options.js?v=d45e8c67"></script>
+    <script src="../_static/documentation_options.js?v=e160b93e"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -76,7 +76,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../index.html" title="HTESP 0.0.1 documentation"
+        <a href="../index.html" title="HTESP v1.0 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -88,7 +88,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">HTESP 0.0.1 documentation</span>
+          <span class="md-header-nav__topic">HTESP v1.0 documentation</span>
           <span class="md-header-nav__topic"> vasp_process </span>
         </div>
       </div>
@@ -145,7 +145,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">HTESP 0.0.1 documentation</a></li>
+          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">HTESP v1.0 documentation</a></li>
           <li class="md-tabs__item"><a href="index.html" class="md-tabs__link">Module code</a></li>
       </ul>
     </div>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../index.html" title="HTESP 0.0.1 documentation" class="md-nav__button md-logo">
+    <a href="../index.html" title="HTESP v1.0 documentation" class="md-nav__button md-logo">
       
         <img src="../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../index.html"
-       title="HTESP 0.0.1 documentation">HTESP 0.0.1 documentation</a>
+       title="HTESP v1.0 documentation">HTESP v1.0 documentation</a>
   </label>
   
 
@@ -317,46 +317,50 @@
         <span class="k">if</span> <span class="n">backupkey</span><span class="p">[</span><span class="s1">'LORBIT'</span><span class="p">]:</span>
             <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"""sed -i '/LORBIT/d' INCAR"""</span><span class="p">)</span>
         <span class="c1"># Write new keys and values to 'INCAR'</span>
+        <span class="n">metagga</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">spinval</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"INCAR"</span><span class="p">,</span> <span class="s2">"a"</span><span class="p">)</span> <span class="k">as</span> <span class="n">change_incar</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">_</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
-                <span class="c1"># If ISPIN=2, update MAGMOM keyword if config.json exists</span>
-                <span class="k">if</span> <span class="p">(</span><span class="n">key</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"ISPIN"</span> <span class="ow">and</span> <span class="nb">int</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span> <span class="ow">or</span> <span class="n">backupkey</span><span class="p">[</span><span class="s1">'ISPIN'</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-                    <span class="n">change_incar</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">key</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="s2">" = "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
-                    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"config.json"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"../../config.json"</span><span class="p">):</span>
-                        <span class="n">m</span><span class="o">=</span><span class="n">input_data</span><span class="p">[</span><span class="s1">'magmom'</span><span class="p">][</span><span class="s1">'magmom'</span><span class="p">]</span>
-                        <span class="n">struc</span> <span class="o">=</span> <span class="n">structure</span><span class="o">.</span><span class="n">Structure</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="s2">"POSCAR"</span><span class="p">)</span>
-                        <span class="n">sites</span> <span class="o">=</span> <span class="n">struc</span><span class="o">.</span><span class="n">sites</span>
-                        <span class="n">magmom_string</span> <span class="o">=</span> <span class="s2">""</span>
-                        <span class="k">for</span> <span class="n">j</span><span class="p">,</span><span class="n">site</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sites</span><span class="p">):</span>
-                            <span class="n">element</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">site</span><span class="o">.</span><span class="n">specie</span><span class="p">)</span>
-                            <span class="k">if</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">sites</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
-                                <span class="c1"># if LSORBIT key found, rewrite MAGMOM in mx my mz format</span>
-                                <span class="k">if</span> <span class="s1">'LSORBIT'</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">key</span><span class="p">:</span>
-                                    <span class="n">magmom_string</span> <span class="o">+=</span> <span class="nb">str</span><span class="p">(</span><span class="n">m</span><span class="p">[</span><span class="n">element</span><span class="p">])</span> <span class="o">+</span> <span class="s2">" "</span>
-                                <span class="k">else</span><span class="p">:</span>
-                                    <span class="n">magmom_string</span> <span class="o">+=</span> <span class="s2">"0 0 "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">m</span><span class="p">[</span><span class="n">element</span><span class="p">])</span> <span class="o">+</span> <span class="s2">"  "</span>
-                            <span class="k">else</span><span class="p">:</span>
-                                <span class="k">if</span> <span class="s1">'LSORBIT'</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">key</span><span class="p">:</span>
-                                    <span class="n">magmom_string</span> <span class="o">+=</span> <span class="nb">str</span><span class="p">(</span><span class="n">m</span><span class="p">[</span><span class="n">element</span><span class="p">])</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span>
-                                <span class="k">else</span><span class="p">:</span>
-                                    <span class="n">magmom_string</span> <span class="o">+=</span> <span class="s2">"0 0 "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">m</span><span class="p">[</span><span class="n">element</span><span class="p">])</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span>
-                        <span class="k">if</span>  <span class="n">magenum</span> <span class="o">!=</span> <span class="s1">'anisotropy'</span><span class="p">:</span>
-                            <span class="n">change_incar</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"MAGMOM = </span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">magmom_string</span><span class="p">))</span>
-                            <span class="n">change_incar</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"LORBIT = 11</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
-                        <span class="k">else</span><span class="p">:</span>
-                            <span class="nb">print</span><span class="p">(</span><span class="s2">"type is anisotropy, therefore doesn't update MAGMOM keyword</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="nb">print</span><span class="p">(</span><span class="s2">"magmom values not provided in config.json</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
-                        <span class="nb">print</span><span class="p">(</span><span class="s2">"Provide magnetic moment values as dictionary magmom={'A':2, 'B':3}</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="k">try</span><span class="p">:</span>
-                        <span class="n">change_incar</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">key</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="s2">" = "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
-                    <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
-                        <span class="k">continue</span>
-                <span class="c1"># Add LMIXTAU = .TRUE. if METAGGA is present in INCAR</span>
+                <span class="k">if</span> <span class="n">key</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"ISPIN"</span><span class="p">:</span>
+                    <span class="n">spinval</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
                 <span class="k">if</span> <span class="n">key</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"METAGGA"</span><span class="p">:</span>
-                    <span class="n">change_incar</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"LMIXTAU = .TRUE.</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
-                    <span class="n">change_incar</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"LASPH = .TRUE.</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+                    <span class="n">metagga</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">change_incar</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">key</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="s2">" = "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+                    <span class="k">continue</span>
+            <span class="c1"># If ISPIN=2, update MAGMOM keyword if config.json exists</span>
+            <span class="k">if</span> <span class="p">(</span><span class="s2">"ISPIN"</span> <span class="ow">in</span> <span class="n">key</span> <span class="ow">and</span> <span class="nb">int</span><span class="p">(</span><span class="n">spinval</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span> <span class="ow">or</span> <span class="n">backupkey</span><span class="p">[</span><span class="s1">'ISPIN'</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"config.json"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"../../config.json"</span><span class="p">):</span>
+                    <span class="n">m</span><span class="o">=</span><span class="n">input_data</span><span class="p">[</span><span class="s1">'magmom'</span><span class="p">][</span><span class="s1">'magmom'</span><span class="p">]</span>
+                    <span class="n">struc</span> <span class="o">=</span> <span class="n">structure</span><span class="o">.</span><span class="n">Structure</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="s2">"POSCAR"</span><span class="p">)</span>
+                    <span class="n">sites</span> <span class="o">=</span> <span class="n">struc</span><span class="o">.</span><span class="n">sites</span>
+                    <span class="n">magmom_string</span> <span class="o">=</span> <span class="s2">""</span>
+                    <span class="k">for</span> <span class="n">j</span><span class="p">,</span><span class="n">site</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sites</span><span class="p">):</span>
+                        <span class="n">element</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">site</span><span class="o">.</span><span class="n">specie</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">sites</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                            <span class="c1"># if LSORBIT key found, rewrite MAGMOM in mx my mz format</span>
+                            <span class="k">if</span> <span class="s1">'LSORBIT'</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">key</span><span class="p">:</span>
+                                <span class="n">magmom_string</span> <span class="o">+=</span> <span class="nb">str</span><span class="p">(</span><span class="n">m</span><span class="p">[</span><span class="n">element</span><span class="p">])</span> <span class="o">+</span> <span class="s2">" "</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="n">magmom_string</span> <span class="o">+=</span> <span class="s2">"0 0 "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">m</span><span class="p">[</span><span class="n">element</span><span class="p">])</span> <span class="o">+</span> <span class="s2">"  "</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="s1">'LSORBIT'</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">key</span><span class="p">:</span>
+                                <span class="n">magmom_string</span> <span class="o">+=</span> <span class="nb">str</span><span class="p">(</span><span class="n">m</span><span class="p">[</span><span class="n">element</span><span class="p">])</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="n">magmom_string</span> <span class="o">+=</span> <span class="s2">"0 0 "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">m</span><span class="p">[</span><span class="n">element</span><span class="p">])</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span>
+                    <span class="k">if</span> <span class="n">magenum</span> <span class="o">!=</span> <span class="s1">'anisotropy'</span><span class="p">:</span>
+                        <span class="n">change_incar</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"MAGMOM = </span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">magmom_string</span><span class="p">))</span>
+                        <span class="n">change_incar</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"LORBIT = 11</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s2">"type is anisotropy, therefore doesn't update MAGMOM keyword</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">"magmom values not provided in config.json</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">"Provide magnetic moment values as dictionary magmom={'A':2, 'B':3}</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="c1"># Add LMIXTAU = .TRUE. if METAGGA is present in INCAR</span>
+            <span class="k">if</span> <span class="n">metagga</span><span class="p">:</span>
+                <span class="n">change_incar</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"LMIXTAU = .TRUE.</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+                <span class="n">change_incar</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"LASPH = .TRUE.</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
     <span class="c1"># Check and adjust ENCUT</span>
     <span class="n">encut_check</span><span class="p">()</span></div>
 
@@ -381,6 +385,7 @@
 <span class="sd">    """</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"../../input.in"</span><span class="p">,</span><span class="s2">"r"</span><span class="p">)</span> <span class="k">as</span> <span class="n">read_inputin</span><span class="p">:</span>
         <span class="n">inputline</span> <span class="o">=</span> <span class="n">read_inputin</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+    <span class="n">vasp_line</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">inputline</span><span class="p">:</span>
         <span class="k">if</span> <span class="s2">"vasp-line"</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
             <span class="n">vasp_line</span> <span class="o">=</span> <span class="kc">True</span>

@@ -93,15 +93,9 @@ This mode is activated when ``'mode':'fromcif'`` is set in the :ref:`download <d
 .. code-block:: json
 
     "download": {
-      "info": {
-        "mode": "fromcif",
-        "metal": false,
-        "FE": false,
-        "thermo_stable": false,
-        "exclude": ["Lu"],
-        "...": "..."
+      "mode": "fromcif",
+      .......
       }
-    }
 
 By default, it utilizes Pymatgen to explore CIF files.
 
@@ -170,8 +164,8 @@ In this section, we explored techniques for extracting data and generating input
 .. code-block:: json
 
   "download": {
-    "info": {
-      "mode": "chemsys",
+    "mode": "chemsys",
+    "element": {
       "metal": false,
       "FE": false,
       "thermo_stable": false,
@@ -197,7 +191,7 @@ In this section, we explored techniques for extracting data and generating input
       "size_constraint": 60,
       "ntype_constraint": 3,
       "must_include": ["Mg","B"],
-      "form_en": false,
+      "FE": false,
       "metal": false,
       "magnetic": true,
       "spacegroup": null
@@ -208,7 +202,6 @@ In this section, we explored techniques for extracting data and generating input
       "size_constraint": 60,
       "ntype_constraint": 3,
       "must_include": [],
-      "form_en": true,
       "metal": false,
       "magnetic": true,
       "spacegroup": null,
@@ -263,7 +256,7 @@ Similarly, once adjusting parameters in ``oqmd`` dictionary, we execute followin
 
     mainprogram oqmd-search
 
-    # This creates a list of compounds and stored in ``mpid-list.in`` file. Here, instead of editing input.in, here we directly change ``start`` and ``end`` keyword in ``inp`` dictionary. To download, execute:
+    # This creates a list of compounds and stored in ``mpid-list.in`` file. Again, edit start ``first line`` and `end `second line`` indices in input.in according to mpid-list.in. To download, execute:
 
     mainprogram oqmd-download
 
@@ -813,12 +806,7 @@ Suppose we are computing phase diagram of ``MgB2``, then we need to download all
 .. code-block:: bash
 
     "download": {
-    "info": {
-      "mode": "element", ==> change this to "chemsys"
-      "metal": false,
-      "FE": false,
-      "thermo_stable": false,
-      ......
+    "mode": "element", ==> change this to "chemsys"
       ......}
 
 Now edit following portion of the ``config.json`` file:
@@ -830,7 +818,7 @@ Now edit following portion of the ``config.json`` file:
       "size_constraint": 60, ==> Optimal size of the compounds.
       "ntype_constraint": 3,  ==> Compounds containing fewer than 3 different species, specifically 2.
       "must_include": ["Mg", "B"], ==> If "B" is not included, only compounds containing "Mg" and the binary compound "Mg-B" are extracted since "Mg" must be included. 
-      "form_en": false,
+      "FE": false,
       "metal": false,
       "magnetic": true,
       "spacegroup": null},
@@ -864,7 +852,7 @@ to collect the total energy per atom. It will create ``econv_vasp.csv`` file. Fi
 
 .. code-block:: bash
 
-    mainprogram vp-pd
+    mainprogram pd
 
 to compute phase diagram. Data are stored in ``convexhull.csv`` and ``convexhull.pdf`` plot is created. 
 

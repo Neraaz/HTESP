@@ -45,10 +45,10 @@
   
   
   
-    <title>aflow_extract &#8212; HTESP 0.0.1 documentation</title>
+    <title>aflow_extract &#8212; HTESP v1.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=83e35b93" />
     <link rel="stylesheet" type="text/css" href="../_static/material.css?v=79c92029" />
-    <script src="../_static/documentation_options.js?v=d45e8c67"></script>
+    <script src="../_static/documentation_options.js?v=e160b93e"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -76,7 +76,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../index.html" title="HTESP 0.0.1 documentation"
+        <a href="../index.html" title="HTESP v1.0 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -88,7 +88,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">HTESP 0.0.1 documentation</span>
+          <span class="md-header-nav__topic">HTESP v1.0 documentation</span>
           <span class="md-header-nav__topic"> aflow_extract </span>
         </div>
       </div>
@@ -145,7 +145,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">HTESP 0.0.1 documentation</a></li>
+          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">HTESP v1.0 documentation</a></li>
           <li class="md-tabs__item"><a href="index.html" class="md-tabs__link">Module code</a></li>
       </ul>
     </div>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../index.html" title="HTESP 0.0.1 documentation" class="md-nav__button md-logo">
+    <a href="../index.html" title="HTESP v1.0 documentation" class="md-nav__button md-logo">
       
         <img src="../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../index.html"
-       title="HTESP 0.0.1 documentation">HTESP 0.0.1 documentation</a>
+       title="HTESP v1.0 documentation">HTESP v1.0 documentation</a>
   </label>
   
 
@@ -203,10 +203,12 @@
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">from</span> <span class="nn">urllib.request</span> <span class="kn">import</span> <span class="n">urlopen</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">from</span> <span class="nn">ase.cell</span> <span class="kn">import</span> <span class="n">Cell</span>
+<span class="c1">#from ase.cell import Cell</span>
 <span class="kn">from</span> <span class="nn">pymatgen.core.structure</span> <span class="kn">import</span> <span class="n">IStructure</span>
+<span class="kn">from</span> <span class="nn">pymatgen.core</span> <span class="kn">import</span> <span class="n">structure</span><span class="p">,</span> <span class="n">lattice</span>
 <span class="kn">from</span> <span class="nn">pymatgen.core.composition</span> <span class="kn">import</span> <span class="n">Composition</span>
 <span class="kn">from</span> <span class="nn">pymatgen.analysis.structure_matcher</span> <span class="kn">import</span> <span class="n">StructureMatcher</span>
+<span class="kn">from</span> <span class="nn">pymatgen.symmetry.analyzer</span> <span class="kn">import</span> <span class="n">SpacegroupAnalyzer</span>
 <span class="kn">from</span> <span class="nn">oqmd_extract</span> <span class="kn">import</span> <span class="n">poscar_to_input</span>
 <span class="kn">from</span> <span class="nn">cif_to_gsinput</span> <span class="kn">import</span> <span class="n">pos_to_kpt</span>
 <span class="kn">from</span> <span class="nn">write_potcar</span> <span class="kn">import</span> <span class="n">poscar2potcar</span>
@@ -410,7 +412,15 @@
 <span class="sd">          1  Si    aflow:12345</span>
 <span class="sd">    """</span>
     <span class="c1"># Create lattice from lattice parameters using ASE</span>
-    <span class="n">lattice</span> <span class="o">=</span> <span class="n">Cell</span><span class="o">.</span><span class="n">fromcellpar</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">'geometry'</span><span class="p">])</span><span class="o">.</span><span class="n">array</span>
+    <span class="n">lat_data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">'geometry'</span><span class="p">]</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">lat_data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">lat_data</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">lat_data</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">alpha</span> <span class="o">=</span> <span class="n">lat_data</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+    <span class="n">beta</span> <span class="o">=</span> <span class="n">lat_data</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
+    <span class="n">gamma</span> <span class="o">=</span> <span class="n">lat_data</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
+    <span class="n">latt</span> <span class="o">=</span> <span class="n">lattice</span><span class="o">.</span><span class="n">Lattice</span><span class="o">.</span><span class="n">from_parameters</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">alpha</span><span class="p">,</span><span class="n">beta</span><span class="p">,</span><span class="n">gamma</span><span class="p">)</span>
+    <span class="n">lattice_matrix</span> <span class="o">=</span> <span class="n">latt</span><span class="o">.</span><span class="n">matrix</span>
     <span class="n">comp</span> <span class="o">=</span> <span class="n">Composition</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">'compound'</span><span class="p">])</span> <span class="c1"># Extract compound information</span>
     <span class="n">aflow_id</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">'auid'</span><span class="p">]</span> <span class="c1"># Extract AFLOW ID</span>
     <span class="n">species</span> <span class="o">=</span> <span class="p">[]</span>
@@ -420,7 +430,9 @@
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">comp</span><span class="p">[</span><span class="n">key</span><span class="p">])):</span>
             <span class="n">species</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
     <span class="c1"># Create structure object</span>
-    <span class="n">struc</span> <span class="o">=</span> <span class="n">IStructure</span><span class="p">(</span><span class="n">lattice</span><span class="p">,</span><span class="n">species</span><span class="o">=</span><span class="n">species</span><span class="p">,</span><span class="n">coords</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">'positions_fractional'</span><span class="p">],</span><span class="n">to_unit_cell</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">struc</span> <span class="o">=</span> <span class="n">IStructure</span><span class="p">(</span><span class="n">lattice_matrix</span><span class="p">,</span><span class="n">species</span><span class="o">=</span><span class="n">species</span><span class="p">,</span><span class="n">coords</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">'positions_fractional'</span><span class="p">],</span><span class="n">to_unit_cell</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">struc</span> <span class="o">=</span> <span class="n">structure</span><span class="o">.</span><span class="n">Structure</span><span class="p">(</span><span class="n">struc</span><span class="o">.</span><span class="n">lattice</span><span class="p">,</span><span class="n">struc</span><span class="o">.</span><span class="n">species</span><span class="p">,</span><span class="n">struc</span><span class="o">.</span><span class="n">frac_coords</span><span class="p">,</span><span class="n">to_unit_cell</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">struc</span> <span class="o">=</span> <span class="n">SpacegroupAnalyzer</span><span class="p">(</span><span class="n">struc</span><span class="p">,</span> <span class="n">symprec</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span><span class="o">.</span><span class="n">get_primitive_standard_structure</span><span class="p">()</span>
     <span class="c1"># Add AFLOW ID as a site property</span>
     <span class="n">site_prop</span> <span class="o">=</span> <span class="p">[</span><span class="n">aflow_id</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">struc</span><span class="o">.</span><span class="n">sites</span><span class="p">)</span>
     <span class="n">struc</span><span class="o">.</span><span class="n">add_site_property</span><span class="p">(</span><span class="s2">"auid"</span><span class="p">,</span><span class="n">site_prop</span><span class="p">)</span>
@@ -509,8 +521,12 @@
     <span class="c1"># Read command-line argument to determine operation mode</span>
     <span class="n">condition</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
     <span class="c1"># Extract input data</span>
-    <span class="n">start</span> <span class="o">=</span> <span class="n">input_data</span><span class="p">[</span><span class="s1">'inp'</span><span class="p">][</span><span class="s1">'start'</span><span class="p">]</span>
-    <span class="n">end</span> <span class="o">=</span> <span class="n">input_data</span><span class="p">[</span><span class="s1">'inp'</span><span class="p">][</span><span class="s1">'end'</span><span class="p">]</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"input.in"</span><span class="p">,</span><span class="s2">"r"</span><span class="p">)</span> <span class="k">as</span> <span class="n">read_in</span><span class="p">:</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="n">read_in</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">end</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="c1">#start = input_data['inp']['start']</span>
+    <span class="c1">#end = input_data['inp']['end']</span>
     <span class="n">dft</span> <span class="o">=</span> <span class="n">input_data</span><span class="p">[</span><span class="s1">'inp'</span><span class="p">][</span><span class="s1">'calc'</span><span class="p">]</span>
     <span class="c1"># Call search_data function if the mode is search</span>
     <span class="k">if</span> <span class="n">condition</span> <span class="o">==</span> <span class="s1">'search'</span><span class="p">:</span>

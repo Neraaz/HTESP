@@ -45,10 +45,10 @@
   
   
   
-    <title>cif_to_gsinput &#8212; HTESP 0.0.1 documentation</title>
+    <title>cif_to_gsinput &#8212; HTESP v1.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=83e35b93" />
     <link rel="stylesheet" type="text/css" href="../_static/material.css?v=79c92029" />
-    <script src="../_static/documentation_options.js?v=d45e8c67"></script>
+    <script src="../_static/documentation_options.js?v=e160b93e"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -76,7 +76,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../index.html" title="HTESP 0.0.1 documentation"
+        <a href="../index.html" title="HTESP v1.0 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -88,7 +88,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">HTESP 0.0.1 documentation</span>
+          <span class="md-header-nav__topic">HTESP v1.0 documentation</span>
           <span class="md-header-nav__topic"> cif_to_gsinput </span>
         </div>
       </div>
@@ -145,7 +145,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">HTESP 0.0.1 documentation</a></li>
+          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">HTESP v1.0 documentation</a></li>
           <li class="md-tabs__item"><a href="index.html" class="md-tabs__link">Module code</a></li>
       </ul>
     </div>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../index.html" title="HTESP 0.0.1 documentation" class="md-nav__button md-logo">
+    <a href="../index.html" title="HTESP v1.0 documentation" class="md-nav__button md-logo">
       
         <img src="../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../index.html"
-       title="HTESP 0.0.1 documentation">HTESP 0.0.1 documentation</a>
+       title="HTESP v1.0 documentation">HTESP v1.0 documentation</a>
   </label>
   
 
@@ -202,7 +202,6 @@
 <span class="kn">from</span> <span class="nn">pymatgen.io.cif</span> <span class="kn">import</span> <span class="n">CifParser</span><span class="p">,</span> <span class="n">CifWriter</span>
 <span class="kn">from</span> <span class="nn">pymatgen.io.vasp.sets</span> <span class="kn">import</span> <span class="n">MPRelaxSet</span>
 <span class="kn">from</span> <span class="nn">pymatgen.symmetry.analyzer</span> <span class="kn">import</span> <span class="n">SpacegroupAnalyzer</span>
-<span class="kn">from</span> <span class="nn">pymatgen.analysis.magnetism</span> <span class="kn">import</span> <span class="n">MagneticStructureEnumerator</span>
 <span class="kn">from</span> <span class="nn">pymatgen.core</span> <span class="kn">import</span> <span class="n">structure</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">write_potcar</span> <span class="kn">import</span> <span class="n">poscar2potcar</span>
@@ -439,8 +438,8 @@
             <span class="c1"># Reading magnetic moments from input file</span>
             <span class="n">default_magmoms</span> <span class="o">=</span> <span class="n">input_data</span><span class="p">[</span><span class="s1">'magmom'</span><span class="p">][</span><span class="s1">'magmom'</span><span class="p">]</span>
             <span class="c1"># Obtaining Ferromagnetic structure</span>
-            <span class="n">struc</span> <span class="o">=</span> <span class="n">MagneticStructureEnumerator</span><span class="p">(</span><span class="n">structure_file</span><span class="p">,</span><span class="n">default_magmoms</span><span class="o">=</span><span class="n">default_magmoms</span><span class="p">,</span><span class="n">strategies</span><span class="o">=</span><span class="p">[</span><span class="s1">'ferromagnetic'</span><span class="p">],</span><span class="n">truncate_by_symmetry</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">ordered_structures</span>
-            <span class="n">obj</span><span class="o">.</span><span class="n">structure</span> <span class="o">=</span> <span class="n">struc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">structure_file</span><span class="o">.</span><span class="n">add_spin_by_element</span><span class="p">(</span><span class="n">default_magmoms</span><span class="p">)</span>
+            <span class="n">obj</span><span class="o">.</span><span class="n">structure</span> <span class="o">=</span> <span class="n">structure_file</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">obj</span><span class="o">.</span><span class="n">structure</span> <span class="o">=</span> <span class="n">structure_file</span>
         <span class="c1"># Get composition list</span>
@@ -501,6 +500,7 @@
     <span class="c1"># Iterate over CIF files</span>
     <span class="k">for</span> <span class="n">cif</span> <span class="ow">in</span> <span class="n">list_cif</span><span class="p">:</span>
         <span class="n">mpid</span> <span class="o">=</span> <span class="n">cif</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'.'</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># Extract Material ID from file name</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">mpid</span><span class="p">)</span>
         <span class="c1"># Convert CIF to QE input file</span>
         <span class="n">compound</span> <span class="o">=</span> <span class="n">ciftoscf</span><span class="p">(</span><span class="n">calc_type</span><span class="p">,</span><span class="n">mpid</span><span class="p">,</span><span class="n">cif2cell</span><span class="p">,</span><span class="kc">False</span><span class="p">)</span>
         <span class="c1"># If mpid.in does not exist, initialize index</span>

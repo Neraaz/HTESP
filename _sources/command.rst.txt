@@ -36,8 +36,6 @@ It provides information about these subprocesses.
     
     - process = wt-info for wanniertools calculations 
     
-    - process = vasp-info for vasp+phonon calculations 
-    
     - process = elastic-input, to create vasp input files with deformations
     
     - process = compute-elastic, to compute elastic properties
@@ -154,98 +152,10 @@ Let's look at the "process-info" command,
     
     - process = compound, obtain details about compounds, such as structural information before and after relaxation, electron count, Fermi level, kinetic energy cutoff, k-point mesh, etc. (QE+VASP).
 
-.. code-block:: bash
-
-    mainprogram epw-info
-
-.. code-block:: bash
-
-    - perform relaxation and ground-state calculations with process from 1 - 4
-    
-    - process = epw1 , preparing input files for scf, non-scf, phonon calculations (QE (all), VASP (scf))
-    
-    - process = qe-ph , scf and phonon calculations (QE)
-    
-    - process = epw2 , copy phonon files in save directory (QE)
-    
-    - process = epw3 , projection calculations for scdm projection (QE)
-    
-    - process = epw4 , fitting procedure to obtain scdm parameters (QE)
-    
-    - process = wann-scdm , preparing input files (QE)
-      for wannierization using scdm projections
-    
-    - process = wann-file , preparing input files (QE+VASP)
-      for wannierization taking projections from projection.in file
-    
-    - process = wann-random , preparing input files (QE+VASP)
-      for wannierization using random projections
-    
-    - process = 13,14,15,16,17,18 for bandstructure and DOS calculations
-      for analyzing and determining different windows (QE (all) + VASP (check with vasp-info))
-    
-    - process = epw5 , preparing inputfiles for QE bandstructure (QE)
-      calculation using kpoints from wannier calculation (to obtain bands on same k-points)
-    
-    - process = epw-scdm, epw-file, epw-random , preparing input (QE)
-      files for epw calculations (anisotropic Eliashberg-Migdel approximations)
-      with different projection schemes 
-
-.. code-block:: bash
-
-    # Note1: Utilize atom- and orbital-resolved density of states to provide initial Wannier projections.
-
-    # Note2: To assess the quality of the Wannier orbitals, compare the Wannier interpolated band structure and Fermi surface with those obtained from KS orbitals.
-
-    # Note3: Consider symmetrization of the Wannier interpolated Hamiltonian, if necessary.
-
-
-.. code-block:: bash
-
-    mainprogram wt-info
-
-.. code-block:: bash
-
-    - First repeat all the calculations as described in 'mainprogram epw-info' command upto wannierization
-    
-    - process = wt1, prepare input file wt.in required for initial bulk bandgap calculation
-      if not found, it will create a default one
-      copy 'wt-{id}-{name}.in' file from 'WT_dir' to
-      R{id}-{name}/epw/ folder where wannierization process was done
-      Please include slab dimension even in bulk calculation,
-      so that it produces 'POSCAR-slab' file
-      which is used by ASE package to create 'KPATH_SLAB' for slab system
-    
-    - process = wt2, prepare input file for other calculations including surfaces
-  Edit 'wanniertool_input' key in config.json according to properties of interest
-
-.. code-block:: bash
-
-    mainprogram vasp-info
-
-.. code-block:: bash
-
-    - Strucutural relaxation, substitution, pressure, magnetic orderings
-      (isotropic, changing scaling factor of lattice) can be performed
-      similary as of QE, but using DFT = vasp (or VASP) in input.in file
-    
-    - For process = 1 - 3, Structural relaxation similar to QE
-    
-    - process = 13 , Submit bandstructure calculations
-    
-    - process = 15 , processing bandstructure
-    
-    - process = 16 , Submit DOS and pDOS calculations
-    
-    - process = 19 , plotting bandstructure or DOS/pDOS
-      Use 'eband', or  'pdos' in input.in
-    
-    - Thermodynamic quantities can be calculated using VASP and phonopy (vp-ph)
-    
     - process = primtoconv, to change structure into conventional unit cell
       ,useful for vasp+phonopy calculations
     
-    - process = vp-pd, computing thermodynamic stability
+    - process = pd, computing thermodynamic stability
       using pymatgen with 'econv_vasp.csv' file
     
     - process = phono1, to make supercell and submit scf calculations for different displacement.
@@ -283,3 +193,67 @@ Let's look at the "process-info" command,
     - process = eos-vinet, equation of state fitting using vinet fit
     
 
+.. code-block:: bash
+
+    mainprogram epw-info
+
+.. code-block:: bash
+
+    - perform relaxation and ground-state calculations with process from 1 - 4
+    
+    - process = epw1 , preparing input files for scf, non-scf, phonon calculations (QE (all), VASP (scf))
+    
+    - process = qe-ph , scf and phonon calculations (QE)
+    
+    - process = epw2 , copy phonon files in save directory (QE)
+    
+    - process = epw3 , projection calculations for scdm projection (QE)
+    
+    - process = epw4 , fitting procedure to obtain scdm parameters (QE)
+    
+    - process = wann-scdm , preparing input files (QE)
+      for wannierization using scdm projections
+    
+    - process = wann-file , preparing input files (QE+VASP)
+      for wannierization taking projections from projection.in file
+    
+    - process = wann-random , preparing input files (QE+VASP)
+      for wannierization using random projections
+    
+    - process = 13,14,15,16,17,18 for bandstructure and DOS calculations
+      for analyzing and determining different windows (QE (all) + VASP)
+    
+    - process = epw5 , preparing inputfiles for QE bandstructure (QE)
+      calculation using kpoints from wannier calculation (to obtain bands on same k-points)
+    
+    - process = epw-scdm, epw-file, epw-random , preparing input (QE)
+      files for epw calculations (anisotropic Eliashberg-Migdel approximations)
+      with different projection schemes 
+
+.. code-block:: bash
+
+    # Note1: Utilize atom- and orbital-resolved density of states to provide initial Wannier projections.
+
+    # Note2: To assess the quality of the Wannier orbitals, compare the Wannier interpolated band structure and Fermi surface with those obtained from KS orbitals.
+
+    # Note3: Consider symmetrization of the Wannier interpolated Hamiltonian, if necessary.
+
+
+.. code-block:: bash
+
+    mainprogram wt-info
+
+.. code-block:: bash
+
+    - First repeat all the calculations as described in 'mainprogram epw-info' command upto wannierization
+    
+    - process = wt1, prepare input file wt.in required for initial bulk bandgap calculation
+      if not found, it will create a default one
+      copy 'wt-{id}-{name}.in' file from 'WT_dir' to
+      R{id}-{name}/epw/ folder where wannierization process was done
+      Please include slab dimension even in bulk calculation,
+      so that it produces 'POSCAR-slab' file
+      which is used by ASE package to create 'KPATH_SLAB' for slab system
+    
+    - process = wt2, prepare input file for other calculations including surfaces
+  Edit 'wanniertool_input' key in config.json according to properties of interest

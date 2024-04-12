@@ -23,11 +23,9 @@ Modules
     crystal
     kpoint_path
     plot
-    readme
     checkfreq
     dos
     lambda_in
-    standard
     displace_phonopy
     poscar_to_vasp
     convergence_test

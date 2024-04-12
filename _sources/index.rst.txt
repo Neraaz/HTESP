@@ -14,19 +14,6 @@ Welcome to HTESP's documentation!
 Introducing HTESP, the High Throughput Electronic Structure Package, designed for Quantum Espresso (QE) and VASP simulations. HTESP streamlines input file preparation from the Materials Project, OQMD, and AFLOW databases and offers a wide range of functionalities, from basic ground-state calculations to advanced electron-phonon studies and superconductivity analyses. With seamless integration with QE and VASP, HTESP empowers researchers to explore complex material landscapes, automate calculations, and investigate material electronic structures efficiently.
 
 
-To Do ......
-
-
- 1. Finish Documentation (Tutorial in progress ..........). Add comments to python scripts.
-
- 2. Check all the capability of the code with calculations (prepare tutorials in separate folders)
-
- 3. Show basic statistics, by elements, spacegroup,
-
- 4. Include fermisurfer?
-
- 
-
 * :ref:`search`
 
 
