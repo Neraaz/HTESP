@@ -1,0 +1,8 @@
+Once we have relaxed structure, use "charge.in" file to generate input files with different total charge.
+For QE, +Ve charge represents removing electrons, while -Ve charge represents the adding electronic charge.
+
+Execute:
+
+mainprogram charge-input
+
+to generate input files inside scf_dir and mpid-charge.in file.

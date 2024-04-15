@@ -1,0 +1,2 @@
+srun: Job step aborted: Waiting up to 32 seconds for job step to finish.
+slurmstepd: error: *** JOB 1209830 ON dense032 CANCELLED AT 2024-04-02T00:05:40 ***

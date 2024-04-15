@@ -44,10 +44,6 @@ tutorial17: Equation of State
 
 tutorial18: Wannier interpolated bandstructure
 
-tutorial19: Updating k-mesh
+tutorial19: Preparing input files for systems with non-zero net charge
 
-tutorial20: Preparing input files for systems with non-zero net charge
-
-tutorial21: Create input files for different magnetic ordering
-
-tutorial22: Print information about compound after relaxation
+tutorial20: Create input files for different magnetic ordering

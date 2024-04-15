@@ -110,19 +110,21 @@ def magnetic_structure(obj,mpid,compound,magconfig,dft):
                 os.system("""echo "MAGMOM = {}" >> INCAR""".format(maglist))
                 os.chdir("../../")
             else:
+                # Convert IStructure to Structure
+                struc = structure.Structure(struc.lattice, struc.species, struc.cart_coords, coords_are_cartesian=True)
                 obj.structure = struc
                 comp_list = []
                 for composition in struc.composition.elements:
                     comp_list.append(composition.name)
                 obj.comp_list = comp_list
-                obj.getkpt()
+                obj.getkpt(primitive=False)
                 evenkpt = input_data['download']['inp']['evenkpt']
                 if evenkpt:
                     print("Utilizing even kpoint mesh\n")
                     obj.getevenkpt()
                 obj.maxecut_sssp_for_subs()
                 obj.prefix = struc.composition.alphabetical_formula.replace(" ","")
-                obj.setting_qeinput(magnetic=True,pseudo_dir='../../pp')
+                obj.setting_qeinput(magnetic=True,monoclinic=False,pseudo_dir='../../pp')
                 if not os.path.isdir("scf_dir"):
                     os.system("mkdir scf_dir")
                 os.system("""mv scf-None.in""" + """ scf_dir/scf-{}-{}.in""".format(mpid,i+1))

@@ -1,6 +1,7 @@
 copy batch.header and config.json file to tutorial folders.
 
 suppose config.json file turns into input_data dictionary.
+Use your own materials project key in config.json.
 
 Always set input_data['download']['inp']['calc'] to "QE"
 to generate QE input files
@@ -43,10 +44,6 @@ tutorial18: Equation of State
 
 tutorial19: Wannier interpolated bandstructure
 
-tutorial20: Updating k-mesh
+tutorial20: Preparing input files for systems with non-zero net charge
 
-tutorial21: Preparing input files for systems with non-zero net charge
-
-tutorial22: Create input files for different magnetic ordering
-
-tutorial23: Print information about compound after relaxation
+tutorial21: Create input files for different magnetic ordering

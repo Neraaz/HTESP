@@ -1,0 +1,10 @@
+1. After relaxation, get input.in, config.json, mpid.in, Rmp-763-Mg1B2, and vasp.in files
+
+change magmom type to "ordering" in config.json
+
+Now, with adjusting input.in starting and ending indices, execute:
+
+mainprogram magenum 
+
+command to obtain mpid-magnetic.in files and bunch of different Rmp-763-j-Mg1B2 folders, j = 1,2,3....
+corresponding to different structures with magnetic ordering will be generated.

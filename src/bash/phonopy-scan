@@ -128,6 +128,7 @@ for ((ii=$1; ii<$2; ++ii)); do
        continue
       fi
      
+      
       if [[  -f run-vasp.sh ]]; then
         cp run-vasp.sh R$A-$B/phonopy/run.sh
       else
@@ -138,6 +139,7 @@ for ((ii=$1; ii<$2; ++ii)); do
       fi
       cp vasp-phonopy.in R$A-$B/phonopy/vasp.in
       cd R$A-$B/phonopy
+       cp ../relax/config.json .
        cp ../relax/INCAR .
        cp ../relax/POSCAR .
        cp ../relax/POTCAR .
@@ -160,6 +162,7 @@ for ((ii=$1; ii<$2; ++ii)); do
          cp KPOINTS R$kk/
          cp POTCAR R$kk/
          cp vasp.in R$kk/
+         cp config.json R$kk/
         if [ $kk -lt 10 ]; then
            cp POSCAR-00$kk R$kk/POSCAR
         else

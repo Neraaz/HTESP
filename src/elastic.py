@@ -141,7 +141,7 @@ def deformation(mpid,obj,dft,orig_prefix,deformed_struc):
             else:
                 obj.setting_qeinput(calculation='relax',pseudo_dir='../../pp')
             os.system("""mv scf-None.in""" + """ scf_dir/scf-{}-{}.in""".format(mpid,i+1))
-        print(mpid,obj.prefix)
+        print(f"Deformation: {i+1} ",mpid,obj.prefix)
         with open("mpid-deformed.in", "a") as mpid_append:
             mpid_append.write("v{}".format(entry+1+i) + " " + mpid + "-{}".format(i+1) + " " + obj.prefix + "\n")
 def main(mpid,orig_prefix):

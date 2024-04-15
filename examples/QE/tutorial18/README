@@ -12,6 +12,7 @@ Execute:
 mainprogram 26
 
 to perform scf calculations with different isotropic volumes by allowing change in shape.
+Repeat the command, until the systems are fully relaxed.
 
 After finishing, execute:
 

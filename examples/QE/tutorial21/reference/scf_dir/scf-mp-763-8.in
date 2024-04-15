@@ -1,0 +1,63 @@
+&CONTROL
+  calculation = 'vc-relax',
+  etot_conv_thr = 1d-05,
+  forc_conv_thr = 0.0001,
+  nstep = 300,
+  outdir = './',
+  prefix = 'B8Mg4',
+  pseudo_dir = '../../pp/',
+  restart_mode = 'from_scratch',
+  tprnfor = .TRUE.,
+  tstress = .TRUE.,
+/
+&SYSTEM
+starting_magnetization(1) = 0
+starting_magnetization(2) = -1
+starting_magnetization(3) = 1
+nspin = 2,
+  degauss = 0.02,
+  ecutrho = 280,
+  ecutwfc = 35,
+  occupations = 'smearing',
+  smearing = 'gauss',
+  ibrav = 0,
+  nat = 12,
+  ntyp = 3,
+/
+&ELECTRONS
+  conv_thr = 1d-16,
+  diagonalization = 'david',
+  electron_maxstep = 300,
+  mixing_beta = 0.7,
+  mixing_mode = 'plain',
+/
+&IONS
+  ion_dynamics = 'bfgs',
+/
+&CELL
+  cell_dynamics = 'bfgs',
+  press_conv_thr = 0.05,
+/
+ATOMIC_SPECIES
+  B  10.8110 B.upf
+  Mg2  24.3050 Mg.upf
+  Mg1  24.3050 Mg.upf
+ATOMIC_POSITIONS crystal
+Mg2 0.25 0.0 0.625
+Mg2 0.7500000000000001 0.0 0.375
+Mg1 0.7500000000000001 0.0 0.8749999999999999
+Mg1 0.25 0.0 0.12499999999999999
+B 0.25 0.5 0.79166675
+B 0.7500000000000001 0.5 0.5416667500000001
+B 0.25 0.5 0.29166675000000003
+B 0.7500000000000001 0.5 0.041666750000000086
+B 0.7500000000000001 0.5 0.7083332499999999
+B 0.25 0.5 0.4583332499999999
+B 0.7500000000000001 0.5 0.20833324999999991
+B 0.25 0.5 0.9583332499999999
+K_POINTS automatic
+  13 11 4 0 0 0
+CELL_PARAMETERS angstrom
+3.068814 0.0 0.0
+0.0 3.516582 0.0
+0.0 0.0 10.630685

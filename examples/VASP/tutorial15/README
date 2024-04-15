@@ -1,0 +1,16 @@
+1. Prepare input files for elemental, and binary bulks of Mg-B by following tutorial3
+
+2. Now perform relaxation following tutorial9
+
+3. After structural relaxation followed by electronic SCF calculations, execute:
+
+mainprogram e0
+
+to extract energies in "econv.csv" file.
+
+Finally, execute:
+
+mainprogram pd 
+
+to compute phase diagram.
+

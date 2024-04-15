@@ -1,0 +1,27 @@
+Start from tutorial9.
+
+With pressure.in file having scale parameters for lattice vectors,
+
+one can obtain input files for different volumes by executing:
+
+mainprogram pressure-input
+
+Now, run relaxation keeping volume fixed with
+
+mainprogram 26
+
+Repeat multiple times until all the systems are fully converged.
+
+Finally, collect the volume energies data with
+
+mainprogram ev-collect
+
+To obtain equation of state, execute:
+
+mainprogram eos-bm
+
+or 
+
+mainprogram eos-vinet
+
+This creates eos-fit.dat file with results.

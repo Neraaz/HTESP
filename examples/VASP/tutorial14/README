@@ -1,0 +1,53 @@
+Copy input.in, mpid.in, run-vasp.sh, vasp.in, and Rmp-763-Mg1B2 file (from tutorial9 after relaxation)
+
+Adjust "strain" keyword in config.json file and prepare input files with
+
+mainprogram elastic-input
+
+For this step, input.in will be
+---------------------------
+1
+2
+.....
+mpid.in
+....
+DFT = VASP
+---------------------------
+
+Rmp-763-1-Mg1B2, ......, Rmp-763-24-Mg1B2 folders are created along with mpid-deformed.in file.
+
+Now, use mpid-deformed.in in "input.in", change starting and ending index based on this file to perform
+calculations.
+
+---------------------------
+1
+25
+.....
+mpid-deformed.in
+....
+DFT = VASP
+---------------------------
+
+Perform ionic relaxation with combination of following commands
+
+mainprogram 1
+mainprogram 2 and
+mainprogram 3
+
+similarly as in tutorial9.
+
+
+Once finished, change "mpid-deformed.in" to "mpid.in" and adjust indices to compute elastic properties
+
+---------------------------
+1
+2
+.....
+mpid.in
+....
+DFT = VASP
+---------------------------
+
+Execute command:
+
+mainprogram elastic-compute. Elastic properties are stored in "elastic.csv" file.

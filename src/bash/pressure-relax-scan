@@ -26,6 +26,14 @@ for ((ii=$1; ii<$2; ++ii)); do
       NP=$(echo $NP+1 | bc)
     fi
     sed '4d' input.in | sed '4i\mpid-pressure.in' | sed '1s/.*/1/' | sed "2s/.*/$NP/" > R$A-$B/pressure/input.in
+    if [[ ! -f R$A-$B/pressure/CALC_ALREADY_STARTED ]]; then
+      touch R$A-$B/pressure/CALC_ALREADY_STARTED
+      cp -r scf_dir R$A-$B/pressure/
+    else
+      cd R$A-$B/pressure/
+        mainprogram 2
+      cd ../../
+    fi
     for ((kk=1; kk<$NP; ++kk)); do
          
         if [ $dft == 'vasp' ] || [ $dft == 'VASP' ] ; then
@@ -35,18 +43,23 @@ for ((ii=$1; ii<$2; ++ii)); do
              fi
              cp run-vasp.sh R$A-$B/pressure/R$A-$P-$B/relax/run.sh
              cd R$A-$B/pressure/R$A-$P-$B/relax/
-                if [[ -f ../../../../CALC_VISIBLE_WITH_ID ]]; then 
-                  mv run.sh $A-$kk.sh
-                  sbatch $A-$kk.sh
-                elif [[ -f ../../../../CALC_VISIBLE_WITH_NAME ]]; then 
-                  mv run.sh $B-$kk.sh
-                  sbatch $B-$kk.sh
-                elif [[ -f ../../../../CALC_VISIBLE_WITH_ID-NAME ]]; then 
-                  mv run.sh $A-$B-$kk.sh
-                  sbatch $A-$B-$kk.sh
-                else
-                  sbatch run-$kk.sh
-                fi
+               if [[ ! -f NSW_0_DETECTED ]]; then
+                   if [[ -f ../../../../CALC_VISIBLE_WITH_ID ]]; then 
+                     mv run.sh $A-$kk.sh
+                     sbatch $A-$kk.sh
+                   elif [[ -f ../../../../CALC_VISIBLE_WITH_NAME ]]; then 
+                     mv run.sh $B-$kk.sh
+                     sbatch $B-$kk.sh
+                   elif [[ -f ../../../../CALC_VISIBLE_WITH_ID-NAME ]]; then 
+                     mv run.sh $A-$B-$kk.sh
+                     sbatch $A-$B-$kk.sh
+                   else
+                     mv run.sh run-$kk.sh
+                     sbatch run-$kk.sh
+                   fi
+               else
+                  echo "Already NSW = 0 found"
+               fi
              cd ../../../../
         else
              P=$(grep "v$kk\ " pressure.in | awk '{print $2}')
@@ -59,51 +72,29 @@ for ((ii=$1; ii<$2; ++ii)); do
                   echo " making R$A-$P-$B/relax directory "
                   mkdir R$A-$B/pressure/R$A-$P-$B/relax
               fi
-                if [[ -f R$A-$B/pressure/R$A-$P-$B/relax/scf.out ]]; then
-                  errorcheck=$(grep Error R$A-$B/pressure/R$A-$P-$B/relax/scf.out | wc -l)
-                  relaxed=$(grep "Final scf calculation at the relaxed structure." R$A-$B/pressure/R$A-$P-$B/relax/scf.out | wc -l)
-                  if [[ $errorcheck -gt 0 ]]; then
-                     rm -r R$A-$B/pressure
-                  fi
-                else
-                  relaxed=$(echo 0 | bc)
+              if [[ -f R$A-$B/pressure/R$A-$P-$B/relax/scf.out ]]; then
+                errorcheck=$(grep Error R$A-$B/pressure/R$A-$P-$B/relax/scf.out | wc -l)
+                if [[ $errorcheck -gt 0 ]]; then
+                   rm -r R$A-$B/pressure
                 fi
-                if [[ -f R$A-$B/pressure/R$A-$P-$B/relax/scf.out ]] && [[ $relaxed -gt 0 ]]; then
-                    echo "Calculation resubmitting..."
-                    sed -n '/&/,/ATOMIC_POSITIONS/p' R$A-$B/pressure/R$A-$P-$B/relax/scf.in | sed '$d' > R$A-$B/pressure/R$A-$P-$B/relax/scf-header.in
-                    sed -n '/Begin final coordinates/,/End final coordinates/p' R$A-$B/pressure/R$A-$P-$B/relax/scf.out | sed '$d' | sed '1,4d'| sed '5d' > R$A-$B/pressure/R$A-$P-$B/relax/$kk-p.dat
-                    sed -n '/K_POINTS/,/CELL/p' R$A-$B/relax/scf.in | sed '$d' > R$A-$B/pressure/R$A-$P-$B/relax/kpt.dat
-                    cat R$A-$B/pressure/R$A-$P-$B/relax/scf-header.in R$A-$B/pressure/R$A-$P-$B/relax/kpt.dat R$A-$B/pressure/R$A-$P-$B/relax/$kk-p.dat > R$A-$B/pressure/R$A-$P-$B/relax/scf.in
-                elif [[ -f R$A-$B/pressure/R$A-$P-$B/relax/scf.out ]] && [[ $relaxed -lt 1 ]]; then
-                    echo "time out" 
-                    sed -n '/&/,/CELL_PARAMETERS/p' R$A-$B/pressure/R$A-$P-$B/relax/scf.in > R$A-$B/pressure/R$A-$P-$B/relax/scf-header.in
-                    nat=$(grep "number of atoms/cell" R$A-$B/relax/scf.out | tail -n 1 | awk '{ print $5 }')
-                    celli=$(echo $nat + 6 | bc)
-                    cellj=$(echo $celli + 1 | bc)
-                    grep -A $celli 'CELL_PARAMETERS (angstrom)' R$A-$B/pressure/R$A-$P-$B/scf.out | tail -n $cellj | sed '$d' > R$A-$B/pressure/R$A-$P-$B/relax/cell_norelax.dat
-                    mv R$A-$B/pressure/R$A-$P-$B/relax/scf.in R$A-$B/pressure/R$A-$P-$B/relax/scf-initial.in
-                    mv R$A-$B/pressure/R$A-$P-$B/relax/scf.out R$A-$B/pressure/R$A-$P-$B/relax/scf-initial.out
-                    cat R$A-$B/pressure/R$A-$P-$B/relax/scf-header.in R$A-$B/pressure/R$A-$P-$B/relax/cell_norelax.dat > R$A-$B/pressure/R$A-$P-$B/relax/scf.in
-                else
-                    P=$(grep "v$kk\ " pressure.in | awk '{print $2}')
-                    cutoff=$(echo 2 | bc)
-                    if (( $(echo "$P < $cutoff" | bc -l) )); then
-                      cp scf_dir/scf-$A-$P.in R$A-$B/pressure/R$A-$P-$B/relax/scf.in
-                    else
-                      sed '/pseudo_dir/d' R$A-$B/relax/scf.in | sed '/prefix/d' > R$A-$B/pressure/temp.in
-                      prefix_replace=$(grep prefix scf_dir/scf-$A.in)
-                      sed "/&CONTROL/a $prefix_replace" R$A-$B/pressure/temp.in > R$A-$B/pressure/temp1.in
-                      sed "/calculation = 'vc-relax',/a pseudo_dir = '../../../../pp/'," R$A-$B/pressure/temp1.in > R$A-$B/pressure/temp2.in
-                      sed "/&CELL/a   press = $P," R$A-$B/pressure/temp2.in > R$A-$B/pressure/R$A-$P-$B/relax/scf.in
-                    fi
-                    cp run-scf.sh R$A-$B/pressure/R$A-$P-$B/relax/
-                fi
+              fi
+              if [[ ! -f R$A-$B/pressure/R$A-$P-$B/relax/scf.in ]]; then
+                cp scf_dir/scf-$A-$P.in R$A-$B/pressure/R$A-$P-$B/relax/scf.in
+              fi
 ##    ##############
 ##     SUBMIT JOB ##
 ##    ##############
-                echo " submitting jobs in R$A-$B/pressure/R$A-$P-$B/relax "
-                cp run-scf.sh R$A-$B/pressure/R$A-$P-$B/relax/
-                cd R$A-$B/pressure/R$A-$P-$B/relax/
+              echo " submitting jobs in R$A-$B/pressure/R$A-$P-$B/relax "
+              cp run-scf.sh R$A-$B/pressure/R$A-$P-$B/relax/
+              cd R$A-$B/pressure/R$A-$P-$B/relax/
+                if [[ -f scf.out ]]; then
+                 niter=$(grep ! scf.out | wc -l)
+                else
+                 niter=$(echo 100 | bc)
+                fi
+                if [[ $niter -lt 3 ]]; then
+                  echo "Structure already relaxed"
+                else
                   if [[ -f ../../../../CALC_VISIBLE_WITH_ID ]]; then 
                     mv run-scf.sh $A-$kk.sh
                     sbatch $A-$kk.sh
@@ -117,7 +108,8 @@ for ((ii=$1; ii<$2; ++ii)); do
                     sbatch run-scf.sh
                   fi
                     sleep $SLEEP
-                cd ../../../../
+                fi
+              cd ../../../../
             else
                 continue
             fi

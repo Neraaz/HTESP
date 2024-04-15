@@ -1,0 +1,13 @@
+Once relaxed, using tutorial9.
+
+One can start VASP+phonopy calculations. Prepare input files with displacement and submit scf calculations by executing:
+
+mainprogram phono1
+
+If "setting.conf" file is provided, displacement is read from this file. Otherwise, code will
+create 2x2x2 supercell by default.
+
+After the calculations are finished for all structures,
+
+Execute "mainprogram phono2" to compute the force constant. Similarly, process = "phono3" for
+calculating thermodynamic quantities, process = "phono4" for plotting phonon bandstructure. 

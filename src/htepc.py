@@ -3,14 +3,17 @@
 """Module to prepare QE input files"""
 import os
 import json
+from collections import OrderedDict
 import numpy as np
 import scipy.linalg as alg
-from collections import defaultdict, OrderedDict
 from ase.io import espresso,cif
 from ase.cell import Cell
 from pymatgen.io.cif import CifWriter
 from pymatgen.io.vasp.sets import MPRelaxSet
 from pymatgen.io import pwscf
+from pymatgen.core.structure import Structure
+from pymatgen.core.lattice import Lattice
+from pymatgen.core.periodic_table import Element
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 from mp_api.client import MPRester
 from kpath import kpath
@@ -267,10 +270,13 @@ class MpConnect:
          This function extracts the value of a specific property identified by its name from the data retrieved for the current Materials ID (mpid). The property name should be one of the properties listed in the output of the get_prop_list() function.
         """
         return self.data[name]
-    def getkpt(self):
+    def getkpt(self,primitive=True):
         """
         Compute k-points based on k-point density.
-
+        Parameters:
+        --------------------
+        primitive: logical
+                 Use primitive standard structure
         Returns:
         ---------------------
         kpt : list
@@ -285,7 +291,10 @@ class MpConnect:
         This function computes the k-point grid based on a specified k-point density,
         defaulting to 0.05 if unspecified. It returns the k-point grid, type, and shifts.
         """
-        struc = SpacegroupAnalyzer(self.structure,symprec=0.1).get_primitive_standard_structure()
+        if primitive:
+            struc = SpacegroupAnalyzer(self.structure,symprec=0.1).get_primitive_standard_structure()
+        else:
+            struc = self.structure
         relax_set = MPRelaxSet(structure=struc)
         relax_set.poscar.write_file('POSCAR')
         try:
@@ -451,7 +460,7 @@ class MpConnect:
                 data.write(str(prop) + ",")
             data.write("\n")
         return property_list
-    def setting_qeinput(self,calculation='vc-relax',occupations='smearing',restart_mode='from_scratch',pseudo_dir='./',smearing=0.02,smearing_type='gauss',etot_conv_thr=1e-05,forc_conv_thr=1e-04,conv_thr=1e-16,ion_dynamics='bfgs',cell_dynamics='bfgs',magnetic=False):
+    def setting_qeinput(self,calculation='vc-relax',occupations='smearing',restart_mode='from_scratch',pseudo_dir='./',smearing=0.02,smearing_type='gauss',etot_conv_thr=1e-05,forc_conv_thr=1e-04,conv_thr=1e-16,ion_dynamics='bfgs',cell_dynamics='bfgs',magnetic=False,primitive=True):
         """
         Function to create input file for QE ground-state calculations.
 
@@ -464,6 +473,8 @@ class MpConnect:
         - smearing_type (str): Type of smearing. Default: 'gauss'.
         - etot_conv_thr, forc_conv_thr, conv_thr (float): Convergence parameters of QE calculations.
         - ion_dynamics, cell_dynamics (str): Algorithm to perform relaxation. Default: 'bfgs'.
+        - magnetic (logical): Magnetic flag if magnetic input need to be created
+        - primitive (logical): if True, then use primitive structure
 
         Returns:
         Creates input files in scf-mpid.in format inside scf_dir/.
@@ -472,38 +483,34 @@ class MpConnect:
         if magnetic:
             elements_spin = self.structure.elements
             pseudo1 = {}
-            magnetization = []
+            #magnetization = []
             magdict = OrderedDict()
             new_species = []
             new_coord = []
             for site in self.structure:
                 new_species.append(site.label)
                 new_coord.append(site.frac_coords)
-            latest_species = convert_species_list(new_species)
+            latest_species,_ = convert_species_list(new_species)
             pseudo_species = []
             for elm_spin in elements_spin:
                 pseudo_species.append(str(elm_spin))
-            pseudo_species_new = convert_species_list(pseudo_species)
+            pseudo_species_new,magdict = convert_species_list(pseudo_species)
             pseudo_change_dict = {}
             for i,_ in enumerate(pseudo_species):
                 pseudo_change_dict[pseudo_species[i]] = pseudo_species_new[i]
-            for i,elm_spin in enumerate(elements_spin):
-                elm_spin = str(elm_spin)
+            for i,elm_spin_i in enumerate(elements_spin):
+                elm_spin = str(elm_spin_i)
                 if "," in elm_spin:
                     elm_s = elm_spin.split(",")[0]
-                    spin_s = float(elm_spin.split(",")[1].split("=")[-1])
-                    mag_s = 1 if spin_s > 0 else -1 if spin_s < 0 else 0
                     pseudo1[elm_spin] = elm_s + ".upf"
-                    magnetization.append(mag_s)
-                    magdict[elm_s] = mag_s
                 else:
                     pseudo1[elm_spin] = elm_spin + ".upf"
-                    magnetization.append(0)
-                    magdict[elm_spin] = 0
         else:
             pseudo1 = {el:el+'.upf' for el in self.comp_list}
         # Set prefix for output files
         prefix = self.prefix
+        #for i,_ in enumerate(latest_species):
+        #    magdict[latest_species[i]] = magnetization[i]
         # Set up control, system, and electrons parameters
         if os.path.isfile("config.json") or os.path.isfile("../../config.json"):
             pwscf_in = input_data["pwscf_in"]
@@ -519,9 +526,10 @@ class MpConnect:
         system['ecutrho'] = self.ecutrho
         control['prefix'] = prefix
         # lW  2010_SC has monoclinic conventional cell with alpha<90, beta=gamma=90, different from international beta=90
-        tmpanalyzer = SpacegroupAnalyzer(self.structure)
-        tmpstructure = tmpanalyzer.get_primitive_standard_structure(international_monoclinic=False)
-        self.structure = tmpstructure
+        if primitive:
+            tmpanalyzer = SpacegroupAnalyzer(self.structure)
+            tmpstructure = tmpanalyzer.get_primitive_standard_structure(international_monoclinic=False)
+            self.structure = tmpstructure
         # Generate the input file based on the chosen calculation type
         if calculation == 'vc-relax':
             filename = pwscf.PWInput(self.structure, pseudo=pseudo1, control=control, system=system,electrons=electrons, kpoints_grid=self.kpt, ions={'ion_dynamics':ion_dynamics}, cell={'cell_dynamics':cell_dynamics,'press_conv_thr':0.05})
@@ -535,6 +543,7 @@ class MpConnect:
         os.system("""sed "s/'.true.'/.true./" {} > {}""".format("temp.in","scf-{}.in".format(self.mpid)))
         os.system("sed -n '/K_POINTS automatic/,/CELL_PARAMETERS angstrom/p' scf-{}.in | sed '$d' > kpoint-{}.dat".format(self.mpid,self.mpid))
         obj = INPUTscf("scf-{}.in".format(self.mpid))
+        # Use symmetric structure
         obj.standardize(self.mpid,output="temp.dat")
         os.system("sed -n '/&CONTROL/,/ATOMIC_SPECIES/p' scf-{}.in | sed '$d' > scf.header".format(self.mpid))
         os.system("sed -n '/ATOMIC_SPECIES/,/ATOMIC_POSITIONS crystal/p' scf-{}.in | sed '$d' > species".format(self.mpid))
@@ -581,7 +590,7 @@ class MpConnect:
                 os.system(f"""sed -i '{pseudo_start+2+k}s/{old}/{new}/' scf-{self.mpid}.in""")
             maglist = list(reorder_dictionary(magdict,new_list).values())
             for j,_ in enumerate(old_species):
-                os.system(f"""sed -i '{atom_start+2+j}s/{old_species[j]}/{new_species[j]}/' scf-{self.mpid}.in""")
+                os.system(f"""sed -i '{atom_start+2+j}s/{old_species[j]}/{latest_species[j]}/' scf-{self.mpid}.in""")
                 os.system(f"""sed -i '{atom_start+2+j}s/{old_coord[j][0]} {old_coord[j][1]} {old_coord[j][2]}/{new_coord[j][0]} {new_coord[j][1]} {new_coord[j][2]}/' scf-{self.mpid}.in""")
             for j,_ in enumerate(maglist):
                 os.system(f"""sed -i '/&SYSTEM/a starting_magnetization({nsites-j}) = {maglist[nsites-j-1]}' scf-{self.mpid}.in""")
@@ -609,42 +618,87 @@ def reorder_dictionary(original_dict, new_order):
     # Return the list of keys in the new order
     return ordered_dict
 
+
+def extract_elements_with_spin(original_list):
+    """
+    Extract elements with their spin values from the given list.
+
+    Parameters:
+    - original_list (list): List containing strings representing elements with spin values.
+
+    Returns:
+    - dict: A dictionary where keys are elements and values are lists of spin values.
+    """
+    elements_with_spin = {}
+    for item in original_list:
+        if ',' in item:
+            element, spin = item.split(',')
+            spin_value = spin.split('=')[1]
+            if element not in elements_with_spin:
+                elements_with_spin[element] = [spin_value]
+            elif spin_value not in elements_with_spin[element]:
+                elements_with_spin[element].append(spin_value)
+    return elements_with_spin
+
 def convert_species_list(original_list):
     """
-    Replace elements in the original list with generic names followed by occurrence counts.
+    Rename elements in the original list with elements with different spins.
 
     Parameters:
     - original_list (list): List containing strings representing elements.
 
     Returns:
-    - list: Updated list where elements are replaced with generic names and occurrence counts.
-
-    Algorithm:
-    - Replace elements with generic names followed by occurrence counts.
+    - list: Updated list where elements are replaced with generic names for different spins.
 
     Example:
     >>> original_list = ['Fe,spin=5', 'Fe,spin=-5', 'pd', 'pd', 'I,spin=1', 'I,spin=-1']
     >>> convert_species_list(original_list)
     ['Fe1', 'Fe2', 'pd', 'pd', 'I1', 'I2']
     """
-    counter = defaultdict(int)
+    elements_spin = extract_elements_with_spin(original_list)
     # Updated list
     updated_list = []
+    magdict = {}
     # Iterate through the original list
     for item in original_list:
-        if ',' in item and 'spin=0' not in item:
+        if ',' in item:
             element = item.split(',')[0]
-            counter[element] += 1
-            if len(counter) > 1:
-                updated_list.append(element + str(counter[element]))
+            spin = float(item.split('=')[-1])
+            if len(elements_spin[element]) > 1 and spin > 0:
+                updated_list.append(element + str(1))
+                magdict[element + str(1)] = 1
+            elif len(elements_spin[element]) > 1 and spin < 0:
+                updated_list.append(element + str(2))
+                magdict[element + str(2)] = -1
             else:
                 updated_list.append(element)
-        elif ',' in item and 'spin=0' in item:
-            element = item.split(',')[0]
-            updated_list.append(element)
+                spin_s = spin
+                mag_s = 1 if spin_s > 0 else -1 if spin_s < 0 else 0
+                magdict[element] = mag_s
         else:
             updated_list.append(item)
-    return updated_list
+            magdict[item] = 0
+    return updated_list,magdict
+
+
+def ase_cell_to_structure(ase_cell):
+    # Extract lattice vectors from ASE Atoms object
+    lattice_vectors = ase_cell.cell.tolist()
+    
+    # Extract atomic positions and species from ASE Atoms object
+    atomic_positions = ase_cell.get_scaled_positions()
+    species_symbols = ase_cell.get_chemical_symbols()
+    
+    # Create pymatgen Lattice object
+    lattice = Lattice(lattice_vectors)
+    
+    # Create list of pymatgen Specie objects
+    species = [Element(symbol) for symbol in species_symbols]
+    
+    # Create pymatgen Structure object
+    structure = Structure(lattice, species, atomic_positions)
+    
+    return structure
 
 class INPUTscf:
     """
@@ -655,11 +709,17 @@ class INPUTscf:
     """
     def __init__(self,filename='scf.in'):
         self.filename = filename
-        self.file2 = espresso.read_espresso_in(self.filename)
-        self.cell = self.file2.cell
-        self.volume = self.file2.get_volume()
-        self.braiv_latt = Cell.get_bravais_lattice(self.cell)
-        self.lattice = self.braiv_latt.lattice_system
+        self.ase_cell = espresso.read_espresso_in(self.filename)
+        # Convert the ASE cell.io.espresso object to a pymatgen Structure object
+        structure = ase_cell_to_structure(self.ase_cell)
+        # Use SpacegroupAnalyzer to get the symmetric structure
+        symmetry_analyzer = SpacegroupAnalyzer(structure)
+        symmetric_structure = symmetry_analyzer.get_symmetrized_structure()
+        # Now, symmetric_structure contains the symmetrized version of the structure
+        self.struc = symmetric_structure
+        self.cell = symmetric_structure.lattice.matrix
+        self.volume = symmetric_structure.lattice.volume
+        #self.braiv_latt = Cell.get_bravais_lattice(self.cell)
         self.mpid = None
         self.comp = None
         self.prefix = None
@@ -676,8 +736,8 @@ class INPUTscf:
         ---------------
         file2 : output file object
         """
-        cif.write_cif(output,self.file2)
-        return self.file2
+        self.struc.to(output)
+        return self.struc
 
     def cellpar(self):
         """
@@ -686,25 +746,27 @@ class INPUTscf:
         -----------------------
         list of lenghts and angles
         """
-        return self.file2.get_cell_lengths_and_angles()
+        length = self.struc.lattice.abc
+        angles = self.struc.lattice.angles
+        return list(length) + list(angles)
 
     def standardize(self,mpid,output="standard.in"):
         """
-        Function to get closest bravais lattice parameters.
+        Function to get symmetrized structure.
         parameters
         -----------------
         mpid : (str) materials project ID
         output : (str) output file. Default: 'standard.in'
         """
-        finalpos = self.file2.get_scaled_positions()
-        finalcell = self.braiv_latt.tocell()
-        specieslist = self.file2.symbols
+        finalpos = self.struc.frac_coords
+        finalcell = self.cell
+        specieslist = self.struc.species
         with open("kpoint-{}.dat".format(mpid), "r") as kpoint:
             kplines = kpoint.readlines()
         with open(output, "w") as struc:
             struc.write("ATOMIC_POSITIONS crystal\n")
             for i,_ in enumerate(specieslist):
-                struc.write(specieslist[i] + " " + str(finalpos[i][0])+ " ")
+                struc.write(str(specieslist[i]) + " " + str(finalpos[i][0])+ " ")
                 struc.write(str(finalpos[i][1]) + " " + str(finalpos[i][2]) + "\n")
             for i in range(2):
                 struc.write(kplines[i])
