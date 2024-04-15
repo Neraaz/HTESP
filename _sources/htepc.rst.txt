@@ -13,7 +13,9 @@
 
    .. autosummary::
    
+      ase_cell_to_structure
       convert_species_list
+      extract_elements_with_spin
       insert
       pos_to_kpt
       reorder_dictionary

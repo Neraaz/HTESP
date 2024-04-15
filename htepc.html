@@ -216,6 +216,8 @@
         </li>
         <li class="md-nav__item"><a href="#htepc.reorder_dictionary" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">reorder_dictionary()</span></code></a>
         </li>
+        <li class="md-nav__item"><a href="#htepc.extract_elements_with_spin" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">extract_elements_with_spin()</span></code></a>
+        </li>
         <li class="md-nav__item"><a href="#htepc.convert_species_list" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">convert_species_list()</span></code></a>
         </li>
         <li class="md-nav__item"><a href="#htepc.INPUTscf" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">INPUTscf</span></code></a><nav class="md-nav">
@@ -279,8 +281,14 @@
 <p class="rubric">Functions</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#htepc.convert_species_list" title="htepc.convert_species_list"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_species_list</span></code></a>(original_list)</p></td>
-<td><p>Replace elements in the original list with generic names followed by occurrence counts.</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ase_cell_to_structure</span></code>(ase_cell)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#htepc.convert_species_list" title="htepc.convert_species_list"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_species_list</span></code></a>(original_list)</p></td>
+<td><p>Rename elements in the original list with elements with different spins.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#htepc.extract_elements_with_spin" title="htepc.extract_elements_with_spin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">extract_elements_with_spin</span></code></a>(original_list)</p></td>
+<td><p>Extract elements with their spin values from the given list.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#htepc.insert" title="htepc.insert"><code class="xref py py-obj docutils literal notranslate"><span class="pre">insert</span></code></a>([input_file, output, keyword, where, ...])</p></td>
 <td><p>Function to insert keyword in input file :param input_file: :type input_file: (str) input file.</p></td>
@@ -478,8 +486,14 @@ or ../../config.json file.</p>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="htepc.MpConnect.getkpt">
-<span class="sig-name descname"><span class="pre">getkpt</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/htepc.html#MpConnect.getkpt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#htepc.MpConnect.getkpt" title="Link to this definition">¶</a></dt>
-<dd><p>Compute k-points based on k-point density.</p>
+<span class="sig-name descname"><span class="pre">getkpt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">primitive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htepc.html#MpConnect.getkpt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#htepc.MpConnect.getkpt" title="Link to this definition">¶</a></dt>
+<dd><p>Compute k-points based on k-point density.
+Parameters:
+——————–
+primitive: logical</p>
+<blockquote>
+<div><p>Use primitive standard structure</p>
+</div></blockquote>
 <section id="id11">
 <h3 id="id11">Returns:<a class="headerlink" href="#id11" title="Link to this heading">¶</a></h3>
 <dl class="simple">
@@ -595,7 +609,7 @@ and the maximum kinetic energy cutoff for charge density (ecutrho).</p>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="htepc.MpConnect.setting_qeinput">
-<span class="sig-name descname"><span class="pre">setting_qeinput</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calculation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'vc-relax'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">occupations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'smearing'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">restart_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'from_scratch'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pseudo_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'./'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smearing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.02</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smearing_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gauss'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">etot_conv_thr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">forc_conv_thr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">conv_thr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-16</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ion_dynamics</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'bfgs'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell_dynamics</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'bfgs'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">magnetic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htepc.html#MpConnect.setting_qeinput"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#htepc.MpConnect.setting_qeinput" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">setting_qeinput</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calculation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'vc-relax'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">occupations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'smearing'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">restart_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'from_scratch'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pseudo_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'./'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smearing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.02</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smearing_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gauss'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">etot_conv_thr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">forc_conv_thr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">conv_thr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-16</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ion_dynamics</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'bfgs'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell_dynamics</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'bfgs'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">magnetic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">primitive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htepc.html#MpConnect.setting_qeinput"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#htepc.MpConnect.setting_qeinput" title="Link to this definition">¶</a></dt>
 <dd><p>Function to create input file for QE ground-state calculations.</p>
 <p>Parameters:
 - calculation (str): Type of calculation. Default: ‘vc-relax’. Other options are ‘relax’ (ionic only), ‘bands’ for band structure, ‘scf’ for SCF calculations.
@@ -605,7 +619,9 @@ and the maximum kinetic energy cutoff for charge density (ecutrho).</p>
 - smearing (float): Degauss value. Default: 0.02.
 - smearing_type (str): Type of smearing. Default: ‘gauss’.
 - etot_conv_thr, forc_conv_thr, conv_thr (float): Convergence parameters of QE calculations.
-- ion_dynamics, cell_dynamics (str): Algorithm to perform relaxation. Default: ‘bfgs’.</p>
+- ion_dynamics, cell_dynamics (str): Algorithm to perform relaxation. Default: ‘bfgs’.
+- magnetic (logical): Magnetic flag if magnetic input need to be created
+- primitive (logical): if True, then use primitive structure</p>
 <p>Returns:
 Creates input files in scf-mpid.in format inside scf_dir/.</p>
 </dd></dl>
@@ -626,15 +642,22 @@ Creates input files in scf-mpid.in format inside scf_dir/.</p>
 &gt;&gt;&gt; reorder_dictionary(original_dict, new_order)</p>
 </dd></dl>
 <dl class="py function">
+<dt class="sig sig-object py" id="htepc.extract_elements_with_spin">
+<span class="sig-prename descclassname"><span class="pre">htepc.</span></span><span class="sig-name descname"><span class="pre">extract_elements_with_spin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htepc.html#extract_elements_with_spin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#htepc.extract_elements_with_spin" title="Link to this definition">¶</a></dt>
+<dd><p>Extract elements with their spin values from the given list.</p>
+<p>Parameters:
+- original_list (list): List containing strings representing elements with spin values.</p>
+<p>Returns:
+- dict: A dictionary where keys are elements and values are lists of spin values.</p>
+</dd></dl>
+<dl class="py function">
 <dt class="sig sig-object py" id="htepc.convert_species_list">
 <span class="sig-prename descclassname"><span class="pre">htepc.</span></span><span class="sig-name descname"><span class="pre">convert_species_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htepc.html#convert_species_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#htepc.convert_species_list" title="Link to this definition">¶</a></dt>
-<dd><p>Replace elements in the original list with generic names followed by occurrence counts.</p>
+<dd><p>Rename elements in the original list with elements with different spins.</p>
 <p>Parameters:
 - original_list (list): List containing strings representing elements.</p>
 <p>Returns:
-- list: Updated list where elements are replaced with generic names and occurrence counts.</p>
-<p>Algorithm:
-- Replace elements with generic names followed by occurrence counts.</p>
+- list: Updated list where elements are replaced with generic names for different spins.</p>
 <p>Example:
 &gt;&gt;&gt; original_list = [‘Fe,spin=5’, ‘Fe,spin=-5’, ‘pd’, ‘pd’, ‘I,spin=1’, ‘I,spin=-1’]
 &gt;&gt;&gt; convert_species_list(original_list)
@@ -670,7 +693,7 @@ Creates input files in scf-mpid.in format inside scf_dir/.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="htepc.INPUTscf.standardize">
 <span class="sig-name descname"><span class="pre">standardize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mpid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'standard.in'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/htepc.html#INPUTscf.standardize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#htepc.INPUTscf.standardize" title="Link to this definition">¶</a></dt>
-<dd><p>Function to get closest bravais lattice parameters.
+<dd><p>Function to get symmetrized structure.
 :param mpid:
 :type mpid: (str) materials project ID
 :param output:

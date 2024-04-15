@@ -194,14 +194,17 @@
 <span class="sd">"""Module to prepare QE input files"""</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">scipy.linalg</span> <span class="k">as</span> <span class="nn">alg</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span><span class="p">,</span> <span class="n">OrderedDict</span>
 <span class="kn">from</span> <span class="nn">ase.io</span> <span class="kn">import</span> <span class="n">espresso</span><span class="p">,</span><span class="n">cif</span>
 <span class="kn">from</span> <span class="nn">ase.cell</span> <span class="kn">import</span> <span class="n">Cell</span>
 <span class="kn">from</span> <span class="nn">pymatgen.io.cif</span> <span class="kn">import</span> <span class="n">CifWriter</span>
 <span class="kn">from</span> <span class="nn">pymatgen.io.vasp.sets</span> <span class="kn">import</span> <span class="n">MPRelaxSet</span>
 <span class="kn">from</span> <span class="nn">pymatgen.io</span> <span class="kn">import</span> <span class="n">pwscf</span>
+<span class="kn">from</span> <span class="nn">pymatgen.core.structure</span> <span class="kn">import</span> <span class="n">Structure</span>
+<span class="kn">from</span> <span class="nn">pymatgen.core.lattice</span> <span class="kn">import</span> <span class="n">Lattice</span>
+<span class="kn">from</span> <span class="nn">pymatgen.core.periodic_table</span> <span class="kn">import</span> <span class="n">Element</span>
 <span class="kn">from</span> <span class="nn">pymatgen.symmetry.analyzer</span> <span class="kn">import</span> <span class="n">SpacegroupAnalyzer</span>
 <span class="kn">from</span> <span class="nn">mp_api.client</span> <span class="kn">import</span> <span class="n">MPRester</span>
 <span class="kn">from</span> <span class="nn">kpath</span> <span class="kn">import</span> <span class="n">kpath</span>
@@ -477,10 +480,13 @@
 
 <div class="viewcode-block" id="MpConnect.getkpt">
 <a class="viewcode-back" href="../htepc.html#htepc.MpConnect.getkpt">[docs]</a>
-    <span class="k">def</span> <span class="nf">getkpt</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">getkpt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">primitive</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Compute k-points based on k-point density.</span>
-
+<span class="sd">        Parameters:</span>
+<span class="sd">        --------------------</span>
+<span class="sd">        primitive: logical</span>
+<span class="sd">                 Use primitive standard structure</span>
 <span class="sd">        Returns:</span>
 <span class="sd">        ---------------------</span>
 <span class="sd">        kpt : list</span>
@@ -495,7 +501,10 @@
 <span class="sd">        This function computes the k-point grid based on a specified k-point density,</span>
 <span class="sd">        defaulting to 0.05 if unspecified. It returns the k-point grid, type, and shifts.</span>
 <span class="sd">        """</span>
-        <span class="n">struc</span> <span class="o">=</span> <span class="n">SpacegroupAnalyzer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="p">,</span><span class="n">symprec</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span><span class="o">.</span><span class="n">get_primitive_standard_structure</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">primitive</span><span class="p">:</span>
+            <span class="n">struc</span> <span class="o">=</span> <span class="n">SpacegroupAnalyzer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="p">,</span><span class="n">symprec</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span><span class="o">.</span><span class="n">get_primitive_standard_structure</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">struc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">structure</span>
         <span class="n">relax_set</span> <span class="o">=</span> <span class="n">MPRelaxSet</span><span class="p">(</span><span class="n">structure</span><span class="o">=</span><span class="n">struc</span><span class="p">)</span>
         <span class="n">relax_set</span><span class="o">.</span><span class="n">poscar</span><span class="o">.</span><span class="n">write_file</span><span class="p">(</span><span class="s1">'POSCAR'</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
@@ -682,7 +691,7 @@
 
 <div class="viewcode-block" id="MpConnect.setting_qeinput">
 <a class="viewcode-back" href="../htepc.html#htepc.MpConnect.setting_qeinput">[docs]</a>
-    <span class="k">def</span> <span class="nf">setting_qeinput</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">calculation</span><span class="o">=</span><span class="s1">'vc-relax'</span><span class="p">,</span><span class="n">occupations</span><span class="o">=</span><span class="s1">'smearing'</span><span class="p">,</span><span class="n">restart_mode</span><span class="o">=</span><span class="s1">'from_scratch'</span><span class="p">,</span><span class="n">pseudo_dir</span><span class="o">=</span><span class="s1">'./'</span><span class="p">,</span><span class="n">smearing</span><span class="o">=</span><span class="mf">0.02</span><span class="p">,</span><span class="n">smearing_type</span><span class="o">=</span><span class="s1">'gauss'</span><span class="p">,</span><span class="n">etot_conv_thr</span><span class="o">=</span><span class="mf">1e-05</span><span class="p">,</span><span class="n">forc_conv_thr</span><span class="o">=</span><span class="mf">1e-04</span><span class="p">,</span><span class="n">conv_thr</span><span class="o">=</span><span class="mf">1e-16</span><span class="p">,</span><span class="n">ion_dynamics</span><span class="o">=</span><span class="s1">'bfgs'</span><span class="p">,</span><span class="n">cell_dynamics</span><span class="o">=</span><span class="s1">'bfgs'</span><span class="p">,</span><span class="n">magnetic</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">setting_qeinput</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">calculation</span><span class="o">=</span><span class="s1">'vc-relax'</span><span class="p">,</span><span class="n">occupations</span><span class="o">=</span><span class="s1">'smearing'</span><span class="p">,</span><span class="n">restart_mode</span><span class="o">=</span><span class="s1">'from_scratch'</span><span class="p">,</span><span class="n">pseudo_dir</span><span class="o">=</span><span class="s1">'./'</span><span class="p">,</span><span class="n">smearing</span><span class="o">=</span><span class="mf">0.02</span><span class="p">,</span><span class="n">smearing_type</span><span class="o">=</span><span class="s1">'gauss'</span><span class="p">,</span><span class="n">etot_conv_thr</span><span class="o">=</span><span class="mf">1e-05</span><span class="p">,</span><span class="n">forc_conv_thr</span><span class="o">=</span><span class="mf">1e-04</span><span class="p">,</span><span class="n">conv_thr</span><span class="o">=</span><span class="mf">1e-16</span><span class="p">,</span><span class="n">ion_dynamics</span><span class="o">=</span><span class="s1">'bfgs'</span><span class="p">,</span><span class="n">cell_dynamics</span><span class="o">=</span><span class="s1">'bfgs'</span><span class="p">,</span><span class="n">magnetic</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">primitive</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Function to create input file for QE ground-state calculations.</span>
 
@@ -695,6 +704,8 @@
 <span class="sd">        - smearing_type (str): Type of smearing. Default: 'gauss'.</span>
 <span class="sd">        - etot_conv_thr, forc_conv_thr, conv_thr (float): Convergence parameters of QE calculations.</span>
 <span class="sd">        - ion_dynamics, cell_dynamics (str): Algorithm to perform relaxation. Default: 'bfgs'.</span>
+<span class="sd">        - magnetic (logical): Magnetic flag if magnetic input need to be created</span>
+<span class="sd">        - primitive (logical): if True, then use primitive structure</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">        Creates input files in scf-mpid.in format inside scf_dir/.</span>
@@ -703,38 +714,34 @@
         <span class="k">if</span> <span class="n">magnetic</span><span class="p">:</span>
             <span class="n">elements_spin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="o">.</span><span class="n">elements</span>
             <span class="n">pseudo1</span> <span class="o">=</span> <span class="p">{}</span>
-            <span class="n">magnetization</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="c1">#magnetization = []</span>
             <span class="n">magdict</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
             <span class="n">new_species</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="n">new_coord</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="p">:</span>
                 <span class="n">new_species</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">site</span><span class="o">.</span><span class="n">label</span><span class="p">)</span>
                 <span class="n">new_coord</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">site</span><span class="o">.</span><span class="n">frac_coords</span><span class="p">)</span>
-            <span class="n">latest_species</span> <span class="o">=</span> <span class="n">convert_species_list</span><span class="p">(</span><span class="n">new_species</span><span class="p">)</span>
+            <span class="n">latest_species</span><span class="p">,</span><span class="n">_</span> <span class="o">=</span> <span class="n">convert_species_list</span><span class="p">(</span><span class="n">new_species</span><span class="p">)</span>
             <span class="n">pseudo_species</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">elm_spin</span> <span class="ow">in</span> <span class="n">elements_spin</span><span class="p">:</span>
                 <span class="n">pseudo_species</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">elm_spin</span><span class="p">))</span>
-            <span class="n">pseudo_species_new</span> <span class="o">=</span> <span class="n">convert_species_list</span><span class="p">(</span><span class="n">pseudo_species</span><span class="p">)</span>
+            <span class="n">pseudo_species_new</span><span class="p">,</span><span class="n">magdict</span> <span class="o">=</span> <span class="n">convert_species_list</span><span class="p">(</span><span class="n">pseudo_species</span><span class="p">)</span>
             <span class="n">pseudo_change_dict</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">_</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pseudo_species</span><span class="p">):</span>
                 <span class="n">pseudo_change_dict</span><span class="p">[</span><span class="n">pseudo_species</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="n">pseudo_species_new</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-            <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">elm_spin</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">elements_spin</span><span class="p">):</span>
-                <span class="n">elm_spin</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">elm_spin</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">elm_spin_i</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">elements_spin</span><span class="p">):</span>
+                <span class="n">elm_spin</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">elm_spin_i</span><span class="p">)</span>
                 <span class="k">if</span> <span class="s2">","</span> <span class="ow">in</span> <span class="n">elm_spin</span><span class="p">:</span>
                     <span class="n">elm_s</span> <span class="o">=</span> <span class="n">elm_spin</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">","</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-                    <span class="n">spin_s</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">elm_spin</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">","</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"="</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-                    <span class="n">mag_s</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">spin_s</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="o">-</span><span class="mi">1</span> <span class="k">if</span> <span class="n">spin_s</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span>
                     <span class="n">pseudo1</span><span class="p">[</span><span class="n">elm_spin</span><span class="p">]</span> <span class="o">=</span> <span class="n">elm_s</span> <span class="o">+</span> <span class="s2">".upf"</span>
-                    <span class="n">magnetization</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mag_s</span><span class="p">)</span>
-                    <span class="n">magdict</span><span class="p">[</span><span class="n">elm_s</span><span class="p">]</span> <span class="o">=</span> <span class="n">mag_s</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">pseudo1</span><span class="p">[</span><span class="n">elm_spin</span><span class="p">]</span> <span class="o">=</span> <span class="n">elm_spin</span> <span class="o">+</span> <span class="s2">".upf"</span>
-                    <span class="n">magnetization</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-                    <span class="n">magdict</span><span class="p">[</span><span class="n">elm_spin</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">pseudo1</span> <span class="o">=</span> <span class="p">{</span><span class="n">el</span><span class="p">:</span><span class="n">el</span><span class="o">+</span><span class="s1">'.upf'</span> <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">comp_list</span><span class="p">}</span>
         <span class="c1"># Set prefix for output files</span>
         <span class="n">prefix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span>
+        <span class="c1">#for i,_ in enumerate(latest_species):</span>
+        <span class="c1">#    magdict[latest_species[i]] = magnetization[i]</span>
         <span class="c1"># Set up control, system, and electrons parameters</span>
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"config.json"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"../../config.json"</span><span class="p">):</span>
             <span class="n">pwscf_in</span> <span class="o">=</span> <span class="n">input_data</span><span class="p">[</span><span class="s2">"pwscf_in"</span><span class="p">]</span>
@@ -750,9 +757,10 @@
         <span class="n">system</span><span class="p">[</span><span class="s1">'ecutrho'</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ecutrho</span>
         <span class="n">control</span><span class="p">[</span><span class="s1">'prefix'</span><span class="p">]</span> <span class="o">=</span> <span class="n">prefix</span>
         <span class="c1"># lW  2010_SC has monoclinic conventional cell with alpha&lt;90, beta=gamma=90, different from international beta=90</span>
-        <span class="n">tmpanalyzer</span> <span class="o">=</span> <span class="n">SpacegroupAnalyzer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="p">)</span>
-        <span class="n">tmpstructure</span> <span class="o">=</span> <span class="n">tmpanalyzer</span><span class="o">.</span><span class="n">get_primitive_standard_structure</span><span class="p">(</span><span class="n">international_monoclinic</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">structure</span> <span class="o">=</span> <span class="n">tmpstructure</span>
+        <span class="k">if</span> <span class="n">primitive</span><span class="p">:</span>
+            <span class="n">tmpanalyzer</span> <span class="o">=</span> <span class="n">SpacegroupAnalyzer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="p">)</span>
+            <span class="n">tmpstructure</span> <span class="o">=</span> <span class="n">tmpanalyzer</span><span class="o">.</span><span class="n">get_primitive_standard_structure</span><span class="p">(</span><span class="n">international_monoclinic</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">structure</span> <span class="o">=</span> <span class="n">tmpstructure</span>
         <span class="c1"># Generate the input file based on the chosen calculation type</span>
         <span class="k">if</span> <span class="n">calculation</span> <span class="o">==</span> <span class="s1">'vc-relax'</span><span class="p">:</span>
             <span class="n">filename</span> <span class="o">=</span> <span class="n">pwscf</span><span class="o">.</span><span class="n">PWInput</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="p">,</span> <span class="n">pseudo</span><span class="o">=</span><span class="n">pseudo1</span><span class="p">,</span> <span class="n">control</span><span class="o">=</span><span class="n">control</span><span class="p">,</span> <span class="n">system</span><span class="o">=</span><span class="n">system</span><span class="p">,</span><span class="n">electrons</span><span class="o">=</span><span class="n">electrons</span><span class="p">,</span> <span class="n">kpoints_grid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kpt</span><span class="p">,</span> <span class="n">ions</span><span class="o">=</span><span class="p">{</span><span class="s1">'ion_dynamics'</span><span class="p">:</span><span class="n">ion_dynamics</span><span class="p">},</span> <span class="n">cell</span><span class="o">=</span><span class="p">{</span><span class="s1">'cell_dynamics'</span><span class="p">:</span><span class="n">cell_dynamics</span><span class="p">,</span><span class="s1">'press_conv_thr'</span><span class="p">:</span><span class="mf">0.05</span><span class="p">})</span>
@@ -766,6 +774,7 @@
         <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"""sed "s/'.true.'/.true./" </span><span class="si">{}</span><span class="s2"> &gt; </span><span class="si">{}</span><span class="s2">"""</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">"temp.in"</span><span class="p">,</span><span class="s2">"scf-</span><span class="si">{}</span><span class="s2">.in"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mpid</span><span class="p">)))</span>
         <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"sed -n '/K_POINTS automatic/,/CELL_PARAMETERS angstrom/p' scf-</span><span class="si">{}</span><span class="s2">.in | sed '$d' &gt; kpoint-</span><span class="si">{}</span><span class="s2">.dat"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mpid</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">mpid</span><span class="p">))</span>
         <span class="n">obj</span> <span class="o">=</span> <span class="n">INPUTscf</span><span class="p">(</span><span class="s2">"scf-</span><span class="si">{}</span><span class="s2">.in"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mpid</span><span class="p">))</span>
+        <span class="c1"># Use symmetric structure</span>
         <span class="n">obj</span><span class="o">.</span><span class="n">standardize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mpid</span><span class="p">,</span><span class="n">output</span><span class="o">=</span><span class="s2">"temp.dat"</span><span class="p">)</span>
         <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"sed -n '/&amp;CONTROL/,/ATOMIC_SPECIES/p' scf-</span><span class="si">{}</span><span class="s2">.in | sed '$d' &gt; scf.header"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mpid</span><span class="p">))</span>
         <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"sed -n '/ATOMIC_SPECIES/,/ATOMIC_POSITIONS crystal/p' scf-</span><span class="si">{}</span><span class="s2">.in | sed '$d' &gt; species"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mpid</span><span class="p">))</span>
@@ -812,7 +821,7 @@
                 <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="sa">f</span><span class="s2">"""sed -i '</span><span class="si">{</span><span class="n">pseudo_start</span><span class="o">+</span><span class="mi">2</span><span class="o">+</span><span class="n">k</span><span class="si">}</span><span class="s2">s/</span><span class="si">{</span><span class="n">old</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">new</span><span class="si">}</span><span class="s2">/' scf-</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">mpid</span><span class="si">}</span><span class="s2">.in"""</span><span class="p">)</span>
             <span class="n">maglist</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">reorder_dictionary</span><span class="p">(</span><span class="n">magdict</span><span class="p">,</span><span class="n">new_list</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
             <span class="k">for</span> <span class="n">j</span><span class="p">,</span><span class="n">_</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">old_species</span><span class="p">):</span>
-                <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="sa">f</span><span class="s2">"""sed -i '</span><span class="si">{</span><span class="n">atom_start</span><span class="o">+</span><span class="mi">2</span><span class="o">+</span><span class="n">j</span><span class="si">}</span><span class="s2">s/</span><span class="si">{</span><span class="n">old_species</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">new_species</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="si">}</span><span class="s2">/' scf-</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">mpid</span><span class="si">}</span><span class="s2">.in"""</span><span class="p">)</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="sa">f</span><span class="s2">"""sed -i '</span><span class="si">{</span><span class="n">atom_start</span><span class="o">+</span><span class="mi">2</span><span class="o">+</span><span class="n">j</span><span class="si">}</span><span class="s2">s/</span><span class="si">{</span><span class="n">old_species</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">latest_species</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="si">}</span><span class="s2">/' scf-</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">mpid</span><span class="si">}</span><span class="s2">.in"""</span><span class="p">)</span>
                 <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="sa">f</span><span class="s2">"""sed -i '</span><span class="si">{</span><span class="n">atom_start</span><span class="o">+</span><span class="mi">2</span><span class="o">+</span><span class="n">j</span><span class="si">}</span><span class="s2">s/</span><span class="si">{</span><span class="n">old_coord</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">old_coord</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">old_coord</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">new_coord</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">new_coord</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">new_coord</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span><span class="si">}</span><span class="s2">/' scf-</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">mpid</span><span class="si">}</span><span class="s2">.in"""</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">j</span><span class="p">,</span><span class="n">_</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">maglist</span><span class="p">):</span>
                 <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="sa">f</span><span class="s2">"""sed -i '/&amp;SYSTEM/a starting_magnetization(</span><span class="si">{</span><span class="n">nsites</span><span class="o">-</span><span class="n">j</span><span class="si">}</span><span class="s2">) = </span><span class="si">{</span><span class="n">maglist</span><span class="p">[</span><span class="n">nsites</span><span class="o">-</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">' scf-</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">mpid</span><span class="si">}</span><span class="s2">.in"""</span><span class="p">)</span>
@@ -845,45 +854,93 @@
     <span class="k">return</span> <span class="n">ordered_dict</span></div>
 
 
+
+<div class="viewcode-block" id="extract_elements_with_spin">
+<a class="viewcode-back" href="../htepc.html#htepc.extract_elements_with_spin">[docs]</a>
+<span class="k">def</span> <span class="nf">extract_elements_with_spin</span><span class="p">(</span><span class="n">original_list</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Extract elements with their spin values from the given list.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">    - original_list (list): List containing strings representing elements with spin values.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">    - dict: A dictionary where keys are elements and values are lists of spin values.</span>
+<span class="sd">    """</span>
+    <span class="n">elements_with_spin</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">original_list</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s1">','</span> <span class="ow">in</span> <span class="n">item</span><span class="p">:</span>
+            <span class="n">element</span><span class="p">,</span> <span class="n">spin</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">','</span><span class="p">)</span>
+            <span class="n">spin_value</span> <span class="o">=</span> <span class="n">spin</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'='</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">element</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">elements_with_spin</span><span class="p">:</span>
+                <span class="n">elements_with_spin</span><span class="p">[</span><span class="n">element</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">spin_value</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="n">spin_value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">elements_with_spin</span><span class="p">[</span><span class="n">element</span><span class="p">]:</span>
+                <span class="n">elements_with_spin</span><span class="p">[</span><span class="n">element</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">spin_value</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">elements_with_spin</span></div>
+
+
 <div class="viewcode-block" id="convert_species_list">
 <a class="viewcode-back" href="../htepc.html#htepc.convert_species_list">[docs]</a>
 <span class="k">def</span> <span class="nf">convert_species_list</span><span class="p">(</span><span class="n">original_list</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
-<span class="sd">    Replace elements in the original list with generic names followed by occurrence counts.</span>
+<span class="sd">    Rename elements in the original list with elements with different spins.</span>
 
 <span class="sd">    Parameters:</span>
 <span class="sd">    - original_list (list): List containing strings representing elements.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">    - list: Updated list where elements are replaced with generic names and occurrence counts.</span>
-
-<span class="sd">    Algorithm:</span>
-<span class="sd">    - Replace elements with generic names followed by occurrence counts.</span>
+<span class="sd">    - list: Updated list where elements are replaced with generic names for different spins.</span>
 
 <span class="sd">    Example:</span>
 <span class="sd">    &gt;&gt;&gt; original_list = ['Fe,spin=5', 'Fe,spin=-5', 'pd', 'pd', 'I,spin=1', 'I,spin=-1']</span>
 <span class="sd">    &gt;&gt;&gt; convert_species_list(original_list)</span>
 <span class="sd">    ['Fe1', 'Fe2', 'pd', 'pd', 'I1', 'I2']</span>
 <span class="sd">    """</span>
-    <span class="n">counter</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+    <span class="n">elements_spin</span> <span class="o">=</span> <span class="n">extract_elements_with_spin</span><span class="p">(</span><span class="n">original_list</span><span class="p">)</span>
     <span class="c1"># Updated list</span>
     <span class="n">updated_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">magdict</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="c1"># Iterate through the original list</span>
     <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">original_list</span><span class="p">:</span>
-        <span class="k">if</span> <span class="s1">','</span> <span class="ow">in</span> <span class="n">item</span> <span class="ow">and</span> <span class="s1">'spin=0'</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">item</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s1">','</span> <span class="ow">in</span> <span class="n">item</span><span class="p">:</span>
             <span class="n">element</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">','</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="n">counter</span><span class="p">[</span><span class="n">element</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">counter</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">updated_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">element</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">counter</span><span class="p">[</span><span class="n">element</span><span class="p">]))</span>
+            <span class="n">spin</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'='</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">elements_spin</span><span class="p">[</span><span class="n">element</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">spin</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">updated_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">element</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+                <span class="n">magdict</span><span class="p">[</span><span class="n">element</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="mi">1</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">elements_spin</span><span class="p">[</span><span class="n">element</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">spin</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">updated_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">element</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+                <span class="n">magdict</span><span class="p">[</span><span class="n">element</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="mi">2</span><span class="p">)]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">updated_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="s1">','</span> <span class="ow">in</span> <span class="n">item</span> <span class="ow">and</span> <span class="s1">'spin=0'</span> <span class="ow">in</span> <span class="n">item</span><span class="p">:</span>
-            <span class="n">element</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">','</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="n">updated_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
+                <span class="n">spin_s</span> <span class="o">=</span> <span class="n">spin</span>
+                <span class="n">mag_s</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">spin_s</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="o">-</span><span class="mi">1</span> <span class="k">if</span> <span class="n">spin_s</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span>
+                <span class="n">magdict</span><span class="p">[</span><span class="n">element</span><span class="p">]</span> <span class="o">=</span> <span class="n">mag_s</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">updated_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">updated_list</span></div>
+            <span class="n">magdict</span><span class="p">[</span><span class="n">item</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">return</span> <span class="n">updated_list</span><span class="p">,</span><span class="n">magdict</span></div>
 
+
+
+<span class="k">def</span> <span class="nf">ase_cell_to_structure</span><span class="p">(</span><span class="n">ase_cell</span><span class="p">):</span>
+    <span class="c1"># Extract lattice vectors from ASE Atoms object</span>
+    <span class="n">lattice_vectors</span> <span class="o">=</span> <span class="n">ase_cell</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+    
+    <span class="c1"># Extract atomic positions and species from ASE Atoms object</span>
+    <span class="n">atomic_positions</span> <span class="o">=</span> <span class="n">ase_cell</span><span class="o">.</span><span class="n">get_scaled_positions</span><span class="p">()</span>
+    <span class="n">species_symbols</span> <span class="o">=</span> <span class="n">ase_cell</span><span class="o">.</span><span class="n">get_chemical_symbols</span><span class="p">()</span>
+    
+    <span class="c1"># Create pymatgen Lattice object</span>
+    <span class="n">lattice</span> <span class="o">=</span> <span class="n">Lattice</span><span class="p">(</span><span class="n">lattice_vectors</span><span class="p">)</span>
+    
+    <span class="c1"># Create list of pymatgen Specie objects</span>
+    <span class="n">species</span> <span class="o">=</span> <span class="p">[</span><span class="n">Element</span><span class="p">(</span><span class="n">symbol</span><span class="p">)</span> <span class="k">for</span> <span class="n">symbol</span> <span class="ow">in</span> <span class="n">species_symbols</span><span class="p">]</span>
+    
+    <span class="c1"># Create pymatgen Structure object</span>
+    <span class="n">structure</span> <span class="o">=</span> <span class="n">Structure</span><span class="p">(</span><span class="n">lattice</span><span class="p">,</span> <span class="n">species</span><span class="p">,</span> <span class="n">atomic_positions</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">structure</span>
 
 <div class="viewcode-block" id="INPUTscf">
 <a class="viewcode-back" href="../htepc.html#htepc.INPUTscf">[docs]</a>
@@ -896,11 +953,17 @@
 <span class="sd">    """</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">filename</span><span class="o">=</span><span class="s1">'scf.in'</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">file2</span> <span class="o">=</span> <span class="n">espresso</span><span class="o">.</span><span class="n">read_espresso_in</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">file2</span><span class="o">.</span><span class="n">cell</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">file2</span><span class="o">.</span><span class="n">get_volume</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">braiv_latt</span> <span class="o">=</span> <span class="n">Cell</span><span class="o">.</span><span class="n">get_bravais_lattice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">lattice</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">braiv_latt</span><span class="o">.</span><span class="n">lattice_system</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ase_cell</span> <span class="o">=</span> <span class="n">espresso</span><span class="o">.</span><span class="n">read_espresso_in</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
+        <span class="c1"># Convert the ASE cell.io.espresso object to a pymatgen Structure object</span>
+        <span class="n">structure</span> <span class="o">=</span> <span class="n">ase_cell_to_structure</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ase_cell</span><span class="p">)</span>
+        <span class="c1"># Use SpacegroupAnalyzer to get the symmetric structure</span>
+        <span class="n">symmetry_analyzer</span> <span class="o">=</span> <span class="n">SpacegroupAnalyzer</span><span class="p">(</span><span class="n">structure</span><span class="p">)</span>
+        <span class="n">symmetric_structure</span> <span class="o">=</span> <span class="n">symmetry_analyzer</span><span class="o">.</span><span class="n">get_symmetrized_structure</span><span class="p">()</span>
+        <span class="c1"># Now, symmetric_structure contains the symmetrized version of the structure</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">struc</span> <span class="o">=</span> <span class="n">symmetric_structure</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cell</span> <span class="o">=</span> <span class="n">symmetric_structure</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">matrix</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="o">=</span> <span class="n">symmetric_structure</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">volume</span>
+        <span class="c1">#self.braiv_latt = Cell.get_bravais_lattice(self.cell)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mpid</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">comp</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span> <span class="o">=</span> <span class="kc">None</span>
@@ -919,8 +982,8 @@
 <span class="sd">        ---------------</span>
 <span class="sd">        file2 : output file object</span>
 <span class="sd">        """</span>
-        <span class="n">cif</span><span class="o">.</span><span class="n">write_cif</span><span class="p">(</span><span class="n">output</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">file2</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">file2</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">struc</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">struc</span></div>
 
 
 <div class="viewcode-block" id="INPUTscf.cellpar">
@@ -932,28 +995,30 @@
 <span class="sd">        -----------------------</span>
 <span class="sd">        list of lenghts and angles</span>
 <span class="sd">        """</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">file2</span><span class="o">.</span><span class="n">get_cell_lengths_and_angles</span><span class="p">()</span></div>
+        <span class="n">length</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">struc</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">abc</span>
+        <span class="n">angles</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">struc</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">angles</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">length</span><span class="p">)</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">angles</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="INPUTscf.standardize">
 <a class="viewcode-back" href="../htepc.html#htepc.INPUTscf.standardize">[docs]</a>
     <span class="k">def</span> <span class="nf">standardize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">mpid</span><span class="p">,</span><span class="n">output</span><span class="o">=</span><span class="s2">"standard.in"</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>
-<span class="sd">        Function to get closest bravais lattice parameters.</span>
+<span class="sd">        Function to get symmetrized structure.</span>
 <span class="sd">        parameters</span>
 <span class="sd">        -----------------</span>
 <span class="sd">        mpid : (str) materials project ID</span>
 <span class="sd">        output : (str) output file. Default: 'standard.in'</span>
 <span class="sd">        """</span>
-        <span class="n">finalpos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">file2</span><span class="o">.</span><span class="n">get_scaled_positions</span><span class="p">()</span>
-        <span class="n">finalcell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">braiv_latt</span><span class="o">.</span><span class="n">tocell</span><span class="p">()</span>
-        <span class="n">specieslist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">file2</span><span class="o">.</span><span class="n">symbols</span>
+        <span class="n">finalpos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">struc</span><span class="o">.</span><span class="n">frac_coords</span>
+        <span class="n">finalcell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell</span>
+        <span class="n">specieslist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">struc</span><span class="o">.</span><span class="n">species</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"kpoint-</span><span class="si">{}</span><span class="s2">.dat"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mpid</span><span class="p">),</span> <span class="s2">"r"</span><span class="p">)</span> <span class="k">as</span> <span class="n">kpoint</span><span class="p">:</span>
             <span class="n">kplines</span> <span class="o">=</span> <span class="n">kpoint</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">)</span> <span class="k">as</span> <span class="n">struc</span><span class="p">:</span>
             <span class="n">struc</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"ATOMIC_POSITIONS crystal</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">_</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">specieslist</span><span class="p">):</span>
-                <span class="n">struc</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">specieslist</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">finalpos</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span><span class="o">+</span> <span class="s2">" "</span><span class="p">)</span>
+                <span class="n">struc</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">specieslist</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">finalpos</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span><span class="o">+</span> <span class="s2">" "</span><span class="p">)</span>
                 <span class="n">struc</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">finalpos</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">finalpos</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">2</span><span class="p">])</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
                 <span class="n">struc</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">kplines</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
