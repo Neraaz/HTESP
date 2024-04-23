@@ -29,7 +29,7 @@ def write_band_input(material_id, compound_name, prefix, dynamic_matrix):
         file1.write("&projwfc" + "\n")
         file1.write(f"prefix={prefix}," + "\n")
         file1.write("outdir='./'," + "\n")
-        file1.write("filproj='proj.dat'," + "\n")
+        file1.write("filproj='proj.out'," + "\n")
         file1.write("/" + "\n")
 def main():
     """

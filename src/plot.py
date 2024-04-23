@@ -144,7 +144,7 @@ def plot(plottype,file,comp,proj=None,read_kpoint=None):
         check_size = data.shape[1]
         nspin = 1
         #if check_size is 3 then nspin = 2.
-        print(check_size)
+        #print(check_size)
         if check_size == 3:
             nspin = 2
         fig,ax_p = plt.subplots()
