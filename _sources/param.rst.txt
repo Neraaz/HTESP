@@ -459,8 +459,11 @@ This `JSON <https://docs.python.org/3/library/json.html>`_ file serves as the ma
      "kpt_opt": true,
      "plot": {
         "xlim": null,
-        "ylim" : null
-      }
+        "ylim" : [-5, 5],
+        "bandproj": {
+          "proj_type": "element-orbital",
+          "proj": {"Zr": "dxz", "Pd": "dxz"}
+        }
     }
 
 
@@ -489,6 +492,7 @@ This `JSON <https://docs.python.org/3/library/json.html>`_ file serves as the ma
 - **kpt_opt**: Flag for generating KPOINTS_OPT file to perform band structure in VASP
 
 - **plot**: Plot variables, especially, x-limit (list of 2 numbers) and y-limit.
+
 
 .. _job-label:
 
@@ -1130,6 +1134,31 @@ wanniertools_input
 
 This keyword provides input parameters for WannierTools calculations. While it has the capability to function with codes other than QE, only QE is currently implemented in our codebase. The definition of these input parameters can be found in the `WannierTools Documentation <http://www.wanniertools.com/input.html>`_.
 
+----------------------
+plot
+----------------------
+
+It has following keys and values.
+
+- **xlim/ylim**: List showing range of the plot along x- or y- direction.
+
+- **bandproj**: Dictionary requires for projected band structure. 
+
+  - **plot_type**: Available options are:
+  
+   - **element**: String or list of strings representing species. for eg.: "Mg" or ["Mg", "B"]
+   
+   - **orbital**: String or list of strings representing orbitals. for eg.: "px", "dxy" for VASP and "2px", "2dxy" for QE.
+   
+   - **element-orbital**: Dictionary of elements and orbitals combinations. Variaous options are
+   
+   - **QE**:
+   
+   {"Mg": "3s", "B": "2p"}, {"Mg": "3s", "B": ["2px", "2py", "2pz"]}, {"Mg": "3s", "B": "2px"}, etc.
+   
+   - **VASP**:
+   
+   {"Mg": "s", "B": "p"}, {"Mg": "s", "B": ["px", "py", "pz"]}, {"Mg": "s", "B": "px"}, etc.
 
 .. _wannier90-label:
 

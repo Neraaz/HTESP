@@ -23,6 +23,8 @@ Modules
     crystal
     kpoint_path
     plot
+    plot_bandproj
+    check_json
     checkfreq
     dos
     lambda_in

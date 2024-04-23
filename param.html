@@ -208,6 +208,8 @@
         </li>
         <li class="md-nav__item"><a href="#wanniertools-input" class="md-nav__link">wanniertools_input</a>
         </li>
+        <li class="md-nav__item"><a href="#plot" class="md-nav__link">plot</a>
+        </li>
         <li class="md-nav__item"><a href="#wannier90-json" class="md-nav__link">wannier90.json</a>
         </li>
         <li class="md-nav__item"><a href="#epw-json" class="md-nav__link">epw.json</a>
@@ -663,8 +665,11 @@
 <span class="w"> </span><span class="nt">"kpt_opt"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
 <span class="w"> </span><span class="nt">"plot"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nt">"xlim"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">"ylim"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kc">null</span>
-<span class="w">  </span><span class="p">}</span>
+<span class="w">    </span><span class="nt">"ylim"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">-5</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">],</span>
+<span class="w">    </span><span class="nt">"bandproj"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"proj_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"element-orbital"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"proj"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"Zr"</span><span class="p">:</span><span class="w"> </span><span class="s2">"dxz"</span><span class="p">,</span><span class="w"> </span><span class="nt">"Pd"</span><span class="p">:</span><span class="w"> </span><span class="s2">"dxz"</span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -1212,6 +1217,31 @@ Setting <code class="docutils literal notranslate"><span class="pre">filter</spa
 </pre></div>
 </div>
 <p>This keyword provides input parameters for WannierTools calculations. While it has the capability to function with codes other than QE, only QE is currently implemented in our codebase. The definition of these input parameters can be found in the <a class="reference external" href="http://www.wanniertools.com/input.html">WannierTools Documentation</a>.</p>
+</section>
+<section id="plot">
+<h1 id="plot">plot<a class="headerlink" href="#plot" title="Link to this heading">¶</a></h1>
+<p>It has following keys and values.</p>
+<ul>
+<li><p><strong>xlim/ylim</strong>: List showing range of the plot along x- or y- direction.</p></li>
+<li><p><strong>bandproj</strong>: Dictionary requires for projected band structure.</p>
+<ul class="simple">
+<li><p><strong>plot_type</strong>: Available options are:</p></li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>element</strong>: String or list of strings representing species. for eg.: “Mg” or [“Mg”, “B”]</p></li>
+<li><p><strong>orbital</strong>: String or list of strings representing orbitals. for eg.: “px”, “dxy” for VASP and “2px”, “2dxy” for QE.</p></li>
+<li><p><strong>element-orbital</strong>: Dictionary of elements and orbitals combinations. Variaous options are</p></li>
+<li><p><strong>QE</strong>:</p></li>
+</ul>
+<p>{“Mg”: “3s”, “B”: “2p”}, {“Mg”: “3s”, “B”: [“2px”, “2py”, “2pz”]}, {“Mg”: “3s”, “B”: “2px”}, etc.</p>
+<ul class="simple">
+<li><p><strong>VASP</strong>:</p></li>
+</ul>
+<p>{“Mg”: “s”, “B”: “p”}, {“Mg”: “s”, “B”: [“px”, “py”, “pz”]}, {“Mg”: “s”, “B”: “px”}, etc.</p>
+</div></blockquote>
+</li>
+</ul>
 </section>
 <section id="wannier90-json">
 <span id="wannier90-label"></span><h1 id="wannier90-json">wannier90.json<a class="headerlink" href="#wannier90-json" title="Link to this heading">¶</a></h1>
