@@ -3,7 +3,6 @@
 """Module to generate input files for substitutions"""
 import sys
 import os
-import json
 from bsym.interface.pymatgen import unique_structure_substitutions as us
 from pymatgen.io.vasp.inputs import Poscar
 from pymatgen.io.vasp.sets import MPRelaxSet
@@ -13,16 +12,7 @@ from pymatgen.core import structure
 from cif_to_gsinput import pos_to_kpt
 from write_potcar import poscar2potcar
 from htepc import MpConnect
-try:
-    PWD = os.getcwd()
-    if os.path.isfile(PWD+"/config.json"):
-        JSONFILE = PWD+"/config.json"
-    else:
-        JSONFILE = "../../config.json"
-    with open(JSONFILE, "r") as readjson:
-        input_data = json.load(readjson)
-except FileNotFoundError:
-    print("config.json file not found\n")
+from check_json import config
 
 def substitution(mpid,obj):
     """
@@ -168,4 +158,5 @@ def main():
     obj = MpConnect()
     substitution(mpid,obj)
 if __name__ == "__main__":
+    input_data = config()
     main()

@@ -2,7 +2,6 @@
 #"""Writen by Niraj K. Nepal, Ph.D."""
 """Module to prepare QE input files"""
 import os
-import json
 from collections import OrderedDict
 import numpy as np
 import scipy.linalg as alg
@@ -17,17 +16,8 @@ from pymatgen.core.periodic_table import Element
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 from mp_api.client import MPRester
 from kpath import kpath
-try:
-    PWD = os.getcwd()
-    if os.path.isfile(PWD+"/config.json"):
-        JSONFILE = PWD+"/config.json"
-    else:
-        JSONFILE = "../../config.json"
-    with open(JSONFILE, "r") as readjson:
-        input_data = json.load(readjson)
-except FileNotFoundError:
-    print("config.json file not found\n")
-#connect to materials project and extract various informations. including QE inputs.
+from check_json import config
+input_data = config()
 def pos_to_kpt(structure_filename,kpoint_density):
     """
     Obtain k-point mesh from a structure file.

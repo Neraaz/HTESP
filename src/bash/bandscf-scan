@@ -33,7 +33,7 @@ for ((ii=$1; ii<$2; ++ii)); do
        cp vdw_kernel.bindat R$A-$B/bands/vdw_kernel.bindat
      fi
      cd R$A-$B/bands/
-       echo "Creating soft links to CHGCAR and WAVECAR of R$A-$B/relax/"
+       echo "Creating soft links to CHGCAR of R$A-$B/relax/"
        ln -s ../relax/CHGCAR CHGCAR
        nel=$(grep "NELECT" ../relax/OUTCAR | awk '{ print $3 }')
        nel=$(echo $nel/1 | bc)
@@ -41,21 +41,23 @@ for ((ii=$1; ii<$2; ++ii)); do
        if [[ -f ../../vasp-band.in ]]; then
          soc=$(grep "LSORBIT .TRUE." ../../vasp-band.in | wc -l)
        fi
-       if [ $soc -gt 0 ]; then
-           nbnd=$(echo $nel+20 | bc)
-           echo "Number of band used in electronic bandstructure calculation [number of electrons ($nel) + 20]: $nbnd"
-       else
-         if [ $nel -lt 30 ]; then
-           nbnd=$(echo $nel+10 | bc)
-           echo "Number of band used in electronic bandstructure calculation [number of electrons ($nel) + 10]: $nbnd"
-         else
-           nbnd=$(echo $nel*1.50/2 | bc)
-           echo "Number of band used in electronic bandstructure calculation [number of electrons ($nel)*1.5/2]: $nbnd"
-         fi
-       fi
        if [[  -f ../../vasp-band.in ]]; then
          cp ../../vasp-band.in vasp.in
+         nbnd=$(grep NBANDS vasp.in | awk '{ print $2 }')
+         echo "Number of band used: $nbnd"
        else
+         if [ $soc -gt 0 ]; then
+             nbnd=$(echo $nel+20 | bc)
+             echo "Number of band used in electronic bandstructure calculation [number of electrons ($nel) + 20]: $nbnd"
+         else
+           if [ $nel -lt 30 ]; then
+             nbnd=$(echo $nel+10 | bc)
+             echo "Number of band used in electronic bandstructure calculation [number of electrons ($nel) + 10]: $nbnd"
+           else
+             nbnd=$(echo $nel*1.50/2 | bc)
+             echo "Number of band used in electronic bandstructure calculation [number of electrons ($nel)*1.5/2]: $nbnd"
+           fi
+         fi
          echo "vasp-band.in file not present, creating vasp.in inside R$A-$B/bands/"
          echo "LORBIT 11" > vasp.in
          echo "LCHARG .False." >> vasp.in
@@ -68,19 +70,23 @@ for ((ii=$1; ii<$2; ++ii)); do
          echo "IBRION" >> vasp.in
          echo "NELM" >> vasp.in
        fi
-       vasp_process.py POSCAR
        cp ../../input.in .
        cp ../relax/IBZKPT KPOINTS
        metagga_check=$(grep METAGGA vasp.in | wc -l)
        hybrid_check=$(grep LHFCALC vasp.in | wc -l)
        if [[ $metagga_check -gt 0 ]]; then
          echo "METAGGA tag detected in vasp-band.in"
+         sed -i '/ICHARG/d' vasp.in
        elif [[ $hybrid_check -gt 0 ]]; then
          echo "LHFCALC tag detected in vasp-band.in"
+         echo "Creating soft links to WAVECAR of R$A-$B/relax/"
+         echo "NELMIN 3" >> vasp.in
+         sed -i '/ICHARG/d' vasp.in
          ln -s ../relax/WAVECAR WAVECAR
        else
          echo "GGA or LDA band calculations" 
        fi
+       vasp_process.py POSCAR
        kcut=$(awk '{if(NR==3) print $2}' input.in)
        nkpt=$(awk '{if(NR==3) print $1}' input.in)
        oldkpt=$(sed -n '2p' KPOINTS)
@@ -91,11 +97,26 @@ for ((ii=$1; ii<$2; ++ii)); do
           echo "---------------------------------------------------"
           
           kpath.py point POSCAR $nkpt $kcut 0
-       sed '1,2d' scf_dir/kpathlines.dat > kpathtemp.in
-          cat KPOINTS kpathtemp.in | sed '2d' > KPOINTS_temp
-          rm kpathtemp.in KPOINTS input.in
-          sed "1 a $newkpt" KPOINTS_temp > KPOINTS
-          rm KPOINTS_temp
+          sed '1,2d' scf_dir/kpathlines.dat > kpathtemp.in
+          if [[ -f KPT_OPT ]]; then
+            #echo "Automatically generated mesh" > KPOINTS_temp
+            #echo "$nkpt" >> KPOINTS_temp
+            #echo "Reciprocal lattice" >> KPOINTS_temp
+            #cat KPOINTS_temp kpathtemp.in > KPOINTS_OPT
+            #rm KPOINTS_temp kpathtemp.in
+            sed -i '/NPAR/d' INCAR
+            cp ../relax/KPOINTS .
+            if [[ $hybrid_check -gt 0 ]]; then
+              kpath.py line 50
+            else
+              kpath.py line 100
+            fi
+          else
+            cat KPOINTS kpathtemp.in | sed '2d' > KPOINTS_temp
+            rm kpathtemp.in KPOINTS input.in
+            sed "1 a $newkpt" KPOINTS_temp > KPOINTS
+            rm KPOINTS_temp
+          fi
        else
           kpath.py line 100
        fi

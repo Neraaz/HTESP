@@ -6,19 +6,9 @@
 
 import os
 import sys
-import json
 from pymatgen.io.vasp.outputs import Vasprun
 from pymatgen.io.pwscf import PWOutput
-try:
-    PWD = os.getcwd()
-    if os.path.isfile(PWD+"/config.json"):
-        JSONFILE = PWD+"/config.json"
-    else:
-        JSONFILE = "../../config.json"
-    with open(JSONFILE, "r") as readjson:
-        input_data = json.load(readjson)
-except FileNotFoundError:
-    print("config.json file not found\n")
+from check_json import config
 
 def kpoint_vasp(kpoint,kconv=False):
     """
@@ -305,6 +295,7 @@ def main_qe(file_name,parameter,start,end):
     print("All done")
 
 if __name__ == "__main__":
+    input_data = config()
     # Read input parameters from 'input.in' file
     with open("input.in","r") as read_in:
         lines = read_in.readlines()

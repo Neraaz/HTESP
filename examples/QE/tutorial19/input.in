@@ -1,5 +1,6 @@
 1
 2
 200 0
-mpid-list.in
-phband
+mpid.in
+wann_band
+DFT = QE

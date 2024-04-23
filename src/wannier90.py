@@ -44,12 +44,17 @@ def epw_bandcheck(infile='scf.in', out="ex.win", proj=" ", json_file="wannier90.
             if proj == 'scdm':
                 settings_str += "auto_projections=.true.\n"
             elif proj == "fromfile":
+                if os.path.isfile("../../projection.in"):
+                    os.system("cp ../../projection.in .")
                 if os.path.isfile("projection.in"):
                     with open("projection.in", "r") as gfile:
                         lines = gfile.readlines()
                     len_l = len(lines)
-                    projections = " ".join([line.strip() for line in lines])
-                    settings_str += "{}\n".format(projections)
+                    projections = ""
+                    for line in lines:
+                        projections += line
+                    #projections = " ".join([line.strip() for line in lines])
+                    settings_str += "{}".format(projections)
                 else:
                     print("projection.in file not found\n")
                     print("write projections in different line, 'X:s', 'Y:pz', ... so on\n")
@@ -65,6 +70,8 @@ def epw_bandcheck(infile='scf.in', out="ex.win", proj=" ", json_file="wannier90.
                 for line in lines:
                     settings_str += line
                 settings_str += "END Kpoint_Path\n"
+            num_wann = config_settings["num_wann"]
+            wannier_vasp_file.write(f"NUM_WANN = {num_wann}\n")
             wannier_vasp_file.write("WANNIER90_WIN = \" \n")
             wannier_vasp_file.write("{}".format(settings_str))
             wannier_vasp_file.write("\"")

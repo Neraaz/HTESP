@@ -1,0 +1,1 @@
+Abort(1) on node 15 (rank 15 in comm 0): application called MPI_Abort(MPI_COMM_WORLD, 1) - process 15

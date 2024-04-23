@@ -9,7 +9,7 @@ Module to search and download input files from AFLOW database.
 import os
 import sys
 import ast
-import json
+#import json
 from urllib.request import urlopen
 import pandas as pd
 #from ase.cell import Cell
@@ -22,16 +22,7 @@ from oqmd_extract import poscar_to_input
 from cif_to_gsinput import pos_to_kpt
 from write_potcar import poscar2potcar
 from htepc import INPUTscf
-try:
-    PWD = os.getcwd()
-    if os.path.isfile(PWD+"/config.json"):
-        JSONFILE = PWD+"/config.json"
-    else:
-        JSONFILE = "../../config.json"
-    with open(JSONFILE, "r") as readjson:
-        input_data = json.load(readjson)['download']
-except FileNotFoundError:
-    print("config.json file not found\n")
+from check_json import config
 def properties_string(dict_param):
     """
     Function to create a string for URL search from the dictionary provided in config.json.
@@ -320,8 +311,6 @@ def main():
         lines = read_in.readlines()
     start = int(lines[0].split("\n")[0])
     end = int(lines[1].split("\n")[0])
-    #start = input_data['inp']['start']
-    #end = input_data['inp']['end']
     dft = input_data['inp']['calc']
     # Call search_data function if the mode is search
     if condition == 'search':
@@ -333,4 +322,5 @@ def main():
     else:
         print("Either search or download is allowed\n")
 if __name__ == "__main__":
+    input_data = config()['download']
     main()

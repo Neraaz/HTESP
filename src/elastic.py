@@ -3,7 +3,6 @@
 """Module to perform elastic calculations"""
 import sys
 import os
-import json
 import numpy as np
 from pymatgen.io.vasp.inputs import Poscar
 from pymatgen.io.vasp.sets import MPRelaxSet
@@ -16,16 +15,7 @@ from pymatgen.analysis.elasticity import DeformedStructureSet,find_eq_stress
 from cif_to_gsinput import pos_to_kpt
 from write_potcar import poscar2potcar
 from htepc import MpConnect
-try:
-    PWD = os.getcwd()
-    if os.path.isfile(PWD+"/config.json"):
-        JSONFILE = PWD+"/config.json"
-    else:
-        JSONFILE = "../../config.json"
-    with open(JSONFILE, "r") as readjson:
-        input_data = json.load(readjson)
-except FileNotFoundError:
-    print("config.json file not found\n")
+from check_json import config
 
 def deformation(mpid,obj,dft,orig_prefix,deformed_struc):
     """
@@ -229,6 +219,7 @@ def main(mpid,orig_prefix):
     else:
         print("Only 2 mode is available, either input or compute_elastic\n")
 if __name__ == "__main__":
+    input_data = config()
     with open("input.in","r") as read_in:
         lines1 = read_in.readlines()
     START = int(lines1[0].split("\n")[0])

@@ -1,0 +1,19 @@
+{
+  "config_settings": {
+    "use_ws_distance": ".true.",
+    "num_bands": 26,
+    "num_wann": 7,
+    "dis_win_max": 20.14,
+    "dis_win_min": -4.0,
+    "dis_froz_max": 14.14,
+    "dis_froz_min": 5.14,
+    "dis_num_iter": 2000,
+    "write_hr": ".true.",
+    "iprint": 2,
+    "spinors": ".false."
+  },
+  "plot_settings": {
+    "fermi_surface_plot": ".true.",
+    "bands_plot": ".true."
+  }
+}

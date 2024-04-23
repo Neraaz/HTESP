@@ -364,9 +364,14 @@
     }
   },
  "kptden":0.025,
+ "kpt_opt": true,
  "plot": {
    "xlim": [-8,10],
    "ylim": [-20,20]
+   "bandproj": {
+    "proj_type": "element-orbital",
+    "proj": {"Zr": "dxz", "Pd": "dxz"}
+  }
   }
 }
 

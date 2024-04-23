@@ -4,18 +4,8 @@
 Script is run within 'download-input' bash script."""
 import sys
 import os
-import json
 from htepc import MpConnect
-try:
-    PWD = os.getcwd()
-    if os.path.isfile(PWD+"/config.json"):
-        JSONFILE = PWD+"/config.json"
-    else:
-        JSONFILE = "../../config.json"
-    with open(JSONFILE, "r") as readjson:
-        input_data = json.load(readjson)
-except FileNotFoundError:
-    print("config.json file not found\n")
+from check_json import config
 
 def qe_input(mpid):
     """
@@ -82,4 +72,5 @@ def main():
     mpid=sys.argv[1]
     qe_input(mpid)
 if __name__ == "__main__":
+    input_data = config()
     main()

@@ -284,6 +284,9 @@ for ((ii=$1; ii<$2; ++ii)); do
             cat INCAR wannier-vasp.in > INCAR_wannier
             cp INCAR INCAR_backup
             cp INCAR_wannier INCAR
+            if [[ ! -f run.sh ]]; then
+              cp ../../run-wannier.sh run.sh
+            fi
             vasprun "$A" "$B"
            cd ../../
          else

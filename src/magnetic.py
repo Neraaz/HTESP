@@ -5,7 +5,6 @@
 Creates different magnetic ordering according to MagneticStructureEnumerator functions.
 """
 import os
-import json
 from pymatgen.io.vasp.inputs import Poscar
 from pymatgen.core import structure
 from pymatgen.io.pwscf import PWInput
@@ -14,16 +13,7 @@ from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 from cif_to_gsinput import pos_to_kpt
 from write_potcar import poscar2potcar
 from htepc import MpConnect
-try:
-    PWD = os.getcwd()
-    if os.path.isfile(PWD+"/config.json"):
-        JSONFILE = PWD+"/config.json"
-    else:
-        JSONFILE = "../../config.json"
-    with open(JSONFILE, "r") as readjson:
-        input_data = json.load(readjson)
-except FileNotFoundError:
-    print("config.json file not found\n")
+from check_json import config
 def magnetic_structure(obj,mpid,compound,magconfig,dft):
     """
     Functions to generate possible magnetic structures.
@@ -210,18 +200,19 @@ def main():
     lines = lines[start-1:end-1]
     # Initiate MpConnect object
     obj = MpConnect()
-    config = ['ferromagnetic','antiferromagnetic']
+    config_mag = ['ferromagnetic','antiferromagnetic']
     # Loop over materials
     for line in lines:
         mpid = line.split(" ")[1]
         comp = line.split(" ")[2].split("\n")[0]
         # Creating different magnetic ordering
         if mag_type == "ordering":
-            magnetic_structure(obj,mpid,comp,config,dft)
+            magnetic_structure(obj,mpid,comp,config_mag,dft)
         # Creating input files with different SAXIS
         elif mag_type == "anisotropy":
             changeaxis(mpid,comp)
         else:
             print("Only ordering and anisotropy allowed\n")
 if __name__ == "__main__":
+    input_data = config()
     main()

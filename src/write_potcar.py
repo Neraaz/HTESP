@@ -5,19 +5,9 @@
 Writing POTCAR file from POSCAR
 """
 import os
-import json
 from pymatgen.core import structure
 from pymatgen.io.vasp.sets import Potcar
-try:
-    PWD = os.getcwd()
-    if os.path.isfile(PWD+"/config.json"):
-        JSONFILE = PWD+"/config.json"
-    else:
-        JSONFILE = "../../config.json"
-    with open(JSONFILE, "r") as readjson:
-        input_data = json.load(readjson)
-except FileNotFoundError:
-    print("config.json file not found\n")
+from check_json import config
 def poscar2potcar():
     """
     Function to generate the POTCAR file based on the element potentials provided in
@@ -32,6 +22,7 @@ def poscar2potcar():
     corresponding POTCAR file based on the potential dictionary.
 
     """
+    input_data = config()
     if os.path.isfile("config.json") or os.path.isfile("../../config.json"):
         pot1 = input_data['pseudo']
     else:

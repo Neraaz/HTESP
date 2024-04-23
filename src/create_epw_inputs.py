@@ -12,6 +12,7 @@ from scipy.special import erfc
 import matplotlib.pyplot as plt
 from kpoint_path import kpoint_path
 from wannier90 import epw_bandcheck
+from check_json import config
 
 def phonon_input(mass_file, qpoint_file, mpid, compound, prefix):
     """
@@ -403,16 +404,7 @@ def main():
     main function
     """
     # Load input data from JSON file
-    try:
-        pwd = os.getcwd()
-        if os.path.isfile(pwd+"/config.json"):
-            jsonfile = pwd+"/config.json"
-        else:
-            jsonfile = "../../config.json"
-        with open(jsonfile, "r") as readjson:
-            input_data = json.load(readjson)
-    except FileNotFoundError:
-        print("config.json file not found\n")
+    input_data = config()
     # Extract relevant data from input
     dft = input_data['download']['inp']['calc']
     mpid = sys.argv[1]

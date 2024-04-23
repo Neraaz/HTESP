@@ -6,16 +6,8 @@ import sys
 #import glob
 import json
 from cif_to_gsinput import pos_to_kpt
-try:
-    PWD = os.getcwd()
-    if os.path.isfile(PWD+"/config.json"):
-        JSONFILE = PWD+"/config.json"
-    else:
-        JSONFILE = "../../config.json"
-    with open(JSONFILE, "r") as readjson:
-        input_data = json.load(readjson)
-except FileNotFoundError:
-    print("config.json file not found\n")
+from check_json import config
+input_data = config()
 def main():
     """
     main function

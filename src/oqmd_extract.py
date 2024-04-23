@@ -3,7 +3,6 @@
 """Module to extract data from OQMD database"""
 import sys
 import os
-import json
 import re
 from collections import Counter
 from ase.io.vasp import read_vasp
@@ -14,16 +13,7 @@ import qmpy_rester as qr
 from cif_to_gsinput import pos_to_kpt
 from write_potcar import poscar2potcar
 from htepc import MpConnect
-try:
-    PWD = os.getcwd()
-    if os.path.isfile(PWD+"/config.json"):
-        JSONFILE = PWD+"/config.json"
-    else:
-        JSONFILE = "../../config.json"
-    with open(JSONFILE, "r") as readjson:
-        input_data = json.load(readjson)
-except FileNotFoundError:
-    print("config.json file not found\n")
+from check_json import config
 
 def poscar_to_input(calc_type,mpid,compound,keven):
     """
@@ -310,6 +300,7 @@ def download(calc_type,start,end):
             print(f"Structure data not found for {oqmd_id}-{subd['name']}\n")
             continue
 if __name__ == "__main__":
+    input_data = config()
     CONDITION = sys.argv[1]
     # Read config.json file and creates KWARGS dictionary
     with open("input.in","r") as read_in:

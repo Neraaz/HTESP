@@ -4,24 +4,14 @@
 import os
 import glob
 import warnings
-import json
 import pandas as pd
 from mp_api.client import MPRester
 from htepc import MpConnect
+from check_json import config
 warnings.filterwarnings('ignore')
 # Make sure that you have the Materials API key.
 # MPRester if needed, e.g, MPRester("API_KEY")
 #get API_KEY from material projects, go to dashboard and generate the key.
-try:
-    PWD = os.getcwd()
-    if os.path.isfile(PWD+"/config.json"):
-        JSONFILE = PWD+"/config.json"
-    else:
-        JSONFILE = "../../config.json"
-    with open(JSONFILE, "r") as readjson:
-        input_data = json.load(readjson)
-except FileNotFoundError:
-    print("config.json file not found\n")
 
 def create_folder(parent_folder):
     """
@@ -590,4 +580,5 @@ chemsys={'entries':['B'],'size_constraint':20,'ntype_constraint':5,'must_include
         else:
             print("mode = element, chemsys, fromcif, or fromvasp available\n")
 if __name__ == "__main__":
+    input_data = config()
     main()

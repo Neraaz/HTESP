@@ -3,23 +3,14 @@
 """Module to process vasp input files"""
 import sys
 import os
-import json
 import numpy as np
 from ase.io import vasp,espresso
 from ase.cell import Cell
 from pymatgen.core import structure
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
+from pymatgen.io.vasp.sets import Incar
 from cif_to_gsinput import pos_to_kpt
-try:
-    PWD = os.getcwd()
-    if os.path.isfile(PWD+"/config.json"):
-        JSONFILE = PWD+"/config.json"
-    else:
-        JSONFILE = "../../config.json"
-    with open(JSONFILE, "r") as readjson:
-        input_data = json.load(readjson)
-except FileNotFoundError:
-    print("config.json file not found\n")
+from check_json import config
 def encut_check():
     """
     Function to check ENCUT in INCAR file and replace
@@ -190,6 +181,22 @@ def eigen_process():
     for line in inputline:
         if "vasp-line" in line:
             vasp_line = True
+    if os.path.isfile("KPT_OPT"):
+        vasp_line = True
+    # TO DO: parse EIGENVAL for spin-polarized calculations
+    incar = Incar.from_file("INCAR")
+    if 'LSORBIT' not in incar.keys():
+        incar['LSORBIT'] = False
+    if 'ISPIN' not in incar.keys():
+        incar['ISPIN'] = 1
+    if 'LNONCOLLINEAR' not in incar.keys():
+        incar['LNONCOLLINEAR'] = False
+    if incar['LSORBIT'] or incar['LNONCOLLINEAR']:
+        nspin = 4
+    elif incar['ISPIN'] == 2 and not incar['LNONCOLLINEAR']:
+        nspin = 2
+    else:
+        nspin = 1
     with open("EIGENVAL", "r") as read_eig:
         for i in range(5):
             read_eig.readline()
@@ -205,9 +212,15 @@ def eigen_process():
                     for j in range(nbands):
                         fields = read_eig.readline().split()
                         if j < nbands - 1:
-                            write_eig.write(str(fields[1]) + " ")
+                            if nspin == 2:
+                                write_eig.write(str(fields[1]) + " " + str(fields[2]) + " ")
+                            else:
+                                write_eig.write(str(fields[1]) + " ")
                         else:
-                            write_eig.write(str(fields[1]) + "\n")
+                            if nspin == 2:
+                                write_eig.write(str(fields[1]) + " " + str(fields[2]) + "\n")
+                            else:
+                                write_eig.write(str(fields[1]) + "\n")
                     read_eig.readline()
                     k_ind += 1
                 else:
@@ -217,14 +230,27 @@ def eigen_process():
     with open("band.dat.gnu", "w") as write_dat_gnu:
         data = np.loadtxt('band.dat')
         nrow,_ = data.shape
-        band_value = data[:,1:]
+        if nspin == 2:
+            band_value = data[:,1:]
+            band_value_1 = band_value[:, ::2]
+            band_value_2 = band_value[:, 1::2]
+            band_value = band_value_1
+        else:
+            band_value = data[:,1:]
         for i in range(band_value.shape[1]):
             for j in range(band_value.shape[0]):
                 if j < nrow - 1:
-                    write_dat_gnu.write(str(j) + " " + str(band_value[j,i]) + "\n")
+                    if nspin == 2:
+                        write_dat_gnu.write(str(j) + " " + str(band_value_1[j,i]) + " " + str(band_value_2[j,i]) + "\n")
+                    else:
+                        write_dat_gnu.write(str(j) + " " + str(band_value[j,i]) + "\n")
                 else:
-                    write_dat_gnu.write(str(j) + " " + str(band_value[j,i]) + "\n")
-                    write_dat_gnu.write("\n")
+                    if nspin == 2:
+                        write_dat_gnu.write(str(j) + " " + str(band_value_1[j,i]) + " " + str(band_value_2[j,i]) + "\n")
+                        write_dat_gnu.write("\n")
+                    else:
+                        write_dat_gnu.write(str(j) + " " + str(band_value[j,i]) + "\n")
+                        write_dat_gnu.write("\n")
 def band_phonopy(filename):
     """
     Write k-points of high-symmetry points for Phonopy band structure plot using 'band.conf' file.
@@ -310,4 +336,5 @@ def main():
     else:
         band_phonopy(filename)
 if __name__ == "__main__":
+    input_data = config()
     main()

@@ -8,5 +8,6 @@ orb=$2
 x=$atom
 y=$orb
 sumpdos.x *\($atom\)* > $atom-tot.dat
+sumpdos.x *\($orb\)* > $orb-tot.dat
 sumpdos.x *\($atom\)*\($orb\) > $atom-$orb.dat
 sumpdos.x *\($atom\)*\($orb\)* > $atom-$orb.dat

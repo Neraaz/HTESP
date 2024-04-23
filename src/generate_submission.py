@@ -41,7 +41,10 @@ def generate_submission_files(which_calc, parallel_command, nproc, command_list)
     if which_calc in ('qe','QE'):
         for command_name, command_info in command_list.items():
             x_command, input_file, output_file = command_info
-            submission_files[command_name] = f"{parallel_command} -np {npscf} {x_command} < {input_file} > {output_file}"
+            submission_files[command_name] = f"{parallel_command} -np {npscf} {x_command} -in {input_file} > {output_file}"
+            if x_command == 'bands.x':
+                submission_files[command_name] += "\n"
+                submission_files[command_name] += f"{parallel_command} -np {npscf} projwfc.x -in projwfc.in > projwfc.out"
 
     elif which_calc in ('epw','EPW'):
         for command_name, command_info in command_list.items():
@@ -49,13 +52,13 @@ def generate_submission_files(which_calc, parallel_command, nproc, command_list)
             if command_name == 'epw':
                 submission_files[command_name] = f"{parallel_command} -np {nproc} {x_command} -npools {nproc} -i {input_file} > {output_file}"
             else:
-                submission_files[command_name] = f"{parallel_command} -np {nproc} {x_command} < {input_file} > {output_file}"
+                submission_files[command_name] = f"{parallel_command} -np {nproc} {x_command} -in {input_file} > {output_file}"
 
     elif which_calc in ('wannier','W','WANNIER'):
         for command_name, command_info in command_list.items():
             x_command, input_file, output_file = command_info
             if command_name in ('scf','nscf'):
-                submission_files[command_name] = f"{parallel_command} -np {npscf} {x_command} < {input_file} > {output_file}"
+                submission_files[command_name] = f"{parallel_command} -np {npscf} {x_command} -in {input_file} > {output_file}"
             elif command_name == 'pw2wannier90':
                 submission_files[command_name] = f"{parallel_command} -np {npscf} {x_command} -in {input_file} > {output_file}"
             elif command_name == 'wannier_prepare':

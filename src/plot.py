@@ -5,7 +5,6 @@ import sys
 import os
 import glob
 import warnings
-import json
 import matplotlib
 import matplotlib.pyplot as plt
 import pylab
@@ -17,22 +16,13 @@ from pymatgen.electronic_structure.core import OrbitalType
 from pymatgen.electronic_structure.plotter import DosPlotter
 from pymatgen.electronic_structure.plotter import BSPlotter
 from kpath import kpath
+from check_json import config
 warnings.filterwarnings("ignore")
 matplotlib.use('Agg')
 
 font = {'weight' : 'bold','size'   : 20}
 matplotlib.rc('font', **font)
 plt.rcParams["figure.autolayout"] = True
-try:
-    PWD = os.getcwd()
-    if os.path.isfile(PWD+"/config.json"):
-        JSONFILE = PWD+"/config.json"
-    else:
-        JSONFILE = "../../config.json"
-    with open(JSONFILE, "r") as readjson:
-        input_data = json.load(readjson)
-except FileNotFoundError:
-    print("config.json file not found\n")
 
 def kptline():
     """
@@ -71,7 +61,7 @@ def kptline():
             symname[i] = r'${}$'.format(symadd)
     symname[0] = r'${}$'.format("\\Gamma")
     return nkpt,sympoint,symname
-def plot(plottype,file,comp):
+def plot(plottype,file,comp,proj=None,read_kpoint=None):
     """
     Function to create quick plots.
 
@@ -92,16 +82,30 @@ def plot(plottype,file,comp):
 
     This function creates various types of plots based on the input parameters.
     """
+    input_data = config()
     if plottype == 'band':
-        nkpoint = int(sys.argv[4])
-        kcut = int(sys.argv[5])
+        if proj:
+            proj_data = np.loadtxt(proj)
+        #nkpoint = int(sys.argv[4])
+        #kcut = int(sys.argv[5])
         with open("../../input.in","r") as read_inputin:
             inputline = read_inputin.readlines()
+        if read_kpoint:
+            nkpoint = int(read_kpoint)
+            kcut = 0
+        else:
+            nkpoint = int(inputline[2].split()[0])
+            kcut = int(inputline[2].split()[1])
         vasp_line = False
         for line in inputline:
             if "vasp-line" in line:
                 vasp_line = True
+        if os.path.isfile("VASP_LINE"):
+            vasp_line = True
+        if os.path.isfile("KPT_OPT"):
+            vasp_line = True
         if vasp_line:
+            print("vasp-line plot found\n")
             pt_l,sympt,symlb = kptline()
             nkpoint = pt_l.shape[0]
         else:
@@ -119,8 +123,12 @@ def plot(plottype,file,comp):
         else:
             print("No scf.out and OUTCAR files present\n")
         band_fermi = int(np.loadtxt("band_fermi.dat").item())
-        os.system("""grep LSORBIT INCAR | wc -l > lsorbit""")
-        lsorbit = float(np.loadtxt("lsorbit"))
+        if os.path.isfile("INCAR"):
+            os.system("""grep LSORBIT INCAR | wc -l > lsorbit""")
+        if os.path.isfile("lsorbit"):
+            lsorbit = float(np.loadtxt("lsorbit"))
+        else:
+            lsorbit = 0
         #lsorbit = 0
         if lsorbit > 0:
             band_fermi = band_fermi
@@ -133,6 +141,12 @@ def plot(plottype,file,comp):
             os.system("rm band_fermi.dat")
         sympt = np.array(sympt)
         data=np.loadtxt('{}.dat.gnu'.format(comp))
+        check_size = data.shape[1]
+        nspin = 1
+        #if check_size is 3 then nspin = 2.
+        print(check_size)
+        if check_size == 3:
+            nspin = 2
         fig,ax_p = plt.subplots()
         nband=int(data.shape[0]/nkpoint)
         print("nkpoints:{}-nband:{}".format(nkpoint,nband))
@@ -140,24 +154,39 @@ def plot(plottype,file,comp):
             band_stat.write("Band,Emin-Ef,Emax-Ef,Emin,Emax\n")
             for i in range(nband):
                 if i == band_fermi - 1:
-                #ax_p.plot(pt_l, data[0+nkpoint*i:nkpoint*(i+1)][:,1]-fermi,'k', lw = 1)
-                    ax_p.plot(pt_l, data[0+nkpoint*i:nkpoint*(i+1)][:,1]-fermi,'r', lw = 1.0)
+                    ax_p.plot(pt_l, data[0+nkpoint*i:nkpoint*(i+1)][:,1]-fermi,'r', lw = 0.75)
+                    if nspin == 2:
+                        ax_p.plot(pt_l, data[0+nkpoint*i:nkpoint*(i+1)][:,2]-fermi,'r--', lw = 0.75)
+                    if proj:
+                        projection = proj_data[0+nkpoint*i:nkpoint*(i+1)][:,1]
+                        plt.scatter(pt_l,data[0+nkpoint*i:nkpoint*(i+1)][:,1]-fermi,c=projection,cmap='Greens',vmin=0,vmax=1)
+                        #if nspin == 2:
+                        #    projection = proj_data[0+nkpoint*i:nkpoint*(i+1)][:,2]
+                        #    plt.scatter(pt_l,data[0+nkpoint*i:nkpoint*(i+1)][:,2]-fermi,c=projection,cmap='Blues',vmin=0,vmax=1)
                 else:
-                    ax_p.plot(pt_l, data[0+nkpoint*i:nkpoint*(i+1)][:,1]-fermi,'k', lw = 0.5)
+                    # if nspin = 2, plot 3rd column with data[][:,2] with black dashed.
+                    ax_p.plot(pt_l, data[0+nkpoint*i:nkpoint*(i+1)][:,1]-fermi,'k', lw = 0.75)
+                    if nspin == 2:
+                        ax_p.plot(pt_l, data[0+nkpoint*i:nkpoint*(i+1)][:,2]-fermi,'k--', lw = 0.75)
+                    if proj:
+                        projection = proj_data[0+nkpoint*i:nkpoint*(i+1)][:,1]
+                        plt.scatter(pt_l,data[0+nkpoint*i:nkpoint*(i+1)][:,1]-fermi,c=projection,cmap='Greens',vmin=0,vmax=1)
+                        #if nspin == 2:
+                        #    projection = proj_data[0+nkpoint*i:nkpoint*(i+1)][:,2]
+                        #    plt.scatter(pt_l,data[0+nkpoint*i:nkpoint*(i+1)][:,2]-fermi,c=projection,cmap='Blues',vmin=0,vmax=1)
                 band_stat.write(str(i) + ",")
                 band_stat.write(str(np.min(data[0+nkpoint*i:nkpoint*(i+1)][:,1])-fermi) + ",")
                 band_stat.write(str(np.max(data[0+nkpoint*i:nkpoint*(i+1)][:,1])-fermi) + ",")
                 band_stat.write(str(np.min(data[0+nkpoint*i:nkpoint*(i+1)][:,1])) + ",")
                 band_stat.write(str(np.max(data[0+nkpoint*i:nkpoint*(i+1)][:,1])) + "\n")
         ax_p.set_xticks(sympt)
-        #ax_p.plot([sympt[0], sympt[-1]], [0, 0], 'k--', lw=0.75)
         ax_p.plot([sympt[0], sympt[-1]], [0, 0], 'k--', lw=0.1)
         ax_p.set_xticklabels(symlb)
         min_band = np.min(data[:,1])-fermi
         max_band = np.max(data[:,1])-fermi
         for i in range(sympt.shape[0]):
             ax_p.vlines(sympt[i],min_band-2,max_band+2,color='k',linestyles='dashed')
-        ax_p.set_ylabel("Energy - Ef (eV)")
+        ax_p.set_ylabel("E - Ef (eV)")
         #ax_p.set_ylim((min_band-2, max_band+2)) #change this depending on the energy levels.
         ylim = input_data['plot']['ylim']
         if ylim is not None:
@@ -488,7 +517,7 @@ def band_wann_plot(fileout='plot.pdf'):
     #ax.set_ylim(fermi-1,fermi+1)
     #for i in range(sympt.shape[0]):
     #    ax.vlines(sympt[i],11.0,18.0,color='k',linestyles='dashed')
-    ax_p.set_ylabel("Energy (eV)")
+    ax_p.set_ylabel("E (eV)")
     ax_p.plot([sympt[0],sympt[-1]],[fermi,fermi],'k--', lw=0.5)
     pylab.savefig(fileout, format='pdf',bbox_inches='tight')
 
@@ -660,7 +689,7 @@ def dos_plot_vasp(outfile="pdos.pdf"):
             plot_axis = plotter.get_plot(xlim=(-4,4))
         plot_axis.legend(loc="upper right")
         plot_axis.set_ylabel("Density of States (states/eV)",fontweight='bold',fontsize=25)
-        plot_axis.set_xlabel(r"Energy - E$_F$ (eV)",fontweight='bold',fontsize=25)
+        plot_axis.set_xlabel(r"E - E$_F$ (eV)",fontweight='bold',fontsize=25)
     elif nspin == 2:
         dos = complete_dos
         energies = dos.energies - dos.efermi
@@ -682,7 +711,6 @@ def dos_plot_vasp(outfile="pdos.pdf"):
             plt.ylim(ymin,ymax)
         else:
             plt.xlim(-10,40)
-        
     else:
         print("nspin should be 1 or 2\n")
     plt.savefig(outfile, dpi=500)
@@ -795,4 +823,5 @@ def main():
     else:
         plot(plottype,filename,comp)
 if __name__ == "__main__":
+    input_data = config()
     main()

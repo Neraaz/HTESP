@@ -4,7 +4,6 @@
 import sys
 import os
 import glob
-import json
 import warnings
 import scipy.linalg as alg
 from ase.io import vasp
@@ -15,16 +14,7 @@ from pymatgen.core import structure
 import numpy as np
 from write_potcar import poscar2potcar
 from htepc import MpConnect
-try:
-    PWD = os.getcwd()
-    if os.path.isfile(PWD+"/config.json"):
-        JSONFILE = PWD+"/config.json"
-    else:
-        JSONFILE = "../../config.json"
-    with open(JSONFILE, "r") as readjson:
-        input_data = json.load(readjson)
-except FileNotFoundError:
-    print("config.json file not found\n")
+from check_json import config
 def pos_to_kpt(structure_filename,kpoint_density,evenkpt=False):
     """
     Function to obtain a k-point mesh from a structure file.
@@ -315,4 +305,5 @@ def main():
                 with open("mpid.in", "a") as write_mpid:
                     write_mpid.write("v{}".format(k_ind+1) + " " + mpid + " " + compound + "\n")
 if __name__ == '__main__':
+    input_data = config()
     main()

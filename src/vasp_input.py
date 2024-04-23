@@ -4,25 +4,15 @@
 Script is run within 'download-input' bash script."""
 import os
 import sys
-import json
 import warnings
 from pymatgen.io.vasp.sets import MPRelaxSet
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 from cif_to_gsinput import pos_to_kpt
 from write_potcar import poscar2potcar
 from htepc import MpConnect
+from check_json import config
 # To ignore all warnings
 warnings.filterwarnings("ignore")
-try:
-    PWD = os.getcwd()
-    if os.path.isfile(PWD+"/config.json"):
-        JSONFILE = PWD+"/config.json"
-    else:
-        JSONFILE = "../../config.json"
-    with open(JSONFILE, "r") as readjson:
-        input_data = json.load(readjson)
-except FileNotFoundError:
-    print("config.json file not found\n")
 def vasp_input(mpid,compound):
     """
     Download VASP input files from the Materials Project.
@@ -85,4 +75,5 @@ def main():
     compound = sys.argv[2]
     vasp_input(mpid,compound)
 if __name__ == "__main__":
+    input_data = config()
     main()

@@ -25,6 +25,12 @@ def write_band_input(material_id, compound_name, prefix, dynamic_matrix):
         band_in.write(f"filband='{dynamic_matrix}',\n")
         band_in.write("lsym=.true.\n")
         band_in.write("/\n")
+    with open("scf_dir/bandproj-{}-{}.in".format(material_id,compound_name), 'w') as file1:
+        file1.write("&projwfc" + "\n")
+        file1.write(f"prefix={prefix}," + "\n")
+        file1.write("outdir='./'," + "\n")
+        file1.write("filproj='proj.dat'," + "\n")
+        file1.write("/" + "\n")
 def main():
     """
     main function

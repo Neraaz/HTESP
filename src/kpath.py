@@ -8,6 +8,7 @@ import pylab
 from pymatgen.io.vasp.inputs import Kpoints
 from pymatgen.core import Structure
 from pymatgen.symmetry.bandstructure import HighSymmKpath
+from check_json import config
 
 def kpath(filename,npoint,kcutoff):
     """
@@ -121,7 +122,7 @@ def printk():
         special_points.write(str(sympoint) + "\n")
         special_points.write(str(symname))
 
-def make_line_kpt():
+def make_line_kpt(filename="KPOINTS"):
     """
     Function to create high symmetry points for line mode using pymatgen.
 
@@ -147,7 +148,7 @@ def make_line_kpt():
     struct = Structure.from_file("POSCAR")
     k_path = HighSymmKpath(struct)
     kpts = Kpoints.automatic_linemode(divisions=nkpt,ibz=k_path)
-    kpts.write_file("KPOINTS")
+    kpts.write_file(filename)
 def main():
     """
     Main function for executing different modes of k-point generation.
@@ -160,10 +161,17 @@ def main():
     """
     mode = sys.argv[1]
     if mode == "line":
-        make_line_kpt()
+        if os.path.isfile("KPT_OPT"):
+            make_line_kpt("KPOINTS_OPT")
+        else:
+            make_line_kpt()
     elif mode == "point":
         printk()
     else:
         print("Either line or point mode available\n")
 if __name__ == "__main__":
+    input_data = config()
+    kpt_opt = input_data["kpt_opt"]
+    if kpt_opt:
+        os.system("touch KPT_OPT")
     main()

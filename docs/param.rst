@@ -456,6 +456,7 @@ This `JSON <https://docs.python.org/3/library/json.html>`_ file serves as the ma
         }
       },
      "kptden": 0.025,
+     "kpt_opt": true,
      "plot": {
         "xlim": null,
         "ylim" : null
@@ -484,6 +485,8 @@ This `JSON <https://docs.python.org/3/library/json.html>`_ file serves as the ma
 - **wanniertools_input**: Input parameters for WannierTools. :ref:`here <wanniertoolsinput-label>`
 
 - **kptden**: Kpoint density.
+
+- **kpt_opt**: Flag for generating KPOINTS_OPT file to perform band structure in VASP
 
 - **plot**: Plot variables, especially, x-limit (list of 2 numbers) and y-limit.
 
@@ -793,6 +796,8 @@ It has a dictionary of the form.
     - **wann_band**: Bandstructure from wannier calculation.
 
     - **phonproj**: Atom-projected phonon for QE-DFPT.
+
+    - **bandproj**: Atom or orbital projected band structure. (Turn on only after processing/plotting band structure with eband/vasp-line)
 
   - **calc**: Type of DFT calculations. Options are QE/VASP.
 

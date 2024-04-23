@@ -6,23 +6,13 @@ Program to write vasp inputfiles from poscars in mpid.vasp format
 """
 import os
 import glob
-import json
 from pymatgen.core import structure
 from pymatgen.io.vasp.sets import MPRelaxSet
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 from cif_to_gsinput import pos_to_kpt
 from write_potcar import poscar2potcar
 from htepc import MpConnect
-try:
-    PWD = os.getcwd()
-    if os.path.isfile(PWD+"/config.json"):
-        JSONFILE = PWD+"/config.json"
-    else:
-        JSONFILE = "../../config.json"
-    with open(JSONFILE, "r") as readjson:
-        input_data = json.load(readjson)
-except FileNotFoundError:
-    print("config.json file not found\n")
+from check_json import config
 def main():
     """
     Main function to prepare VASP input files and directories for relaxation.
@@ -106,4 +96,5 @@ def main():
                 with open("mpid.in", "a") as write_mpid:
                     write_mpid.write("v{}".format(entry+1) + " " + mpid + " " + compound + "\n")
 if __name__ == "__main__":
+    input_data = config()
     main()
