@@ -50,7 +50,7 @@
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=83e35b93" />
     <link rel="stylesheet" type="text/css" href="_static/material.css?v=79c92029" />
     <script src="_static/documentation_options.js?v=e160b93e"></script>
-    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -219,7 +219,7 @@
 <tr class="row-even"><td><p><a class="reference internal" href="#kpath.main" title="kpath.main"><code class="xref py py-obj docutils literal notranslate"><span class="pre">main</span></code></a>()</p></td>
 <td><p>Main function for executing different modes of k-point generation.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kpath.make_line_kpt" title="kpath.make_line_kpt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_line_kpt</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#kpath.make_line_kpt" title="kpath.make_line_kpt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_line_kpt</span></code></a>([filename])</p></td>
 <td><p>Function to create high symmetry points for line mode using pymatgen.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#kpath.printk" title="kpath.printk"><code class="xref py py-obj docutils literal notranslate"><span class="pre">printk</span></code></a>()</p></td>
@@ -277,7 +277,7 @@ The function generates two files in the ‘scf_dir’ directory:
 </dd></dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="kpath.make_line_kpt">
-<span class="sig-prename descclassname"><span class="pre">kpath.</span></span><span class="sig-name descname"><span class="pre">make_line_kpt</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/kpath.html#make_line_kpt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kpath.make_line_kpt" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">kpath.</span></span><span class="sig-name descname"><span class="pre">make_line_kpt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'KPOINTS'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kpath.html#make_line_kpt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kpath.make_line_kpt" title="Link to this definition">¶</a></dt>
 <dd><p>Function to create high symmetry points for line mode using pymatgen.</p>
 <p>This function generates high symmetry points for line
 mode using the provided structure file (“POSCAR”).

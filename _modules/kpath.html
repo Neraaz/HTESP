@@ -49,7 +49,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=83e35b93" />
     <link rel="stylesheet" type="text/css" href="../_static/material.css?v=79c92029" />
     <script src="../_static/documentation_options.js?v=e160b93e"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -199,6 +199,7 @@
 <span class="kn">from</span> <span class="nn">pymatgen.io.vasp.inputs</span> <span class="kn">import</span> <span class="n">Kpoints</span>
 <span class="kn">from</span> <span class="nn">pymatgen.core</span> <span class="kn">import</span> <span class="n">Structure</span>
 <span class="kn">from</span> <span class="nn">pymatgen.symmetry.bandstructure</span> <span class="kn">import</span> <span class="n">HighSymmKpath</span>
+<span class="kn">from</span> <span class="nn">check_json</span> <span class="kn">import</span> <span class="n">config</span>
 
 <div class="viewcode-block" id="kpath">
 <a class="viewcode-back" href="../kpath.html#kpath.kpath">[docs]</a>
@@ -320,7 +321,7 @@
 
 <div class="viewcode-block" id="make_line_kpt">
 <a class="viewcode-back" href="../kpath.html#kpath.make_line_kpt">[docs]</a>
-<span class="k">def</span> <span class="nf">make_line_kpt</span><span class="p">():</span>
+<span class="k">def</span> <span class="nf">make_line_kpt</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s2">"KPOINTS"</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Function to create high symmetry points for line mode using pymatgen.</span>
 
@@ -346,7 +347,7 @@
     <span class="n">struct</span> <span class="o">=</span> <span class="n">Structure</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="s2">"POSCAR"</span><span class="p">)</span>
     <span class="n">k_path</span> <span class="o">=</span> <span class="n">HighSymmKpath</span><span class="p">(</span><span class="n">struct</span><span class="p">)</span>
     <span class="n">kpts</span> <span class="o">=</span> <span class="n">Kpoints</span><span class="o">.</span><span class="n">automatic_linemode</span><span class="p">(</span><span class="n">divisions</span><span class="o">=</span><span class="n">nkpt</span><span class="p">,</span><span class="n">ibz</span><span class="o">=</span><span class="n">k_path</span><span class="p">)</span>
-    <span class="n">kpts</span><span class="o">.</span><span class="n">write_file</span><span class="p">(</span><span class="s2">"KPOINTS"</span><span class="p">)</span></div>
+    <span class="n">kpts</span><span class="o">.</span><span class="n">write_file</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="main">
 <a class="viewcode-back" href="../kpath.html#kpath.main">[docs]</a>
@@ -362,13 +363,20 @@
 <span class="sd">    """</span>
     <span class="n">mode</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">"line"</span><span class="p">:</span>
-        <span class="n">make_line_kpt</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"KPT_OPT"</span><span class="p">):</span>
+            <span class="n">make_line_kpt</span><span class="p">(</span><span class="s2">"KPOINTS_OPT"</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">make_line_kpt</span><span class="p">()</span>
     <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">"point"</span><span class="p">:</span>
         <span class="n">printk</span><span class="p">()</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">"Either line or point mode available</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span></div>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+    <span class="n">input_data</span> <span class="o">=</span> <span class="n">config</span><span class="p">()</span>
+    <span class="n">kpt_opt</span> <span class="o">=</span> <span class="n">input_data</span><span class="p">[</span><span class="s2">"kpt_opt"</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">kpt_opt</span><span class="p">:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"touch KPT_OPT"</span><span class="p">)</span>
     <span class="n">main</span><span class="p">()</span>
 </pre></div>
 

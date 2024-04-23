@@ -49,7 +49,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=83e35b93" />
     <link rel="stylesheet" type="text/css" href="../_static/material.css?v=79c92029" />
     <script src="../_static/documentation_options.js?v=e160b93e"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -237,12 +237,17 @@
             <span class="k">if</span> <span class="n">proj</span> <span class="o">==</span> <span class="s1">'scdm'</span><span class="p">:</span>
                 <span class="n">settings_str</span> <span class="o">+=</span> <span class="s2">"auto_projections=.true.</span><span class="se">\n</span><span class="s2">"</span>
             <span class="k">elif</span> <span class="n">proj</span> <span class="o">==</span> <span class="s2">"fromfile"</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"../../projection.in"</span><span class="p">):</span>
+                    <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"cp ../../projection.in ."</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"projection.in"</span><span class="p">):</span>
                     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"projection.in"</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">)</span> <span class="k">as</span> <span class="n">gfile</span><span class="p">:</span>
                         <span class="n">lines</span> <span class="o">=</span> <span class="n">gfile</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
                     <span class="n">len_l</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
-                    <span class="n">projections</span> <span class="o">=</span> <span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">])</span>
-                    <span class="n">settings_str</span> <span class="o">+=</span> <span class="s2">"</span><span class="si">{}</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">projections</span><span class="p">)</span>
+                    <span class="n">projections</span> <span class="o">=</span> <span class="s2">""</span>
+                    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+                        <span class="n">projections</span> <span class="o">+=</span> <span class="n">line</span>
+                    <span class="c1">#projections = " ".join([line.strip() for line in lines])</span>
+                    <span class="n">settings_str</span> <span class="o">+=</span> <span class="s2">"</span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">projections</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="nb">print</span><span class="p">(</span><span class="s2">"projection.in file not found</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
                     <span class="nb">print</span><span class="p">(</span><span class="s2">"write projections in different line, 'X:s', 'Y:pz', ... so on</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
@@ -258,6 +263,8 @@
                 <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
                     <span class="n">settings_str</span> <span class="o">+=</span> <span class="n">line</span>
                 <span class="n">settings_str</span> <span class="o">+=</span> <span class="s2">"END Kpoint_Path</span><span class="se">\n</span><span class="s2">"</span>
+            <span class="n">num_wann</span> <span class="o">=</span> <span class="n">config_settings</span><span class="p">[</span><span class="s2">"num_wann"</span><span class="p">]</span>
+            <span class="n">wannier_vasp_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">"NUM_WANN = </span><span class="si">{</span><span class="n">num_wann</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
             <span class="n">wannier_vasp_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"WANNIER90_WIN = </span><span class="se">\"</span><span class="s2"> </span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
             <span class="n">wannier_vasp_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"</span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">settings_str</span><span class="p">))</span>
             <span class="n">wannier_vasp_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"</span><span class="se">\"</span><span class="s2">"</span><span class="p">)</span>

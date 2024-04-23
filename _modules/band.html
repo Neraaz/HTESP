@@ -49,7 +49,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=83e35b93" />
     <link rel="stylesheet" type="text/css" href="../_static/material.css?v=79c92029" />
     <script src="../_static/documentation_options.js?v=e160b93e"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -217,7 +217,13 @@
         <span class="n">band_in</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"outdir='./',</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
         <span class="n">band_in</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">"filband='</span><span class="si">{</span><span class="n">dynamic_matrix</span><span class="si">}</span><span class="s2">',</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
         <span class="n">band_in</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"lsym=.true.</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
-        <span class="n">band_in</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"/</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span></div>
+        <span class="n">band_in</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"/</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"scf_dir/bandproj-</span><span class="si">{}</span><span class="s2">-</span><span class="si">{}</span><span class="s2">.in"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">material_id</span><span class="p">,</span><span class="n">compound_name</span><span class="p">),</span> <span class="s1">'w'</span><span class="p">)</span> <span class="k">as</span> <span class="n">file1</span><span class="p">:</span>
+        <span class="n">file1</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"&amp;projwfc"</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+        <span class="n">file1</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">"prefix=</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">,"</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+        <span class="n">file1</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"outdir='./',"</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+        <span class="n">file1</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"filproj='proj.dat',"</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+        <span class="n">file1</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"/"</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="main">
 <a class="viewcode-back" href="../band.html#band.main">[docs]</a>

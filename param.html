@@ -50,7 +50,7 @@
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=83e35b93" />
     <link rel="stylesheet" type="text/css" href="_static/material.css?v=79c92029" />
     <script src="_static/documentation_options.js?v=e160b93e"></script>
-    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -660,6 +660,7 @@
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">},</span>
 <span class="w"> </span><span class="nt">"kptden"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.025</span><span class="p">,</span>
+<span class="w"> </span><span class="nt">"kpt_opt"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
 <span class="w"> </span><span class="nt">"plot"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nt">"xlim"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">"ylim"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kc">null</span>
@@ -679,6 +680,7 @@
 <li><p><strong>strain</strong>: Strain inputs.</p></li>
 <li><p><strong>wanniertools_input</strong>: Input parameters for WannierTools. <a class="reference internal" href="#wanniertoolsinput-label"><span class="std std-ref">here</span></a></p></li>
 <li><p><strong>kptden</strong>: Kpoint density.</p></li>
+<li><p><strong>kpt_opt</strong>: Flag for generating KPOINTS_OPT file to perform band structure in VASP</p></li>
 <li><p><strong>plot</strong>: Plot variables, especially, x-limit (list of 2 numbers) and y-limit.</p></li>
 </ul>
 </section>
@@ -937,6 +939,7 @@
 <li><p><strong>gammaband</strong>: Electron-phonon coupling strength projected phonon band for QE-DFPT.</p></li>
 <li><p><strong>wann_band</strong>: Bandstructure from wannier calculation.</p></li>
 <li><p><strong>phonproj</strong>: Atom-projected phonon for QE-DFPT.</p></li>
+<li><p><strong>bandproj</strong>: Atom or orbital projected band structure. (Turn on only after processing/plotting band structure with eband/vasp-line)</p></li>
 </ul>
 </li>
 <li><p><strong>calc</strong>: Type of DFT calculations. Options are QE/VASP.</p></li>
