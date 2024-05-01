@@ -302,6 +302,7 @@
 <span class="sd">    To perform a convergence test for kinetic energy cutoff ('ecut') from index 1 to 10:</span>
 <span class="sd">    &gt;&gt;&gt; main_vasp("mpid.in", "ecut", 1, 10)</span>
 <span class="sd">    """</span>
+    <span class="n">input_data</span> <span class="o">=</span> <span class="n">config</span><span class="p">()</span>
 
     <span class="nb">print</span><span class="p">(</span><span class="s2">"---------------------------------------------------------------------------------------------------------------"</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Submitting convergence test calculations for </span><span class="si">{</span><span class="n">parameter</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
@@ -430,6 +431,7 @@
 <span class="sd">    Example:</span>
 <span class="sd">    &gt;&gt;&gt; main_qe("mpid.in", "ecut", 1, 5)</span>
 <span class="sd">    """</span>
+    <span class="n">input_data</span> <span class="o">=</span> <span class="n">config</span><span class="p">()</span>
 
     <span class="nb">print</span><span class="p">(</span><span class="s2">"---------------------------------------------------------------------------------------------------------------"</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Submitting convergence test calculations for </span><span class="si">{</span><span class="n">parameter</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>

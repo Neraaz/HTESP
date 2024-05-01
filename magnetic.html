@@ -211,7 +211,7 @@
 <p class="rubric">Functions</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#magnetic.changeaxis" title="magnetic.changeaxis"><code class="xref py py-obj docutils literal notranslate"><span class="pre">changeaxis</span></code></a>(mpid, comp)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#magnetic.changeaxis" title="magnetic.changeaxis"><code class="xref py py-obj docutils literal notranslate"><span class="pre">changeaxis</span></code></a>(mpid, comp, dft)</p></td>
 <td><p>Function to change magnetic axis to compute magnetic anisotropy.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#magnetic.magnetic_structure" title="magnetic.magnetic_structure"><code class="xref py py-obj docutils literal notranslate"><span class="pre">magnetic_structure</span></code></a>(obj, mpid, compound, ...)</p></td>
@@ -240,11 +240,12 @@ Install Enumlib library: <a class="reference external" href="https://github.com/
 </dd></dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="magnetic.changeaxis">
-<span class="sig-prename descclassname"><span class="pre">magnetic.</span></span><span class="sig-name descname"><span class="pre">changeaxis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mpid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comp</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magnetic.html#changeaxis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#magnetic.changeaxis" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">magnetic.</span></span><span class="sig-name descname"><span class="pre">changeaxis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mpid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dft</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/magnetic.html#changeaxis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#magnetic.changeaxis" title="Link to this definition">¶</a></dt>
 <dd><p>Function to change magnetic axis to compute magnetic anisotropy.</p>
 <p>Parameters:
 mpid (str): Material ID.
-comp (str): Compound name.</p>
+comp (str): Compound name.
+dft  (str): DFT method. Available options: QE/VASP</p>
 <p>The function iterates over magnetic axis configurations specified in the saxis variable,
 updates the necessary input files for VASP calculations, and performs the VASP process.</p>
 </dd></dl>

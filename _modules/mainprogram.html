@@ -198,13 +198,13 @@
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">from</span> <span class="nn">cif_to_gsinput</span> <span class="kn">import</span> <span class="n">pos_to_kpt</span>
 <span class="kn">from</span> <span class="nn">check_json</span> <span class="kn">import</span> <span class="n">config</span>
-<span class="n">input_data</span> <span class="o">=</span> <span class="n">config</span><span class="p">()</span>
 <div class="viewcode-block" id="main">
 <a class="viewcode-back" href="../mainprogram.html#mainprogram.main">[docs]</a>
 <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    main function</span>
 <span class="sd">    """</span>
+    <span class="n">input_data</span> <span class="o">=</span> <span class="n">config</span><span class="p">()</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"log"</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">)</span> <span class="k">as</span> <span class="n">flog</span><span class="p">:</span>
         <span class="n">flog</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"_____________________________________________________________________________________________________________________________________</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
         <span class="n">flog</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
@@ -568,7 +568,6 @@
             <span class="nb">print</span><span class="p">(</span><span class="s2">"if T or t are used, calculation is performed for metal.</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">"For process = 28, delete pressure folder (QE)</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">"For process = 29, element substitution. (QE+VASP)</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">"For process = 30, creating inputs for different magnetic orderings (VASP)</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">"For process = convtest, perform convergence tests for Ecut and kpoint mesh (QE+VASP)</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">"For process = compound, Get info about compounds (QE+VASP)</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">"process = primtoconv, to change structure into conventional unit cell"</span><span class="p">)</span>
@@ -665,8 +664,6 @@
             <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"pressure-reset"</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">start</span><span class="p">)</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="p">)</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="n">element</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">process</span> <span class="o">==</span> <span class="mi">29</span><span class="p">:</span>
             <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"sitesub-scan"</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">start</span><span class="p">)</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="p">)</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="n">element</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">process</span> <span class="o">==</span> <span class="mi">30</span><span class="p">:</span>
-            <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"magnetic-scan"</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">start</span><span class="p">)</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="p">)</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="n">element</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">"Use python mainprogram process, 0 &lt;= process &lt;= 29</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span></div>
 

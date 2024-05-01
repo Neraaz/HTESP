@@ -318,6 +318,7 @@
 <span class="sd">        &gt;&gt;&gt; # Convert a CIF file to a Quantum ESPRESSO input file</span>
 <span class="sd">        &gt;&gt;&gt; ciftoscf("QE", "mp-1234", cif2cell=False, keven=False)</span>
 <span class="sd">    """</span>
+    <span class="n">input_data</span> <span class="o">=</span> <span class="n">config</span><span class="p">()</span>
     <span class="c1"># Get current directory</span>
     <span class="n">pwd</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
     <span class="c1"># Check if CIF file exists in the current directory</span>
@@ -474,6 +475,7 @@
 
 <span class="sd">    Returns: None</span>
 <span class="sd">    """</span>
+    <span class="n">input_data</span> <span class="o">=</span> <span class="n">config</span><span class="p">()</span>
     <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">'ignore'</span><span class="p">)</span>
     <span class="c1"># Get a list of CIF files in the current directory</span>
     <span class="n">list_cif</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">"*.cif"</span><span class="p">,</span><span class="n">recursive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -508,7 +510,6 @@
                     <span class="n">write_mpid</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"v</span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k_ind</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="n">mpid</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="n">compound</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span></div>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">'__main__'</span><span class="p">:</span>
-    <span class="n">input_data</span> <span class="o">=</span> <span class="n">config</span><span class="p">()</span>
     <span class="n">main</span><span class="p">()</span>
 </pre></div>
 

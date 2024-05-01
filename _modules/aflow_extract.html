@@ -509,6 +509,7 @@
 <span class="sd">    arguments to determine the operation mode (search or download) and then performs</span>
 <span class="sd">    the corresponding action based on the provided inputs.</span>
 <span class="sd">    """</span>
+    <span class="n">input_data</span> <span class="o">=</span> <span class="n">config</span><span class="p">()[</span><span class="s1">'download'</span><span class="p">]</span>
     <span class="c1"># Read command-line argument to determine operation mode</span>
     <span class="n">condition</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
     <span class="c1"># Extract input data</span>
@@ -528,7 +529,6 @@
         <span class="nb">print</span><span class="p">(</span><span class="s2">"Either search or download is allowed</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span></div>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
-    <span class="n">input_data</span> <span class="o">=</span> <span class="n">config</span><span class="p">()[</span><span class="s1">'download'</span><span class="p">]</span>
     <span class="n">main</span><span class="p">()</span>
 </pre></div>
 

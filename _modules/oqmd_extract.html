@@ -245,6 +245,7 @@
 <span class="sd">    Finally, it moves input files to the designated directories.</span>
 
 <span class="sd">    """</span>
+    <span class="n">input_data</span> <span class="o">=</span> <span class="n">config</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"config.json"</span><span class="p">):</span>
         <span class="n">d</span> <span class="o">=</span> <span class="n">input_data</span><span class="p">[</span><span class="s1">'download'</span><span class="p">]</span>
     <span class="n">evenkpt</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s1">'inp'</span><span class="p">][</span><span class="s1">'evenkpt'</span><span class="p">]</span>

@@ -247,6 +247,7 @@
 <span class="sd">    &gt;&gt;&gt; # obtained with pymatgen.analysis.elasticity.DeformedStructureSet</span>
 <span class="sd">    &gt;&gt;&gt; deformation(mpid, obj, "vasp", orig_prefix, deformed_struc)</span>
 <span class="sd">    """</span>
+    <span class="n">input_data</span> <span class="o">=</span> <span class="n">config</span><span class="p">()</span>
     <span class="c1"># Extracting deformed structures</span>
     <span class="n">list_str</span> <span class="o">=</span> <span class="n">deformed_struc</span><span class="o">.</span><span class="n">deformed_structures</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="s1">'scf_dir'</span><span class="p">):</span>
@@ -346,6 +347,7 @@
 <span class="sd">    --------</span>
 <span class="sd">    None</span>
 <span class="sd">    """</span>
+    <span class="n">input_data</span> <span class="o">=</span> <span class="n">config</span><span class="p">()</span>
     <span class="n">mode</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
     <span class="n">dft</span> <span class="o">=</span> <span class="n">input_data</span><span class="p">[</span><span class="s1">'download'</span><span class="p">][</span><span class="s1">'inp'</span><span class="p">][</span><span class="s1">'calc'</span><span class="p">]</span>
     <span class="n">obj</span> <span class="o">=</span> <span class="n">MpConnect</span><span class="p">()</span>

@@ -255,6 +255,7 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        None</span>
 <span class="sd">    """</span>
+    <span class="n">input_data</span> <span class="o">=</span> <span class="n">config</span><span class="p">()</span>
     <span class="c1"># Get the type of magnetic enumeration</span>
     <span class="n">magenum</span> <span class="o">=</span> <span class="n">input_data</span><span class="p">[</span><span class="s1">'magmom'</span><span class="p">][</span><span class="s1">'type'</span><span class="p">]</span>
     <span class="c1"># Check if 'vasp.in' file exists</span>
@@ -512,6 +513,7 @@
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    main function</span>
 <span class="sd">    """</span>
+    <span class="n">input_data</span> <span class="o">=</span> <span class="n">config</span><span class="p">()</span>
     <span class="n">filename</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
     <span class="n">kptden</span> <span class="o">=</span> <span class="n">input_data</span><span class="p">[</span><span class="s2">"kptden"</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">filename</span> <span class="o">==</span> <span class="s1">'POSCAR'</span><span class="p">:</span>
@@ -542,7 +544,6 @@
         <span class="n">band_phonopy</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span></div>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
-    <span class="n">input_data</span> <span class="o">=</span> <span class="n">config</span><span class="p">()</span>
     <span class="n">main</span><span class="p">()</span>
 </pre></div>
 

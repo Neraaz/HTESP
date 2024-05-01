@@ -324,6 +324,7 @@
     <span class="c1"># Intialize the class</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"config.json"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"../../config.json"</span><span class="p">):</span>
+            <span class="n">input_data</span> <span class="o">=</span> <span class="n">config</span><span class="p">()</span>
             <span class="n">key</span> <span class="o">=</span> <span class="n">input_data</span><span class="p">[</span><span class="s2">"mpi_key"</span><span class="p">][</span><span class="s2">"API_KEY"</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">"config.json file not found. Please provide with your materials project api key</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>

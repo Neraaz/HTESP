@@ -233,6 +233,7 @@
 <span class="sd">    Returns:</span>
 <span class="sd">    None</span>
 <span class="sd">    """</span>
+    <span class="n">input_data</span> <span class="o">=</span> <span class="n">config</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">mpid</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">'help'</span><span class="p">,</span> <span class="s1">'h'</span><span class="p">):</span>
         <span class="n">msg</span><span class="o">=</span><span class="s2">"""required package: bsym 'pip install bsym'</span>
 <span class="s2">               put substitute dictionary file in the config.json file. Inside that define</span>
@@ -355,7 +356,6 @@
     <span class="n">substitution</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">obj</span><span class="p">)</span></div>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
-    <span class="n">input_data</span> <span class="o">=</span> <span class="n">config</span><span class="p">()</span>
     <span class="n">main</span><span class="p">()</span>
 </pre></div>
 

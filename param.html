@@ -333,7 +333,8 @@
 <span class="w">      </span><span class="nt">"evenkpt"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
 <span class="w">      </span><span class="nt">"plot"</span><span class="p">:</span><span class="w"> </span><span class="s2">"phband"</span><span class="p">,</span>
 <span class="w">      </span><span class="nt">"calc"</span><span class="p">:</span><span class="w"> </span><span class="s2">"VASP"</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">"use_cif2cell"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span>
+<span class="w">      </span><span class="nt">"use_cif2cell"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"kpath_pbc"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="nt">"chemsys"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">      </span><span class="nt">"entries"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"Cr"</span><span class="p">,</span><span class="w"> </span><span class="s2">"Pd"</span><span class="p">,</span><span class="w"> </span><span class="s2">"P"</span><span class="p">],</span>
@@ -663,12 +664,14 @@
 <span class="w">  </span><span class="p">},</span>
 <span class="w"> </span><span class="nt">"kptden"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.025</span><span class="p">,</span>
 <span class="w"> </span><span class="nt">"kpt_opt"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w"> </span><span class="nt">"elph_mode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"serial"</span><span class="p">,</span>
 <span class="w"> </span><span class="nt">"plot"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nt">"xlim"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">"ylim"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">-5</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">],</span>
 <span class="w">    </span><span class="nt">"bandproj"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">      </span><span class="nt">"proj_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"element-orbital"</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">"proj"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"Zr"</span><span class="p">:</span><span class="w"> </span><span class="s2">"dxz"</span><span class="p">,</span><span class="w"> </span><span class="nt">"Pd"</span><span class="p">:</span><span class="w"> </span><span class="s2">"dxz"</span><span class="p">}</span>
+<span class="w">      </span><span class="nt">"proj"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"Zr"</span><span class="p">:</span><span class="w"> </span><span class="s2">"dxz"</span><span class="p">,</span><span class="w"> </span><span class="nt">"Pd"</span><span class="p">:</span><span class="w"> </span><span class="s2">"dxz"</span><span class="p">},</span>
+<span class="w">      </span><span class="nt">"colormap"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Reds"</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
@@ -686,6 +689,17 @@
 <li><p><strong>wanniertools_input</strong>: Input parameters for WannierTools. <a class="reference internal" href="#wanniertoolsinput-label"><span class="std std-ref">here</span></a></p></li>
 <li><p><strong>kptden</strong>: Kpoint density.</p></li>
 <li><p><strong>kpt_opt</strong>: Flag for generating KPOINTS_OPT file to perform band structure in VASP</p></li>
+<li><p><strong>elph_mode</strong>: Parameter for performing DFPT calculations in various modes in QE.</p>
+<ul>
+<li><p><strong>serial</strong>: Serial mode (Default)</p></li>
+<li><p><strong>parallel_q</strong>: Parallel over q-points</p></li>
+<li><p><strong>parallel_irr</strong>: Parallel over q-points and irreducible representations</p>
+<ul>
+<li><p><strong>only_init</strong>:  Use this key first to obtain irreducible representations.</p></li>
+</ul>
+</li>
+</ul>
+</li>
 <li><p><strong>plot</strong>: Plot variables, especially, x-limit (list of 2 numbers) and y-limit.</p></li>
 </ul>
 </section>
@@ -852,7 +866,8 @@
 <span class="w">      </span><span class="nt">"evenkpt"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
 <span class="w">      </span><span class="nt">"plot"</span><span class="p">:</span><span class="w"> </span><span class="s2">"phband"</span><span class="p">,</span>
 <span class="w">      </span><span class="nt">"calc"</span><span class="p">:</span><span class="w"> </span><span class="s2">"QE"</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">"use_cif2cell"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">},</span>
+<span class="w">      </span><span class="nt">"use_cif2cell"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"kpath_pbc"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">},</span>
 <span class="w">    </span><span class="nt">"chemsys"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">      </span><span class="nt">"entries"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"Fe"</span><span class="p">,</span><span class="w"> </span><span class="s2">"Pd"</span><span class="p">,</span><span class="w"> </span><span class="s2">"I"</span><span class="p">],</span>
 <span class="w">      </span><span class="nt">"size_constraint"</span><span class="p">:</span><span class="w"> </span><span class="mi">60</span><span class="p">,</span>
@@ -949,6 +964,7 @@
 </li>
 <li><p><strong>calc</strong>: Type of DFT calculations. Options are QE/VASP.</p></li>
 <li><p><strong>use_cif2cell</strong>: If True, cif2cell package will be utilized to read .cif files. Install <a class="reference external" href="https://pypi.org/project/cif2cell/">cif2cell</a> to use this function.</p></li>
+<li><p><strong>kpath_pbc</strong>: Determine periodic boundary condition for kpath with <code class="docutils literal notranslate"><span class="pre">default</span> <span class="pre">[1,</span> <span class="pre">1,</span> <span class="pre">1]</span> <span class="pre">for</span> <span class="pre">3D</span></code>. Generating kpath for 2D systems with vacuum along z-direction requires [1, 1, 0]</p></li>
 </ul>
 </li>
 <li><p><strong>(C)chemsys</strong>:
@@ -1239,6 +1255,10 @@ Setting <code class="docutils literal notranslate"><span class="pre">filter</spa
 <li><p><strong>VASP</strong>:</p></li>
 </ul>
 <p>{“Mg”: “s”, “B”: “p”}, {“Mg”: “s”, “B”: [“px”, “py”, “pz”]}, {“Mg”: “s”, “B”: “px”}, etc.</p>
+<ul class="simple">
+<li><p><strong>colormap</strong>: Color map to use for projection. Its better use sequential colormaps such as “Reds”, “Greens”, etc.
+Look <a class="reference external" href="https://matplotlib.org/stable/users/explain/colors/colormaps.html">matplotlib colormap</a> for more options.</p></li>
+</ul>
 </div></blockquote>
 </li>
 </ul>
