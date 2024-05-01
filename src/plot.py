@@ -61,7 +61,7 @@ def kptline():
             symname[i] = r'${}$'.format(symadd)
     symname[0] = r'${}$'.format("\\Gamma")
     return nkpt,sympoint,symname
-def plot(plottype,file,comp,proj=None,read_kpoint=None):
+def plot(plottype,file,comp,proj=None,read_kpoint=None,colormap=None):
     """
     Function to create quick plots.
 
@@ -159,7 +159,7 @@ def plot(plottype,file,comp,proj=None,read_kpoint=None):
                         ax_p.plot(pt_l, data[0+nkpoint*i:nkpoint*(i+1)][:,2]-fermi,'r--', lw = 0.75)
                     if proj:
                         projection = proj_data[0+nkpoint*i:nkpoint*(i+1)][:,1]
-                        plt.scatter(pt_l,data[0+nkpoint*i:nkpoint*(i+1)][:,1]-fermi,c=projection,cmap='Greens',vmin=0,vmax=1)
+                        plt.scatter(pt_l,data[0+nkpoint*i:nkpoint*(i+1)][:,1]-fermi,c=projection,cmap=colormap,vmin=0,vmax=1)
                         #if nspin == 2:
                         #    projection = proj_data[0+nkpoint*i:nkpoint*(i+1)][:,2]
                         #    plt.scatter(pt_l,data[0+nkpoint*i:nkpoint*(i+1)][:,2]-fermi,c=projection,cmap='Blues',vmin=0,vmax=1)
@@ -170,7 +170,7 @@ def plot(plottype,file,comp,proj=None,read_kpoint=None):
                         ax_p.plot(pt_l, data[0+nkpoint*i:nkpoint*(i+1)][:,2]-fermi,'k--', lw = 0.75)
                     if proj:
                         projection = proj_data[0+nkpoint*i:nkpoint*(i+1)][:,1]
-                        plt.scatter(pt_l,data[0+nkpoint*i:nkpoint*(i+1)][:,1]-fermi,c=projection,cmap='Greens',vmin=0,vmax=1)
+                        plt.scatter(pt_l,data[0+nkpoint*i:nkpoint*(i+1)][:,1]-fermi,c=projection,cmap=colormap,vmin=0,vmax=1)
                         #if nspin == 2:
                         #    projection = proj_data[0+nkpoint*i:nkpoint*(i+1)][:,2]
                         #    plt.scatter(pt_l,data[0+nkpoint*i:nkpoint*(i+1)][:,2]-fermi,c=projection,cmap='Blues',vmin=0,vmax=1)
@@ -391,6 +391,7 @@ def dos_plot(filedos,out='pdos.pdf'):
     The function then plots the density of states and partial density of states in different rows.
 
     """
+    input_data = config()
     color = ['k', 'r', 'b', 'g','cyan','lightgreen','orange','yellow','lightblue']
     with open(filedos, "r") as dos:
         fermi = float(dos.readlines()[0].split()[8])
@@ -653,6 +654,7 @@ def dos_plot_vasp(outfile="pdos.pdf"):
     -----
     'filedos.in' should be present in the current directory to specify the elements and orbitals for pDOS plotting.
     """
+    input_data = config()
     try:
         with open("filedos.in", "r") as p_dos:
             lines = p_dos.readlines()
@@ -738,6 +740,7 @@ def band_plot_vasp_line(mpid,compound):
     -----
     Ensure that the vasprun.xml file containing band structure data is present in the current directory.
     """
+    input_data = config()
     outfile = mpid + "-" + compound + "-" + "band.pdf"
     vaspout = Vasprun("vasprun.xml")
     bandstr = vaspout.get_band_structure(line_mode=True)
@@ -823,5 +826,4 @@ def main():
     else:
         plot(plottype,filename,comp)
 if __name__ == "__main__":
-    input_data = config()
     main()

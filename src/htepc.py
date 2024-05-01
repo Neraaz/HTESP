@@ -128,6 +128,7 @@ class MpConnect:
     # Intialize the class
     def __init__(self):
         if os.path.isfile("config.json") or os.path.isfile("../../config.json"):
+            input_data = config()
             key = input_data["mpi_key"]["API_KEY"]
         else:
             print("config.json file not found. Please provide with your materials project api key\n")

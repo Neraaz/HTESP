@@ -8,8 +8,7 @@
 # Runs for 'mainprogram 13'
 source jobscript.sh
 echo "---------------------------------------------------------------------------------------------------------------"
-echo "Preparing input files for BAND and DOS calculations"
-echo "Submitting QE scf.in calculations"
+echo "Preparing and submitting BAND and DOS calculations"
 echo "---------------------------------------------------------------------------------------------------------------"
 file=$(find * -name $3 | tail -n 1)
 dft=$(grep "DFT" input.in | awk '{ print $3 }')
@@ -71,18 +70,19 @@ for ((ii=$1; ii<$2; ++ii)); do
          echo "NELM" >> vasp.in
        fi
        cp ../../input.in .
-       cp ../relax/IBZKPT KPOINTS
        metagga_check=$(grep METAGGA vasp.in | wc -l)
        hybrid_check=$(grep LHFCALC vasp.in | wc -l)
        if [[ $metagga_check -gt 0 ]]; then
          echo "METAGGA tag detected in vasp-band.in"
          sed -i '/ICHARG/d' vasp.in
+         cp ../relax/IBZKPT KPOINTS
        elif [[ $hybrid_check -gt 0 ]]; then
          echo "LHFCALC tag detected in vasp-band.in"
          echo "Creating soft links to WAVECAR of R$A-$B/relax/"
          echo "NELMIN 3" >> vasp.in
          sed -i '/ICHARG/d' vasp.in
          ln -s ../relax/WAVECAR WAVECAR
+         cp ../relax/IBZKPT KPOINTS
        else
          echo "GGA or LDA band calculations" 
        fi

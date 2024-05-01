@@ -34,7 +34,8 @@
       "evenkpt": false,
       "plot": "phband",
       "calc": "VASP",
-      "use_cif2cell": false
+      "use_cif2cell": false,
+      "kpath_pbc": null
     },
     "chemsys": {
       "entries": ["Mg", "B"],
@@ -365,12 +366,14 @@
   },
  "kptden":0.025,
  "kpt_opt": true,
+ "elph_mode": "serial",
  "plot": {
    "xlim": [-8,10],
    "ylim": [-5,5],
    "bandproj": {
     "proj_type": "element-orbital",
-    "proj": {"Zr": "dxz", "Pd": "dxz"}
+    "proj": {"Zr": "dxz", "Pd": "dxz"},
+    "colormap": "Reds"
   }
   }
 }

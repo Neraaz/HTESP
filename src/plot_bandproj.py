@@ -713,6 +713,7 @@ def main():
     plot_info = input_data["plot"]["bandproj"]
     proj_type = plot_info["proj_type"]
     proj = plot_info["proj"]
+    color = plot_info["colormap"]
     dft = input_data["download"]["inp"]["calc"]
     # If DFT is "VASP"
     if dft in ("VASP", "vasp"):
@@ -814,6 +815,9 @@ def main():
     else:
         print("Either QE/qe or VASP/vasp allowed\n")
     # Plot band structure with projections overlay.
+    #color_maps = ['Reds', 'Blues', 'Greens', 'Purples', 'Greys', 'Oranges',
+    #                  'YlOrBr', 'YlOrRd', 'OrRd', 'PuRd', 'RdPu', 'BuPu',
+    #                  'GnBu', 'PuBu', 'YlGnBu', 'PuBuGn', 'BuGn', 'YlGn']
     if dft in ("VASP", "vasp"):
         proj_files = glob.glob("*.dat.gnu")
         print("-----------------------------------\n")
@@ -821,10 +825,10 @@ def main():
         print("\n")
         print("Processing PROCAR file\n")
         print("-----------------------------------\n")
-        for proj_file in proj_files:
+        for _,proj_file in enumerate(proj_files):
             if proj_file not in f"{comp}.dat.gnu":
                 print(proj_file)
-                plot("band",filename,comp,proj_file,procar_processor.nkpoint)
+                plot("band",filename,comp,proj_file,procar_processor.nkpoint,colormap=color)
                 proj_name = proj_file.split(".dat.gnu")[0]
                 os.system(f"mv {comp}-band.pdf {comp}-{proj_name}-band.pdf")
     elif dft in ("QE", "qe"):
@@ -834,10 +838,10 @@ def main():
         print("\n")
         print("Processing proj.out* file\n")
         print("-----------------------------------\n")
-        for proj_file in proj_files:
+        for _,proj_file in enumerate(proj_files):
             if proj_file not in f"{comp}.dat.gnu":
                 print(proj_file)
-                plot("band",filename,comp,proj_file)
+                plot("band",filename,comp,proj_file,colormap=color)
                 proj_name = proj_file.split(".dat.gnu")[0]
                 os.system(f"mv {comp}-band.pdf {comp}-{proj_name}-band.pdf")
     else:

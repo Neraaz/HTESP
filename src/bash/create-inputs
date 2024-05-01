@@ -118,7 +118,9 @@ for ((ii=$1; ii<$2; ++ii)); do
     band.py $A $B $prefix
     phonband.py $A $B $prefix
     dos.py $A $B $prefix
-    mv elph-$A-$B.in elph_dir/
+    if [[ -f elph-$A-$B.in ]]; then
+      mv elph-$A-$B.in elph_dir/
+    fi
     rm qpoint.dat
     rm scf_dir/$A-$B-header.in scf_dir/$A-$B-header-fit.in scf_dir/species-$A-$B.in scf_dir/kpoint-$A-$B* scf_dir/$A-$B-relax.dat
     q2r.py $A $B $prefix

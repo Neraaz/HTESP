@@ -103,6 +103,7 @@ def main_vasp(file_name,parameter,start,end):
     To perform a convergence test for kinetic energy cutoff ('ecut') from index 1 to 10:
     >>> main_vasp("mpid.in", "ecut", 1, 10)
     """
+    input_data = config()
 
     print("---------------------------------------------------------------------------------------------------------------")
     print(f"Submitting convergence test calculations for {parameter}")
@@ -225,6 +226,7 @@ def main_qe(file_name,parameter,start,end):
     Example:
     >>> main_qe("mpid.in", "ecut", 1, 5)
     """
+    input_data = config()
 
     print("---------------------------------------------------------------------------------------------------------------")
     print(f"Submitting convergence test calculations for {parameter}")

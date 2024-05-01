@@ -65,3 +65,44 @@ use "gammaband" to plot mode resolved EPC projected phonon dispersion
 use "phonproj" to plot atom-projected phonon dispersion
 
 Look at the plots folder in reference for a sample.
+
+
+# For q-point parallel calculations.
+
+One can also compute elph calculations for different q vector and later
+collect the results.
+
+For this set, "elph_mode": "parallel_q"
+
+and execute:
+
+mainprogram 4
+mainprogram 5
+mainprogram 6
+mainprogram 7
+
+Once completed again execute the same command to collect the result.
+
+# For q-point and irreducible representations parallelization.
+
+For this first, set
+
+"elph_mode": "only_init"
+
+and exectue:
+mainprogram 4
+mainprogram 5
+mainprogram 6
+mainprogram 7
+
+Once it obtains the elph.out files (output), then extract
+number of irreducible representations by executing:
+
+First change "elph_mode": "parallel_irr"
+
+mainprogram 4
+
+Since 5 and 6 process have been already finished. Now jump to process = 7.
+
+mainprogram 7
+mainprogram 7 to collect results.

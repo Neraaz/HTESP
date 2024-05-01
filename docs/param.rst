@@ -127,7 +127,8 @@ This `JSON <https://docs.python.org/3/library/json.html>`_ file serves as the ma
           "evenkpt": false,
           "plot": "phband",
           "calc": "VASP",
-          "use_cif2cell": false
+          "use_cif2cell": false,
+          "kpath_pbc": null
         },
         "chemsys": {
           "entries": ["Cr", "Pd", "P"],
@@ -457,12 +458,14 @@ This `JSON <https://docs.python.org/3/library/json.html>`_ file serves as the ma
       },
      "kptden": 0.025,
      "kpt_opt": true,
+     "elph_mode": "serial",
      "plot": {
         "xlim": null,
         "ylim" : [-5, 5],
         "bandproj": {
           "proj_type": "element-orbital",
-          "proj": {"Zr": "dxz", "Pd": "dxz"}
+          "proj": {"Zr": "dxz", "Pd": "dxz"},
+          "colormap": "Reds"
         }
     }
 
@@ -490,6 +493,16 @@ This `JSON <https://docs.python.org/3/library/json.html>`_ file serves as the ma
 - **kptden**: Kpoint density.
 
 - **kpt_opt**: Flag for generating KPOINTS_OPT file to perform band structure in VASP
+
+- **elph_mode**: Parameter for performing DFPT calculations in various modes in QE.
+
+  - **serial**: Serial mode (Default)
+
+  - **parallel_q**: Parallel over q-points
+
+  - **parallel_irr**: Parallel over q-points and irreducible representations
+
+    - **only_init**:  Use this key first to obtain irreducible representations.
 
 - **plot**: Plot variables, especially, x-limit (list of 2 numbers) and y-limit.
 
@@ -693,7 +706,8 @@ It has a dictionary of the form.
           "evenkpt": false,
           "plot": "phband",
           "calc": "QE",
-          "use_cif2cell": false},
+          "use_cif2cell": false,
+          "kpath_pbc": null},
         "chemsys": {
           "entries": ["Fe", "Pd", "I"],
           "size_constraint": 60,
@@ -806,6 +820,8 @@ It has a dictionary of the form.
   - **calc**: Type of DFT calculations. Options are QE/VASP.
 
   - **use_cif2cell**: If True, cif2cell package will be utilized to read .cif files. Install `cif2cell <https://pypi.org/project/cif2cell/>`_ to use this function.
+
+  - **kpath_pbc**: Determine periodic boundary condition for kpath with ``default [1, 1, 1] for 3D``. Generating kpath for 2D systems with vacuum along z-direction requires [1, 1, 0]
 
 - **(C)chemsys**:
   - The "chemsys" keyword mirrors the construction of the Materials Project database and is utilized to search for compounds. 
@@ -1159,6 +1175,9 @@ It has following keys and values.
    - **VASP**:
    
    {"Mg": "s", "B": "p"}, {"Mg": "s", "B": ["px", "py", "pz"]}, {"Mg": "s", "B": "px"}, etc.
+
+   - **colormap**: Color map to use for projection. Its better use sequential colormaps such as "Reds", "Greens", etc.
+     Look `matplotlib colormap <https://matplotlib.org/stable/users/explain/colors/colormaps.html>`_ for more options.
 
 .. _wannier90-label:
 

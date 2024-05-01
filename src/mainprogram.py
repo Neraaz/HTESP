@@ -7,11 +7,11 @@ import sys
 import json
 from cif_to_gsinput import pos_to_kpt
 from check_json import config
-input_data = config()
 def main():
     """
     main function
     """
+    input_data = config()
     with open("log", "w") as flog:
         flog.write("_____________________________________________________________________________________________________________________________________\n")
         flog.write("\n")
@@ -375,7 +375,6 @@ def main():
             print("if T or t are used, calculation is performed for metal.\n")
             print("For process = 28, delete pressure folder (QE)\n")
             print("For process = 29, element substitution. (QE+VASP)\n")
-            print("For process = 30, creating inputs for different magnetic orderings (VASP)\n")
             print("For process = convtest, perform convergence tests for Ecut and kpoint mesh (QE+VASP)\n")
             print("For process = compound, Get info about compounds (QE+VASP)\n")
             print("process = primtoconv, to change structure into conventional unit cell")
@@ -472,8 +471,6 @@ def main():
             os.system("pressure-reset" + " " + str(start) + " " + str(end) + " " + element)
         elif process == 29:
             os.system("sitesub-scan" + " " + str(start) + " " + str(end) + " " + element)
-        elif process == 30:
-            os.system("magnetic-scan" + " " + str(start) + " " + str(end) + " " + element)
         else:
             print("Use python mainprogram process, 0 <= process <= 29\n")
 if __name__ == "__main__":

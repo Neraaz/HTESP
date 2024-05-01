@@ -31,21 +31,29 @@ def kpath(filename,npoint,kcutoff):
     Example:
     >>> kpoints, sympoint, symname, kpt, sym, spt = kpath("POSCAR", 100, 0)
     """
+    input_data = config()
     try:
         # Attempt to read the input file as an espresso file.
         file_name = espresso.read_espresso_in(filename)
     except:
         # If reading as an espresso file fails, try VASP file.
         file_name = vasp.read_vasp(filename)
+    inp_dict = input_data['download']['inp']
+    if "kpath_pbc" in inp_dict.keys():
+        pbc = inp_dict['kpath_pbc']
+    else:
+        pbc = [1, 1, 1]
+    if pbc is None:
+        pbc = [1, 1, 1]
     # Get the band path from the cell.
-    bandpath = file_name.cell.bandpath()
+    bandpath = file_name.cell.bandpath(pbc=pbc)
     # Determine the path based on the provided cutoff.
     if kcutoff > 0:
         path=bandpath.path[:kcutoff]
     else:
         path=bandpath.path[:None]
     # Generate the band path with the specified number of points.
-    bandpath = file_name.cell.bandpath(path,npoints=npoint)
+    bandpath = file_name.cell.bandpath(path,npoints=npoint,pbc=pbc)
     file_name.cell.bandpath().plot()
     pylab.savefig("BZ.pdf", format='pdf', bbox_inches='tight')
     # Retrieve k-points, linear axis, and symmetry names.
@@ -144,11 +152,39 @@ def make_line_kpt(filename="KPOINTS"):
     The function creates a KPOINTS file containing high symmetry points for line mode.
 
     """
+    input_data = config()
+    inp_dict = input_data['download']['inp']
+    if "kpath_pbc" in inp_dict.keys():
+        pbc = inp_dict['kpath_pbc']
+    else:
+        pbc = [1, 1, 1]
+    if pbc is None:
+        pbc = [1, 1, 1]
     nkpt=int(sys.argv[2])
-    struct = Structure.from_file("POSCAR")
-    k_path = HighSymmKpath(struct)
-    kpts = Kpoints.automatic_linemode(divisions=nkpt,ibz=k_path)
-    kpts.write_file(filename)
+    if pbc == [1, 1, 1]:
+        struct = Structure.from_file("POSCAR")
+        k_path = HighSymmKpath(struct)
+        kpts = Kpoints.automatic_linemode(divisions=nkpt,ibz=k_path)
+        kpts.write_file(filename)
+    else:
+        data = vasp.read_vasp("POSCAR")
+        bandpath = data.cell.bandpath(pbc=pbc)
+        path = bandpath.path
+        special_points = bandpath.special_points
+        with open(filename, "w") as write_kpt:
+            write_kpt.write("Line_mode KPOINTS file\n")
+            write_kpt.write(str(nkpt) + "\n")
+            write_kpt.write("Line_mode\n")
+            write_kpt.write("Reciprocal\n")
+            for i in range(len(path) - 1):
+                xpath = path[i]
+                ypath = path[i+1]
+                array1 = special_points[xpath]
+                array2 = special_points[ypath]
+                write_kpt.write(str(array1[0]) + " " + str(array1[1]) + " " + str(array1[2]) + " ! " + xpath + "\n")
+                write_kpt.write(str(array2[0]) + " " + str(array2[1]) + " " + str(array2[2]) + " ! " + ypath +  "\n")
+                write_kpt.write("\n")
+        os.system(f"""sed -i '$d' {filename}""")
 def main():
     """
     Main function for executing different modes of k-point generation.
@@ -159,6 +195,7 @@ def main():
     Returns:
     None
     """
+    input_data = config()
     mode = sys.argv[1]
     if mode == "line":
         if os.path.isfile("KPT_OPT"):
@@ -171,7 +208,10 @@ def main():
         print("Either line or point mode available\n")
 if __name__ == "__main__":
     input_data = config()
-    kpt_opt = input_data["kpt_opt"]
+    if "kpt_opt" in input_data.keys():
+        kpt_opt = input_data["kpt_opt"]
+    else:
+        kpt_opt = False
     if kpt_opt:
         os.system("touch KPT_OPT")
     main()

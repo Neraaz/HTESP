@@ -43,7 +43,9 @@ for ((ii=$1; ii<$2; ++ii)); do
    echo "---------------------------------------------------------------------------------------------------------------"
    echo "Plotting phonon bandstructure"
    echo "---------------------------------------------------------------------------------------------------------------"
+   
    if [[ -d R$A-$B/phonon ]]; then
+     cp config.json R$A-$B/phonon/
      cd R$A-$B/phonon
       freq_process.py $B
       plot.py phonband $A $B $4 $x
@@ -52,6 +54,7 @@ for ((ii=$1; ii<$2; ++ii)); do
      cd ../../
    fi
     if [[ -d R$A-$B/calc/ ]]; then
+     cp config.json R$A-$B/calc/
     cd R$A-$B/calc/
       plot.py phonband $A $B $4 $x
       plot.py a2f $A $B
@@ -65,6 +68,7 @@ for ((ii=$1; ii<$2; ++ii)); do
     echo "Plotting phonon band with lambda-projection"
     echo "---------------------------------------------------------------------------------------------------------------"
     if [[ -d R$A-$B/calc/ ]]; then
+      cp config.json R$A-$B/calc/
       cd R$A-$B/calc/
       plot.py gammaband $A $B $4 $x
       plot.py a2f $A $B

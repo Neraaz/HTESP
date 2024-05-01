@@ -119,6 +119,7 @@ def ciftoscf(calc_type,mpid,cif2cell=True,keven=False):
         >>> # Convert a CIF file to a Quantum ESPRESSO input file
         >>> ciftoscf("QE", "mp-1234", cif2cell=False, keven=False)
     """
+    input_data = config()
     # Get current directory
     pwd = os.getcwd()
     # Check if CIF file exists in the current directory
@@ -272,6 +273,7 @@ def main():
 
     Returns: None
     """
+    input_data = config()
     warnings.filterwarnings('ignore')
     # Get a list of CIF files in the current directory
     list_cif = glob.glob("*.cif",recursive=True)
@@ -305,5 +307,4 @@ def main():
                 with open("mpid.in", "a") as write_mpid:
                     write_mpid.write("v{}".format(k_ind+1) + " " + mpid + " " + compound + "\n")
 if __name__ == '__main__':
-    input_data = config()
     main()

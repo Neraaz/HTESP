@@ -12,76 +12,219 @@ for ((ii=$1; ii<$2; ++ii)); do
   A=$(grep "v$ii\ " $file | awk '{print $2}')
   B=$(grep "v$ii\ " $file | awk '{print $3}')
   echo "$A $B"
-  if [[ -d R$A-$B ]] ; then
-    if [[ -f R$A-$B/calc/elph.out ]] ; then
-      check=$(grep "No convergence has been achieved" R$A-$B/calc/elph.out | wc -l)
-      echo "elph.out present, old job is restarting"
-    else
-      check=$(echo 0 | bc)
-      echo "New job is submitting"
-    fi
-    dynfile=$(find R$A-$B/calc/ -name "*.dyn*" | wc -l)
-    if [[ -f R$A-$B/calc/$B.dyn0 ]] ; then
-        netdyn=$(sed -n '2'p R$A-$B/calc/$B.dyn0)
-    else
-        netdyn=$(echo 0 | bc)
-    fi
-    dync=$(echo $dynfile - 1 | bc)
-    
-    if [[ -f elph_dir/$A-$B-freq.dat ]]; then
-       echo "submitting job with increasing smearing"
-      cp elph_dir/elph-$A-$B.in R$A-$B/calc/elph.in
-      cp run-elph.sh R$A-$B/calc/
-       continue
-    fi
-    if [[ $dync -eq $netdyn ]] ; then
-        echo "el-ph calculation completed, do nothing"
-    elif [[ $check -lt 1 ]] && [[ $dync -lt $netdyn ]] && [[ $dync -gt 0 ]] ; then
-        echo "calculation not completed due to walltime"
-        sed "/&inputph/a   recover=.true.," R$A-$B/calc/elph.in > R$A-$B/calc/elph-2.in
-        mv R$A-$B/calc/elph-2.in R$A-$B/calc/elph.in
-        cp run-elph.sh R$A-$B/calc/
-  ################
-  ## SUBMIT JOB ##
-  ################
-       cd R$A-$B/calc
-           nelph=$(ls elph.out* | wc -l)
-           cp elph.out elph.out$nelph
-           qerun "$A" "$B" "elph"
-          sleep $SLEEP
-       cd ../../
-   elif [[ $check -lt 1 ]] && [[ $dync -lt 0 ]] ; then
-      cp elph_dir/elph-$A-$B.in R$A-$B/calc/elph.in
-      cp run-elph.sh R$A-$B/calc/
-   echo " submitting fresh jobs in R$A-$B "
-  ################
-  ## SUBMIT JOB ##
-  ################
-   cd R$A-$B/calc
-       qerun "$A" "$B" "elph"
-      sleep $SLEEP
-   cd ../../
+  if [[ -f elph_dir/PARALLEL_q-$A-$B ]]; then
+   nq=$(cat elph_dir/PARALLEL_q-$A-$B | awk '{ print $1 }')
+   nq=$(echo $nq + 1 | bc)
+   if [[ -f R$A-$B/calc/$B.dyn0 ]]; then
+      wc R$A-$B/calc/$B.dyn* | awk '{ print $1}' | sed '$d' > R$A-$B/calc/check_dyn
+      check_dyn=$(grep "^0$" R$A-$B/calc/check_dyn | wc -l)
    else
-    echo "restarting old unconverged job"
-    isalpha_mix=$(grep alpha_mix R$A-$B/calc/elph.in | wc -l)
-    if [[ $isalpha_mix -gt 0 ]]; then
-     echo "Change nmix_ph in ~path_to_QE/PHonon/PH/phq_readin.f90"
-     echo "Comment out the 'if statement', '(nmix_ph.LT.1.OR.nmix_ph.GT.5)'"
-     sed '/alpha_mix/d' elph_dir/elph-$A-$B.in > elph_dir/elph-$A-$B-2.in
-     mv elph_dir/elph-$A-$B-2.in elph_dir/elph-$A-$B.in
-     sed "/&inputph/a   alpha_mix=0.3, nmix_ph=8," elph_dir/elph-$A-$B.in > R$A-$B/calc/elph.in
-    else
-     sed "/&inputph/a   alpha_mix=0.3," elph_dir/elph-$A-$B.in > R$A-$B/calc/elph.in
-    fi  
-   echo " submitting unconverged jobs in R$A-$B "
-  ################
-  ## SUBMIT JOB ##
-  ################
-   cd R$A-$B/calc
-       qerun "$A" "$B" "elph"
-       sleep $SLEEP
-    cd ../../
+      check_dyn=$(echo 1 | bc)
+   fi
+   if [[ $check_dyn -lt 1 ]]; then
+      echo "Calculations has been completed. Resubmitting without start_q/last_q"
+      cp R$A-$B/calc/elph_1.in R$A-$B/calc/elph.in
+      sed -i '/start_q/d' R$A-$B/calc/elph.in 
+      sed -i '/last_q/d' R$A-$B/calc/elph.in 
+      sed -i "/&inputph/a   recover=.true.," R$A-$B/calc/elph.in
+      cp run-elph.sh R$A-$B/calc/
+      cd R$A-$B/calc/
+        qerun "$A" "$B" "elph"
+      cd ../../
+   else
+     for ((ir=1; ir<$nq; ++ir)); do
+       if [[ -f R$A-$B/calc/elph_$ir.out ]]; then
+         conv=$(grep "JOB DONE" R$A-$B/calc/elph_$ir.out | wc -l)
+         new=$(echo 0 | bc)
+       else
+         conv=$(echo 0 | bc)
+         new=$(echo 1 | bc)
+       fi
+       if [[ $conv -gt 0 ]]; then
+         echo "Convergence has been achieved for q$ir"
+       elif [[ $conv -lt 1 ]] && [[ $new -lt 1 ]]; then
+         cd R$A-$B/calc/
+          nelph=$(ls elph_$ir.out* | wc -l)
+          cp elph_$ir.in elph_$ir-$nelph.in
+          cp elph_$ir.out elph_$ir-$nelph.out
+          sed "s/elph/elph_$ir/g" temp.sh > run-elph.sh 
+          sed -i "/&inputph/a   recover=.true.," elph_$ir.in
+          qerun "$A" "$B" "elph"
+         cd ../../
+       else
+         cp elph_dir/elph-$A-$B-$ir.in R$A-$B/calc/elph_$ir.in
+         cp run-elph.sh R$A-$B/calc/temp.sh
+         sed "s/elph/elph_$ir/g" R$A-$B/calc/temp.sh > R$A-$B/calc/run-elph.sh 
+         cd R$A-$B/calc/
+          qerun "$A" "$B" "elph"
+          sleep $SLEEP
+         cd ../../
+       fi
+     done
+   fi
+  elif [[ -f elph_dir/PARALLEL_irr-$A-$B ]]; then
+    echo "parallel over q and irr"
+    ndyn=$(ls R$A-$B/calc/$B.dyn* | wc -l)
+    if [[ $ndyn -gt 0 ]]; then
+     cp R$A-$B/calc/$B.dyn0 R$A-$B/calc/only_init_dynmat
+     cp R$A-$B/calc/elph.out R$A-$B/calc/only_init_out
+     cp R$A-$B/calc/elph.in R$A-$B/calc/elph_init_out.in
+    # rm R$A-$B/calc/$B.dyn*
     fi
-  fi
+    if [[ ! -f R$A-$B/calc/ELPH_Q_IR_SUBMITTED ]]; then
+      touch R$A-$B/calc/ELPH_Q_IR_SUBMITTED
+      NQ=$(wc -l elph_dir/PARALLEL_irr-$A-$B | awk '{ print $1 }')
+      NQ=$(echo $NQ + 1 | bc)
+      #for iq in 3; do
+      for ((iq=1; iq<$NQ; ++iq)); do
+        NIRR=$(grep "v$iq\ " elph_dir/PARALLEL_irr-$A-$B | awk '{print $2}')
+        NIRR=$(echo $NIRR + 1 | bc)
+        #for irr in 31 32 33 34 35 36 37 38 39 40 41 42 43 44; do
+        for ((irr=1; irr<$NIRR; ++irr)); do
+          cp elph_dir/elph-$A-$B-$iq-$irr.in R$A-$B/calc/elph-$iq-$irr.in
+          #sed -i "/&inputph/a   recover=.true.," R$A-$B/calc/elph-$iq-$irr.in
+          cp run-elph.sh R$A-$B/calc/temp.sh
+          sed "s/elph/elph-$iq-$irr/g" R$A-$B/calc/temp.sh > R$A-$B/calc/run-elph.sh 
+          cd R$A-$B/calc/
+            mkdir $iq-$irr
+            cwd=`pwd`
+            nwfc=$(ls $B.wfc* | wc -l)
+            nwfc=$(echo $nwfc + 1 | bc)
+            for ((iwfc=1; iwfc<$nwfc; ++iwfc)); do
+              ln -s $cwd/$B.wfc$iwfc $cwd/$iq-$irr/$B.wfc$iwfc
+            done
+            ln -s $cwd/$B.save $cwd/$iq-$irr/$B.save
+            ln -s $cwd/$B.xml $cwd/$iq-$irr/$B.xml
+
+            #cp -r $B.* $iq-$irr/
+            #mkdir -p $iq-$irr/_ph0/$B.q_$iq
+            mkdir -p $iq-$irr/_ph0/$B.phsave
+            #if [ "$iq" != "1" ]; then
+            #  cp -r _ph0/$B.q_$iq/* $iq-$irr/_ph0/$B.q_$iq
+            #fi
+            cp -r _ph0/$B.phsave/* $iq-$irr/_ph0/$B.phsave/
+            if [[ $iq -gt 1 ]] && [[ $irr -gt 2 ]]; then
+              echo "rm -r $iq-$irr/_ph0/$B.q_$iq" >> run-elph.sh 
+            fi
+            qerun "$A" "$B" "elph"
+          cd ../../
+        done
+      done
+    else
+      NQ=$(wc -l elph_dir/PARALLEL_irr-$A-$B | awk '{ print $1 }')
+      NQ=$(echo $NQ + 1 | bc)
+      cwd=`pwd`
+      for ((iq=1; iq<$NQ; ++iq)); do
+        NIRR=$(grep "v$iq\ " elph_dir/PARALLEL_irr-$A-$B | awk '{print $2}')
+        NIRR=$(echo $NIRR + 1 | bc)
+        if [[ $iq -gt 1 ]]; then
+          echo "Replacing _ph0/$B.q_$iq with $iq-1/_ph0/$B.q_$iq"
+          rm -r $cwd/R$A-$B/calc/_ph0/$B.q_$iq
+          cp -r $cwd/R$A-$B/calc/$iq-1/_ph0/$B.q_$iq $cwd/R$A-$B/calc/_ph0/
+        else
+          echo "Replacing _ph0/$B.aldv1 with 1-1/_ph0/$B.aldv1"
+          cp $cwd/R$A-$B/calc/1-1/_ph0/$B.aldv1 $cwd/R$A-$B/calc/_ph0/
+        fi
+        for ((irr=1; irr<$NIRR; ++irr)); do
+           echo "Copying dynmat and elph files from $iq-$irr/_ph0/$B.phsave/ to _ph0/$B.phsave/"
+           cp -f $cwd/R$A-$B/calc/$iq-$irr/_ph0/$B.phsave/dynmat.$iq.$irr.xml $cwd/R$A-$B/calc/_ph0/$B.phsave/
+           cp -f $cwd/R$A-$B/calc/$iq-$irr/_ph0/$B.phsave/elph.$iq.$irr.xml $cwd/R$A-$B/calc/_ph0/$B.phsave/
+        done
+        if [[ $iq -gt 1 ]] && [[ ! -d $cwd/R$A-$B/calc/_ph0/$B.q_$iq ]]; then
+          echo "$iq-1/_ph0/$B.q_$iq not found, so copying from $iq-2"
+          cp -r $cwd/R$A-$B/calc/$iq-2/_ph0/$B.q_$iq $cwd/R$A-$B/calc/_ph0/
+        fi
+        if [[ ! -f $cwd/R$A-$B/calc/_ph0/$B.aldv1 ]]; then
+          echo "$iq-1/_ph0/$B.aldv1 not found, so copying from 1-2"
+          cp $cwd/R$A-$B/calc/1-2/_ph0/$B.aldv1 $cwd/R$A-$B/calc/_ph0/
+        fi
+        cp -f $cwd/R$A-$B/calc/$iq-1/_ph0/$B.phsave/dynmat.$iq.0.xml $cwd/R$A-$B/calc/_ph0/$B.phsave 2> /dev/null
+      done
+      cp -f $cwd/R$A-$B/calc/1-1/_ph0/$B.phsave/tensors.xml $cwd/R$A-$B/calc/_ph0/$B.phsave 
+      cp R$A-$B/calc/elph-1-1.in R$A-$B/calc/elph.in
+      sed -i '/start_q/d' R$A-$B/calc/elph.in 
+      sed -i '/last_q/d' R$A-$B/calc/elph.in 
+      sed -i '/start_irr/d' R$A-$B/calc/elph.in 
+      sed -i '/last_irr/d' R$A-$B/calc/elph.in 
+      sed -i '/outdir/d' R$A-$B/calc/elph.in 
+      sed -i "/&inputph/a   outdir='./'," R$A-$B/calc/elph.in
+      cp run-elph.sh R$A-$B/calc/
+      cd R$A-$B/calc/
+        qerun "$A" "$B" "elph"
+      cd ../../
+    fi
+  else
+    if [[ -d R$A-$B ]] ; then
+      if [[ -f R$A-$B/calc/elph.out ]] ; then
+        check=$(grep "No convergence has been achieved" R$A-$B/calc/elph.out | wc -l)
+        echo "elph.out present, old job is restarting"
+      else
+        check=$(echo 0 | bc)
+        echo "New job is submitting"
+      fi
+      dynfile=$(find R$A-$B/calc/ -name "*.dyn*" | wc -l)
+      if [[ -f R$A-$B/calc/$B.dyn0 ]] ; then
+          netdyn=$(sed -n '2'p R$A-$B/calc/$B.dyn0)
+      else
+          netdyn=$(echo 0 | bc)
+      fi
+      dync=$(echo $dynfile - 1 | bc)
+      
+      if [[ -f elph_dir/$A-$B-freq.dat ]]; then
+         echo "submitting job with increasing smearing"
+        cp elph_dir/elph-$A-$B.in R$A-$B/calc/elph.in
+        cp run-elph.sh R$A-$B/calc/
+         continue
+      fi
+      if [[ $dync -eq $netdyn ]] ; then
+          echo "el-ph calculation completed, do nothing"
+      elif [[ $check -lt 1 ]] && [[ $dync -lt $netdyn ]] && [[ $dync -gt 0 ]] ; then
+          echo "calculation not completed due to walltime"
+          sed "/&inputph/a   recover=.true.," R$A-$B/calc/elph.in > R$A-$B/calc/elph-2.in
+          mv R$A-$B/calc/elph-2.in R$A-$B/calc/elph.in
+          cp run-elph.sh R$A-$B/calc/
+    ################
+    ## SUBMIT JOB ##
+    ################
+         cd R$A-$B/calc
+             nelph=$(ls elph.out* | wc -l)
+             cp elph.out elph.out$nelph
+             qerun "$A" "$B" "elph"
+            sleep $SLEEP
+         cd ../../
+     elif [[ $check -lt 1 ]] && [[ $dync -lt 0 ]] ; then
+        cp elph_dir/elph-$A-$B.in R$A-$B/calc/elph.in
+        cp run-elph.sh R$A-$B/calc/
+     echo " submitting fresh jobs in R$A-$B "
+    ################
+    ## SUBMIT JOB ##
+    ################
+     cd R$A-$B/calc
+         qerun "$A" "$B" "elph"
+        sleep $SLEEP
+     cd ../../
+     else
+      echo "restarting old unconverged job"
+      isalpha_mix=$(grep alpha_mix R$A-$B/calc/elph.in | wc -l)
+      if [[ $isalpha_mix -gt 0 ]]; then
+       echo "Change nmix_ph in ~path_to_QE/PHonon/PH/phq_readin.f90"
+       echo "Comment out the 'if statement', '(nmix_ph.LT.1.OR.nmix_ph.GT.5)'"
+       sed '/alpha_mix/d' elph_dir/elph-$A-$B.in > elph_dir/elph-$A-$B-2.in
+       mv elph_dir/elph-$A-$B-2.in elph_dir/elph-$A-$B.in
+       sed "/&inputph/a   alpha_mix=0.3, nmix_ph=8," elph_dir/elph-$A-$B.in > R$A-$B/calc/elph.in
+      else
+       sed "/&inputph/a   alpha_mix=0.3," elph_dir/elph-$A-$B.in > R$A-$B/calc/elph.in
+      fi  
+     echo " submitting unconverged jobs in R$A-$B "
+    ################
+    ## SUBMIT JOB ##
+    ################
+     cd R$A-$B/calc
+         qerun "$A" "$B" "elph"
+         sleep $SLEEP
+      cd ../../
+      fi
+    fi
+ fi
 done
 echo "all done"

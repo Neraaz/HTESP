@@ -32,6 +32,7 @@ def main():
     --------
     None
     """
+    input_data = config()
     structures = glob.glob("*.vasp",recursive=True)
     kptden = input_data['kptden']
     dft = input_data['download']['inp']['calc']
@@ -96,5 +97,4 @@ def main():
                 with open("mpid.in", "a") as write_mpid:
                     write_mpid.write("v{}".format(entry+1) + " " + mpid + " " + compound + "\n")
 if __name__ == "__main__":
-    input_data = config()
     main()

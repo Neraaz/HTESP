@@ -295,7 +295,11 @@ for ((ii=$1; ii<$2; ++ii)); do
       echo "---------------------------------------------------------------------------------------------------------------"
        cd R$A-$B/phonopy
        touch symmetry_analysis.in
+       if [[ -f ../../elph_dir/high_symm-$A-$B.in ]]; then
+         cp ../../elph_dir/high_symm-$A-$B.in high_symm.in
+       fi
        input="high_symm.in"
+       niter=$(echo 0 | bc)
        while read -r line
        do
           echo "$line"
@@ -306,6 +310,8 @@ for ((ii=$1; ii<$2; ++ii)); do
             #echo "DIM = 2 2 2" >> mesh.conf
             phonopy --dim="2 2 2" --irreps="$line" >> symmetry_analysis.in
           fi
+          niter=$(echo $niter + 1 | bc)
+          cp irreps.yaml irreps-$niter.yaml
         done < "$input"
        cd ../../
     elif [ $step == 'vp-ph-qha' ]; then

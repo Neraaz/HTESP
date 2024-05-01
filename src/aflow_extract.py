@@ -304,6 +304,7 @@ def main():
     arguments to determine the operation mode (search or download) and then performs
     the corresponding action based on the provided inputs.
     """
+    input_data = config()['download']
     # Read command-line argument to determine operation mode
     condition = sys.argv[1]
     # Extract input data
@@ -322,5 +323,4 @@ def main():
     else:
         print("Either search or download is allowed\n")
 if __name__ == "__main__":
-    input_data = config()['download']
     main()

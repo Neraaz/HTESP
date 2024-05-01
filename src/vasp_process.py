@@ -59,6 +59,7 @@ def vasp_process():
     Returns:
         None
     """
+    input_data = config()
     # Get the type of magnetic enumeration
     magenum = input_data['magmom']['type']
     # Check if 'vasp.in' file exists
@@ -307,6 +308,7 @@ def main():
     """
     main function
     """
+    input_data = config()
     filename = sys.argv[1]
     kptden = input_data["kptden"]
     if filename == 'POSCAR':
@@ -336,5 +338,4 @@ def main():
     else:
         band_phonopy(filename)
 if __name__ == "__main__":
-    input_data = config()
     main()

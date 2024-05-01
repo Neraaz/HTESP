@@ -23,6 +23,7 @@ def vasp_input(mpid,compound):
     - mpid (str): Materials ID.
     - compound (str): Compound name.
     """
+    input_data = config()
     obj = MpConnect()
     obj.setting(mpid)
     obj.download()
@@ -75,5 +76,4 @@ def main():
     compound = sys.argv[2]
     vasp_input(mpid,compound)
 if __name__ == "__main__":
-    input_data = config()
     main()

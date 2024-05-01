@@ -54,6 +54,7 @@ def deformation(mpid,obj,dft,orig_prefix,deformed_struc):
     >>> # obtained with pymatgen.analysis.elasticity.DeformedStructureSet
     >>> deformation(mpid, obj, "vasp", orig_prefix, deformed_struc)
     """
+    input_data = config()
     # Extracting deformed structures
     list_str = deformed_struc.deformed_structures
     if not os.path.isdir('scf_dir'):
@@ -150,6 +151,7 @@ def main(mpid,orig_prefix):
     --------
     None
     """
+    input_data = config()
     mode = sys.argv[1]
     dft = input_data['download']['inp']['calc']
     obj = MpConnect()

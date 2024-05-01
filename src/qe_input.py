@@ -22,6 +22,7 @@ def qe_input(mpid):
     Returns:
     None
     """
+    input_data = config()
     magnetic = input_data['pwscf_in']['magnetic']
     obj = MpConnect()
     obj.setting(mpid)
@@ -72,5 +73,4 @@ def main():
     mpid=sys.argv[1]
     qe_input(mpid)
 if __name__ == "__main__":
-    input_data = config()
     main()

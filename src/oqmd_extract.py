@@ -52,6 +52,7 @@ def poscar_to_input(calc_type,mpid,compound,keven):
     Finally, it moves input files to the designated directories.
 
     """
+    input_data = config()
     if os.path.isfile("config.json"):
         d = input_data['download']
     evenkpt = d['inp']['evenkpt']

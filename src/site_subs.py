@@ -40,6 +40,7 @@ def substitution(mpid,obj):
     Returns:
     None
     """
+    input_data = config()
     if mpid in ('help', 'h'):
         msg="""required package: bsym 'pip install bsym'
                put substitute dictionary file in the config.json file. Inside that define
@@ -158,5 +159,4 @@ def main():
     obj = MpConnect()
     substitution(mpid,obj)
 if __name__ == "__main__":
-    input_data = config()
     main()

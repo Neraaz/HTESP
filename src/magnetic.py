@@ -32,6 +32,7 @@ def magnetic_structure(obj,mpid,compound,magconfig,dft):
     >>> obj = MpConnect()
     >>> magnetic_structure(obj, 'mp-123', 'MnO', ['ferromagnetic', 'antiferromagnetic'], 'VASP')
     """
+    input_data = config()
     # load the structure
     try:
         strucinit = structure.Structure.from_file("R{}-{}/relax/POSCAR".format(mpid,compound))
@@ -122,56 +123,77 @@ def magnetic_structure(obj,mpid,compound,magconfig,dft):
                 mpid_append.write("v{}".format(entry+1+i) + " " + mpid + "-{}".format(i+1) + " " + obj.prefix + "\n")
     else:
         print("Structures not created\n")
-def changeaxis(mpid,comp):
+def changeaxis(mpid,comp,dft):
     """
     Function to change magnetic axis to compute magnetic anisotropy.
 
     Parameters:
     mpid (str): Material ID.
     comp (str): Compound name.
+    dft  (str): DFT method. Available options: QE/VASP
 
     The function iterates over magnetic axis configurations specified in the saxis variable,
     updates the necessary input files for VASP calculations, and performs the VASP process.
     """
+    input_data = config()
     if not os.path.isfile('mpid-magnetic.in'):
         entry = 0
     else:
         with open('mpid-magnetic.in', 'r') as mpid_read:
             lines = mpid_read.readlines()
         entry = len(lines)
-    # Define magnetic axis configurations
-    saxis = input_data['magmom']['saxis']
-    # Process each magnetic axis configuration
-    for i,axis in enumerate(saxis):
-        sx = int(axis[0])
-        sy = int(axis[1])
-        sz = int(axis[2])
-         # Create directory for the current magnetic axis configuration
-        if not os.path.isdir("R{}-saxis-{}{}{}-{}".format(mpid,sx,sy,sz,comp)):
-            os.mkdir("R{}-saxis-{}{}{}-{}".format(mpid,sx,sy,sz,comp))
-        if not os.path.isdir("R{}-saxis-{}{}{}-{}/relax".format(mpid,sx,sy,sz,comp)):
-            os.mkdir("R{}-saxis-{}{}{}-{}/relax".format(mpid,sx,sy,sz,comp))
-        os.chdir("R{}-{}/relax/".format(mpid,comp))
-        # Copy necessary input files
-        os.system("cp INCAR POTCAR POSCAR KPOINTS ../../R{}-saxis-{}{}{}-{}/relax/".format(mpid,sx,sy,sz,comp))
-        if os.path.isfile("CHGCAR"):
-            os.system("cp CHGCAR ../../R{}-saxis-{}{}{}-{}/relax/".format(mpid,sx,sy,sz,comp))
-        os.chdir("../../")
-        # Uncomment following if calculations read from previous CHGCAR
-        #os.system(f"""echo 'ICHARG = 11' >> R{}-saxis-{}{}{}-{}/relax/INCAR""".format(mpid,sx,sy,sz,comp))
-        # Update INCAR with the new magnetic axis
-        os.system("""sed -i '/SAXIS/d' R{}-saxis-{}{}{}-{}/relax/INCAR""".format(mpid,sx,sy,sz,comp))
-        os.system("""echo 'SAXIS = {} {} {}' >> R{}-saxis-{}{}{}-{}/relax/INCAR""".format(sx,sy,sz,mpid,sx,sy,sz,comp))
-        # Append to the mpid-magnetic.in file
-        with open("mpid-magnetic.in", "a") as mpid_append:
-            mpid_append.write("v{}".format(entry+1+i) + " " + mpid + "-saxis-{}{}{}".format(sx,sy,sz) + " " + comp + "\n")
-        if os.path.isfile("config.json"):
-            os.system("""cp config.json R{}-saxis-{}{}{}-{}/relax/""".format(mpid,sx,sy,sz,comp))
-        if os.path.isfile("vasp.in"):
-            os.system("""cp vasp.in R{}-saxis-{}{}{}-{}/relax/""".format(mpid,sx,sy,sz,comp))
-        os.chdir("R{}-saxis-{}{}{}-{}/relax/""".format(mpid,sx,sy,sz,comp))
-        os.system("vasp_process.py POSCAR")
-        os.chdir("../../")
+    if dft in ('VASP', 'vasp'):
+        # Define magnetic axis configurations
+        saxis = input_data['magmom']['saxis']
+        # Process each magnetic axis configuration
+        for i,axis in enumerate(saxis):
+            sx = int(axis[0])
+            sy = int(axis[1])
+            sz = int(axis[2])
+             # Create directory for the current magnetic axis configuration
+            if not os.path.isdir("R{}-saxis-{}{}{}-{}".format(mpid,sx,sy,sz,comp)):
+                os.mkdir("R{}-saxis-{}{}{}-{}".format(mpid,sx,sy,sz,comp))
+            if not os.path.isdir("R{}-saxis-{}{}{}-{}/relax".format(mpid,sx,sy,sz,comp)):
+                os.mkdir("R{}-saxis-{}{}{}-{}/relax".format(mpid,sx,sy,sz,comp))
+            os.chdir("R{}-{}/relax/".format(mpid,comp))
+            # Copy necessary input files
+            os.system("cp INCAR POTCAR POSCAR KPOINTS ../../R{}-saxis-{}{}{}-{}/relax/".format(mpid,sx,sy,sz,comp))
+            if os.path.isfile("CHGCAR"):
+                os.system("cp CHGCAR ../../R{}-saxis-{}{}{}-{}/relax/".format(mpid,sx,sy,sz,comp))
+            os.chdir("../../")
+            # Uncomment following if calculations read from previous CHGCAR
+            #os.system(f"""echo 'ICHARG = 11' >> R{}-saxis-{}{}{}-{}/relax/INCAR""".format(mpid,sx,sy,sz,comp))
+            # Update INCAR with the new magnetic axis
+            os.system("""sed -i '/SAXIS/d' R{}-saxis-{}{}{}-{}/relax/INCAR""".format(mpid,sx,sy,sz,comp))
+            os.system("""echo 'SAXIS = {} {} {}' >> R{}-saxis-{}{}{}-{}/relax/INCAR""".format(sx,sy,sz,mpid,sx,sy,sz,comp))
+            # Append to the mpid-magnetic.in file
+            with open("mpid-magnetic.in", "a") as mpid_append:
+                mpid_append.write("v{}".format(entry+1+i) + " " + mpid + "-saxis-{}{}{}".format(sx,sy,sz) + " " + comp + "\n")
+            if os.path.isfile("config.json"):
+                os.system("""cp config.json R{}-saxis-{}{}{}-{}/relax/""".format(mpid,sx,sy,sz,comp))
+            if os.path.isfile("vasp.in"):
+                os.system("""cp vasp.in R{}-saxis-{}{}{}-{}/relax/""".format(mpid,sx,sy,sz,comp))
+            os.chdir("R{}-saxis-{}{}{}-{}/relax/""".format(mpid,sx,sy,sz,comp))
+            os.system("vasp_process.py POSCAR")
+            os.chdir("../../")
+    elif dft in ("QE", "qe"):
+        print("To be implemented\n")
+        # Perform scf calculation with magnetic configuration
+        # extract (1)(2)... from starting_magnetization(1)(2)...
+        # One idea is to grep "starting_magnetization" and
+        # record its occurence. Now loop over and write following
+        # in two files.
+        # Define angle1(1)=0,angle2(1)=0 on one nscf.in
+        # Define angle1(1)=90,angle2(1)=0 on second file.
+        # Prepare 'nscf' calculation with lforcet = .true., nosym = .true., and startingpot='file'
+        # Also need lspinorb = .true. and noncolin = .true. (can be included with obj.setting_qeinput())
+        # Name this file nscf-{mpid}-{saxis_index}.in
+        # Create similar folder as of vasp
+        # copy scf.in and nscf.in files inside it
+        # append other commands to run nscf.in file to run-scf.sh
+        # Finally add another command to apply force theorem with projwfc.x 
+    else:
+        print("Either QE or VASP available\n")
 def main():
     """
     Main function to control the workflow.
@@ -185,6 +207,7 @@ def main():
     Returns:
     None
     """
+    input_data = config()
     # DFT calculation type
     dft = input_data['download']['inp']['calc']
     # Ordering or anisotropy ?
@@ -210,9 +233,8 @@ def main():
             magnetic_structure(obj,mpid,comp,config_mag,dft)
         # Creating input files with different SAXIS
         elif mag_type == "anisotropy":
-            changeaxis(mpid,comp)
+            changeaxis(mpid,comp,dft)
         else:
             print("Only ordering and anisotropy allowed\n")
 if __name__ == "__main__":
-    input_data = config()
     main()
