@@ -253,6 +253,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">obj</span> <span class="o">=</span> <span class="n">MpConnect</span><span class="p">()</span>
             <span class="n">struc</span> <span class="o">=</span> <span class="n">structure_standard</span>
+            <span class="n">compound</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">struc</span><span class="o">.</span><span class="n">composition</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">" "</span><span class="p">,</span><span class="s2">""</span><span class="p">)</span>
             <span class="n">magnetic</span> <span class="o">=</span> <span class="n">input_data</span><span class="p">[</span><span class="s1">'pwscf_in'</span><span class="p">][</span><span class="s1">'magnetic'</span><span class="p">]</span>
             <span class="k">if</span> <span class="n">magnetic</span><span class="p">:</span>
                 <span class="n">default_magmoms</span> <span class="o">=</span> <span class="n">input_data</span><span class="p">[</span><span class="s1">'magmom'</span><span class="p">][</span><span class="s1">'magmom'</span><span class="p">]</span>
