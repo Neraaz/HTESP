@@ -106,3 +106,10 @@ Since 5 and 6 process have been already finished. Now jump to process = 7.
 
 mainprogram 7
 mainprogram 7 to collect results.
+
+If you want to rerun any of q and irr calculations, simply remove
+ELPH_Q_IR_SUBMITTED file inside calc directory, change loop structure inside ph-scan
+script (from line 78) in bash folder of the source code. 
+
+and resubmit with
+mainprogram 7

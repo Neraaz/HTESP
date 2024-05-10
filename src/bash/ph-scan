@@ -75,11 +75,15 @@ for ((ii=$1; ii<$2; ++ii)); do
       touch R$A-$B/calc/ELPH_Q_IR_SUBMITTED
       NQ=$(wc -l elph_dir/PARALLEL_irr-$A-$B | awk '{ print $1 }')
       NQ=$(echo $NQ + 1 | bc)
-      #for iq in 3; do
+      # Instead of looping over whole q, and/or irr, one can perform
+      # calculations for particular sets by changing for loop structure
+      # for iq and irr
+      #for iq in 5; do
       for ((iq=1; iq<$NQ; ++iq)); do
         NIRR=$(grep "v$iq\ " elph_dir/PARALLEL_irr-$A-$B | awk '{print $2}')
         NIRR=$(echo $NIRR + 1 | bc)
-        #for irr in 31 32 33 34 35 36 37 38 39 40 41 42 43 44; do
+        #for irr in 33; do
+        #for irr in $(seq 49 60); do
         for ((irr=1; irr<$NIRR; ++irr)); do
           cp elph_dir/elph-$A-$B-$iq-$irr.in R$A-$B/calc/elph-$iq-$irr.in
           #sed -i "/&inputph/a   recover=.true.," R$A-$B/calc/elph-$iq-$irr.in
