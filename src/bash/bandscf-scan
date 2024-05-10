@@ -112,6 +112,9 @@ for ((ii=$1; ii<$2; ++ii)); do
               kpath.py line 100
             fi
           else
+            cp ../relax/IBZKPT KPOINTS
+            oldkpt=$(sed -n '2p' KPOINTS)
+            newkpt=$(echo $nkpt + $oldkpt | bc)
             cat KPOINTS kpathtemp.in | sed '2d' > KPOINTS_temp
             rm kpathtemp.in KPOINTS input.in
             sed "1 a $newkpt" KPOINTS_temp > KPOINTS

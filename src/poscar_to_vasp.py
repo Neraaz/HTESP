@@ -60,6 +60,7 @@ def main():
         else:
             obj = MpConnect()
             struc = structure_standard
+            compound = str(struc.composition).replace(" ","")
             magnetic = input_data['pwscf_in']['magnetic']
             if magnetic:
                 default_magmoms = input_data['magmom']['magmom']

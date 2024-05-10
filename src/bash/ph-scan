@@ -78,18 +78,22 @@ for ((ii=$1; ii<$2; ++ii)); do
       # Instead of looping over whole q, and/or irr, one can perform
       # calculations for particular sets by changing for loop structure
       # for iq and irr
-      #for iq in 5; do
+      #for iq in 1; do
       for ((iq=1; iq<$NQ; ++iq)); do
         NIRR=$(grep "v$iq\ " elph_dir/PARALLEL_irr-$A-$B | awk '{print $2}')
         NIRR=$(echo $NIRR + 1 | bc)
-        #for irr in 33; do
-        #for irr in $(seq 49 60); do
+        #for irr in 2 13; do
+        #for irr in $(seq 41 55); do
         for ((irr=1; irr<$NIRR; ++irr)); do
+          echo "q-point: $iq, irreducible representation: $irr"
           cp elph_dir/elph-$A-$B-$iq-$irr.in R$A-$B/calc/elph-$iq-$irr.in
           #sed -i "/&inputph/a   recover=.true.," R$A-$B/calc/elph-$iq-$irr.in
           cp run-elph.sh R$A-$B/calc/temp.sh
           sed "s/elph/elph-$iq-$irr/g" R$A-$B/calc/temp.sh > R$A-$B/calc/run-elph.sh 
           cd R$A-$B/calc/
+            if [[ -d $iq-$irr ]]; then
+             rm -r $iq-$irr
+            fi
             mkdir $iq-$irr
             cwd=`pwd`
             nwfc=$(ls $B.wfc* | wc -l)
@@ -131,8 +135,19 @@ for ((ii=$1; ii<$2; ++ii)); do
         fi
         for ((irr=1; irr<$NIRR; ++irr)); do
            echo "Copying dynmat and elph files from $iq-$irr/_ph0/$B.phsave/ to _ph0/$B.phsave/"
-           cp -f $cwd/R$A-$B/calc/$iq-$irr/_ph0/$B.phsave/dynmat.$iq.$irr.xml $cwd/R$A-$B/calc/_ph0/$B.phsave/
-           cp -f $cwd/R$A-$B/calc/$iq-$irr/_ph0/$B.phsave/elph.$iq.$irr.xml $cwd/R$A-$B/calc/_ph0/$B.phsave/
+           dynmatdir="$cwd/R$A-$B/calc/$iq-$irr/_ph0/$B.phsave"
+           if [[ -f $dynmatdir/dynmat.$iq.$irr.xml ]]; then
+            cp -f $dynmatdir/dynmat.$iq.$irr.xml $cwd/R$A-$B/calc/_ph0/$B.phsave/
+           else
+            echo "dynamat.$iq.$irr.xml not found in $dynmatdir"
+           fi
+           if [[ -f $dynmatdir/elph.$iq.$irr.xml ]]; then
+            cp -f $dynmatdir/elph.$iq.$irr.xml $cwd/R$A-$B/calc/_ph0/$B.phsave/
+           else
+            echo "elph.$iq.$irr.xml not found in $dynmatdir"
+           fi
+           #cp -f $cwd/R$A-$B/calc/$iq-$irr/_ph0/$B.phsave/dynmat.$iq.$irr.xml $cwd/R$A-$B/calc/_ph0/$B.phsave/
+           #cp -f $cwd/R$A-$B/calc/$iq-$irr/_ph0/$B.phsave/elph.$iq.$irr.xml $cwd/R$A-$B/calc/_ph0/$B.phsave/
         done
         if [[ $iq -gt 1 ]] && [[ ! -d $cwd/R$A-$B/calc/_ph0/$B.q_$iq ]]; then
           echo "$iq-1/_ph0/$B.q_$iq not found, so copying from $iq-2"
@@ -144,7 +159,9 @@ for ((ii=$1; ii<$2; ++ii)); do
         fi
         cp -f $cwd/R$A-$B/calc/$iq-1/_ph0/$B.phsave/dynmat.$iq.0.xml $cwd/R$A-$B/calc/_ph0/$B.phsave 2> /dev/null
       done
-      cp -f $cwd/R$A-$B/calc/1-1/_ph0/$B.phsave/tensors.xml $cwd/R$A-$B/calc/_ph0/$B.phsave 
+      if [[ -f $cwd/R$A-$B/calc/1-1/_ph0/$B.phsave/tensors.xml ]]; then
+        cp -f $cwd/R$A-$B/calc/1-1/_ph0/$B.phsave/tensors.xml $cwd/R$A-$B/calc/_ph0/$B.phsave 
+      fi
       cp R$A-$B/calc/elph-1-1.in R$A-$B/calc/elph.in
       sed -i '/start_q/d' R$A-$B/calc/elph.in 
       sed -i '/last_q/d' R$A-$B/calc/elph.in 

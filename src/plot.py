@@ -559,6 +559,8 @@ def plot_projection(scf_file,projection_file,phonon_freq,outfile,nkpt):
     proj = np.loadtxt(projection_file)
     proj_list = []
     nat = int(proj.shape[0]/nkpt)
+    # Define projection cutoff for systems with
+    # different number of ions.
     if nat < 4:
         proj_cutoff = 0.6
     elif nat == 4:
