@@ -15,5 +15,5 @@ Read the descriptions inside the scripts to learn more.
    if ionic, consider using small ionic step and resubmit relaxation with updated 
    structure, change cell optimization parameters
 
-   if electronic,
+   #if electronic,
    consider changing scf optimization parameters
