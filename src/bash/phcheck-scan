@@ -23,134 +23,165 @@ file=$(find * -name $3 | tail -n 1)
 for ((ii=$1; ii<$2; ++ii)); do
   A=$(grep "v$ii\ " $file | awk '{print $2}')
   B=$(grep "v$ii\ " $file | awk '{print $3}')
-  if [[ -d R$A-$B ]] ; then
-  pp=$(echo $pp+1 | bc)
-  echo "Checking status for: v$ii $A $B"
-  if [[ -f R$A-$B/calc/elph.out ]]; then
-    check=$(grep "No convergence has been achieved" R$A-$B/calc/elph.out | wc -l)
-    dynfile=$(find R$A-$B/calc/ -name "*.dyn*" | wc -l)
-    netdyn=$(sed -n '2'p R$A-$B/calc/$B.dyn0)
-    dync=$(echo $dynfile - 1 | bc)
-    qbrk=$(grep "q-mesh breaks symmetry" R$A-$B/calc/elph.out | tail -n 1 | wc -l)
-    fftcheck=$(grep "FFT grid incompatible with symmetry" R$A-$B/calc/elph.out | tail -n 1 | wc -l)
-    sym=$(grep "Error in routine scale_sym_ops (8):" R$A-$B/calc/elph.out | tail -n 1 | wc -l)
-    echo "Output file of el-ph coupling calculation found for $A $B"
-    fftcheck2=$(grep "incompatible FFT grid" R$A-$B/calc/elph.out | tail -n 1 | wc -l)
+  if [[ -f elph_dir/PARALLEL_irr-$A-$B ]]; then
+        echo "---------------------------------------------------------------------------------------------------------------"
+        NQ=$(wc -l elph_dir/PARALLEL_irr-$A-$B | awk '{ print $1 }')
+        NQ=$(echo $NQ + 1 | bc)
+        for ((iq=1; iq<$NQ; ++iq)); do
+          cd R$A-$B/calc/
+          nelph=$(find $iq-* -name elph.*.xml | wc -l)
+          ncalc=$(grep Convergence elph-$iq-*.out | wc -l)
+          NIRR=$(grep "v$iq\ " ../../elph_dir/PARALLEL_irr-$A-$B | awk '{print $2}')
+          NIRR=$(echo $NIRR + 1 | bc)
+          echo "$ncalc calculations finished for q-point $iq, and $nelph elph*.xml files found"
+          echo "---------------------------------------------------------------------------------------------------------------"
+          for ((irr=1; irr<$NIRR; ++irr)); do
+            completed=$(grep Convergence elph-$iq-$irr.out | wc -l)
+            elph=$(find $iq-$irr -name elph.$iq.$irr.xml | wc -l)
+            if [[ $completed -gt 0 ]]; then
+             echo "Calculations completed for q-point: $iq, irreducible representation: $irr"
+            fi
+            if [[ $elph -gt 0 ]]; then
+             echo "elph.$iq.$irr.xml file found"
+            fi
+          done
+          echo "---------------------------------------------------------------------------------------------------------------"
+          echo "---------------------------------------------------------------------------------------------------------------"
+          cd ../../
+        done
   else
-    echo "STATUS: el-ph coupling calculation have not started for $A-$B, yet !"
-    continue
+    if [[ -d R$A-$B ]] ; then
+    pp=$(echo $pp+1 | bc)
+    echo "Checking status for: v$ii $A $B"
+    if [[ -f R$A-$B/calc/elph.out ]]; then
+      check=$(grep "No convergence has been achieved" R$A-$B/calc/elph.out | wc -l)
+      dynfile=$(find R$A-$B/calc/ -name "*.dyn*" | wc -l)
+      netdyn=$(sed -n '2'p R$A-$B/calc/$B.dyn0)
+      dync=$(echo $dynfile - 1 | bc)
+      qbrk=$(grep "q-mesh breaks symmetry" R$A-$B/calc/elph.out | tail -n 1 | wc -l)
+      fftcheck=$(grep "FFT grid incompatible with symmetry" R$A-$B/calc/elph.out | tail -n 1 | wc -l)
+      sym=$(grep "Error in routine scale_sym_ops (8):" R$A-$B/calc/elph.out | tail -n 1 | wc -l)
+      echo "Output file of el-ph coupling calculation found for $A $B"
+      fftcheck2=$(grep "incompatible FFT grid" R$A-$B/calc/elph.out | tail -n 1 | wc -l)
+    else
+      echo "STATUS: el-ph coupling calculation have not started for $A-$B, yet !"
+      continue
+    fi
+    nbnd=$(grep "number of Kohn-Sham states=" R$A-$B/calc/scf.out | awk '{ print $5 }')
+    nelm=$(grep "number of electrons       =     " R$A-$B/relax/scf.out | tail -n 1 | awk '{print $5}')
+    echo "nband: $nbnd, nelm: $nelm"
+    if [[ $qbrk -gt 0 ]] ; then
+       echo "STATUS: q break symmetry error occured"
+       echo "qbreaksym" > scf_dir/$A-qbreaksym
+       ll=$(echo $ll+1 | bc)
+    fi
+  
+    if [[ $sym -gt 0 ]]; then
+      mkdir scale_sym_ops
+      echo "scale_sym_ops error" > scale_sym_ops/$A-scale_sym_ops
+      mm=$(echo $mm+1 | bc)
+    fi
+    if [[ $fftcheck -gt 0 ]] || [[ $fftcheck2 -gt 0 ]] ; then
+       echo "STATUS: FFT grid incompatible with symmetry error occured, increase ecutrho and ecutwfc"
+       echo "FFT grid" > scf_dir/$A-fft-grid
+       nn=$(echo $nn+1 | bc)
+    fi
+    if [[ -f R$A-$B/calc/lambda.out ]] ; then
+     lambda_check=$(echo 1 | bc)
+    else
+     lambda_check=$(echo 0 | bc)
+    fi
+    if [[ $dync -eq $netdyn ]] && [[ $lambda_check -lt 1 ]]; then
+        job=$(grep "JOB DONE" R$A-$B/calc/elph.out | wc -l)
+        if [[ $job -gt 0 ]]; then
+         echo "STATUS: el-ph calculation completed but lambda.out not found"
+         nolam=$(echo $nolam + 1 | bc)
+         echo "v$nolam $A $B" >> temp1.in
+        fi
+    elif [[ $dync -eq $netdyn ]] && [[ $lambda_check -gt 0 ]]; then
+        echo "STATUS: el-ph calculation completed and lambda.out found"
+    fi
+  
+    if [[ $dync -eq $netdyn ]] ; then
+        job=$(grep "JOB DONE" R$A-$B/calc/elph.out | wc -l)
+        touch temp.in
+        kk=$(echo $kk+1 | bc)
+        if [[ $job -gt 0 ]]; then
+         echo "v$kk $A $B" >> temp.in
+        else
+         echo "STATUS: el-ph calculation is completing soon"
+        fi
+    elif [[ $check -lt 1 ]] && [[ $dync -lt $netdyn ]] && [[ $dync -gt 0 ]] ; then
+        oo=$(echo $oo+1 | bc)
+        # Change squeue command depending on your cluster
+        squeue -o "%.100j" > job
+        check_running=$(grep "$B" job | wc -l)
+        if [[ $check_running -lt 1 ]]; then 
+         echo "STATUS: calculation not completed due to walltime"
+         norun=$(echo $norun + 1 | bc)
+         echo "v$norun $A $B" >> temp3.in
+        else
+         echo "STATUS: Calculation is in progress"
+        fi
+    elif [[ $check -lt 1 ]] && [[ $dync -lt 0 ]] ; then
+        echo "STATUS: submit a fresh job"
+        if [[ -f R$A-$B/calc/_ph0 ]]; then
+         rm -r R$A-$B/calc/_ph0
+        fi
+    else
+      echo "STATUS: Calculation not finished properly"
+    fi
+   if [[ $check -gt 0 ]] ; then
+    echo "STATUS: not converged"
+    qq=$(echo $qq+1 | bc)
+    echo "v$qq $A $B" >> temp2.in
+   fi
+  ################
+  ## SUBMIT JOB ##
+  ################
+    fi
+    echo "$dync out $netdyn .dyn files present"
+    echo "---------------------------------------------------------------------------------------------------------------"
   fi
-  nbnd=$(grep "number of Kohn-Sham states=" R$A-$B/calc/scf.out | awk '{ print $5 }')
-  nelm=$(grep "number of electrons       =     " R$A-$B/relax/scf.out | tail -n 1 | awk '{print $5}')
-  echo "nband: $nbnd, nelm: $nelm"
-  if [[ $qbrk -gt 0 ]] ; then
-     echo "STATUS: q break symmetry error occured"
-     echo "qbreaksym" > scf_dir/$A-qbreaksym
-     ll=$(echo $ll+1 | bc)
-  fi
-
-  if [[ $sym -gt 0 ]]; then
-    mkdir scale_sym_ops
-    echo "scale_sym_ops error" > scale_sym_ops/$A-scale_sym_ops
-    mm=$(echo $mm+1 | bc)
-  fi
-  if [[ $fftcheck -gt 0 ]] || [[ $fftcheck2 -gt 0 ]] ; then
-     echo "STATUS: FFT grid incompatible with symmetry error occured, increase ecutrho and ecutwfc"
-     echo "FFT grid" > scf_dir/$A-fft-grid
-     nn=$(echo $nn+1 | bc)
-  fi
-  if [[ -f R$A-$B/calc/lambda.out ]] ; then
-   lambda_check=$(echo 1 | bc)
-  else
-   lambda_check=$(echo 0 | bc)
-  fi
-  if [[ $dync -eq $netdyn ]] && [[ $lambda_check -lt 1 ]]; then
-      job=$(grep "JOB DONE" R$A-$B/calc/elph.out | wc -l)
-      if [[ $job -gt 0 ]]; then
-       echo "STATUS: el-ph calculation completed but lambda.out not found"
-       nolam=$(echo $nolam + 1 | bc)
-       echo "v$nolam $A $B" >> temp1.in
-      fi
-  elif [[ $dync -eq $netdyn ]] && [[ $lambda_check -gt 0 ]]; then
-      echo "STATUS: el-ph calculation completed and lambda.out found"
-  fi
-
-  if [[ $dync -eq $netdyn ]] ; then
-      job=$(grep "JOB DONE" R$A-$B/calc/elph.out | wc -l)
-      touch temp.in
-      kk=$(echo $kk+1 | bc)
-      if [[ $job -gt 0 ]]; then
-       echo "v$kk $A $B" >> temp.in
-      else
-       echo "STATUS: el-ph calculation is completing soon"
-      fi
-  elif [[ $check -lt 1 ]] && [[ $dync -lt $netdyn ]] && [[ $dync -gt 0 ]] ; then
-      oo=$(echo $oo+1 | bc)
-      # Change squeue command depending on your cluster
-      squeue -o "%.100j" > job
-      check_running=$(grep "$B" job | wc -l)
-      if [[ $check_running -lt 1 ]]; then 
-       echo "STATUS: calculation not completed due to walltime"
-       norun=$(echo $norun + 1 | bc)
-       echo "v$norun $A $B" >> temp3.in
-      else
-       echo "STATUS: Calculation is in progress"
-      fi
-  elif [[ $check -lt 1 ]] && [[ $dync -lt 0 ]] ; then
-      echo "STATUS: submit a fresh job"
-      if [[ -f R$A-$B/calc/_ph0 ]]; then
-       rm -r R$A-$B/calc/_ph0
-      fi
-  else
-    echo "STATUS: Calculation not finished properly"
-  fi
- if [[ $check -gt 0 ]] ; then
-  echo "STATUS: not converged"
-  qq=$(echo $qq+1 | bc)
-  echo "v$qq $A $B" >> temp2.in
- fi
-################
-## SUBMIT JOB ##
-################
-  fi
-  echo "$dync out $netdyn .dyn files present"
-  echo "---------------------------------------------------------------------------------------------------------------"
 done
-rr=$(echo $pp - $kk -$qq - $ll - $mm - $nn | bc)
-echo "######################### Check these files ######################################"
-if [[ -f temp.in ]]; then
-  mv temp.in mpid-list-elph-finished.in
-  echo "1. Check mpid-list-elph-finished.in file for all completed el-ph calculations"
-  echo " "
+
+if [[ ! -f elph_dir/PARALLEL_irr-$A-$B ]]; then
+  rr=$(echo $pp - $kk -$qq - $ll - $mm - $nn | bc)
+  echo "######################### Check these files ######################################"
+  if [[ -f temp.in ]]; then
+    mv temp.in mpid-list-elph-finished.in
+    echo "1. Check mpid-list-elph-finished.in file for all completed el-ph calculations"
+    echo " "
+  fi
+  if [[ -f temp1.in ]]; then
+    mv temp1.in mpid-list-elph-finished-no-lambda.in
+    echo "2. Check mpid-list-elph-finished-no-lambda.in file for all completed el-ph calculations, but lambda.out not created"
+    echo "Submit mainprogram 8 - 11"
+    echo " "
+  fi
+  if [[ -f temp2.in ]]; then
+    mv temp2.in mpid-list-elph-not-converged.in
+    echo "3. Check mpid-list-elph-not-converged.in file for all unconverged el-ph calculations."
+    echo "Restart mainprogram 7"
+    echo " "
+  fi
+  if [[ -f temp3.in ]]; then
+    mv temp3.in mpid-list-elph-not-completed.in
+    rm job
+    echo "4. Check mpid-list-elph-not-completed.in file for stopped el-ph calculations."
+    echo "Utilized 'squeue > job' to save jobs running in the cluster"
+    echo "Change 'squeue' command inside src/bash/phcheck-scan depending on the cluster" 
+    echo "Restart mainprogram 7"
+    echo " "
+  fi
+  echo "***********************************************************************************************************"
+  echo "Total calculations: $pp"
+  echo "Total completed: $kk"
+  echo "Not converged: $qq"
+  echo "qbreaksym error: $ll"
+  echo "scale_sym_ops error: $mm"
+  echo "FFT grid incompatible error: $nn"
+  echo "Calculations not completed: $rr"
+  echo "all done"
+  echo "***********************************************************************************************************"
 fi
-if [[ -f temp1.in ]]; then
-  mv temp1.in mpid-list-elph-finished-no-lambda.in
-  echo "2. Check mpid-list-elph-finished-no-lambda.in file for all completed el-ph calculations, but lambda.out not created"
-  echo "Submit mainprogram 8 - 11"
-  echo " "
-fi
-if [[ -f temp2.in ]]; then
-  mv temp2.in mpid-list-elph-not-converged.in
-  echo "3. Check mpid-list-elph-not-converged.in file for all unconverged el-ph calculations."
-  echo "Restart mainprogram 7"
-  echo " "
-fi
-if [[ -f temp3.in ]]; then
-  mv temp3.in mpid-list-elph-not-completed.in
-  rm job
-  echo "4. Check mpid-list-elph-not-completed.in file for stopped el-ph calculations."
-  echo "Utilized 'squeue > job' to save jobs running in the cluster"
-  echo "Change 'squeue' command inside src/bash/phcheck-scan depending on the cluster" 
-  echo "Restart mainprogram 7"
-  echo " "
-fi
-echo "***********************************************************************************************************"
-echo "Total calculations: $pp"
-echo "Total completed: $kk"
-echo "Not converged: $qq"
-echo "qbreaksym error: $ll"
-echo "scale_sym_ops error: $mm"
-echo "FFT grid incompatible error: $nn"
-echo "Calculations not completed: $rr"
-echo "all done"
-echo "***********************************************************************************************************"

@@ -34,7 +34,7 @@ for ((ii=$1; ii<$2; ++ii)); do
      cd R$A-$B/bands/
        echo "Creating soft links to CHGCAR of R$A-$B/relax/"
        ln -s ../relax/CHGCAR CHGCAR
-       nel=$(grep "NELECT" ../relax/OUTCAR | awk '{ print $3 }')
+       nel=$(grep "NELECT" ../relax/OUTCAR | tail -n 1 | awk '{ print $3 }')
        nel=$(echo $nel/1 | bc)
        soc=$(grep "LSORBIT = .TRUE." INCAR | wc -l)
        if [[ -f ../../vasp-band.in ]]; then

@@ -5,8 +5,10 @@ import sys
 import os
 import glob
 import warnings
+import random
 import matplotlib
 import matplotlib.pyplot as plt
+import matplotlib.colors as mcolors
 import pylab
 import numpy as np
 from pymatgen.io.vasp.inputs import Kpoints
@@ -117,7 +119,7 @@ def plot(plottype,file,comp,proj=None,read_kpoint=None,colormap=None):
             with open("fermi.dat", "r") as read_fermi:
                 fermi = float(read_fermi.readlines()[0].split("\n")[0])
         elif os.path.isfile('../relax/OUTCAR'):
-            os.system("""grep NELECT ../relax/OUTCAR | awk '{print $3}' > band_fermi.dat""")
+            os.system("""grep NELECT ../relax/OUTCAR | tail -n 1 | awk '{print $3}' > band_fermi.dat""")
             os.system("grep 'E-fermi' ../relax/OUTCAR | awk '{print $3}' > fermi.dat")
             fermi = np.loadtxt('fermi.dat').item()
         else:
@@ -694,30 +696,63 @@ def dos_plot_vasp(outfile="pdos.pdf"):
         plot_axis.legend(loc="upper right")
         plot_axis.set_ylabel("Density of States (states/eV)",fontweight='bold',fontsize=25)
         plot_axis.set_xlabel(r"E - E$_F$ (eV)",fontweight='bold',fontsize=25)
+        plt.savefig(outfile, dpi=500)
     elif nspin == 2:
         dos = complete_dos
         energies = dos.energies - dos.efermi
         spin = list(dos.densities.keys())
         dos_spin_up = dos.densities[spin[0]]
         dos_spin_down = -1*dos.densities[spin[1]]
+        plt.figure(1)
         plt.plot(energies, dos_spin_up, label="Up", color='b')
         plt.plot(energies, dos_spin_down, label="Down", color='r')
         plt.axhline(0, color='black', linestyle='--', linewidth=0.5)
         plt.axvline(0, color='black', linestyle='--', linewidth=0.5)
         plt.legend(bbox_to_anchor=(1.05, 1),loc="upper right",frameon=False)
-        plt.ylabel("DOS",fontweight='bold',fontsize=15)
-        plt.xlabel(r"E - E$_F$ (eV)",fontweight='bold',fontsize=15)
+        plt.ylabel("DOS (states/eV)",fontweight='bold',fontsize=25)
+        plt.xlabel(r"E - E$_F$ (eV)",fontweight='bold',fontsize=25)
         if xlim1 is not None:
             plt.xlim(xmin,xmax)
         else:
-            plt.xlim(-4,4)
+            plt.xlim(-8,4)
+        if ylim1 is not None:
+            ymax1 = ymax/2.0
+            plt.ylim(-1*ymax1 - 1,ymax1 + 1)
+        else:
+            plt.ylim(-40,40)
+        plt.savefig("pdos-spin-resolved.pdf", dpi=500)
+        plt.figure(2)
+        basecolor = list(mcolors.BASE_COLORS.keys())[:-1]
+        color=basecolor+list(mcolors.TABLEAU_COLORS.keys())
+        total_dos = result.complete_dos.get_densities()
+        energies = result.complete_dos.energies
+        efermi = result.efermi
+        plt.plot(energies-efermi, total_dos, 'k-', lw=1.75, label="Total DOS")
+        elm_list = result.complete_dos.structure.composition.elements
+        ndos_data = 0
+        for elm in elm_list:
+            elm = str(elm)
+            orb_list = list(result.complete_dos.get_element_spd_dos(elm).keys())
+            for i, orb in enumerate(orb_list):
+                x  = result.complete_dos.get_element_spd_dos(elm)[orb].get_densities()
+                k = ndos_data
+                plt.plot(energies-efermi, x, color=color[k], lw=1.75, label=f"{elm}-{orb}")
+                ndos_data += 1
         if ylim1 is not None:
             plt.ylim(ymin,ymax)
         else:
-            plt.xlim(-10,40)
+            plt.ylim(-5,40)
+        if xlim1 is not None:
+            plt.xlim(xmin,xmax)
+        else:
+            plt.xlim(-8,4)
+        ncol = int(ndos_data/4)
+        plt.legend(loc="upper left",ncol=ncol,fontsize='x-small',handletextpad=0.5,labelspacing=0.2)
+        plt.ylabel("DOS (states/eV)",fontweight='bold',fontsize=25)
+        plt.xlabel(r"E - E$_F$ (eV)",fontweight='bold',fontsize=25)
+        plt.savefig(outfile, dpi=500)
     else:
         print("nspin should be 1 or 2\n")
-    plt.savefig(outfile, dpi=500)
 def band_plot_vasp_line(mpid,compound):
     """
     Function to plot the bandstructure in line mode.

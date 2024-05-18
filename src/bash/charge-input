@@ -39,12 +39,13 @@ for ((ii=$1; ii<$2; ++ii)); do
       if [[ -f scf_dir/scf-relax-$A-$B.in ]]; then
         echo "Utilizing relaxed structure"
         sed "/&SYSTEM/a   tot_charge = $D," scf_dir/scf-relax-$A-$B.in > scf_dir/scf-$A-$D.in
-        echo "v$kk $A-$D $B" >> mpid-charge.in
+        echo "v$jj $A-$D $B" >> mpid-charge.in
       else
         echo "Utilizing unrelaxed structure"
         sed "/&SYSTEM/a   tot_charge = $D," scf_dir/scf-$A.in > scf_dir/scf-$A-$D.in
-        echo "v$kk $A-$D $B" >> mpid-charge.in
+        echo "v$jj $A-$D $B" >> mpid-charge.in
       fi
+        jj=$(echo $jj + 1 | bc)
      else
          D=$(grep "v$kk\ " charge.in | awk '{print $2}')
          D=$(echo $nelect + $D | bc -l)

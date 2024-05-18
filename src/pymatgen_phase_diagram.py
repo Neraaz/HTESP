@@ -49,6 +49,7 @@ def plot_phase(data):
             write_convexhull.write(entry.composition.formula.replace(' ','') + ",")
             write_convexhull.write(str(round(phase_diag.get_form_energy_per_atom(entry),4)))
             write_convexhull.write("," + str(round(phase_diag.get_e_above_hull(entry),4)) + "\n")
+            #write_convexhull.write("," + str(phase_diag.get_phase_separation_energy(entry, stable_only=True)) + "\n")
             #write_convexhull.write("," + str(phase_diag.get_decomposition(entry.composition)) + "\n")
     plotter = PDPlotter(phase_diag,show_unstable=True,backend="matplotlib")
     #plotter = PDPlotter(phase_diag,show_unstable=0.25,backend="matplotlib")

@@ -84,9 +84,14 @@ for ((ii=$1; ii<$2; ++ii)); do
    echo "---------------------------------------------------------------------------------------------------------------"
     if [[ -d R$A-$B/dos/ ]]; then
      cd R$A-$B/dos
-     cp scf-dos.in scf.in
+     if [[ -f scf-dos.in ]]; then
+      cp scf-dos.in scf.in
+     fi
      plot.py pdos $A $B $x
-     mv pdos-$B.pdf ../../plots/plot-pdos-$A-$B.pdf
+     cp pdos-$B.pdf ../../plots/plot-pdos-$A-$B.pdf
+     if [[ -f pdos-spin-resolved.pdf ]]; then
+      cp pdos-spin-resolved.pdf ../../plots/plot-pdos-$A-$B-spin-resolved.pdf
+     fi
      cd ../../
     fi
   elif [ $plot == 'wann_band' ]; then
