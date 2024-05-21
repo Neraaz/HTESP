@@ -1,7 +1,6 @@
 """
 Input_output script for berkeleyGW code, primariliy with Quantum Espresso (QE)
 written by Niraj K. Nepal, Ph.D.
-Email: tug11655@temple.edu
 """
 import sys
 import os

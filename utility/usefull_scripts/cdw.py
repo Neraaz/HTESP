@@ -1,4 +1,4 @@
-"""Writen by Niraj K. Nepal, Ph.D. (tug11655@temple.edu)"""
+"""Writen by Niraj K. Nepal, Ph.D."""
 """
 To manually obtain CDW, find q for which the phonon instability occurs for acoustic mode
 Create a supercell according to that q.

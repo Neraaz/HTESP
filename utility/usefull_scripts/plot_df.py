@@ -1,4 +1,3 @@
-"""Writen by Niraj K. Nepal, Ph.D. (tug11655@temple.edu)"""
 import sys
 import pandas as pd
 import matplotlib.pyplot as plt

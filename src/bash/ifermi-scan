@@ -17,7 +17,12 @@ for ((ii=$1; ii<$2; ++ii)); do
     if [[ ! -d IFERMI ]]; then
       mkdir IFERMI
     fi
-    cp run-ifermi.sh R$A-$B/relax/
+    if [[ -f run-ifermi.sh ]]; then
+      cp run-ifermi.sh R$A-$B/relax/
+    else
+      sed '/mpirun/d' run-vasp.sh > R$A-$B/relax/run-ifermi.sh
+      echo "ifermi plot --property velocity -a 90 --interpolation-factor 10 --output fermi-surface.jpg --property-colormap bwr --hide-labels" >> R$A-$B/relax/run-ifermi.sh
+    fi
     cd R$A-$B/relax/
       ifermi info --property velocity > fermi_info.dat
       cmax=$(grep "Avg velocity" fermi_info.dat | awk '{ print $3 }')
@@ -26,7 +31,6 @@ for ((ii=$1; ii<$2; ++ii)); do
       cm=$(echo $cmax*2 | bc)
       echo "$cm"
       # Change various arguments of 'ifermi' command for your convenience.
-      echo "ifermi plot --property velocity -a 90 --interpolation-factor 10 --output fermi-surface.jpg --property-colormap bwr --hide-labels" >> run-ifermi.sh
       echo "cp fermi-surface.html ../../IFERMI/$A-$B-fs.html" >> run-ifermi.sh
       echo "cp fermi_info.dat ../../IFERMI/$A-$B-fs.dat" >> run-ifermi.sh
       echo "cp fermi-surface.jpg ../../IFERMI/$A-$B-fs.jpg" >> run-ifermi.sh

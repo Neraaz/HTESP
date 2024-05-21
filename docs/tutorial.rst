@@ -775,7 +775,7 @@ Fermi Surface
 
 Perform :ref:`structure relaxation <relax-label>`.
 
-First, generate a :ref:`job script <job-label>` ``run-ifermi.sh``. We need :ref:`ifermi.json <ifermi>` file. Once, we edit based on our need,
+First, generate a :ref:`job script <job-label>` ``run-ifermi.sh``. If not present, then ``run-vasp.sh`` script will be used with default commands (look for ifermi-scan script inside bash). We can utilize :ref:`ifermi.json <ifermi>` file for customized ``run-ifermi.sh`` script. Once, we edit based on our need,
 execute:
 
 .. code-block:: bash
@@ -792,7 +792,8 @@ For Fermi surface calculations using IFERMI:
 
     mainprogram fermisurface
 
-to generate Fermi surfaces in different formats using the IFERMI package.
+to generate Fermi surfaces in different formats using the IFERMI package. Check for required dependencies for 
+various plotting option. For example, you may need ``kaleido (pip install -U kaleido)`` package to export figures from plotly.
 
 
 ---------------------------------------
