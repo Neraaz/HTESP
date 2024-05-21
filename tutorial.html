@@ -852,7 +852,7 @@ mainprogram<span class="w"> </span><span class="m">27</span>:<span class="w"> </
 <section id="fermi-surface">
 <h1 id="fermi-surface">Fermi Surface<a class="headerlink" href="#fermi-surface" title="Link to this heading">¶</a></h1>
 <p>Perform <a class="reference internal" href="#relax-label"><span class="std std-ref">structure relaxation</span></a>.</p>
-<p>First, generate a <a class="reference internal" href="param.html#job-label"><span class="std std-ref">job script</span></a> <code class="docutils literal notranslate"><span class="pre">run-ifermi.sh</span></code>. We need <a class="reference internal" href="param.html#ifermi"><span class="std std-ref">ifermi.json</span></a> file. Once, we edit based on our need,
+<p>First, generate a <a class="reference internal" href="param.html#job-label"><span class="std std-ref">job script</span></a> <code class="docutils literal notranslate"><span class="pre">run-ifermi.sh</span></code>. If not present, then <code class="docutils literal notranslate"><span class="pre">run-vasp.sh</span></code> script will be used with default commands (look for ifermi-scan script inside bash). We can utilize <a class="reference internal" href="param.html#ifermi"><span class="std std-ref">ifermi.json</span></a> file for customized <code class="docutils literal notranslate"><span class="pre">run-ifermi.sh</span></code> script. Once, we edit based on our need,
 execute:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mainprogram<span class="w"> </span>jobscript
 </pre></div>
@@ -865,7 +865,8 @@ execute:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mainprogram<span class="w"> </span>fermisurface
 </pre></div>
 </div>
-<p>to generate Fermi surfaces in different formats using the IFERMI package.</p>
+<p>to generate Fermi surfaces in different formats using the IFERMI package. Check for required dependencies for
+various plotting option. For example, you may need <code class="docutils literal notranslate"><span class="pre">kaleido</span> <span class="pre">(pip</span> <span class="pre">install</span> <span class="pre">-U</span> <span class="pre">kaleido)</span></code> package to export figures from plotly.</p>
 </section>
 <section id="thermodynamic-stability-convex-hull">
 <h1 id="thermodynamic-stability-convex-hull">Thermodynamic stability (Convex Hull)<a class="headerlink" href="#thermodynamic-stability-convex-hull" title="Link to this heading">¶</a></h1>
