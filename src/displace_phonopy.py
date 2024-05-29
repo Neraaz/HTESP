@@ -29,6 +29,7 @@ class DisplacePhonopy:
     -------
     >>> displace = DisplacePhonopy("band.conf") #create an object
     >>> displace.parse() #parsing band.conf
+    >>> displace.extract_mass() #Extracting mass and store in self.mass
     >>> displace.print_qpt() #print qpoints and its index
     0 [0.0, 0.0, 0.0]
     1 [0.1, 0.1, 0.1]
@@ -47,6 +48,7 @@ class DisplacePhonopy:
         self.filename = filename
         self.data = None
         self.eigen = None
+        self.mass = None
 
     def parse(self):
         """
@@ -72,6 +74,18 @@ class DisplacePhonopy:
         """
         for i,l in enumerate(self.data['phonon']):
             print(i,l['q-position'])
+
+    def mass_extract(self):
+        """
+        Returns list of masses of the ions
+        """
+        mass = []
+        point_list = self.data['points']
+        for point in point_list:
+            mass.append(point['mass'])
+        self.mass = mass
+            
+        
 
     def print_mode(self,iqpt):
         """
@@ -147,6 +161,6 @@ class DisplacePhonopy:
         """
         struc = structure.Structure.from_file("POSCAR")
         for i,site in enumerate(struc.sites):
-            displace_eigen = self.eigen[i]
+            displace_eigen = self.eigen[i]/np.sqrt(self.mass[i])
             site.coords += np.array([displace_eigen[0][0],displace_eigen[1][0],displace_eigen[2][0]])
         struc.to("displace_poscar.vasp",fmt="poscar")

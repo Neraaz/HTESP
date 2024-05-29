@@ -187,7 +187,7 @@ def main():
             print("To check negative frequency in the phonon band, use process = checkfreq\n")
             print("process = singlemode provides info for single-mode phonon calculations.")
             print(" Also do 'mainprogram process-info' and look for process 23-25 for automated calculations.")
-            print(" Requires run-dynmat.sh, run-scf.sh, and Vasp.pm files in working directory\n")
+            print(" Requires run-dynmat.sh, and run-scf.sh files in working directory\n")
             vasp_potcar="""#For POTCAR. Suppose we have POTCARS as  POT_GGA_PAW_PBE/Mg_p/POTCAR
                           #pmg config -p /path_to/POT_GGA_PAW_PBE PBE52
                           # After that add path to .pmgrc.yaml

@@ -113,3 +113,5 @@ script (from line 78) in bash folder of the source code.
 
 and resubmit with
 mainprogram 7
+
+Reference results can be found in calc_parallel folder.

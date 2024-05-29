@@ -372,7 +372,7 @@ def extract(ntype,properties,elm,exclude_el,nelm=1,metal=False,
     data.to_csv(out)
     return data
 
-def download_by_entry(entries,must_include,size_constraint=20,ntype_constraint=5,FE=False,metal=False,magnetic=False,spacegroup=None,properties=None):
+def download_by_entry(entries,must_include,size_constraint=20,ntype_constraint=5,FE=False,thermo_stable=True,metal=False,magnetic=False,spacegroup=None,properties=None):
     """
     Function to extract and create input files using "mp_api.client.MPRester.get_entries_in_chemsys" Function of the materials project API package (pip install mp_api).
     This mode is turned on when using 'mode':'chemsys' in 'download.py' file.
@@ -445,7 +445,17 @@ def download_by_entry(entries,must_include,size_constraint=20,ntype_constraint=5
         comp = entries[i].composition.formula.replace(' ','')
         count = int(entries[i].composition.num_atoms)
         elm_list = list(entries[i].composition.as_dict().keys())
+        energy_above_hull = obj.data['energy_above_hull']
         # Define logic for filtering based on optional parameters
+        if isinstance(thermo_stable, bool):
+            if thermo_stable:
+                thermo_logic = energy_above_hull < 0.0001
+            else:
+                thermo_logic = True
+        elif isinstance(thermo_stable, (int, float)):
+            thermo_logic = energy_above_hull < thermo_stable
+        else:
+            thermo_logic = True
         if metal:
             gap_logic = band_gap < 0.0001
         else:
@@ -465,7 +475,7 @@ def download_by_entry(entries,must_include,size_constraint=20,ntype_constraint=5
         print("Extracting {}".format(comp) + "\n")
         # Write data to input file and CSV file if conditions are met
         with open("mpid-list.in", "a") as mplist_write:
-            if count < size_constraint and gap_logic and fe_logic and mag_logic and sg_logic:
+            if count < size_constraint and gap_logic and fe_logic and mag_logic and sg_logic and thermo_logic:
                 if eval(must_in):
                     mplist_write.write("v{} {} {}".format(entry,mpid,obj.prefix) + "\n")
                     entry += 1
@@ -562,7 +572,7 @@ chemsys={'entries':['B'],'size_constraint':20,'ntype_constraint':5,'must_include
         elif mode == 'chemsys':
             # Download data for compounds based on chemical system
             download_by_entry(d['chemsys']['entries'],d['chemsys']['must_include'],d['chemsys']['size_constraint'],d['chemsys']['ntype_constraint'],
-                              d['chemsys']['FE'],d['chemsys']['metal'],d['chemsys']['magnetic'],d['chemsys']['spacegroup'],properties)
+                              d['chemsys']['FE'],d['chemsys']['thermo_stable'],d['chemsys']['metal'],d['chemsys']['magnetic'],d['chemsys']['spacegroup'],properties)
         elif mode == 'fromcif':
             # List CIF files
             list_cif = glob.glob("*.cif",recursive=True)

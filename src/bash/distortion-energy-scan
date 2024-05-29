@@ -14,6 +14,7 @@ for ((ii=$1; ii<$2; ++ii)); do
   if [[ ! -d R$A-$B ]]; then
     continue
   fi
+  cp config.json R$A-$B/
   if [[ -f R$A-$B/relax/scf.in ]]; then
    nat=$(grep nat R$A-$B/relax/scf.in | awk '{print $3}')
    Nt=${nat%,*}

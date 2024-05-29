@@ -136,6 +136,7 @@ This `JSON <https://docs.python.org/3/library/json.html>`_ file serves as the ma
           "ntype_constraint": 4,
           "must_include": ["Cr","Pd","P"],
           "FE": false,
+          "thermo_stable": 0.08,
           "metal": false,
           "magnetic": true,
           "spacegroup": null
@@ -462,6 +463,7 @@ This `JSON <https://docs.python.org/3/library/json.html>`_ file serves as the ma
      "plot": {
         "xlim": null,
         "ylim" : [-5, 5],
+        "atomproj": null,
         "bandproj": {
           "proj_type": "element-orbital",
           "proj": {"Zr": "dxz", "Pd": "dxz"},
@@ -714,6 +716,7 @@ It has a dictionary of the form.
           "ntype_constraint": 4,
           "must_include": ["Fe", "Pd", "I"],
           "FE": false,
+          "thermo_stable": 0.08,
           "metal": false,
           "magnetic": true,
           "spacegroup": null},
@@ -813,7 +816,7 @@ It has a dictionary of the form.
 
     - **wann_band**: Bandstructure from wannier calculation.
 
-    - **phonproj**: Atom-projected phonon for QE-DFPT.
+    - **phonproj**: Atom-projected phonon for QE-DFPT. Provide value for ``atomproj`` cutoff for plotting atomic projections on phonon dispersion.
 
     - **bandproj**: Atom or orbital projected band structure. (Turn on only after processing/plotting band structure with eband/vasp-line)
 
@@ -842,6 +845,11 @@ It has a dictionary of the form.
   
   - **FE**: 
     - ``false``: If ``true``, compounds with negative formation energies are searched. Otherwise, include all.
+
+  - **thermo_stable**:
+    - If ``true``, compounds with energy above hull less than 0.001 eV/atom is searched.
+    - If ``0.08``, compounds with energy above hull less than 0.08 eV/atom is searched.
+    - If It holds the false value, no filter is applied.
   
   - **metal**: 
     - ``false``: If ``true``, compounds with zero bandgap are searched. Otherwise, include all.
@@ -1157,6 +1165,8 @@ plot
 It has following keys and values.
 
 - **xlim/ylim**: List showing range of the plot along x- or y- direction.
+
+- **atomproj**: Cutoff for plotting atomic projection on phonon dispersion. 
 
 - **bandproj**: Dictionary requires for projected band structure. 
 

@@ -192,6 +192,7 @@ In this section, we explored techniques for extracting data and generating input
       "ntype_constraint": 3,
       "must_include": ["Mg","B"],
       "FE": false,
+      "thermo_stable": 0.08,
       "metal": false,
       "magnetic": true,
       "spacegroup": null
@@ -820,6 +821,7 @@ Now edit following portion of the ``config.json`` file:
       "ntype_constraint": 3,  ==> Compounds containing fewer than 3 different species, specifically 2.
       "must_include": ["Mg", "B"], ==> If "B" is not included, only compounds containing "Mg" and the binary compound "Mg-B" are extracted since "Mg" must be included. 
       "FE": false,
+      "thermo_stable": 0.02,
       "metal": false,
       "magnetic": true,
       "spacegroup": null},

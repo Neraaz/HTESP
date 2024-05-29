@@ -254,6 +254,8 @@ def plot(plottype,file,comp,proj=None,read_kpoint=None,colormap=None):
         lqu[np.where(data2 < 0.6)] = 0
         #lqu_min = lqu.max()*0.2
         #lqu = lqu/lqu.max()
+        print("Setting minimum cutoff for plotting lambda as 10% of maximum value.\n")
+        print("Change this if you need otherwise in src/plot.py 259 line\n")
         lqu_min = lqu.max()*0.1
         #print(dosef)
         #lqu = data2
@@ -300,6 +302,7 @@ def plot(plottype,file,comp,proj=None,read_kpoint=None,colormap=None):
         data = np.loadtxt('alpha2F.dat')
         en_data = data[:,0]
         a2f = data[:,2]
+        #a2f = data[:,2]/en_data
         delw = en_data[1]
         en_data[np.where(en_data == 0.0)] = 0.0000000001
         plt.plot(en_data,a2f,'g',lw=2)
@@ -365,7 +368,8 @@ def plot_gamma(xdata,ydata,color,min_):
     """
     ax_p = plt.gca()
     for i in np.arange(len(xdata) - 1):
-        marker_size = color[i]*3
+        # Change marker size here
+        marker_size = color[i]*5
         if color[i] <= min_:
             ax_p.plot([xdata[i],xdata[i+1]], [ydata[i], ydata[i+1]], lw=1.5, color='k')
         else:
@@ -552,6 +556,7 @@ def plot_projection(scf_file,projection_file,phonon_freq,outfile,nkpt):
     It calculates the projection cutoff based on the number of atoms if not provided explicitly.
     The function generates a plot showing the atomic projection on the phonon dispersion.
     """
+    input_data = config()
     _,sympt,symlb,pt_l,_,_ = kpath(scf_file,nkpt,0)
     pt_l = np.array(pt_l)
     sympt = np.array(sympt)
@@ -563,15 +568,24 @@ def plot_projection(scf_file,projection_file,phonon_freq,outfile,nkpt):
     nat = int(proj.shape[0]/nkpt)
     # Define projection cutoff for systems with
     # different number of ions.
+    atomproj = input_data['plot']['atomproj']
     if nat < 4:
-        proj_cutoff = 0.6
+        if 'atomproj' in input_data['plot'].keys() and atomproj is not None:
+            proj_cutoff = atomproj
+        else:
+            print("atomproj key not found in config.json. Using default value\n")
+            proj_cutoff = 0.6
     elif nat == 4:
-        proj_cutoff = 0.5
+        if 'atomproj' in input_data['plot'].keys() and atomproj is not None:
+            proj_cutoff = atomproj
+        else:
+            print("atomproj key not found in config.json. Using default value\n")
+            proj_cutoff = 0.5
     else:
-        print("Compound has more than 4 ions. So not plotting\n")
+        print("Plotting is available for systems with maximum 4 ions. Exiting\n")
         sys.exit()
     print("Cutoff filter for projection: {}\n".format(proj_cutoff))
-    print("Change proj_cutoff variable inside plot.py, if you need otherwise\n")
+    print("Change atomproj value in config.json for different cutoff\n")
     for i in range(nat):
         proj_list.append(proj[i*nkpt:(i+1)*nkpt,:])
     percmto_thz = 33.356

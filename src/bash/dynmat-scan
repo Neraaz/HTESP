@@ -14,13 +14,18 @@ for ((ii=$1; ii<$2; ++ii)); do
   echo "$A $B"
   
   prefix=$(grep "prefix = " R$A-$B/relax/scf.in | awk '{print $3}' | sed 's/.$//')
-  if [[ -f R$A-$B/calc/$B.dyn1 ]] || [[ -f R$A-$B/calc/$B.dyn ]] ; then
+  if [[ -d R$A-$B/calc ]]; then
+    folder="calc"
+  else
+    folder="phonon"
+  fi
+  if [[ -f R$A-$B/$folder/$B.dyn1 ]] || [[ -f R$A-$B/$folder/$B.dyn ]] ; then
   
   q2r.py $A $B $prefix
-  mv dynmat-$A-$B.in R$A-$B/calc/dynmat.in
-  cp run-dynmat.sh R$A-$B/calc/
+  mv dynmat-$A-$B.in R$A-$B/$folder/dynmat.in
+  cp run-dynmat.sh R$A-$B/$folder/
     echo " submitting jobs in R$A-$B "
-    cd R$A-$B/calc
+    cd R$A-$B/$folder
        cp $B.dyn1 $B.dyn
        qerun "$A" "$B" "dynmat"
        sleep $SLEEP

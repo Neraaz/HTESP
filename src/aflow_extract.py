@@ -53,7 +53,11 @@ def properties_string(dict_param):
     """
     criteria = ""
     search = dict_param['aflow'] # Extract aflow dictionary from dict_param
-    apply_filter = search['filter'] # Check if filtering is applied
+    if 'filter' in search.keys():
+        apply_filter = search['filter']
+        del search['filter']
+    else:
+        apply_filter = False
     if apply_filter:
         for key in search:
             if key == 'elm': # Element filter
@@ -90,7 +94,7 @@ def properties_string(dict_param):
                     else:
                         prop_string += search[key][i]
             else:
-                print("Invalid key provided\n")
+                print(f"Invalid key provided: {key}\n")
     else:
         for key in search:
             if key == 'elm':
@@ -108,9 +112,10 @@ def properties_string(dict_param):
                     else:
                         prop_string += search[key][i]
             else:
-                print("Invalid key provided\n")
+                print(f"key not being used: {key}\n")
     criteria = criteria + prop_string
     criteria = criteria.replace(" ","") # Remove any spaces in the criteria string
+    print(f"Search criteria: {criteria}\n")
     return criteria
 def search_data(dict_param):
     """
@@ -130,7 +135,6 @@ def search_data(dict_param):
     Example:
         >>> search_criteria = {
         ...    "aflow": {
-        ...        "filter": True,
         ...        "elm": ["Cu", "Zn"],
         ...        "nsites": 4,
         ...        "metal": True,
@@ -164,6 +168,8 @@ def search_data(dict_param):
     if not os.path.isfile("download/download-aflow.csv"):
         data_processed.to_csv("download/download-aflow.csv",index=False)
     # Generating 'mpid-list.in' file
+    if os.path.isfile("mpid-list.in"):
+        os.system("mv mpid-list.in mpid-list-old.in")
     if not os.path.isfile("mpid-list.in"):
         with open("mpid-list.in","w") as write_mpid:
             for i in range(data_processed.shape[0]):

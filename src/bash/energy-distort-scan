@@ -23,6 +23,7 @@ for ((ii=$1; ii<$2; ++ii)); do
   fi
   cat scf-header.in $ii.dat > scf.in
   scftocif.py
+  rm scf.in
   a=$(cat cellpar.in | awk '{print $1}')
   b=$(cat cellpar.in | awk '{print $2}') 
   c=$(cat cellpar.in | awk '{print $3}')

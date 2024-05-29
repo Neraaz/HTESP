@@ -16,6 +16,11 @@ for ((ii=$1; ii<$2; ++ii)); do
   if [[ ! -d R$A-$B ]]; then
     continue
   fi
+  if [[ -d R$A-$B/calc ]]; then
+    folder="calc"
+  else
+    folder="phonon"
+  fi
   if [[ -f R$A-$B/relax/scf.in ]]; then
    nat=$(grep nat R$A-$B/relax/scf.in | awk '{print $3}')
    Nt=${nat%,*}
@@ -29,8 +34,8 @@ for ((ii=$1; ii<$2; ++ii)); do
   else
    echo "scf.in not present inside R$A-$B/relax"
   fi
-  if [[ -f R$A-$B/calc/dynmat.axsf ]]; then
-    mv R$A-$B/calc/dynmat.axsf R$A-$B/
+  if [[ -f R$A-$B/$folder/dynmat.axsf ]]; then
+    cp R$A-$B/$folder/dynmat.axsf R$A-$B/
   else
     echo "dynmat.axsf not present"
   fi

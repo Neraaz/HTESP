@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 #"""Writen by Niraj K. Nepal, Ph.D."""
 """Module to extract structures"""
+import sys
 import warnings
-from ase.io import cif,espresso
+from ase.io import cif,espresso,vasp
+from cif_to_gsinput import pymatgen_cif
 warnings.filterwarnings('ignore')
 def scf_tocif(filename):
     """
@@ -11,8 +13,14 @@ def scf_tocif(filename):
     ---------
     filename : QE input file
     """
-    filename = espresso.read_espresso_in(filename)
+    if filename == "scf.in":
+        filename = espresso.read_espresso_in(filename)
+    elif filename == "POSCAR":
+        filename = vasp.read_vasp(filename)
+    else:
+        print("Either scf.in or POSCAR expected\n")
     cif.write_cif('relax.cif',filename)
+    pymatgen_cif('relax.cif')
     return filename
 def cellpar(filename):
     """
@@ -30,7 +38,11 @@ def main():
     """
     main function
     """
-    filename=scf_tocif('scf.in')
+    if len(sys.argv) > 1:
+        filename = sys.argv[1]
+    else:
+        filename = "scf.in"
+    filename=scf_tocif(filename)
     cellpar(filename)
 if __name__ == "__main__":
     main()

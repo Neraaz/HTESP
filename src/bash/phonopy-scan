@@ -266,14 +266,21 @@ for ((ii=$1; ii<$2; ++ii)); do
 
     elif [ $step == 0 ]; then
      echo "---------------------------------------------------------------------------------------------------------------"
-     echo "Extracting total energies, and stored in 'econv.csv'"
+     echo "Extracting total energies and structures files in .cif format, stored respectively in 'econv.csv' file and cif folder"
      echo "---------------------------------------------------------------------------------------------------------------"
+     if [[ ! -d cif ]]; then
+       mkdir cif
+     fi
      if [ $dft == 'QE' ] || [ $dft == 'qe' ]; then
        e0=`grep ! R$A-$B/relax/scf.out | tail -n 1 | awk '{print $5}'`
        nat=$(grep "number of atoms/cell" R$A-$B/relax/scf.out | tail -n 1 | awk '{ print $5 }')
        niter=$(grep ! R$A-$B/relax/scf.out | wc -l)
        e=`echo "scale=10; $e0 * $Rytoev / $nat " | bc`
        echo "$A,$B,$nat,$e,$niter" >> econv.csv
+       cd R$A-$B/relax/
+         scftocif.py
+         cp relax.cif ../../cif/$A.cif
+       cd ../../
      else
        conv=$(grep "reached required accuracy - stopping structural energy minimisation" R$A-$B/relax/OUTCAR | wc -l)
        nsw_check=$(grep "NSW = 0" R$A-$B/relax/INCAR | wc -l)
@@ -284,6 +291,10 @@ for ((ii=$1; ii<$2; ++ii)); do
        e=$(echo "scale=6; $e0/$nat" | bc)
        niter=$(grep "y  w" R$A-$B/relax/OUTCAR | wc -l)
        echo "$A,$B,$nat,$e,$niter" >> econv.csv
+       cd R$A-$B/relax/
+         scftocif.py POSCAR
+         cp relax.cif ../../cif/$A.cif
+       cd ../../
        else
          echo "not converged: $A $B"
          continue

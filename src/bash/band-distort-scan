@@ -8,37 +8,52 @@
 source jobscript.sh
 
 for ((ii=$1; ii<$2; ++ii)); do
+  echo "-------------------------------------------------"
   if [[ ! -d R$ii ]] ; then
       mkdir R$ii
   fi
-relaxed=$(grep "Final scf calculation at the relaxed structure." R$ii/scf.out | wc -l)
-if [[ -f R$ii/scf.out ]] && [[ $relaxed -gt 0 ]]; then
-  echo "Calculation resubmitting..."
-  sed -n '/Begin final coordinates/,/End final coordinates/p' R$ii/scf.out | sed '$d' | sed '1,4d'| sed '5d' > R$ii/$ii.dat
-  cat scf-header.in R$ii/$ii.dat > R$ii/scf.in
-elif [[ -f R$ii/scf.out ]] && [[ $relaxed -lt 1 ]]; then
-  echo "time out" 
-  nat=$(grep "number of atoms/cell" R$ii/scf.out | tail -n 1 | awk '{ print $5 }')
-  celli=$(echo $nat + 6 | bc)
-  cellj=$(echo $celli + 1 | bc)
-  grep -A $celli 'CELL_PARAMETERS (angstrom)' R$ii/scf.out | tail -n $cellj | sed '$d' > R$ii/cell.dat
-  mv R$ii/scf.in R$ii/scf-initial.in
-  mv R$ii/scf.out R$ii/scf-initial.out
-  cat scf-header.in R$ii/cell.dat > R$ii/scf.in
-else
-  qe_axsf2cellpos.py dynmat.axsf $ii 1.0 > cell.dat
-  cat scf-header.in cell.dat > R$ii/scf.in
-  rm cell.dat
-################
-## SUBMIT JOB ##
-################
-fi
-  cp run-scf.sh R$ii/
-  echo " submitting jobs in mode $ii "
-  cd R$ii
-     sbatch run-scf.sh
-     sleep $SLEEP
-  cd ../
+  if [[ -f R$ii/scf.out ]]; then
+  relaxed=$(grep "Final scf calculation at the relaxed structure." R$ii/scf.out | wc -l)
+  niter=$(grep ! R$ii/scf.out | wc -l)
+  else
+    relaxed=$(echo 0 | bc)
+    niter=$(echo 100 | bc)
+  fi
+  if [[ -f R$ii/scf.out ]] && [[ $relaxed -gt 0 ]]; then
+    if [[ $niter -lt 3 ]]; then
+      echo "Structure already relaxed"
+      continue
+    else
+      echo "Calculation resubmitting..."
+      sed -n '/Begin final coordinates/,/End final coordinates/p' R$ii/scf.out | sed '$d' | sed '1,4d'| sed '5d' > R$ii/$ii.dat
+      cat scf-header.in R$ii/$ii.dat > R$ii/scf.in
+    fi
+  elif [[ -f R$ii/scf.out ]] && [[ $relaxed -lt 1 ]]; then
+    echo "time out" 
+    nat=$(grep "number of atoms/cell" R$ii/scf.out | tail -n 1 | awk '{ print $5 }')
+    celli=$(echo $nat + 6 | bc)
+    cellj=$(echo $celli + 1 | bc)
+    grep -A $celli 'CELL_PARAMETERS (angstrom)' R$ii/scf.out | tail -n $cellj | sed '$d' > R$ii/cell.dat
+    mv R$ii/scf.in R$ii/scf-initial.in
+    mv R$ii/scf.out R$ii/scf-initial.out
+    cat scf-header.in R$ii/cell.dat > R$ii/scf.in
+  else
+    qe_axsf2cellpos.py dynmat.axsf $ii 1.0 > cell.dat
+    cat scf-header.in cell.dat > R$ii/scf.in
+    rm cell.dat
+  ################
+  ## SUBMIT JOB ##
+  ################
+  fi
+    if [[ $niter -gt 2 ]]; then
+      cp run-scf.sh R$ii/
+      echo " submitting jobs in mode $ii "
+      cd R$ii
+         sbatch run-scf.sh
+         sleep $SLEEP
+      cd ../
+    fi
+ echo "-------------------------------------------------"
 done
 echo "all done"
 
