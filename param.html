@@ -342,6 +342,7 @@
 <span class="w">      </span><span class="nt">"ntype_constraint"</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span>
 <span class="w">      </span><span class="nt">"must_include"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"Cr"</span><span class="p">,</span><span class="s2">"Pd"</span><span class="p">,</span><span class="s2">"P"</span><span class="p">],</span>
 <span class="w">      </span><span class="nt">"FE"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"thermo_stable"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.08</span><span class="p">,</span>
 <span class="w">      </span><span class="nt">"metal"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
 <span class="w">      </span><span class="nt">"magnetic"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
 <span class="w">      </span><span class="nt">"spacegroup"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span>
@@ -668,6 +669,7 @@
 <span class="w"> </span><span class="nt">"plot"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nt">"xlim"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">"ylim"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">-5</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">],</span>
+<span class="w">    </span><span class="nt">"atomproj"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">"bandproj"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">      </span><span class="nt">"proj_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"element-orbital"</span><span class="p">,</span>
 <span class="w">      </span><span class="nt">"proj"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"Zr"</span><span class="p">:</span><span class="w"> </span><span class="s2">"dxz"</span><span class="p">,</span><span class="w"> </span><span class="nt">"Pd"</span><span class="p">:</span><span class="w"> </span><span class="s2">"dxz"</span><span class="p">},</span>
@@ -874,6 +876,7 @@
 <span class="w">      </span><span class="nt">"ntype_constraint"</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span>
 <span class="w">      </span><span class="nt">"must_include"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"Fe"</span><span class="p">,</span><span class="w"> </span><span class="s2">"Pd"</span><span class="p">,</span><span class="w"> </span><span class="s2">"I"</span><span class="p">],</span>
 <span class="w">      </span><span class="nt">"FE"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"thermo_stable"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.08</span><span class="p">,</span>
 <span class="w">      </span><span class="nt">"metal"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
 <span class="w">      </span><span class="nt">"magnetic"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
 <span class="w">      </span><span class="nt">"spacegroup"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">},</span>
@@ -958,7 +961,7 @@
 <li><p><strong>pdos</strong>: Density of states and partial DOS, applicable to QE/VASP.</p></li>
 <li><p><strong>gammaband</strong>: Electron-phonon coupling strength projected phonon band for QE-DFPT.</p></li>
 <li><p><strong>wann_band</strong>: Bandstructure from wannier calculation.</p></li>
-<li><p><strong>phonproj</strong>: Atom-projected phonon for QE-DFPT.</p></li>
+<li><p><strong>phonproj</strong>: Atom-projected phonon for QE-DFPT. Provide value for <code class="docutils literal notranslate"><span class="pre">atomproj</span></code> cutoff for plotting atomic projections on phonon dispersion.</p></li>
 <li><p><strong>bandproj</strong>: Atom or orbital projected band structure. (Turn on only after processing/plotting band structure with eband/vasp-line)</p></li>
 </ul>
 </li>
@@ -982,6 +985,10 @@
 - <code class="docutils literal notranslate"><span class="pre">["Fe",</span> <span class="pre">"Pd",</span> <span class="pre">"I"]</span></code>: All of these elements are included in the search. If only <code class="docutils literal notranslate"><span class="pre">["Fe",</span> <span class="pre">"Pd"]</span></code>, then “I” only elements are not searched.</p></li>
 <li><p><strong>FE</strong>:
 - <code class="docutils literal notranslate"><span class="pre">false</span></code>: If <code class="docutils literal notranslate"><span class="pre">true</span></code>, compounds with negative formation energies are searched. Otherwise, include all.</p></li>
+<li><p><strong>thermo_stable</strong>:
+- If <code class="docutils literal notranslate"><span class="pre">true</span></code>, compounds with energy above hull less than 0.001 eV/atom is searched.
+- If <code class="docutils literal notranslate"><span class="pre">0.08</span></code>, compounds with energy above hull less than 0.08 eV/atom is searched.
+- If It holds the false value, no filter is applied.</p></li>
 <li><p><strong>metal</strong>:
 - <code class="docutils literal notranslate"><span class="pre">false</span></code>: If <code class="docutils literal notranslate"><span class="pre">true</span></code>, compounds with zero bandgap are searched. Otherwise, include all.</p></li>
 <li><p><strong>magnetic</strong>:
@@ -1239,6 +1246,7 @@ Setting <code class="docutils literal notranslate"><span class="pre">filter</spa
 <p>It has following keys and values.</p>
 <ul>
 <li><p><strong>xlim/ylim</strong>: List showing range of the plot along x- or y- direction.</p></li>
+<li><p><strong>atomproj</strong>: Cutoff for plotting atomic projection on phonon dispersion.</p></li>
 <li><p><strong>bandproj</strong>: Dictionary requires for projected band structure.</p>
 <ul class="simple">
 <li><p><strong>plot_type</strong>: Available options are:</p></li>

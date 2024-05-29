@@ -196,6 +196,8 @@
         </li>
         <li class="md-nav__item"><a href="#displace_phonopy.DisplacePhonopy.print_qpt" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">DisplacePhonopy.print_qpt()</span></code></a>
         </li>
+        <li class="md-nav__item"><a href="#displace_phonopy.DisplacePhonopy.mass_extract" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">DisplacePhonopy.mass_extract()</span></code></a>
+        </li>
         <li class="md-nav__item"><a href="#displace_phonopy.DisplacePhonopy.print_mode" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">DisplacePhonopy.print_mode()</span></code></a>
         </li>
         <li class="md-nav__item"><a href="#displace_phonopy.DisplacePhonopy.negative_freq" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">DisplacePhonopy.negative_freq()</span></code></a>
@@ -275,6 +277,7 @@ To obtain eigenvectors on band.yaml, switch on eigenvector tag to true in band.c
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">displace</span> <span class="o">=</span> <span class="n">DisplacePhonopy</span><span class="p">(</span><span class="s2">"band.conf"</span><span class="p">)</span> <span class="c1">#create an object</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">displace</span><span class="o">.</span><span class="n">parse</span><span class="p">()</span> <span class="c1">#parsing band.conf</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">displace</span><span class="o">.</span><span class="n">extract_mass</span><span class="p">()</span> <span class="c1">#Extracting mass and store in self.mass</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">displace</span><span class="o">.</span><span class="n">print_qpt</span><span class="p">()</span> <span class="c1">#print qpoints and its index</span>
 <span class="go">0 [0.0, 0.0, 0.0]</span>
 <span class="go">1 [0.1, 0.1, 0.1]</span>
@@ -309,6 +312,11 @@ To obtain eigenvectors on band.yaml, switch on eigenvector tag to true in band.c
 <dd class="field-odd"><p>None</p>
 </dd>
 </dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="displace_phonopy.DisplacePhonopy.mass_extract">
+<span class="sig-name descname"><span class="pre">mass_extract</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/displace_phonopy.html#DisplacePhonopy.mass_extract"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#displace_phonopy.DisplacePhonopy.mass_extract" title="Link to this definition">¶</a></dt>
+<dd><p>Returns list of masses of the ions</p>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="displace_phonopy.DisplacePhonopy.print_mode">

@@ -192,8 +192,10 @@
 <span></span><span class="ch">#!/usr/bin/env python</span>
 <span class="c1">#"""Writen by Niraj K. Nepal, Ph.D."""</span>
 <span class="sd">"""Module to extract structures"""</span>
+<span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
-<span class="kn">from</span> <span class="nn">ase.io</span> <span class="kn">import</span> <span class="n">cif</span><span class="p">,</span><span class="n">espresso</span>
+<span class="kn">from</span> <span class="nn">ase.io</span> <span class="kn">import</span> <span class="n">cif</span><span class="p">,</span><span class="n">espresso</span><span class="p">,</span><span class="n">vasp</span>
+<span class="kn">from</span> <span class="nn">cif_to_gsinput</span> <span class="kn">import</span> <span class="n">pymatgen_cif</span>
 <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">'ignore'</span><span class="p">)</span>
 <div class="viewcode-block" id="scf_tocif">
 <a class="viewcode-back" href="../scftocif.html#scftocif.scf_tocif">[docs]</a>
@@ -204,8 +206,14 @@
 <span class="sd">    ---------</span>
 <span class="sd">    filename : QE input file</span>
 <span class="sd">    """</span>
-    <span class="n">filename</span> <span class="o">=</span> <span class="n">espresso</span><span class="o">.</span><span class="n">read_espresso_in</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">filename</span> <span class="o">==</span> <span class="s2">"scf.in"</span><span class="p">:</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">espresso</span><span class="o">.</span><span class="n">read_espresso_in</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">filename</span> <span class="o">==</span> <span class="s2">"POSCAR"</span><span class="p">:</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">vasp</span><span class="o">.</span><span class="n">read_vasp</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"Either scf.in or POSCAR expected</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
     <span class="n">cif</span><span class="o">.</span><span class="n">write_cif</span><span class="p">(</span><span class="s1">'relax.cif'</span><span class="p">,</span><span class="n">filename</span><span class="p">)</span>
+    <span class="n">pymatgen_cif</span><span class="p">(</span><span class="s1">'relax.cif'</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">filename</span></div>
 
 <div class="viewcode-block" id="cellpar">
@@ -229,7 +237,11 @@
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    main function</span>
 <span class="sd">    """</span>
-    <span class="n">filename</span><span class="o">=</span><span class="n">scf_tocif</span><span class="p">(</span><span class="s1">'scf.in'</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="s2">"scf.in"</span>
+    <span class="n">filename</span><span class="o">=</span><span class="n">scf_tocif</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
     <span class="n">cellpar</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span></div>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>

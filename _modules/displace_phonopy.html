@@ -222,6 +222,7 @@
 <span class="sd">    -------</span>
 <span class="sd">    &gt;&gt;&gt; displace = DisplacePhonopy("band.conf") #create an object</span>
 <span class="sd">    &gt;&gt;&gt; displace.parse() #parsing band.conf</span>
+<span class="sd">    &gt;&gt;&gt; displace.extract_mass() #Extracting mass and store in self.mass</span>
 <span class="sd">    &gt;&gt;&gt; displace.print_qpt() #print qpoints and its index</span>
 <span class="sd">    0 [0.0, 0.0, 0.0]</span>
 <span class="sd">    1 [0.1, 0.1, 0.1]</span>
@@ -240,6 +241,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">eigen</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mass</span> <span class="o">=</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="DisplacePhonopy.parse">
 <a class="viewcode-back" href="../displace_phonopy.html#displace_phonopy.DisplacePhonopy.parse">[docs]</a>
@@ -271,6 +273,21 @@
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">l</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'phonon'</span><span class="p">]):</span>
             <span class="nb">print</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">l</span><span class="p">[</span><span class="s1">'q-position'</span><span class="p">])</span></div>
 
+
+<div class="viewcode-block" id="DisplacePhonopy.mass_extract">
+<a class="viewcode-back" href="../displace_phonopy.html#displace_phonopy.DisplacePhonopy.mass_extract">[docs]</a>
+    <span class="k">def</span> <span class="nf">mass_extract</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Returns list of masses of the ions</span>
+<span class="sd">        """</span>
+        <span class="n">mass</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">point_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'points'</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">point</span> <span class="ow">in</span> <span class="n">point_list</span><span class="p">:</span>
+            <span class="n">mass</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">point</span><span class="p">[</span><span class="s1">'mass'</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mass</span> <span class="o">=</span> <span class="n">mass</span></div>
+
+            
+        
 
 <div class="viewcode-block" id="DisplacePhonopy.print_mode">
 <a class="viewcode-back" href="../displace_phonopy.html#displace_phonopy.DisplacePhonopy.print_mode">[docs]</a>
@@ -357,7 +374,7 @@
 <span class="sd">        """</span>
         <span class="n">struc</span> <span class="o">=</span> <span class="n">structure</span><span class="o">.</span><span class="n">Structure</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="s2">"POSCAR"</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">site</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">struc</span><span class="o">.</span><span class="n">sites</span><span class="p">):</span>
-            <span class="n">displace_eigen</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eigen</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">displace_eigen</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eigen</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mass</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
             <span class="n">site</span><span class="o">.</span><span class="n">coords</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">displace_eigen</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span><span class="n">displace_eigen</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span><span class="n">displace_eigen</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">0</span><span class="p">]])</span>
         <span class="n">struc</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s2">"displace_poscar.vasp"</span><span class="p">,</span><span class="n">fmt</span><span class="o">=</span><span class="s2">"poscar"</span><span class="p">)</span></div>
 </div>

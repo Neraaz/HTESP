@@ -246,7 +246,11 @@
 <span class="sd">    """</span>
     <span class="n">criteria</span> <span class="o">=</span> <span class="s2">""</span>
     <span class="n">search</span> <span class="o">=</span> <span class="n">dict_param</span><span class="p">[</span><span class="s1">'aflow'</span><span class="p">]</span> <span class="c1"># Extract aflow dictionary from dict_param</span>
-    <span class="n">apply_filter</span> <span class="o">=</span> <span class="n">search</span><span class="p">[</span><span class="s1">'filter'</span><span class="p">]</span> <span class="c1"># Check if filtering is applied</span>
+    <span class="k">if</span> <span class="s1">'filter'</span> <span class="ow">in</span> <span class="n">search</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">apply_filter</span> <span class="o">=</span> <span class="n">search</span><span class="p">[</span><span class="s1">'filter'</span><span class="p">]</span>
+        <span class="k">del</span> <span class="n">search</span><span class="p">[</span><span class="s1">'filter'</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">apply_filter</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="k">if</span> <span class="n">apply_filter</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">search</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">'elm'</span><span class="p">:</span> <span class="c1"># Element filter</span>
@@ -283,7 +287,7 @@
                     <span class="k">else</span><span class="p">:</span>
                         <span class="n">prop_string</span> <span class="o">+=</span> <span class="n">search</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s2">"Invalid key provided</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Invalid key provided: </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">search</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">'elm'</span><span class="p">:</span>
@@ -301,9 +305,10 @@
                     <span class="k">else</span><span class="p">:</span>
                         <span class="n">prop_string</span> <span class="o">+=</span> <span class="n">search</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s2">"Invalid key provided</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"key not being used: </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
     <span class="n">criteria</span> <span class="o">=</span> <span class="n">criteria</span> <span class="o">+</span> <span class="n">prop_string</span>
     <span class="n">criteria</span> <span class="o">=</span> <span class="n">criteria</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">" "</span><span class="p">,</span><span class="s2">""</span><span class="p">)</span> <span class="c1"># Remove any spaces in the criteria string</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Search criteria: </span><span class="si">{</span><span class="n">criteria</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">criteria</span></div>
 
 <div class="viewcode-block" id="search_data">
@@ -326,7 +331,6 @@
 <span class="sd">    Example:</span>
 <span class="sd">        &gt;&gt;&gt; search_criteria = {</span>
 <span class="sd">        ...    "aflow": {</span>
-<span class="sd">        ...        "filter": True,</span>
 <span class="sd">        ...        "elm": ["Cu", "Zn"],</span>
 <span class="sd">        ...        "nsites": 4,</span>
 <span class="sd">        ...        "metal": True,</span>
@@ -360,6 +364,8 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"download/download-aflow.csv"</span><span class="p">):</span>
         <span class="n">data_processed</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s2">"download/download-aflow.csv"</span><span class="p">,</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="c1"># Generating 'mpid-list.in' file</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"mpid-list.in"</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"mv mpid-list.in mpid-list-old.in"</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"mpid-list.in"</span><span class="p">):</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"mpid-list.in"</span><span class="p">,</span><span class="s2">"w"</span><span class="p">)</span> <span class="k">as</span> <span class="n">write_mpid</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">data_processed</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
