@@ -664,6 +664,7 @@
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">},</span>
 <span class="w"> </span><span class="nt">"kptden"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.025</span><span class="p">,</span>
+<span class="w"> </span><span class="nt">"chull_cutoff"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.04</span><span class="p">,</span>
 <span class="w"> </span><span class="nt">"kpt_opt"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
 <span class="w"> </span><span class="nt">"elph_mode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"serial"</span><span class="p">,</span>
 <span class="w"> </span><span class="nt">"plot"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
@@ -690,6 +691,7 @@
 <li><p><strong>strain</strong>: Strain inputs.</p></li>
 <li><p><strong>wanniertools_input</strong>: Input parameters for WannierTools. <a class="reference internal" href="#wanniertoolsinput-label"><span class="std std-ref">here</span></a></p></li>
 <li><p><strong>kptden</strong>: Kpoint density.</p></li>
+<li><p><strong>chull_cutoff</strong>: It controls the display of thermodynamically unstable systems in convexhull plot. It can be logical or value in eV/atom. Default is <code class="docutils literal notranslate"><span class="pre">false</span></code>, doesn’t show systems with energy above hull (EBH) larger than zero. If <code class="docutils literal notranslate"><span class="pre">true</span></code>, it shows all the systems in consideration. If it has the value <code class="docutils literal notranslate"><span class="pre">0.04</span></code>, it shows the systems with EBH less than <code class="docutils literal notranslate"><span class="pre">0.04</span> <span class="pre">eV/atom</span></code>.</p></li>
 <li><p><strong>kpt_opt</strong>: Flag for generating KPOINTS_OPT file to perform band structure in VASP</p></li>
 <li><p><strong>elph_mode</strong>: Parameter for performing DFPT calculations in various modes in QE.</p>
 <ul>

@@ -458,6 +458,7 @@ This `JSON <https://docs.python.org/3/library/json.html>`_ file serves as the ma
         }
       },
      "kptden": 0.025,
+     "chull_cutoff": 0.04,
      "kpt_opt": true,
      "elph_mode": "serial",
      "plot": {
@@ -493,6 +494,8 @@ This `JSON <https://docs.python.org/3/library/json.html>`_ file serves as the ma
 - **wanniertools_input**: Input parameters for WannierTools. :ref:`here <wanniertoolsinput-label>`
 
 - **kptden**: Kpoint density.
+
+- **chull_cutoff**: It controls the display of thermodynamically unstable systems in convexhull plot. It can be logical or value in eV/atom. Default is ``false``, doesn't show systems with energy above hull (EBH) larger than zero. If ``true``, it shows all the systems in consideration. If it has the value ``0.04``, it shows the systems with EBH less than ``0.04 eV/atom``. 
 
 - **kpt_opt**: Flag for generating KPOINTS_OPT file to perform band structure in VASP
 
