@@ -36,7 +36,7 @@ tutorial13: Generating input files with substitutions
 
 tutorial14: Computing elastic constants
 
-tutorial15: Thermodynamic stability
+tutorial15: Thermodynamic phase stability
 
 tutorial16: Automated phonopy+VASP calculations to compute phonon bandstructure
 

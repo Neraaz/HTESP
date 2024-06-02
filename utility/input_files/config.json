@@ -366,6 +366,7 @@
     }
   },
  "kptden":0.025,
+ "chull_cutoff": 0.04,
  "kpt_opt": true,
  "elph_mode": "serial",
  "plot": {

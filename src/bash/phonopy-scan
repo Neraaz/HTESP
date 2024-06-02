@@ -282,7 +282,11 @@ for ((ii=$1; ii<$2; ++ii)); do
          cp relax.cif ../../cif/$A.cif
        cd ../../
      else
-       conv=$(grep "reached required accuracy - stopping structural energy minimisation" R$A-$B/relax/OUTCAR | wc -l)
+       if [[ -f R$A-$B/relax/OUTCAR ]]; then
+         conv=$(grep "reached required accuracy - stopping structural energy minimisation" R$A-$B/relax/OUTCAR | wc -l)
+       else
+         conv=$(echo 0 | bc)
+       fi
        nsw_check=$(grep "NSW = 0" R$A-$B/relax/INCAR | wc -l)
        nsw_present=$(grep "NSW" R$A-$B/relax/INCAR | wc -l)
        if [[ $conv -gt 0 ]] || [[ $nsw_check -gt 0 ]] || [[ $nsw_present -lt 1 ]]; then

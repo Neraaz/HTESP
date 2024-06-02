@@ -857,7 +857,7 @@ to collect the total energy per atom. It will create ``econv_vasp.csv`` file. Fi
 
     mainprogram pd
 
-to compute phase diagram. Data are stored in ``convexhull.csv`` and ``convexhull.pdf`` plot is created. 
+to compute phase diagram. Data are stored in ``convexhull.csv`` and ``convexhull.pdf`` plot is created. The display of unstable mode is regulated by the "chull_cutoff" key. 
 
 .. _magenum-label:
 

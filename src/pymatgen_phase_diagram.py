@@ -9,6 +9,7 @@ from pymatgen.entries.computed_entries import ComputedStructureEntry as PDEntry
 from pymatgen.analysis.phase_diagram import PhaseDiagram
 from pymatgen.analysis.phase_diagram import PDPlotter
 from htepc import MpConnect
+from check_json import config
 
 def plot_phase(data):
     """
@@ -30,6 +31,11 @@ def plot_phase(data):
     - convexhull.pdf : PDF file containing the convex hull phase diagram.
 
     """
+    input_data = config()
+    if 'chull_cutoff' not in input_data.keys():
+        chull_cutoff = False
+    else:
+        chull_cutoff = input_data['chull_cutoff']
     entries = []
     for i in range(data.shape[0]):
         if os.path.isfile("R{}-{}/relax/POSCAR".format(data.ID[i],data.comp[i])):
@@ -51,7 +57,7 @@ def plot_phase(data):
             write_convexhull.write("," + str(round(phase_diag.get_e_above_hull(entry),4)) + "\n")
             #write_convexhull.write("," + str(phase_diag.get_phase_separation_energy(entry, stable_only=True)) + "\n")
             #write_convexhull.write("," + str(phase_diag.get_decomposition(entry.composition)) + "\n")
-    plotter = PDPlotter(phase_diag,show_unstable=True,backend="matplotlib")
+    plotter = PDPlotter(phase_diag,show_unstable=chull_cutoff,backend="matplotlib")
     #plotter = PDPlotter(phase_diag,show_unstable=0.25,backend="matplotlib")
     plt1 = plotter.get_plot()
     plt1.figure.savefig("convexhull.pdf")
