@@ -98,7 +98,7 @@ which mainprogram
 # Do "mainprogram basicinfo" to begin.
 #Install phonopy to perform phonopy calculations
 
-#Alternatively,
+#Alternatively, install in developer version
 
 python setup.py develop
 
