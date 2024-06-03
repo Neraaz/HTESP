@@ -75,6 +75,12 @@ Phonopy: https://phonopy.github.io/phonopy/
     Inside src, there is a "bash" folder that has bash scripts for running calculations
 
 ## Installation:
+# Download software 
+git clone https://github.com/Neraaz/HTESP.git
+
+#Go to HTESP directory
+cd HTESP
+
 ## Conda environment
 conda create --name myenv python==3.9.12
 
@@ -83,12 +89,8 @@ source activate myenv
 pip install -r requirements.txt
 
 # Also install phonopy in the conda environment
-# Download software 
-git clone https://github.com/Neraaz/HTESP.git
 
-cd HTESP
 # Install HTESP package
-
 pip install .
 
 # check executable
