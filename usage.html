@@ -187,9 +187,9 @@
         </li>
         <li class="md-nav__item"><a href="#extra-packages" class="md-nav__link">Extra packages</a>
         </li>
-        <li class="md-nav__item"><a href="#conda-environment" class="md-nav__link">Conda environment</a>
-        </li>
         <li class="md-nav__item"><a href="#download-software" class="md-nav__link">Download software</a>
+        </li>
+        <li class="md-nav__item"><a href="#conda-environment" class="md-nav__link">Conda environment</a>
         </li>
         <li class="md-nav__item"><a href="#install-htesp-package" class="md-nav__link">Install HTESP package</a>
         </li>
@@ -245,17 +245,6 @@ Inside<span class="w"> </span>src,<span class="w"> </span>there<span class="w"> 
 <p>bsym: <a class="reference external" href="https://bsym.readthedocs.io/en/latest/index.html">https://bsym.readthedocs.io/en/latest/index.html</a>. Required for substitutions of elements in crystal.</p>
 <p>Phonopy: <a class="reference external" href="https://phonopy.github.io/phonopy/">https://phonopy.github.io/phonopy/</a></p>
 </section>
-<section id="conda-environment">
-<h1 id="conda-environment">Conda environment<a class="headerlink" href="#conda-environment" title="Link to this heading">¶</a></h1>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>create<span class="w"> </span>--name<span class="w"> </span>myenv<span class="w"> </span><span class="nv">python</span><span class="o">==</span><span class="m">3</span>.9.12
-
-<span class="nb">source</span><span class="w"> </span>activate<span class="w"> </span>myenv
-
-pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
-</pre></div>
-</div>
-<p>Also install phonopy in the conda environment</p>
-</section>
 <section id="download-software">
 <h1 id="download-software">Download software<a class="headerlink" href="#download-software" title="Link to this heading">¶</a></h1>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/Neraaz/HTESP.git
@@ -266,6 +255,17 @@ pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </s
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>HTESP
 </pre></div>
 </div>
+</section>
+<section id="conda-environment">
+<h1 id="conda-environment">Conda environment<a class="headerlink" href="#conda-environment" title="Link to this heading">¶</a></h1>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>create<span class="w"> </span>--name<span class="w"> </span>myenv<span class="w"> </span><span class="nv">python</span><span class="o">==</span><span class="m">3</span>.9.12
+
+<span class="nb">source</span><span class="w"> </span>activate<span class="w"> </span>myenv
+
+pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
+</pre></div>
+</div>
+<p>Also install phonopy in the conda environment</p>
 </section>
 <section id="install-htesp-package">
 <h1 id="install-htesp-package">Install HTESP package<a class="headerlink" href="#install-htesp-package" title="Link to this heading">¶</a></h1>

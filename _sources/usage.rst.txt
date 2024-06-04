@@ -51,20 +51,6 @@ bsym: https://bsym.readthedocs.io/en/latest/index.html. Required for substitutio
 Phonopy: https://phonopy.github.io/phonopy/
 
 ----------------------------
-Conda environment
-----------------------------
-
-.. code-block:: bash
-
-    conda create --name myenv python==3.9.12
-    
-    source activate myenv
-    
-    pip install -r requirements.txt
-
-Also install phonopy in the conda environment
-
-----------------------------
 Download software 
 ----------------------------
 
@@ -79,6 +65,21 @@ Go to the directory,
 .. code-block:: bash
 
     cd HTESP
+
+----------------------------
+Conda environment
+----------------------------
+
+.. code-block:: bash
+
+    conda create --name myenv python==3.9.12
+    
+    source activate myenv
+    
+    pip install -r requirements.txt
+
+Also install phonopy in the conda environment
+
 
 ----------------------------
 Install HTESP package
