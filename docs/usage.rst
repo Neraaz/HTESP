@@ -75,6 +75,10 @@ Conda environment
     conda create --name myenv python==3.9.12
     
     source activate myenv
+
+----------------------------
+Install requirements
+----------------------------
     
     pip install -r requirements.txt
 
