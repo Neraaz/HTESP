@@ -28,7 +28,7 @@ def main():
         flog.write("                                              Program written by\n")
         flog.write("\n")
         flog.write("                                Niraj K Nepal, PhD       &       Lin-Lin Wang, PhD                        \n")
-        flog.write("                          Email: nnepal@ameslab.gov                              \n")
+        flog.write("                          Email: nnepal@ameslab.gov               llw@ameslab.gov   \n")
         flog.write("                                 tug11655@temple.edu                              \n")
         flog.write("\n")
         flog.write("\n")

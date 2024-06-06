@@ -50,6 +50,8 @@ It provides information about these subprocesses.
 
     - process = change_k for updating kpoint mesh according "kpoint.in" file.
 
+    - process = primtoconv for changing primitive to conventional unit cell (VASP)
+
     - process = magmom_extract for exacting final magnetic moment for magnetic calculations, available for VASP.
       Turn on LORBIT to tag to print final magnetization.
 
