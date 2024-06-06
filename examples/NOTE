@@ -1,1 +1,5 @@
-To perform the examples, please rename the `mpid.in` and `mpid-list.in` files located in the reference folders. This code searches for these files across all folders. This behavior may be changed in the future if necessary.
+1. To perform the examples, please rename the `mpid.in` and `mpid-list.in` files located in the reference folders. This code searches for these files across all folders. This behavior may be changed in the future if necessary.
+
+2. Ensure that the path to the VASP or QE executables is correctly set in your `~/.bashrc` file.
+
+3. If you need to specify the path to executables manually, you can do so within the `run-scf.sh`, `run-vasp.sh`, and other similar batch submission scripts for the computer cluster.
