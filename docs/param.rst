@@ -489,7 +489,7 @@ This `JSON <https://docs.python.org/3/library/json.html>`_ file serves as the ma
 
 - **pwscf_in**: Input parameters for Quantum Espresso (QE). :ref:`here <pwscfin-label>`
 
-- **strain**: Strain inputs.
+- **strain**: Strain inputs, useful for elastic properties calculations.
 
 - **wanniertools_input**: Input parameters for WannierTools. :ref:`here <wanniertoolsinput-label>`
 
@@ -1093,7 +1093,7 @@ strain
 
     "strain": [-0.01, -0.005, 0.005, 0.01]
 
-List of strain (both tensile (+ve) and compressive (-ve))
+List of strain (both tensile (+ve) and compressive (-ve)) for deforming relaxed crystal structure to compute elastic properties.
 
 
 .. _wanniertoolsinput-label:

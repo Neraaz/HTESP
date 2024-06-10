@@ -1,3 +1,7 @@
+Make sure you use your own API key to extract information from Materials Project database.
+You can find your key at
+https://next-gen.materialsproject.org/api#api-key
+
 1. To perform the examples, please rename the `mpid.in` and `mpid-list.in` files located in the reference folders. This code searches for these files across all folders. This behavior may be changed in the future if necessary.
 
 2. Ensure that the path to the VASP or QE executables is correctly set in your `~/.bashrc` file.

@@ -13,7 +13,7 @@ ______________
                                               Program written by
 
                                 Niraj K Nepal, PhD       &       Lin-Lin Wang, PhD                        
-                          Email: nnepal@ameslab.gov                              
+                          Email: nnepal@ameslab.gov              Email: llw@ameslab.gov 
                                  tug11655@temple.edu                              
 
 
@@ -82,6 +82,8 @@ git clone https://github.com/Neraaz/HTESP.git
 cd HTESP
 
 ## Conda environment
+Make sure the conda is available either via miniconda or anaconda installation
+
 conda create --name myenv python==3.9.12
 
 source activate myenv
@@ -140,6 +142,10 @@ Postdoctoral Researcher, Ames National Laboratory
 Staff Scientist, Ames National Laboratory 
 
 ## Citing HTESP
+
+To support development activities, please cite the following paper and the papers referenced therein for calculations conducted.
+
+N. K. Nepal, P. C. Canfield, and L.-L. Wang, HTESP (high-throughput electronic structure package): a package for the high-throughput ab initio calculations (2024), arXiv:2406.04537 [physics.comp-ph]
 
 ### Online Documentation
 
