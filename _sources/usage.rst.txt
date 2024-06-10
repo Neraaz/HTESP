@@ -70,6 +70,8 @@ Go to the directory,
 Conda environment
 ----------------------------
 
+Make sure the conda is available either via `miniconda <https://docs.anaconda.com/free/miniconda/>`_ or `anaconda <https://www.anaconda.com/download/success>`_ installation
+
 .. code-block:: bash
 
     conda create --name myenv python==3.9.12

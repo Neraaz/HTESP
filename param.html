@@ -688,7 +688,7 @@
 <li><p><strong>pseudo</strong>: Pseudopotential file, with two subkeys: <code class="docutils literal notranslate"><span class="pre">pot</span></code> for VASP and <code class="docutils literal notranslate"><span class="pre">PSEUDO</span></code> for QE. <a class="reference internal" href="#pseudo-label"><span class="std std-ref">here</span></a></p></li>
 <li><p><strong>substitute</strong>: Parameters for preparing input files with substitution. <a class="reference internal" href="#substitute-label"><span class="std std-ref">here</span></a></p></li>
 <li><p><strong>pwscf_in</strong>: Input parameters for Quantum Espresso (QE). <a class="reference internal" href="#pwscfin-label"><span class="std std-ref">here</span></a></p></li>
-<li><p><strong>strain</strong>: Strain inputs.</p></li>
+<li><p><strong>strain</strong>: Strain inputs, useful for elastic properties calculations.</p></li>
 <li><p><strong>wanniertools_input</strong>: Input parameters for WannierTools. <a class="reference internal" href="#wanniertoolsinput-label"><span class="std std-ref">here</span></a></p></li>
 <li><p><strong>kptden</strong>: Kpoint density.</p></li>
 <li><p><strong>chull_cutoff</strong>: It controls the display of thermodynamically unstable systems in convexhull plot. It can be logical or value in eV/atom. Default is <code class="docutils literal notranslate"><span class="pre">false</span></code>, doesn’t show systems with energy above hull (EBH) larger than zero. If <code class="docutils literal notranslate"><span class="pre">true</span></code>, it shows all the systems in consideration. If it has the value <code class="docutils literal notranslate"><span class="pre">0.04</span></code>, it shows the systems with EBH less than <code class="docutils literal notranslate"><span class="pre">0.04</span> <span class="pre">eV/atom</span></code>.</p></li>
@@ -1182,7 +1182,7 @@ Setting <code class="docutils literal notranslate"><span class="pre">filter</spa
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="nt">"strain"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mf">-0.01</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.005</span><span class="p">,</span><span class="w"> </span><span class="mf">0.005</span><span class="p">,</span><span class="w"> </span><span class="mf">0.01</span><span class="p">]</span>
 </pre></div>
 </div>
-<p>List of strain (both tensile (+ve) and compressive (-ve))</p>
+<p>List of strain (both tensile (+ve) and compressive (-ve)) for deforming relaxed crystal structure to compute elastic properties.</p>
 </section>
 <section id="wanniertools-input">
 <span id="wanniertoolsinput-label"></span><h1 id="wanniertools-input">wanniertools_input<a class="headerlink" href="#wanniertools-input" title="Link to this heading">¶</a></h1>
