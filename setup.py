@@ -6,7 +6,7 @@ setuptools.setup(
     version="v1.0",
     author="Niraj K. Nepal",
     author_email="nnepal@ameslab.gov, niraj.nepal@temple.edu",
-    license="MIT",
+    license="",
     description="Package to perform high-throughput QE and VASP calculations",
     url="https://github.com/Neraaz/HTESP",
     install_requires=[

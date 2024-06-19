@@ -7,6 +7,6 @@ ncalc=$($queue_command | grep "$account_id" | awk '{ print $1 }')
 #ncalc=$(echo $ncalc + 1 | bc)
 
 for id in $ncalc; do
- #echo $id
- find . -name slurm* | grep $id
+ echo $id
+ find . -name "slurm*" | grep $id
 done

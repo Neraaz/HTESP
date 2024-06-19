@@ -124,11 +124,6 @@ export PYTHONPATH="path_to_HTESP/src:$PYTHONPATH"
 
 Note: To run the `mainprogram` command without encountering errors, ensure you copy the `config.json` file from the `/utility/input_files/` directory to the working directory.
 
-### License
-
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-
-
 ### Contributors
 
 Written and maintained by
