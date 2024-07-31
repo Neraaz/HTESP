@@ -1,0 +1,12 @@
+﻿poscar\_to\_vasp
+================
+
+.. automodule:: poscar_to_vasp
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      main
+   

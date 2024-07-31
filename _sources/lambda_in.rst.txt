@@ -4,11 +4,6 @@
 .. automodule:: lambda_in
 
    
-   
-   
-
-   
-   
    .. rubric:: Functions
 
    .. autosummary::
@@ -16,15 +11,3 @@
       lambda_in
       main
    
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-

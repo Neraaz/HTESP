@@ -1,0 +1,14 @@
+﻿create\_wt\_inputs
+==================
+
+.. automodule:: create_wt_inputs
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      kpoint_path
+      main
+      wt_body
+   

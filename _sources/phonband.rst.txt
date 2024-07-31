@@ -4,26 +4,9 @@
 .. automodule:: phonband
 
    
-   
-   
-
-   
-   
    .. rubric:: Functions
 
    .. autosummary::
    
       phonband_in
    
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-

@@ -4,26 +4,9 @@
 .. automodule:: dos
 
    
-   
-   
-
-   
-   
    .. rubric:: Functions
 
    .. autosummary::
    
       dos_in
    
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-

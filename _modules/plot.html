@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="lang:clipboard.copy" content="Copy to clipboard">
+  <meta name="lang:clipboard.copied" content="Copied to clipboard">
+  <meta name="lang:search.language" content="en">
+  <meta name="lang:search.pipeline.stopwords" content="True">
+  <meta name="lang:search.pipeline.trimmer" content="True">
+  <meta name="lang:search.result.none" content="No matching documents">
+  <meta name="lang:search.result.one" content="1 matching document">
+  <meta name="lang:search.result.other" content="# matching documents">
+  <meta name="lang:search.tokenizer" content="[\s\-]+">
+
+  
+    <link href="https://fonts.gstatic.com/" rel="preconnect" crossorigin>
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,500,700|Roboto:300,400,400i,700&display=fallback" rel="stylesheet">
+
+    <style>
+      body,
+      input {
+        font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif
+      }
+
+      code,
+      kbd,
+      pre {
+        font-family: "Roboto Mono", "Courier New", Courier, monospace
+      }
+    </style>
+  
+
+  <link rel="stylesheet" href="../_static/stylesheets/application.css"/>
+  <link rel="stylesheet" href="../_static/stylesheets/application-palette.css"/>
+  <link rel="stylesheet" href="../_static/stylesheets/application-fixes.css"/>
+  
+  <link rel="stylesheet" href="../_static/fonts/material-icons.css"/>
+  
+  <meta name="theme-color" content="#3f51b5">
+  <script src="../_static/javascripts/modernizr.js"></script>
+  
+  
+  
+    <title>plot &#8212; HTESP v1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=83e35b93" />
+    <link rel="stylesheet" type="text/css" href="../_static/material.css?v=79c92029" />
+    <script src="../_static/documentation_options.js?v=e160b93e"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+  
+   
+
+  </head>
+  <body dir=ltr
+        data-md-color-primary=blue-grey data-md-color-accent=blue>
+  
+  <svg class="md-svg">
+    <defs data-children-count="0">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448" viewBox="0 0 416 448" id="__github"><path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19T128 352t-18.125-8.5-10.75-19T96 304t3.125-20.5 10.75-19T128 256t18.125 8.5 10.75 19T160 304zm160 0q0 10-3.125 20.5t-10.75 19T288 352t-18.125-8.5-10.75-19T256 304t3.125-20.5 10.75-19T288 256t18.125 8.5 10.75 19T320 304zm40 0q0-30-17.25-51T296 232q-10.25 0-48.75 5.25Q229.5 240 208 240t-39.25-2.75Q130.75 232 120 232q-29.5 0-46.75 21T56 304q0 22 8 38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0 37.25-1.75t35-7.375 30.5-15 20.25-25.75T360 304zm56-44q0 51.75-15.25 82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5T212 416q-19.5 0-35.5-.75t-36.875-3.125-38.125-7.5-34.25-12.875T37 371.5t-21.5-28.75Q0 312 0 260q0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25 30.875Q171.5 96 212 96q37 0 70 8 26.25-20.5 46.75-30.25T376 64q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34 99.5z"/></svg>
+      
+    </defs>
+  </svg>
+  
+  <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer">
+  <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search">
+  <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+  <a href="#_modules/plot" tabindex="1" class="md-skip"> Skip to content </a>
+  <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex navheader">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="../index.html" title="HTESP v1.0 documentation"
+           class="md-header-nav__button md-logo">
+          
+            &nbsp;
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          <span class="md-header-nav__topic">HTESP v1.0 documentation</span>
+          <span class="md-header-nav__topic"> plot </span>
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+        
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" action="../search.html" method="get" name="search">
+      <input type="text" class="md-search__input" name="q" placeholder=""Search""
+             autocapitalize="off" autocomplete="off" spellcheck="false"
+             data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+      </div>
+      
+      
+  
+  <script src="../_static/javascripts/version_dropdown.js"></script>
+  <script>
+    var json_loc = "../"versions.json"",
+        target_loc = "../../",
+        text = "Versions";
+    $( document ).ready( add_version_dropdown(json_loc, target_loc, text));
+  </script>
+  
+
+    </div>
+  </nav>
+</header>
+
+  
+  <div class="md-container">
+    
+    
+    
+  <nav class="md-tabs" data-md-component="tabs">
+    <div class="md-tabs__inner md-grid">
+      <ul class="md-tabs__list">
+          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">HTESP v1.0 documentation</a></li>
+          <li class="md-tabs__item"><a href="index.html" class="md-tabs__link">Module code</a></li>
+      </ul>
+    </div>
+  </nav>
+    <main class="md-main">
+      <div class="md-main__inner md-grid" data-md-component="container">
+        
+          <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+            <div class="md-sidebar__scrollwrap">
+              <div class="md-sidebar__inner">
+                <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href="../index.html" title="HTESP v1.0 documentation" class="md-nav__button md-logo">
+      
+        <img src="../_static/" alt=" logo" width="48" height="48">
+      
+    </a>
+    <a href="../index.html"
+       title="HTESP v1.0 documentation">HTESP v1.0 documentation</a>
+  </label>
+  
+
+</nav>
+              </div>
+            </div>
+          </div>
+          <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+            <div class="md-sidebar__scrollwrap">
+              <div class="md-sidebar__inner">
+                
+<nav class="md-nav md-nav--secondary">
+  <ul class="md-nav__list" data-md-scrollfix="">
+    
+  </ul>
+</nav>
+              </div>
+            </div>
+          </div>
+        
+        <div class="md-content">
+          <article class="md-content__inner md-typeset" role="main">
+            
+  <h1 id="modules-plot--page-root">Source code for plot</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1">#"""Writen by Niraj K. Nepal, Ph.D."""</span>
+<span class="sd">"""Module for plotting"""</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">glob</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">matplotlib</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">matplotlib.colors</span> <span class="k">as</span> <span class="nn">mcolors</span>
+<span class="kn">import</span> <span class="nn">pylab</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">pymatgen.io.vasp.inputs</span> <span class="kn">import</span> <span class="n">Kpoints</span>
+<span class="kn">from</span> <span class="nn">pymatgen.io.vasp.sets</span> <span class="kn">import</span> <span class="n">Vasprun</span>
+<span class="kn">from</span> <span class="nn">pymatgen.core</span> <span class="kn">import</span> <span class="n">Composition</span>
+<span class="kn">from</span> <span class="nn">pymatgen.electronic_structure.core</span> <span class="kn">import</span> <span class="n">OrbitalType</span>
+<span class="kn">from</span> <span class="nn">pymatgen.electronic_structure.plotter</span> <span class="kn">import</span> <span class="n">DosPlotter</span>
+<span class="kn">from</span> <span class="nn">pymatgen.electronic_structure.plotter</span> <span class="kn">import</span> <span class="n">BSPlotter</span>
+<span class="kn">from</span> <span class="nn">kpath</span> <span class="kn">import</span> <span class="n">kpath</span>
+<span class="kn">from</span> <span class="nn">check_json</span> <span class="kn">import</span> <span class="n">config</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">"ignore"</span><span class="p">)</span>
+<span class="n">matplotlib</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s1">'Agg'</span><span class="p">)</span>
+
+<span class="n">font</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'weight'</span> <span class="p">:</span> <span class="s1">'bold'</span><span class="p">,</span><span class="s1">'size'</span>   <span class="p">:</span> <span class="mi">20</span><span class="p">}</span>
+<span class="n">matplotlib</span><span class="o">.</span><span class="n">rc</span><span class="p">(</span><span class="s1">'font'</span><span class="p">,</span> <span class="o">**</span><span class="n">font</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s2">"figure.autolayout"</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+
+<div class="viewcode-block" id="kptline">
+<a class="viewcode-back" href="../plot.html#plot.kptline">[docs]</a>
+<span class="k">def</span> <span class="nf">kptline</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Generate k-path for VASP-line format.</span>
+
+<span class="sd">    Reads KPOINTS file and vasprun.xml file to generate the k-path for the VASP-line format.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">    - nkpt (numpy.ndarray): Array containing distances between k-points.</span>
+<span class="sd">    - sympoint (numpy.ndarray): Array containing the special k-points along the path.</span>
+<span class="sd">    - symname (list): List of special k-point names formatted for LaTeX.</span>
+
+<span class="sd">    This function computes the k-path for the VASP-line format based on the KPOINTS file and vasprun.xml file.</span>
+<span class="sd">    It calculates the distances between k-points and identifies special k-points along the path.</span>
+
+<span class="sd">    Example usage:</span>
+<span class="sd">    nkpt, sympoint, symname = kptline()</span>
+<span class="sd">    """</span>
+    <span class="n">kpt</span> <span class="o">=</span> <span class="n">Kpoints</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="s2">"KPOINTS"</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">Vasprun</span><span class="p">(</span><span class="s2">"vasprun.xml"</span><span class="p">)</span>
+    <span class="n">nkpt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">get_band_structure</span><span class="p">(</span><span class="s2">"KPOINTS"</span><span class="p">)</span><span class="o">.</span><span class="n">distance</span><span class="p">)</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">npair</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">kpt</span><span class="o">.</span><span class="n">labels</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">nline</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">kpt</span><span class="o">.</span><span class="n">num_kpts</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">npair</span><span class="p">):</span>
+        <span class="n">n</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nline</span><span class="o">*</span><span class="n">i</span><span class="p">)</span>
+        <span class="n">n</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nline</span><span class="o">*</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">sympoint</span> <span class="o">=</span> <span class="n">nkpt</span><span class="p">[</span><span class="n">n</span><span class="p">]</span>
+    <span class="n">symname</span> <span class="o">=</span> <span class="n">kpt</span><span class="o">.</span><span class="n">labels</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">sympoint</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="n">sympoint</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">sympoint</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">symname</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="n">symname</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="n">symadd</span> <span class="o">=</span> <span class="n">symname</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="s2">"|"</span> <span class="o">+</span> <span class="n">symname</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="n">symname</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="s1">''</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">symadd</span> <span class="o">=</span> <span class="n">symname</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">symname</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">'$</span><span class="si">{}</span><span class="s1">$'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">symadd</span><span class="p">)</span>
+    <span class="n">symname</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">'$</span><span class="si">{}</span><span class="s1">$'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">"</span><span class="se">\\</span><span class="s2">Gamma"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">nkpt</span><span class="p">,</span><span class="n">sympoint</span><span class="p">,</span><span class="n">symname</span></div>
+
+<div class="viewcode-block" id="plot">
+<a class="viewcode-back" href="../plot.html#plot.plot">[docs]</a>
+<span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="n">plottype</span><span class="p">,</span><span class="n">file</span><span class="p">,</span><span class="n">comp</span><span class="p">,</span><span class="n">proj</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">read_kpoint</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">colormap</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Function to create quick plots.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">    -----------</span>
+<span class="sd">    plottype : str</span>
+<span class="sd">        Type of plot. 'band' for electronic bandstructure and DOS side by side,</span>
+<span class="sd">        'phonband' for phonon bandstructure, 'gammaband' for phonon band with lambda projection,</span>
+<span class="sd">        'a2f' for Eliashberg spectral function.</span>
+<span class="sd">    file : str</span>
+<span class="sd">        QE scf input file to generate k-point mesh.</span>
+<span class="sd">    comp : str</span>
+<span class="sd">        Compound name.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">    ---------</span>
+<span class="sd">    None</span>
+
+<span class="sd">    This function creates various types of plots based on the input parameters.</span>
+<span class="sd">    """</span>
+    <span class="n">input_data</span> <span class="o">=</span> <span class="n">config</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">plottype</span> <span class="o">==</span> <span class="s1">'band'</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">proj</span><span class="p">:</span>
+            <span class="n">proj_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">proj</span><span class="p">)</span>
+        <span class="c1">#nkpoint = int(sys.argv[4])</span>
+        <span class="c1">#kcut = int(sys.argv[5])</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"../../input.in"</span><span class="p">,</span><span class="s2">"r"</span><span class="p">)</span> <span class="k">as</span> <span class="n">read_inputin</span><span class="p">:</span>
+            <span class="n">inputline</span> <span class="o">=</span> <span class="n">read_inputin</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">read_kpoint</span><span class="p">:</span>
+            <span class="n">nkpoint</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">read_kpoint</span><span class="p">)</span>
+            <span class="n">kcut</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">nkpoint</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">inputline</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">kcut</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">inputline</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">vasp_line</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">inputline</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s2">"vasp-line"</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                <span class="n">vasp_line</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"VASP_LINE"</span><span class="p">):</span>
+            <span class="n">vasp_line</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"KPT_OPT"</span><span class="p">):</span>
+            <span class="n">vasp_line</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="n">vasp_line</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"vasp-line plot found</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">pt_l</span><span class="p">,</span><span class="n">sympt</span><span class="p">,</span><span class="n">symlb</span> <span class="o">=</span> <span class="n">kptline</span><span class="p">()</span>
+            <span class="n">nkpoint</span> <span class="o">=</span> <span class="n">pt_l</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">_</span><span class="p">,</span><span class="n">sympt</span><span class="p">,</span><span class="n">symlb</span><span class="p">,</span><span class="n">pt_l</span><span class="p">,</span><span class="n">_</span><span class="p">,</span><span class="n">_</span> <span class="o">=</span> <span class="n">kpath</span><span class="p">(</span><span class="n">file</span><span class="p">,</span><span class="n">nkpoint</span><span class="p">,</span><span class="n">kcut</span><span class="p">)</span>
+        <span class="n">pt_l</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pt_l</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s1">'scf.out'</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"grep Fermi scf.out | awk '{ print $5 }' &gt; fermi.dat"</span><span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"""grep "number of electrons       =     " scf.out | tail -n 1 | awk '{print $5}' &gt; band_fermi.dat"""</span><span class="p">)</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"fermi.dat"</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">)</span> <span class="k">as</span> <span class="n">read_fermi</span><span class="p">:</span>
+                <span class="n">fermi</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">read_fermi</span><span class="o">.</span><span class="n">readlines</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">elif</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s1">'../relax/OUTCAR'</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"""grep NELECT ../relax/OUTCAR | tail -n 1 | awk '{print $3}' &gt; band_fermi.dat"""</span><span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"grep 'E-fermi' ../relax/OUTCAR | awk '{print $3}' &gt; fermi.dat"</span><span class="p">)</span>
+            <span class="n">fermi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s1">'fermi.dat'</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"No scf.out and OUTCAR files present</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+        <span class="n">band_fermi</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s2">"band_fermi.dat"</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"INCAR"</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"""grep LSORBIT INCAR | wc -l &gt; lsorbit"""</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"lsorbit"</span><span class="p">):</span>
+            <span class="n">lsorbit</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s2">"lsorbit"</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">lsorbit</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="c1">#lsorbit = 0</span>
+        <span class="k">if</span> <span class="n">lsorbit</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">band_fermi</span> <span class="o">=</span> <span class="n">band_fermi</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">band_fermi</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">band_fermi</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">band_fermi</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">band_fermi</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">band_fermi</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"band_fermi.dat"</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"rm band_fermi.dat"</span><span class="p">)</span>
+        <span class="n">sympt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sympt</span><span class="p">)</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s1">'</span><span class="si">{}</span><span class="s1">.dat.gnu'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">comp</span><span class="p">))</span>
+        <span class="n">check_size</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">nspin</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="c1">#if check_size is 3 then nspin = 2.</span>
+        <span class="c1">#print(check_size)</span>
+        <span class="k">if</span> <span class="n">check_size</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="n">nspin</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="n">fig</span><span class="p">,</span><span class="n">ax_p</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+        <span class="n">nband</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="n">nkpoint</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"nkpoints:</span><span class="si">{}</span><span class="s2">-nband:</span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nkpoint</span><span class="p">,</span><span class="n">nband</span><span class="p">))</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"band_stat.csv"</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">)</span> <span class="k">as</span> <span class="n">band_stat</span><span class="p">:</span>
+            <span class="n">band_stat</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"Band,Emin-Ef,Emax-Ef,Emin,Emax</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nband</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">band_fermi</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">ax_p</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">pt_l</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="o">+</span><span class="n">nkpoint</span><span class="o">*</span><span class="n">i</span><span class="p">:</span><span class="n">nkpoint</span><span class="o">*</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)][:,</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">fermi</span><span class="p">,</span><span class="s1">'r'</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mf">0.75</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">nspin</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                        <span class="n">ax_p</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">pt_l</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="o">+</span><span class="n">nkpoint</span><span class="o">*</span><span class="n">i</span><span class="p">:</span><span class="n">nkpoint</span><span class="o">*</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)][:,</span><span class="mi">2</span><span class="p">]</span><span class="o">-</span><span class="n">fermi</span><span class="p">,</span><span class="s1">'r--'</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mf">0.75</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">proj</span><span class="p">:</span>
+                        <span class="n">projection</span> <span class="o">=</span> <span class="n">proj_data</span><span class="p">[</span><span class="mi">0</span><span class="o">+</span><span class="n">nkpoint</span><span class="o">*</span><span class="n">i</span><span class="p">:</span><span class="n">nkpoint</span><span class="o">*</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)][:,</span><span class="mi">1</span><span class="p">]</span>
+                        <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">pt_l</span><span class="p">,</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="o">+</span><span class="n">nkpoint</span><span class="o">*</span><span class="n">i</span><span class="p">:</span><span class="n">nkpoint</span><span class="o">*</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)][:,</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">fermi</span><span class="p">,</span><span class="n">c</span><span class="o">=</span><span class="n">projection</span><span class="p">,</span><span class="n">cmap</span><span class="o">=</span><span class="n">colormap</span><span class="p">,</span><span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">vmax</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                        <span class="c1">#if nspin == 2:</span>
+                        <span class="c1">#    projection = proj_data[0+nkpoint*i:nkpoint*(i+1)][:,2]</span>
+                        <span class="c1">#    plt.scatter(pt_l,data[0+nkpoint*i:nkpoint*(i+1)][:,2]-fermi,c=projection,cmap='Blues',vmin=0,vmax=1)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># if nspin = 2, plot 3rd column with data[][:,2] with black dashed.</span>
+                    <span class="n">ax_p</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">pt_l</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="o">+</span><span class="n">nkpoint</span><span class="o">*</span><span class="n">i</span><span class="p">:</span><span class="n">nkpoint</span><span class="o">*</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)][:,</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">fermi</span><span class="p">,</span><span class="s1">'k'</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mf">0.75</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">nspin</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                        <span class="n">ax_p</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">pt_l</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="o">+</span><span class="n">nkpoint</span><span class="o">*</span><span class="n">i</span><span class="p">:</span><span class="n">nkpoint</span><span class="o">*</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)][:,</span><span class="mi">2</span><span class="p">]</span><span class="o">-</span><span class="n">fermi</span><span class="p">,</span><span class="s1">'k--'</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mf">0.75</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">proj</span><span class="p">:</span>
+                        <span class="n">projection</span> <span class="o">=</span> <span class="n">proj_data</span><span class="p">[</span><span class="mi">0</span><span class="o">+</span><span class="n">nkpoint</span><span class="o">*</span><span class="n">i</span><span class="p">:</span><span class="n">nkpoint</span><span class="o">*</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)][:,</span><span class="mi">1</span><span class="p">]</span>
+                        <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">pt_l</span><span class="p">,</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="o">+</span><span class="n">nkpoint</span><span class="o">*</span><span class="n">i</span><span class="p">:</span><span class="n">nkpoint</span><span class="o">*</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)][:,</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">fermi</span><span class="p">,</span><span class="n">c</span><span class="o">=</span><span class="n">projection</span><span class="p">,</span><span class="n">cmap</span><span class="o">=</span><span class="n">colormap</span><span class="p">,</span><span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">vmax</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                        <span class="c1">#if nspin == 2:</span>
+                        <span class="c1">#    projection = proj_data[0+nkpoint*i:nkpoint*(i+1)][:,2]</span>
+                        <span class="c1">#    plt.scatter(pt_l,data[0+nkpoint*i:nkpoint*(i+1)][:,2]-fermi,c=projection,cmap='Blues',vmin=0,vmax=1)</span>
+                <span class="n">band_stat</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="s2">","</span><span class="p">)</span>
+                <span class="n">band_stat</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="o">+</span><span class="n">nkpoint</span><span class="o">*</span><span class="n">i</span><span class="p">:</span><span class="n">nkpoint</span><span class="o">*</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)][:,</span><span class="mi">1</span><span class="p">])</span><span class="o">-</span><span class="n">fermi</span><span class="p">)</span> <span class="o">+</span> <span class="s2">","</span><span class="p">)</span>
+                <span class="n">band_stat</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="o">+</span><span class="n">nkpoint</span><span class="o">*</span><span class="n">i</span><span class="p">:</span><span class="n">nkpoint</span><span class="o">*</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)][:,</span><span class="mi">1</span><span class="p">])</span><span class="o">-</span><span class="n">fermi</span><span class="p">)</span> <span class="o">+</span> <span class="s2">","</span><span class="p">)</span>
+                <span class="n">band_stat</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="o">+</span><span class="n">nkpoint</span><span class="o">*</span><span class="n">i</span><span class="p">:</span><span class="n">nkpoint</span><span class="o">*</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)][:,</span><span class="mi">1</span><span class="p">]))</span> <span class="o">+</span> <span class="s2">","</span><span class="p">)</span>
+                <span class="n">band_stat</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="o">+</span><span class="n">nkpoint</span><span class="o">*</span><span class="n">i</span><span class="p">:</span><span class="n">nkpoint</span><span class="o">*</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)][:,</span><span class="mi">1</span><span class="p">]))</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+        <span class="n">ax_p</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="n">sympt</span><span class="p">)</span>
+        <span class="n">ax_p</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">sympt</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">sympt</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="s1">'k--'</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+        <span class="n">ax_p</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">symlb</span><span class="p">)</span>
+        <span class="n">min_band</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">data</span><span class="p">[:,</span><span class="mi">1</span><span class="p">])</span><span class="o">-</span><span class="n">fermi</span>
+        <span class="n">max_band</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">data</span><span class="p">[:,</span><span class="mi">1</span><span class="p">])</span><span class="o">-</span><span class="n">fermi</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">sympt</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+            <span class="n">ax_p</span><span class="o">.</span><span class="n">vlines</span><span class="p">(</span><span class="n">sympt</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">min_band</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="n">max_band</span><span class="o">+</span><span class="mi">2</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">'k'</span><span class="p">,</span><span class="n">linestyles</span><span class="o">=</span><span class="s1">'dashed'</span><span class="p">)</span>
+        <span class="n">ax_p</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"E - Ef (eV)"</span><span class="p">)</span>
+        <span class="c1">#ax_p.set_ylim((min_band-2, max_band+2)) #change this depending on the energy levels.</span>
+        <span class="n">ylim</span> <span class="o">=</span> <span class="n">input_data</span><span class="p">[</span><span class="s1">'plot'</span><span class="p">][</span><span class="s1">'ylim'</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">ylim</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ax_p</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">((</span><span class="n">ylim</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ylim</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span> <span class="c1">#change this depending on the energy levels.</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ax_p</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span> <span class="c1">#change this depending on the energy levels.</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">set_figheight</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">set_figwidth</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span>
+        <span class="c1">#ax_p.set_ylim((-6, 4)) #change this depending on the energy levels.</span>
+        <span class="n">ax_p</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">comp</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">comp</span> <span class="o">+</span> <span class="s2">"-band.png"</span><span class="p">)</span>
+        <span class="n">pylab</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">comp</span> <span class="o">+</span> <span class="s1">'-band.pdf'</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">'pdf'</span><span class="p">,</span><span class="n">bbox_inches</span><span class="o">=</span><span class="s1">'tight'</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">plottype</span> <span class="o">==</span> <span class="s1">'phonband'</span><span class="p">:</span>
+        <span class="n">nkpoint</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
+        <span class="n">kcut</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span>
+        <span class="n">_</span><span class="p">,</span><span class="n">sympt</span><span class="p">,</span><span class="n">symlb</span><span class="p">,</span><span class="n">pt_l</span><span class="p">,</span><span class="n">_</span><span class="p">,</span><span class="n">_</span> <span class="o">=</span> <span class="n">kpath</span><span class="p">(</span><span class="n">file</span><span class="p">,</span><span class="n">nkpoint</span><span class="p">,</span><span class="n">kcut</span><span class="p">)</span>
+        <span class="n">pt_l</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pt_l</span><span class="p">)</span>
+        <span class="n">sympt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sympt</span><span class="p">)</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s1">'freq.plot'</span><span class="p">)</span>
+        <span class="c1">#dataph=np.loadtxt('phonon.dos')</span>
+        <span class="n">nband</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="n">nkpoint</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"nkpoints:</span><span class="si">{}</span><span class="s2">-nband:</span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nkpoint</span><span class="p">,</span><span class="n">nband</span><span class="p">))</span>
+        <span class="n">percmtothz</span> <span class="o">=</span> <span class="mf">33.356</span>
+        <span class="c1">#dataphx=dataph[:,0]/percmtothz</span>
+        <span class="n">fig</span><span class="p">,</span><span class="n">ax_p</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+        <span class="c1">#color = ['r', 'b', 'g', 'k', 'm', 'y', 'c']</span>
+        <span class="c1">#markers = ['o', 's', '+', '^', '*', 'D', 'p']</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nband</span><span class="p">):</span>
+            <span class="n">ax_p</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">pt_l</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="o">+</span><span class="n">nkpoint</span><span class="o">*</span><span class="n">i</span><span class="p">:</span><span class="n">nkpoint</span><span class="o">*</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)][:,</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="n">percmtothz</span><span class="p">,</span><span class="s1">'k'</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">ax_p</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">'$\omega$'</span><span class="o">+</span><span class="s1">'(THz)'</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">25</span><span class="p">)</span>
+        <span class="n">ax_p</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="n">sympt</span><span class="p">)</span>
+        <span class="n">ax_p</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">symlb</span><span class="p">)</span>
+        <span class="n">maxy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">data</span><span class="p">[:,</span><span class="mi">1</span><span class="p">])</span><span class="o">/</span><span class="n">percmtothz</span> <span class="o">+</span> <span class="mf">2.0</span>
+        <span class="n">miny</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">data</span><span class="p">[:,</span><span class="mi">1</span><span class="p">])</span><span class="o">/</span><span class="n">percmtothz</span> <span class="o">-</span> <span class="mf">2.0</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">sympt</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+            <span class="n">ax_p</span><span class="o">.</span><span class="n">vlines</span><span class="p">(</span><span class="n">sympt</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="mi">0</span><span class="p">,</span><span class="n">maxy</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">'k'</span><span class="p">,</span><span class="n">linestyles</span><span class="o">=</span><span class="s1">'dashed'</span><span class="p">)</span>
+        <span class="n">maxy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">data</span><span class="p">[:,</span><span class="mi">1</span><span class="p">])</span><span class="o">/</span><span class="n">percmtothz</span> <span class="o">+</span> <span class="mf">2.0</span>
+        <span class="n">miny</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">data</span><span class="p">[:,</span><span class="mi">1</span><span class="p">])</span><span class="o">/</span><span class="n">percmtothz</span> <span class="o">-</span> <span class="mf">1.0</span>
+        <span class="n">ax_p</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">((</span><span class="n">miny</span><span class="p">,</span><span class="n">maxy</span><span class="p">))</span>
+        <span class="n">ax_p</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">comp</span><span class="p">)</span>
+        <span class="c1">#plt.savefig(comp+ "-phonon.png")</span>
+        <span class="n">pylab</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">comp</span> <span class="o">+</span> <span class="s1">'-phonon.pdf'</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">'pdf'</span><span class="p">,</span><span class="n">bbox_inches</span><span class="o">=</span><span class="s1">'tight'</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">plottype</span> <span class="o">==</span> <span class="s1">'gammaband'</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'lambda.dat'</span><span class="p">)</span> <span class="k">as</span> <span class="n">lambd</span><span class="p">:</span>
+            <span class="n">lines</span> <span class="o">=</span> <span class="n">lambd</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+        <span class="n">dosef</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'</span><span class="se">\n</span><span class="s1">'</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">' '</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">/</span><span class="mf">3289.9146</span>
+        <span class="c1">#dosef = float(lines[1].split()[11])/3289.9146</span>
+        <span class="n">nkpoint</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
+        <span class="n">kcut</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span>
+        <span class="n">_</span><span class="p">,</span><span class="n">sympt</span><span class="p">,</span><span class="n">symlb</span><span class="p">,</span><span class="n">pt_l</span><span class="p">,</span><span class="n">_</span><span class="p">,</span><span class="n">_</span> <span class="o">=</span> <span class="n">kpath</span><span class="p">(</span><span class="n">file</span><span class="p">,</span><span class="n">nkpoint</span><span class="p">,</span><span class="n">kcut</span><span class="p">)</span>
+        <span class="n">pt_l</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pt_l</span><span class="p">)</span>
+        <span class="n">sympt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sympt</span><span class="p">)</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s1">'gamma.plot'</span><span class="p">)[:,</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="mi">1000</span>
+        <span class="n">data2</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s1">'freq.plot'</span><span class="p">)[:,</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="mf">33.356</span>
+        <span class="n">data3</span><span class="o">=</span><span class="n">data2</span><span class="o">**</span><span class="mf">2.0</span>
+        <span class="c1">#data3[np.where(data2 &lt; -1)] *= -1</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">seterr</span><span class="p">(</span><span class="n">invalid</span><span class="o">=</span><span class="s1">'ignore'</span><span class="p">)</span>
+        <span class="n">lqu</span><span class="o">=</span><span class="n">data</span><span class="o">/</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">dosef</span><span class="o">*</span><span class="n">data3</span><span class="p">)</span>
+        <span class="c1">#lqu=np.nan_to_num(lqu)</span>
+        <span class="c1">#lqu_norm = np.linalg.norm(lqu)</span>
+        <span class="n">lqu</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">data2</span> <span class="o">&lt;</span> <span class="mf">0.6</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="c1">#lqu_min = lqu.max()*0.2</span>
+        <span class="c1">#lqu = lqu/lqu.max()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"Setting minimum cutoff for plotting lambda as 10</span><span class="si">% o</span><span class="s2">f maximum value.</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"Change this if you need otherwise in src/plot.py 259 line</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+        <span class="n">lqu_min</span> <span class="o">=</span> <span class="n">lqu</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">*</span><span class="mf">0.1</span>
+        <span class="c1">#print(dosef)</span>
+        <span class="c1">#lqu = data2</span>
+        <span class="n">wph</span><span class="o">=</span><span class="n">data2</span>
+        <span class="n">nband</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="n">nkpoint</span><span class="p">)</span>
+        <span class="c1">#if nband*n &lt; data.shape[0]:</span>
+        <span class="c1">#    n = 60</span>
+        <span class="c1">#    nband=int(data.shape[0]/n)</span>
+        <span class="c1">#    _,sympt,symlb,pt,_,_ = kpath(file,n,kcut)</span>
+        <span class="c1">#    pt = np.array(pt)</span>
+        <span class="c1">#    sympt = np.array(sympt)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"nkpoints:</span><span class="si">{}</span><span class="s2">-nband:</span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nkpoint</span><span class="p">,</span><span class="n">nband</span><span class="p">))</span>
+        <span class="n">percmtothz</span> <span class="o">=</span> <span class="mf">33.356</span>
+        <span class="n">fig</span><span class="p">,</span><span class="n">ax_p</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nband</span><span class="p">):</span>
+            <span class="n">x_data</span> <span class="o">=</span> <span class="n">pt_l</span>
+            <span class="n">y_data</span> <span class="o">=</span> <span class="n">wph</span><span class="p">[</span><span class="mi">0</span><span class="o">+</span><span class="n">nkpoint</span><span class="o">*</span><span class="n">i</span><span class="p">:</span><span class="n">nkpoint</span><span class="o">*</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span>
+            <span class="n">c_data</span> <span class="o">=</span> <span class="n">lqu</span><span class="p">[</span><span class="mi">0</span><span class="o">+</span><span class="n">nkpoint</span><span class="o">*</span><span class="n">i</span><span class="p">:</span><span class="n">nkpoint</span><span class="o">*</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span>
+            <span class="n">plot_gamma</span><span class="p">(</span><span class="n">x_data</span><span class="p">,</span><span class="n">y_data</span><span class="p">,</span><span class="n">c_data</span><span class="p">,</span><span class="n">lqu_min</span><span class="p">)</span>
+        <span class="c1">#plt.xlabel("k-vector",fontsize=15)</span>
+        <span class="n">ax_p</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">'$\omega$'</span><span class="o">+</span><span class="s1">'(THz)'</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">25</span><span class="p">)</span>
+        <span class="n">ax_p</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="n">sympt</span><span class="p">)</span>
+        <span class="n">ax_p</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">symlb</span><span class="p">)</span>
+        <span class="n">maxy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">wph</span><span class="p">)</span> <span class="o">+</span> <span class="mf">1.0</span>
+        <span class="n">miny</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">wph</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">sympt</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+            <span class="n">ax_p</span><span class="o">.</span><span class="n">vlines</span><span class="p">(</span><span class="n">sympt</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="mi">0</span><span class="p">,</span><span class="n">maxy</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">'k'</span><span class="p">,</span><span class="n">linestyles</span><span class="o">=</span><span class="s1">'dashed'</span><span class="p">)</span>
+        <span class="n">ax_p</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">((</span><span class="n">miny</span><span class="p">,</span><span class="n">maxy</span><span class="p">))</span>
+        <span class="n">ax_p</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">comp</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">comp</span><span class="o">+</span> <span class="s2">"-gamma.png"</span><span class="p">)</span>
+        <span class="n">pylab</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">comp</span> <span class="o">+</span> <span class="s1">'-gamma.pdf'</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">'pdf'</span><span class="p">,</span><span class="n">bbox_inches</span><span class="o">=</span><span class="s1">'tight'</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">plottype</span> <span class="o">==</span> <span class="s1">'a2f'</span><span class="p">:</span>
+        <span class="n">fig</span><span class="p">,</span><span class="n">ax_p</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'lambda.out'</span><span class="p">,</span> <span class="s1">'r'</span><span class="p">)</span> <span class="k">as</span> <span class="n">lambd</span><span class="p">:</span>
+            <span class="n">lines</span> <span class="o">=</span> <span class="n">lambd</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="mi">12</span><span class="p">]</span>
+        <span class="n">lam</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">values</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="c1">#omglog = float(values[0])</span>
+        <span class="c1">#if "*" not in values[1]:</span>
+        <span class="c1">#    Tc = float(values[1])</span>
+        <span class="c1">#else:</span>
+        <span class="c1">#    Tc = 0.0</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s1">'alpha2F.dat'</span><span class="p">)</span>
+        <span class="n">en_data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">a2f</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span>
+        <span class="c1">#a2f = data[:,2]/en_data</span>
+        <span class="n">delw</span> <span class="o">=</span> <span class="n">en_data</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">en_data</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">en_data</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">)]</span> <span class="o">=</span> <span class="mf">0.0000000001</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">en_data</span><span class="p">,</span><span class="n">a2f</span><span class="p">,</span><span class="s1">'g'</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">a2fint</span> <span class="o">=</span> <span class="mf">2.0</span><span class="o">*</span><span class="n">delw</span><span class="o">*</span><span class="n">a2f</span><span class="o">/</span><span class="n">en_data</span>
+        <span class="n">a2fint</span> <span class="o">=</span> <span class="n">a2fint</span><span class="o">.</span><span class="n">cumsum</span><span class="p">()</span>
+        <span class="c1">#lmbd = round(a2fint[-1],4)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">en_data</span><span class="p">,</span><span class="n">a2fint</span><span class="p">,</span><span class="s1">'k--'</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">a2f</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">2.0</span><span class="p">:</span>
+            <span class="n">maxy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">a2f</span><span class="p">)</span> <span class="o">+</span> <span class="mf">1.0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">maxy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">a2f</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.5</span>
+        <span class="n">maxx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">en_data</span><span class="p">)</span> <span class="o">+</span> <span class="mi">2</span>
+        <span class="n">miny</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">a2f</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.1</span>
+        <span class="c1">#for tick in ax_p.yaxis.get_major_ticks():</span>
+        <span class="c1">#    tick.label.set_fontsize(20)</span>
+        <span class="c1">#for tick in ax_p.yaxis.get_major_ticks():</span>
+        <span class="c1">#    tick.label.set_fontsize(20)</span>
+        <span class="n">ax_p</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">'both'</span><span class="p">,</span><span class="n">labelsize</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">set_figheight</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">set_figwidth</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+        <span class="n">ylim</span> <span class="o">=</span> <span class="n">input_data</span><span class="p">[</span><span class="s1">'plot'</span><span class="p">][</span><span class="s1">'ylim'</span><span class="p">]</span>
+        <span class="n">xlim</span> <span class="o">=</span> <span class="n">input_data</span><span class="p">[</span><span class="s1">'plot'</span><span class="p">][</span><span class="s1">'xlim'</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">ylim</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">((</span><span class="n">ylim</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ylim</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span> <span class="c1">#change this depending on the energy levels.</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">((</span><span class="n">miny</span><span class="p">,</span><span class="n">maxy</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">xlim</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="n">xlim</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">xlim</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span> <span class="c1">#change this depending on the energy levels.</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="mf">0.0</span><span class="p">,</span><span class="n">maxx</span><span class="p">))</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">'$\omega$'</span> <span class="o">+</span> <span class="s1">'(THz)'</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">25</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">'$\alpha^2F$'</span><span class="o">+</span><span class="sa">r</span><span class="s1">'($\omega$)'</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">maxx</span><span class="o">-</span><span class="mi">20</span><span class="p">,</span><span class="n">lam</span><span class="o">+</span><span class="mf">0.5</span><span class="p">,</span> <span class="sa">r</span><span class="s1">'$\lambda$'</span> <span class="o">+</span> <span class="s2">"="</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">lam</span><span class="p">,</span><span class="mi">2</span><span class="p">)),</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span><span class="n">fontweight</span><span class="o">=</span><span class="s1">'bold'</span><span class="p">)</span>
+        <span class="c1">#plt.text(maxx-20,maxy-0.1,r'$\omega_{log}$' + "=" + str(int(omglog)) + " K", fontsize=20,fontweight='bold')</span>
+        <span class="c1">#plt.text(maxx-20,maxy-1.5, r'$T_c$' + "=" + str(round(Tc,2))+" K", fontsize=20,fontweight='bold')</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">comp</span><span class="o">+</span><span class="s2">"-a2f.png"</span><span class="p">)</span>
+        <span class="n">pylab</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">comp</span><span class="o">+</span> <span class="s2">"-a2f.pdf"</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">'pdf'</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">'tight'</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">plottype</span> <span class="o">==</span> <span class="s1">''</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"plot all"</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="plot_gamma">
+<a class="viewcode-back" href="../plot.html#plot.plot_gamma">[docs]</a>
+<span class="k">def</span> <span class="nf">plot_gamma</span><span class="p">(</span><span class="n">xdata</span><span class="p">,</span><span class="n">ydata</span><span class="p">,</span><span class="n">color</span><span class="p">,</span><span class="n">min_</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Function to plot different sections with respect to different colors.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">    -----------</span>
+<span class="sd">    xdata : array-like</span>
+<span class="sd">        x-axis data.</span>
+<span class="sd">    ydata : array-like</span>
+<span class="sd">        y-axis data.</span>
+<span class="sd">    color : array-like</span>
+<span class="sd">        Projection data.</span>
+<span class="sd">    min_ : float</span>
+<span class="sd">        Minimum threshold for binary classification.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">    --------</span>
+<span class="sd">    None</span>
+
+<span class="sd">    This function plots different sections of the data with respect to different colors.</span>
+<span class="sd">    If the color value is less than or equal to the minimum threshold, the section is plotted in black.</span>
+<span class="sd">    Otherwise, the section is plotted in green with marker sizes proportional to the color values.</span>
+
+<span class="sd">    """</span>
+    <span class="n">ax_p</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">xdata</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="c1"># Change marker size here</span>
+        <span class="n">marker_size</span> <span class="o">=</span> <span class="n">color</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">*</span><span class="mi">5</span>
+        <span class="k">if</span> <span class="n">color</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">min_</span><span class="p">:</span>
+            <span class="n">ax_p</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">xdata</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">xdata</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]],</span> <span class="p">[</span><span class="n">ydata</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">ydata</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]],</span> <span class="n">lw</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">'k'</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ax_p</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">xdata</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">xdata</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]],</span> <span class="p">[</span><span class="n">ydata</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">ydata</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]],</span> <span class="n">lw</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">'k'</span><span class="p">)</span>
+            <span class="n">ax_p</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">xdata</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">xdata</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]],</span> <span class="p">[</span><span class="n">ydata</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">ydata</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]],</span><span class="n">linestyle</span><span class="o">=</span><span class="s1">'none'</span><span class="p">,</span><span class="n">marker</span><span class="o">=</span><span class="s1">'o'</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">'green'</span><span class="p">,</span><span class="n">markersize</span><span class="o">=</span><span class="n">marker_size</span><span class="p">,</span><span class="n">fillstyle</span><span class="o">=</span><span class="s1">'none'</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="dos_plot">
+<a class="viewcode-back" href="../plot.html#plot.dos_plot">[docs]</a>
+<span class="k">def</span> <span class="nf">dos_plot</span><span class="p">(</span><span class="n">filedos</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="s1">'pdos.pdf'</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Function to plot density of states and partial density of states in different rows.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">    -----------</span>
+<span class="sd">    filedos : str</span>
+<span class="sd">        DOS file in .dos format obtained from QE calculations.</span>
+<span class="sd">    out : str, optional</span>
+<span class="sd">        Output plot in PDF format. Default is 'pdos.pdf'.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">    --------</span>
+<span class="sd">    None</span>
+
+<span class="sd">    This function reads the DOS file and performs DOS and PDOS calculations.</span>
+<span class="sd">    It requires a 'filedos.in' with ion and orbital contribution from different lines.</span>
+<span class="sd">    It also uses 'sumpdos.sh' scripts as "sumpdos.sh element orbital" to create 'element-orbital.dat' files.</span>
+<span class="sd">    For example, for boron and s orbital, element = B, orbital = s, B-s.dat file is created.</span>
+<span class="sd">    The function then plots the density of states and partial density of states in different rows.</span>
+
+<span class="sd">    """</span>
+    <span class="n">input_data</span> <span class="o">=</span> <span class="n">config</span><span class="p">()</span>
+    <span class="n">color</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'k'</span><span class="p">,</span> <span class="s1">'r'</span><span class="p">,</span> <span class="s1">'b'</span><span class="p">,</span> <span class="s1">'g'</span><span class="p">,</span><span class="s1">'cyan'</span><span class="p">,</span><span class="s1">'lightgreen'</span><span class="p">,</span><span class="s1">'orange'</span><span class="p">,</span><span class="s1">'yellow'</span><span class="p">,</span><span class="s1">'lightblue'</span><span class="p">]</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filedos</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">)</span> <span class="k">as</span> <span class="n">dos</span><span class="p">:</span>
+        <span class="n">fermi</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">dos</span><span class="o">.</span><span class="n">readlines</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">8</span><span class="p">])</span>
+    <span class="c1">#fermi = 12.3316</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"filedos.in"</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">)</span> <span class="k">as</span> <span class="n">p_dos</span><span class="p">:</span>
+            <span class="n">lines</span> <span class="o">=</span> <span class="n">p_dos</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"filedos.in not found</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+    <span class="n">dos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">filedos</span><span class="p">)</span>
+    <span class="n">fig</span><span class="p">,</span><span class="n">ax_p</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">dict_</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+        <span class="n">dict_</span><span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'</span><span class="se">\n</span><span class="s1">'</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">' '</span><span class="p">)[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'</span><span class="se">\n</span><span class="s1">'</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">' '</span><span class="p">)[</span><span class="mi">1</span><span class="p">:]</span>
+    <span class="n">datalist</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">datalist_name</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">dict_</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">len_dict</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">dict_</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">len_dict</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"sumpdos.sh </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">,</span><span class="n">dict_</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">i</span><span class="p">]))</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s2">"</span><span class="si">{}</span><span class="s2">-</span><span class="si">{}</span><span class="s2">.dat"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">,</span><span class="n">dict_</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">i</span><span class="p">]))</span>
+            <span class="n">datalist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="n">datalist_name</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'</span><span class="si">{}</span><span class="s1"> </span><span class="si">{}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">,</span><span class="n">dict_</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">i</span><span class="p">]))</span>
+    <span class="n">en_l</span> <span class="o">=</span> <span class="n">datalist</span><span class="p">[</span><span class="mi">0</span><span class="p">][:,</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">_</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">datalist</span><span class="p">):</span>
+        <span class="n">ax_p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">en_l</span><span class="o">-</span><span class="n">fermi</span><span class="p">,</span><span class="n">datalist</span><span class="p">[</span><span class="n">i</span><span class="p">][:,</span><span class="mi">1</span><span class="p">],</span><span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">label</span><span class="o">=</span><span class="n">datalist_name</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">lw</span><span class="o">=</span><span class="mf">3.0</span><span class="p">)</span>
+    <span class="n">ax_p</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">dos</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">fermi</span><span class="p">,</span><span class="n">dos</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span><span class="s1">'k-'</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mf">3.0</span><span class="p">)</span>
+    <span class="n">ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">dos</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">fermi</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mi">8</span><span class="p">,</span><span class="n">dos</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">fermi</span> <span class="o">&lt;</span> <span class="mf">4.1</span><span class="p">)</span>
+    <span class="n">dos_range</span> <span class="o">=</span> <span class="n">dos</span><span class="p">[</span><span class="n">ind</span><span class="p">][:,</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">maxdos</span> <span class="o">=</span> <span class="n">dos_range</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+    <span class="n">ax_p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="n">maxdos</span><span class="p">],</span> <span class="s1">'k-.'</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.75</span><span class="p">)</span>
+    <span class="n">ax_p</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="n">maxdos</span><span class="p">],</span> <span class="s1">'k-.'</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.75</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">datalist</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">:</span>
+        <span class="n">ax_p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">"best"</span><span class="p">,</span><span class="n">frameon</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ax_p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">ncol</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">loc</span><span class="o">=</span><span class="s2">"best"</span><span class="p">,</span><span class="n">frameon</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+    <span class="n">ax_p</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">"E - E$_F$ (eV)"</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+    <span class="n">ax_p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"PDOS (states/eV/cell)"</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+    <span class="n">ax_p</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"DOS (states/eV/cell)"</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+    <span class="n">ax_p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">([])</span>
+    <span class="n">ax_p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">'x'</span><span class="p">,</span> <span class="n">labelsize</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+    <span class="n">ax_p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">'y'</span><span class="p">,</span> <span class="n">labelsize</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+    <span class="n">ax_p</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">'x'</span><span class="p">,</span> <span class="n">labelsize</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+    <span class="n">ax_p</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">'y'</span><span class="p">,</span> <span class="n">labelsize</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+    <span class="c1">#for tick in ax_p[0].yaxis.get_major_ticks():</span>
+    <span class="c1">#    tick.label.set_fontsize(30)</span>
+    <span class="c1">#for tick in ax_p[1].yaxis.get_major_ticks():</span>
+    <span class="c1">#    tick.label.set_fontsize(30)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">([</span><span class="o">-</span><span class="mi">8</span><span class="p">,</span><span class="o">-</span><span class="mi">6</span><span class="p">,</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="s2">"-8"</span><span class="p">,</span> <span class="s2">"-6"</span><span class="p">,</span> <span class="s2">"-4"</span><span class="p">,</span> <span class="s2">"-2"</span><span class="p">,</span> <span class="s2">"0"</span><span class="p">,</span> <span class="s2">"2"</span><span class="p">,</span> <span class="s2">"4"</span><span class="p">],</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">30</span><span class="p">)</span>
+    <span class="c1">#plt.yticks([0, 10, 20, 30, 40], ["0", "10", "20", "30", "40"], fontsize=30)</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">set_figheight</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">set_figwidth</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">bottom</span><span class="o">=</span><span class="mf">0.15</span><span class="p">)</span>
+    <span class="n">ylim</span> <span class="o">=</span> <span class="n">input_data</span><span class="p">[</span><span class="s1">'plot'</span><span class="p">][</span><span class="s1">'ylim'</span><span class="p">]</span>
+    <span class="n">xlim</span> <span class="o">=</span> <span class="n">input_data</span><span class="p">[</span><span class="s1">'plot'</span><span class="p">][</span><span class="s1">'xlim'</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">ylim</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">ax_p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">((</span><span class="n">ylim</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ylim</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span> <span class="c1">#change this depending on the energy levels.</span>
+        <span class="n">ax_p</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">((</span><span class="n">ylim</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ylim</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span> <span class="c1">#change this depending on the energy levels.</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ax_p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">maxdos</span><span class="p">)</span>
+        <span class="n">ax_p</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">maxdos</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">xlim</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">ax_p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">xlim</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">xlim</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">ax_p</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">xlim</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">xlim</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ax_p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="o">-</span><span class="mi">8</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+        <span class="n">ax_p</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="o">-</span><span class="mi">8</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">out</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="band_wann_plot">
+<a class="viewcode-back" href="../plot.html#plot.band_wann_plot">[docs]</a>
+<span class="k">def</span> <span class="nf">band_wann_plot</span><span class="p">(</span><span class="n">fileout</span><span class="o">=</span><span class="s1">'plot.pdf'</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Function to plot Wannier interpolated bandstructure.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">    -----------</span>
+<span class="sd">    fileband : str, optional</span>
+<span class="sd">        Bandstructure file. Default is 'ex_band.dat'.</span>
+<span class="sd">    fileout : str, optional</span>
+<span class="sd">        Output file. Default is 'plot.pdf'.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">    --------</span>
+<span class="sd">    None</span>
+
+<span class="sd">    This function reads the bandstructure file and plots the Wannier interpolated bandstructure.</span>
+<span class="sd">    It extracts data from the provided files and plots the bandstructure accordingly.</span>
+<span class="sd">    The function also checks for bands below the Fermi level and prints a message if found.</span>
+
+<span class="sd">    """</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"plotting wannier band</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+    <span class="n">fileband</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">"*_band.dat"</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">fileband</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"cat *_band.labelinfo.dat | awk '{ print $2 }' | tail -n 1 &gt; n.dat"</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"cat *_band.labelinfo.dat | awk '{ print $1 }' &gt; label"</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"cat *_band.labelinfo.dat | awk '{ print $3 }' &gt; lbpoint"</span><span class="p">)</span>
+    <span class="n">sympt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s1">'lbpoint'</span><span class="p">)</span>
+    <span class="n">nkpt</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s2">"n.dat"</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"scf.out"</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"grep Fermi scf.out | awk '{ print $5 }' &gt; fermi.dat"</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"OUTCAR"</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"""grep "Fermi energy:" OUTCAR | awk '{ print $3 }' &gt; fermi.dat"""</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"No scf.out or OUTCAR found</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"fermi.dat"</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">)</span> <span class="k">as</span> <span class="n">read_fermi</span><span class="p">:</span>
+        <span class="n">fermi</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">read_fermi</span><span class="o">.</span><span class="n">readlines</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"label"</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">)</span> <span class="k">as</span> <span class="n">label</span><span class="p">:</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="n">label</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+    <span class="n">symlb</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+        <span class="n">symlb</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">color</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'r'</span><span class="p">,</span> <span class="s1">'b'</span><span class="p">,</span> <span class="s1">'r'</span><span class="p">,</span><span class="s1">'g'</span><span class="p">]</span>
+    <span class="n">linestyle</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'solid'</span><span class="p">,</span> <span class="s1">'dashed'</span><span class="p">,</span> <span class="s1">'dotted'</span><span class="p">,</span><span class="s1">'-.'</span><span class="p">]</span>
+    <span class="n">_</span><span class="p">,</span><span class="n">ax_p</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+    <span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">fileband</span><span class="p">)</span>
+    <span class="n">pt_k</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:</span><span class="n">nkpt</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">nband</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="n">nkpt</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"nkpoints:</span><span class="si">{}</span><span class="s2">-nband:</span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nkpt</span><span class="p">,</span><span class="n">nband</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nband</span><span class="p">):</span>
+        <span class="n">ax_p</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">pt_k</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="o">+</span><span class="n">nkpt</span><span class="o">*</span><span class="n">i</span><span class="p">:</span><span class="n">nkpt</span><span class="o">*</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)][:,</span><span class="mi">1</span><span class="p">],</span> <span class="n">lw</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="n">linestyle</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="o">+</span><span class="n">nkpt</span><span class="o">*</span><span class="n">i</span><span class="p">:</span><span class="n">nkpt</span><span class="o">*</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)][:,</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">fermi</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"Band below Fermi level: </span><span class="si">{}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+    <span class="n">ax_p</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="n">sympt</span><span class="p">)</span>
+    <span class="n">ax_p</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">symlb</span><span class="p">)</span>
+    <span class="c1">#ax.set_ylim(fermi-1,fermi+1)</span>
+    <span class="c1">#for i in range(sympt.shape[0]):</span>
+    <span class="c1">#    ax.vlines(sympt[i],11.0,18.0,color='k',linestyles='dashed')</span>
+    <span class="n">ax_p</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"E (eV)"</span><span class="p">)</span>
+    <span class="n">ax_p</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">sympt</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">sympt</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]],[</span><span class="n">fermi</span><span class="p">,</span><span class="n">fermi</span><span class="p">],</span><span class="s1">'k--'</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+    <span class="n">pylab</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">fileout</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">'pdf'</span><span class="p">,</span><span class="n">bbox_inches</span><span class="o">=</span><span class="s1">'tight'</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="plot_projection">
+<a class="viewcode-back" href="../plot.html#plot.plot_projection">[docs]</a>
+<span class="k">def</span> <span class="nf">plot_projection</span><span class="p">(</span><span class="n">scf_file</span><span class="p">,</span><span class="n">projection_file</span><span class="p">,</span><span class="n">phonon_freq</span><span class="p">,</span><span class="n">outfile</span><span class="p">,</span><span class="n">nkpt</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Function to plot atomic projection on phonon bandstructure.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">    -----------</span>
+<span class="sd">    scf_file : str</span>
+<span class="sd">        QE scf.in file to extract structure.</span>
+<span class="sd">    projection_file : str</span>
+<span class="sd">        File containing atomic projection data.</span>
+<span class="sd">    phonon_freq : str</span>
+<span class="sd">        File containing phonon dispersion data.</span>
+<span class="sd">    outfile : str</span>
+<span class="sd">        Output plot file.</span>
+<span class="sd">    nkpt : int</span>
+<span class="sd">        Number of q points.</span>
+<span class="sd">    proj_cutoff : float, optional</span>
+<span class="sd">        Cutoff to apply filter. Plotting only colors that have projection larger than the cutoff.</span>
+<span class="sd">        If not provided, it will be calculated based on the number of atoms.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">    --------</span>
+<span class="sd">    None</span>
+
+<span class="sd">    This function reads the necessary files and plots the atomic projection on the phonon bandstructure.</span>
+<span class="sd">    It calculates the projection cutoff based on the number of atoms if not provided explicitly.</span>
+<span class="sd">    The function generates a plot showing the atomic projection on the phonon dispersion.</span>
+<span class="sd">    """</span>
+    <span class="n">input_data</span> <span class="o">=</span> <span class="n">config</span><span class="p">()</span>
+    <span class="n">_</span><span class="p">,</span><span class="n">sympt</span><span class="p">,</span><span class="n">symlb</span><span class="p">,</span><span class="n">pt_l</span><span class="p">,</span><span class="n">_</span><span class="p">,</span><span class="n">_</span> <span class="o">=</span> <span class="n">kpath</span><span class="p">(</span><span class="n">scf_file</span><span class="p">,</span><span class="n">nkpt</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">pt_l</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pt_l</span><span class="p">)</span>
+    <span class="n">sympt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sympt</span><span class="p">)</span>
+    <span class="c1">#print(pt_l,sympt,symlb)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">phonon_freq</span><span class="p">)</span>
+    <span class="n">nband</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">proj</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">projection_file</span><span class="p">)</span>
+    <span class="n">proj_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">nat</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">proj</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="n">nkpt</span><span class="p">)</span>
+    <span class="c1"># Define projection cutoff for systems with</span>
+    <span class="c1"># different number of ions.</span>
+    <span class="n">atomproj</span> <span class="o">=</span> <span class="n">input_data</span><span class="p">[</span><span class="s1">'plot'</span><span class="p">][</span><span class="s1">'atomproj'</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">nat</span> <span class="o">&lt;</span> <span class="mi">4</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s1">'atomproj'</span> <span class="ow">in</span> <span class="n">input_data</span><span class="p">[</span><span class="s1">'plot'</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="ow">and</span> <span class="n">atomproj</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">proj_cutoff</span> <span class="o">=</span> <span class="n">atomproj</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"atomproj key not found in config.json. Using default value</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">proj_cutoff</span> <span class="o">=</span> <span class="mf">0.6</span>
+    <span class="k">elif</span> <span class="n">nat</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s1">'atomproj'</span> <span class="ow">in</span> <span class="n">input_data</span><span class="p">[</span><span class="s1">'plot'</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="ow">and</span> <span class="n">atomproj</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">proj_cutoff</span> <span class="o">=</span> <span class="n">atomproj</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"atomproj key not found in config.json. Using default value</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">proj_cutoff</span> <span class="o">=</span> <span class="mf">0.5</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"Plotting is available for systems with maximum 4 ions. Exiting</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Cutoff filter for projection: </span><span class="si">{}</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">proj_cutoff</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Change atomproj value in config.json for different cutoff</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nat</span><span class="p">):</span>
+        <span class="n">proj_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">proj</span><span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="n">nkpt</span><span class="p">:(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">nkpt</span><span class="p">,:])</span>
+    <span class="n">percmto_thz</span> <span class="o">=</span> <span class="mf">33.356</span>
+    <span class="n">proj_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">proj_list</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">color_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'red'</span><span class="p">,</span><span class="s1">'blue'</span><span class="p">,</span><span class="s1">'green'</span><span class="p">,</span><span class="s1">'cyan'</span><span class="p">,</span><span class="s1">'k'</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">proj_i</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">proj_list</span><span class="p">):</span>
+        <span class="n">proj_array</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">proj_i</span> <span class="o">&gt;</span> <span class="n">proj_cutoff</span><span class="p">)]</span> <span class="o">=</span> <span class="n">i</span>
+    <span class="n">_</span><span class="p">,</span><span class="n">ax_p</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">nband</span><span class="p">):</span>
+        <span class="n">xdata</span> <span class="o">=</span> <span class="n">pt_l</span>
+        <span class="n">ydata</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:,</span><span class="n">i</span><span class="p">]</span><span class="o">/</span><span class="n">percmto_thz</span>
+        <span class="n">cdata</span> <span class="o">=</span> <span class="n">proj_array</span><span class="p">[:,</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">xdata</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">ax_p</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">xdata</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">xdata</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]],</span> <span class="p">[</span><span class="n">ydata</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">ydata</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]],</span> <span class="n">lw</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color_list</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">cdata</span><span class="p">[</span><span class="n">j</span><span class="p">])])</span>
+    <span class="n">maxy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">/</span><span class="n">percmto_thz</span> <span class="o">+</span> <span class="mf">2.0</span>
+    <span class="n">miny</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">/</span><span class="n">percmto_thz</span> <span class="o">-</span> <span class="mf">1.0</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">'$\omega$ (THz)'</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">sympt</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+        <span class="n">ax_p</span><span class="o">.</span><span class="n">vlines</span><span class="p">(</span><span class="n">sympt</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="mi">0</span><span class="p">,</span><span class="n">maxy</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">'k'</span><span class="p">,</span><span class="n">linestyles</span><span class="o">=</span><span class="s1">'dashed'</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">sympt</span><span class="p">,</span><span class="n">symlb</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="n">miny</span><span class="p">,</span><span class="n">maxy</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="n">sympt</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">sympt</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">outfile</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="write_filedos">
+<a class="viewcode-back" href="../plot.html#plot.write_filedos">[docs]</a>
+<span class="k">def</span> <span class="nf">write_filedos</span><span class="p">(</span><span class="n">comp</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Function to write a 'filedos.in' file required for PDOS plot.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">    -----------</span>
+<span class="sd">    comp : str</span>
+<span class="sd">        Composition.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">    --------</span>
+<span class="sd">    None</span>
+
+<span class="sd">    This function writes the 'filedos.in' file based on the composition provided.</span>
+<span class="sd">    It extracts the elements and their electronic structure to determine the orbital contributions for PDOS.</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="s2">"-"</span> <span class="ow">in</span> <span class="n">comp</span><span class="p">:</span>
+        <span class="n">comp</span> <span class="o">=</span> <span class="n">comp</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"-"</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">comp</span> <span class="o">=</span> <span class="n">Composition</span><span class="p">(</span><span class="n">comp</span><span class="p">)</span>
+    <span class="n">nelm</span> <span class="o">=</span> <span class="n">comp</span><span class="o">.</span><span class="n">elements</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'filedos.in'</span><span class="p">,</span> <span class="s1">'w'</span><span class="p">)</span> <span class="k">as</span> <span class="n">write_pdos</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">elm</span> <span class="ow">in</span> <span class="n">nelm</span><span class="p">:</span>
+            <span class="n">els</span> <span class="o">=</span> <span class="n">elm</span><span class="o">.</span><span class="n">full_electronic_structure</span>
+            <span class="n">orb_list</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">write_pdos</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">elm</span><span class="o">.</span><span class="n">symbol</span> <span class="o">+</span> <span class="s2">" "</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">orb</span> <span class="ow">in</span> <span class="n">els</span><span class="p">:</span>
+                <span class="k">if</span> <span class="s1">'s'</span> <span class="ow">in</span> <span class="n">orb</span> <span class="ow">and</span> <span class="s1">'s'</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">orb_list</span><span class="p">:</span>
+                    <span class="n">orb_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'s'</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="s1">'p'</span> <span class="ow">in</span> <span class="n">orb</span> <span class="ow">and</span> <span class="s1">'p'</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">orb_list</span><span class="p">:</span>
+                    <span class="n">orb_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'p'</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="s1">'d'</span> <span class="ow">in</span> <span class="n">orb</span> <span class="ow">and</span> <span class="s1">'d'</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">orb_list</span><span class="p">:</span>
+                    <span class="n">orb_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'d'</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="s1">'f'</span> <span class="ow">in</span> <span class="n">orb</span> <span class="ow">and</span> <span class="s1">'f'</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">orb_list</span><span class="p">:</span>
+                    <span class="n">orb_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'f'</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">continue</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">orb</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">orb_list</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">orb_list</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">write_pdos</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">orb</span> <span class="o">+</span> <span class="s2">" "</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">write_pdos</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">orb</span><span class="p">)</span>
+            <span class="n">write_pdos</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="dos_plot_vasp">
+<a class="viewcode-back" href="../plot.html#plot.dos_plot_vasp">[docs]</a>
+<span class="k">def</span> <span class="nf">dos_plot_vasp</span><span class="p">(</span><span class="n">outfile</span><span class="o">=</span><span class="s2">"pdos.pdf"</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Function to plot DOS and partial DOS (pDOS) using the vasprun.xml file from VASP using the pymatgen package.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">    -----------</span>
+<span class="sd">    outfile : str, optional</span>
+<span class="sd">        Output plot file name (default is "pdos.pdf").</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">    --------</span>
+<span class="sd">    None</span>
+
+<span class="sd">    This function reads the 'filedos.in' file to determine which elements and orbitals to include in the pDOS plot.</span>
+<span class="sd">    It uses the Vasprun object from the pymatgen package to parse the vasprun.xml file.</span>
+<span class="sd">    The function plots the Total DOS and pDOS for the specified elements and orbitals.</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">    -----</span>
+<span class="sd">    'filedos.in' should be present in the current directory to specify the elements and orbitals for pDOS plotting.</span>
+<span class="sd">    """</span>
+    <span class="n">input_data</span> <span class="o">=</span> <span class="n">config</span><span class="p">()</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"filedos.in"</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">)</span> <span class="k">as</span> <span class="n">p_dos</span><span class="p">:</span>
+            <span class="n">lines</span> <span class="o">=</span> <span class="n">p_dos</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"filedos.in not found</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">Vasprun</span><span class="p">(</span><span class="s1">'vasprun.xml'</span><span class="p">,</span><span class="n">parse_dos</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">Vasprun</span><span class="p">(</span><span class="s1">'vasprun.xml'</span><span class="p">,</span> <span class="n">parse_potcar_file</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">complete_dos</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">complete_dos</span>
+    <span class="n">nspin</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">complete_dos</span><span class="o">.</span><span class="n">densities</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="n">plotter</span> <span class="o">=</span> <span class="n">DosPlotter</span><span class="p">()</span>
+    <span class="n">xlim1</span> <span class="o">=</span> <span class="n">input_data</span><span class="p">[</span><span class="s1">'plot'</span><span class="p">][</span><span class="s1">'xlim'</span><span class="p">]</span>
+    <span class="n">ylim1</span> <span class="o">=</span> <span class="n">input_data</span><span class="p">[</span><span class="s1">'plot'</span><span class="p">][</span><span class="s1">'ylim'</span><span class="p">]</span>
+    <span class="n">xmin</span> <span class="o">=</span> <span class="n">xlim1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">xmax</span> <span class="o">=</span> <span class="n">xlim1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">ymin</span> <span class="o">=</span> <span class="n">ylim1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">ymax</span> <span class="o">=</span> <span class="n">ylim1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">nspin</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">plotter</span><span class="o">.</span><span class="n">add_dos</span><span class="p">(</span><span class="s1">'Total DOS'</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">tdos</span><span class="p">)</span>
+        <span class="n">dict_</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+            <span class="n">dict_</span><span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'</span><span class="se">\n</span><span class="s1">'</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">' '</span><span class="p">)[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'</span><span class="se">\n</span><span class="s1">'</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">' '</span><span class="p">)[</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">dict_</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">dict_</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="n">len_value</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="n">pdos_ion</span> <span class="o">=</span> <span class="n">complete_dos</span><span class="o">.</span><span class="n">get_element_spd_dos</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">len_value</span><span class="p">):</span>
+                <span class="n">plotter</span><span class="o">.</span><span class="n">add_dos</span><span class="p">(</span><span class="s2">"</span><span class="si">{}</span><span class="s2">(</span><span class="si">{}</span><span class="s2">)"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">,</span><span class="n">value</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span><span class="n">pdos_ion</span><span class="p">[</span><span class="n">OrbitalType</span><span class="p">[</span><span class="n">value</span><span class="p">[</span><span class="n">i</span><span class="p">]]])</span>
+        <span class="k">if</span> <span class="n">xlim1</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">plot_axis</span> <span class="o">=</span> <span class="n">plotter</span><span class="o">.</span><span class="n">get_plot</span><span class="p">(</span><span class="n">xlim</span><span class="o">=</span><span class="p">(</span><span class="n">xmin</span><span class="p">,</span><span class="n">xmax</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">plot_axis</span> <span class="o">=</span> <span class="n">plotter</span><span class="o">.</span><span class="n">get_plot</span><span class="p">(</span><span class="n">xlim</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
+        <span class="n">plot_axis</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">"upper right"</span><span class="p">)</span>
+        <span class="n">plot_axis</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"Density of States (states/eV)"</span><span class="p">,</span><span class="n">fontweight</span><span class="o">=</span><span class="s1">'bold'</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">25</span><span class="p">)</span>
+        <span class="n">plot_axis</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">"E - E$_F$ (eV)"</span><span class="p">,</span><span class="n">fontweight</span><span class="o">=</span><span class="s1">'bold'</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">25</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">outfile</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">500</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">nspin</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">dos</span> <span class="o">=</span> <span class="n">complete_dos</span>
+        <span class="n">energies</span> <span class="o">=</span> <span class="n">dos</span><span class="o">.</span><span class="n">energies</span> <span class="o">-</span> <span class="n">dos</span><span class="o">.</span><span class="n">efermi</span>
+        <span class="n">spin</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">dos</span><span class="o">.</span><span class="n">densities</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="n">dos_spin_up</span> <span class="o">=</span> <span class="n">dos</span><span class="o">.</span><span class="n">densities</span><span class="p">[</span><span class="n">spin</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="n">dos_spin_down</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="o">*</span><span class="n">dos</span><span class="o">.</span><span class="n">densities</span><span class="p">[</span><span class="n">spin</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">energies</span><span class="p">,</span> <span class="n">dos_spin_up</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"Up"</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">'b'</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">energies</span><span class="p">,</span> <span class="n">dos_spin_down</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"Down"</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">'r'</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">'black'</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">'--'</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">'black'</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">'--'</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">1.05</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span><span class="n">loc</span><span class="o">=</span><span class="s2">"upper right"</span><span class="p">,</span><span class="n">frameon</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">"DOS (states/eV)"</span><span class="p">,</span><span class="n">fontweight</span><span class="o">=</span><span class="s1">'bold'</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">25</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">"E - E$_F$ (eV)"</span><span class="p">,</span><span class="n">fontweight</span><span class="o">=</span><span class="s1">'bold'</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">25</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">xlim1</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="n">xmin</span><span class="p">,</span><span class="n">xmax</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="o">-</span><span class="mi">8</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ylim1</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ymax1</span> <span class="o">=</span> <span class="n">ymax</span><span class="o">/</span><span class="mf">2.0</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="o">*</span><span class="n">ymax1</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span><span class="n">ymax1</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="o">-</span><span class="mi">40</span><span class="p">,</span><span class="mi">40</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">"pdos-spin-resolved.pdf"</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">500</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">basecolor</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">mcolors</span><span class="o">.</span><span class="n">BASE_COLORS</span><span class="o">.</span><span class="n">keys</span><span class="p">())[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">color</span><span class="o">=</span><span class="n">basecolor</span><span class="o">+</span><span class="nb">list</span><span class="p">(</span><span class="n">mcolors</span><span class="o">.</span><span class="n">TABLEAU_COLORS</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="n">total_dos</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">complete_dos</span><span class="o">.</span><span class="n">get_densities</span><span class="p">()</span>
+        <span class="n">energies</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">complete_dos</span><span class="o">.</span><span class="n">energies</span>
+        <span class="n">efermi</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">efermi</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">energies</span><span class="o">-</span><span class="n">efermi</span><span class="p">,</span> <span class="n">total_dos</span><span class="p">,</span> <span class="s1">'k-'</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">1.75</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"Total DOS"</span><span class="p">)</span>
+        <span class="n">elm_list</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">complete_dos</span><span class="o">.</span><span class="n">structure</span><span class="o">.</span><span class="n">composition</span><span class="o">.</span><span class="n">elements</span>
+        <span class="n">ndos_data</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">elm</span> <span class="ow">in</span> <span class="n">elm_list</span><span class="p">:</span>
+            <span class="n">elm</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">elm</span><span class="p">)</span>
+            <span class="n">orb_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">complete_dos</span><span class="o">.</span><span class="n">get_element_spd_dos</span><span class="p">(</span><span class="n">elm</span><span class="p">)</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">orb</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">orb_list</span><span class="p">):</span>
+                <span class="n">x</span>  <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">complete_dos</span><span class="o">.</span><span class="n">get_element_spd_dos</span><span class="p">(</span><span class="n">elm</span><span class="p">)[</span><span class="n">orb</span><span class="p">]</span><span class="o">.</span><span class="n">get_densities</span><span class="p">()</span>
+                <span class="n">k</span> <span class="o">=</span> <span class="n">ndos_data</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">energies</span><span class="o">-</span><span class="n">efermi</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">lw</span><span class="o">=</span><span class="mf">1.75</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">elm</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">orb</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+                <span class="n">ndos_data</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">ylim1</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="n">ymin</span><span class="p">,</span><span class="n">ymax</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span><span class="mi">40</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">xlim1</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="n">xmin</span><span class="p">,</span><span class="n">xmax</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="o">-</span><span class="mi">8</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+        <span class="n">ncol</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ndos_data</span><span class="o">/</span><span class="mi">4</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">"upper left"</span><span class="p">,</span><span class="n">ncol</span><span class="o">=</span><span class="n">ncol</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="s1">'x-small'</span><span class="p">,</span><span class="n">handletextpad</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span><span class="n">labelspacing</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">"DOS (states/eV)"</span><span class="p">,</span><span class="n">fontweight</span><span class="o">=</span><span class="s1">'bold'</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">25</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">"E - E$_F$ (eV)"</span><span class="p">,</span><span class="n">fontweight</span><span class="o">=</span><span class="s1">'bold'</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">25</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">outfile</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">500</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"nspin should be 1 or 2</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="band_plot_vasp_line">
+<a class="viewcode-back" href="../plot.html#plot.band_plot_vasp_line">[docs]</a>
+<span class="k">def</span> <span class="nf">band_plot_vasp_line</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">compound</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Function to plot the bandstructure in line mode.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">    -----------</span>
+<span class="sd">    mpid : str</span>
+<span class="sd">        Materials ID.</span>
+<span class="sd">    compound : str</span>
+<span class="sd">        Name of the compound.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">    --------</span>
+<span class="sd">    None</span>
+
+<span class="sd">    This function generates a PDF plot of the bandstructure in line mode using data from the vasprun.xml file.</span>
+<span class="sd">    The plot is saved with the filename format: "&lt;mpid&gt;-&lt;compound&gt;-band.pdf".</span>
+<span class="sd">    The band structure is obtained using the Vasprun object from the pymatgen package.</span>
+<span class="sd">    The BSPlotter object is used to generate the band structure plot with specified settings.</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">    -----</span>
+<span class="sd">    Ensure that the vasprun.xml file containing band structure data is present in the current directory.</span>
+<span class="sd">    """</span>
+    <span class="n">input_data</span> <span class="o">=</span> <span class="n">config</span><span class="p">()</span>
+    <span class="n">outfile</span> <span class="o">=</span> <span class="n">mpid</span> <span class="o">+</span> <span class="s2">"-"</span> <span class="o">+</span> <span class="n">compound</span> <span class="o">+</span> <span class="s2">"-"</span> <span class="o">+</span> <span class="s2">"band.pdf"</span>
+    <span class="n">vaspout</span> <span class="o">=</span> <span class="n">Vasprun</span><span class="p">(</span><span class="s2">"vasprun.xml"</span><span class="p">)</span>
+    <span class="n">bandstr</span> <span class="o">=</span> <span class="n">vaspout</span><span class="o">.</span><span class="n">get_band_structure</span><span class="p">(</span><span class="n">line_mode</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">plt1</span> <span class="o">=</span> <span class="n">BSPlotter</span><span class="p">(</span><span class="n">bandstr</span><span class="p">)</span>
+    <span class="n">ylim1</span> <span class="o">=</span> <span class="n">input_data</span><span class="p">[</span><span class="s1">'plot'</span><span class="p">][</span><span class="s1">'ylim'</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">ylim1</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">plt2</span> <span class="o">=</span> <span class="n">plt1</span><span class="o">.</span><span class="n">get_plot</span><span class="p">(</span><span class="n">ylim</span><span class="o">=</span><span class="p">[</span><span class="n">ylim1</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">ylim1</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span><span class="n">vbm_cbm_marker</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">zero_to_efermi</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">plt2</span> <span class="o">=</span> <span class="n">plt1</span><span class="o">.</span><span class="n">get_plot</span><span class="p">(</span><span class="n">ylim</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mf">1.8</span><span class="p">,</span><span class="mf">1.8</span><span class="p">],</span><span class="n">vbm_cbm_marker</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">zero_to_efermi</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">plt2</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="s1">''</span><span class="p">,</span><span class="n">frameon</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">plt2</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">outfile</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="main">
+<a class="viewcode-back" href="../plot.html#plot.main">[docs]</a>
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Main function to execute plotting tasks based on command-line arguments.</span>
+
+<span class="sd">    This function reads command-line arguments to determine the type of plot and other required parameters.</span>
+<span class="sd">    It performs different plotting tasks based on the specified plot type.</span>
+
+<span class="sd">    Command-line Arguments:</span>
+<span class="sd">    -----------------------</span>
+<span class="sd">    plottype : str</span>
+<span class="sd">        Type of plot to generate.</span>
+<span class="sd">    mpid : str</span>
+<span class="sd">        Materials ID.</span>
+<span class="sd">    comp : str</span>
+<span class="sd">        Name of the compound.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">    --------</span>
+<span class="sd">    None</span>
+
+<span class="sd">    Plotting Tasks:</span>
+<span class="sd">    ---------------</span>
+<span class="sd">    - For 'pdos' plot type:</span>
+<span class="sd">        - Checks if 'filedos.in' exists, creates one if not found.</span>
+<span class="sd">        - Determines the type of calculation (QE or VASP).</span>
+<span class="sd">        - Calls 'dos_plot_vasp' function if VASP calculation is detected, otherwise 'dos_plot' function.</span>
+
+<span class="sd">    - For 'wann_band' plot type:</span>
+<span class="sd">        - Calls 'band_wann_plot' function.</span>
+
+<span class="sd">    - For 'phonproj' plot type:</span>
+<span class="sd">        - Reads the number of k-points from command-line argument.</span>
+<span class="sd">        - Calls 'plot_projection' function with appropriate parameters.</span>
+
+<span class="sd">    - For other plot types:</span>
+<span class="sd">        - Calls 'plot' function with specified plot type, file name, and compound name.</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">    -----</span>
+<span class="sd">    Ensure proper command-line arguments are provided.</span>
+<span class="sd">    Only QE and VASP outputs are allowed for plotting tasks.</span>
+<span class="sd">    """</span>
+    <span class="n">plottype</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">mpid</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">comp</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s1">'scf.in'</span><span class="p">):</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="s1">'scf.in'</span>
+    <span class="k">elif</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s1">'POSCAR'</span><span class="p">):</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="s1">'POSCAR'</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"No scf.in and POSCAR exists</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+    <span class="c1">#input_file = espresso.read_espresso_in('scf.in')</span>
+    <span class="k">if</span> <span class="n">plottype</span> <span class="o">==</span> <span class="s1">'pdos'</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"filedos.in"</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"filedos.in file not found, creating one</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">write_filedos</span><span class="p">(</span><span class="n">comp</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s1">'POSCAR'</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"POSCAR present. searching vasprun.xml..</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">dos_plot_vasp</span><span class="p">(</span><span class="s2">"pdos-</span><span class="si">{}</span><span class="s2">.pdf"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">comp</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s1">'scf.in'</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"scf.in present. searching </span><span class="si">{}</span><span class="s2">.dos and *pdos.pdos* files..</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">comp</span><span class="p">))</span>
+            <span class="n">dos_plot</span><span class="p">(</span><span class="s2">"</span><span class="si">{}</span><span class="s2">.dos"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">comp</span><span class="p">),</span><span class="s2">"pdos-</span><span class="si">{}</span><span class="s2">.pdf"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">comp</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"Only QE and VASP outputs are allowed</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">plottype</span> <span class="o">==</span> <span class="s1">'wann_band'</span><span class="p">:</span>
+        <span class="n">band_wann_plot</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">plottype</span> <span class="o">==</span> <span class="s1">'phonproj'</span><span class="p">:</span>
+        <span class="n">nkpt</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
+        <span class="n">plot_projection</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="s2">"phonon-</span><span class="si">{}</span><span class="s2">.proj.gp"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">comp</span><span class="p">),</span><span class="s2">"</span><span class="si">{}</span><span class="s2">.freq.gp"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">comp</span><span class="p">),</span><span class="s2">"plot-proj-</span><span class="si">{}</span><span class="s2">-</span><span class="si">{}</span><span class="s2">.pdf"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">comp</span><span class="p">),</span><span class="n">nkpt</span><span class="p">)</span>
+    <span class="c1">#elif plottype == 'line':</span>
+    <span class="c1">#    band_plot_vasp_line(mpid,comp)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">plot</span><span class="p">(</span><span class="n">plottype</span><span class="p">,</span><span class="n">filename</span><span class="p">,</span><span class="n">comp</span><span class="p">)</span></div>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+
+          </article>
+        </div>
+      </div>
+    </main>
+  </div>
+  <footer class="md-footer">
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+          
+          
+        </a>
+        
+      </nav>
+    </div>
+    <div class="md-footer-meta md-typeset">
+      <div class="md-footer-meta__inner md-grid">
+        <div class="md-footer-copyright">
+          <div class="md-footer-copyright__highlight">
+              &#169; Copyright 2024, Niraj K Nepal.
+              
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script src="../_static/javascripts/application.js"></script>
+  <script>app.initialize({version: "1.0.4", url: {base: ".."}})</script>
+  </body>
+</html>

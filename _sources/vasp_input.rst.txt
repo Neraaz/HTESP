@@ -1,0 +1,13 @@
+﻿vasp\_input
+===========
+
+.. automodule:: vasp_input
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      main
+      vasp_input
+   

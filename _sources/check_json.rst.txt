@@ -4,26 +4,9 @@
 .. automodule:: check_json
 
    
-   
-   
-
-   
-   
    .. rubric:: Functions
 
    .. autosummary::
    
       config
    
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-

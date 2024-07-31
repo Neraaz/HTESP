@@ -1,0 +1,20 @@
+﻿plot\_bandproj
+==============
+
+.. automodule:: plot_bandproj
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      find_all_indices
+      main
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      DataProcessor
+      PROCARProcessor
+   

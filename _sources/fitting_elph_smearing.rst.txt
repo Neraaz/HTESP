@@ -4,11 +4,6 @@
 .. automodule:: fitting_elph_smearing
 
    
-   
-   
-
-   
-   
    .. rubric:: Functions
 
    .. autosummary::
@@ -18,15 +13,3 @@
       main
       parse_lambda
    
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-

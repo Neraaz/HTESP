@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="lang:clipboard.copy" content="Copy to clipboard">
+  <meta name="lang:clipboard.copied" content="Copied to clipboard">
+  <meta name="lang:search.language" content="en">
+  <meta name="lang:search.pipeline.stopwords" content="True">
+  <meta name="lang:search.pipeline.trimmer" content="True">
+  <meta name="lang:search.result.none" content="No matching documents">
+  <meta name="lang:search.result.one" content="1 matching document">
+  <meta name="lang:search.result.other" content="# matching documents">
+  <meta name="lang:search.tokenizer" content="[\s\-]+">
+
+  
+    <link href="https://fonts.gstatic.com/" rel="preconnect" crossorigin>
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,500,700|Roboto:300,400,400i,700&display=fallback" rel="stylesheet">
+
+    <style>
+      body,
+      input {
+        font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif
+      }
+
+      code,
+      kbd,
+      pre {
+        font-family: "Roboto Mono", "Courier New", Courier, monospace
+      }
+    </style>
+  
+
+  <link rel="stylesheet" href="_static/stylesheets/application.css"/>
+  <link rel="stylesheet" href="_static/stylesheets/application-palette.css"/>
+  <link rel="stylesheet" href="_static/stylesheets/application-fixes.css"/>
+  
+  <link rel="stylesheet" href="_static/fonts/material-icons.css"/>
+  
+  <meta name="theme-color" content="#3f51b5">
+  <script src="_static/javascripts/modernizr.js"></script>
+  
+  
+  
+    <title>convergence_test &#8212; HTESP v1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=83e35b93" />
+    <link rel="stylesheet" type="text/css" href="_static/material.css?v=79c92029" />
+    <script src="_static/documentation_options.js?v=e160b93e"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="kpath" href="kpath.html" />
+    <link rel="prev" title="poscar_to_vasp" href="poscar_to_vasp.html" />
+  
+   
+
+  </head>
+  <body dir=ltr
+        data-md-color-primary=blue-grey data-md-color-accent=blue>
+  
+  <svg class="md-svg">
+    <defs data-children-count="0">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448" viewBox="0 0 416 448" id="__github"><path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19T128 352t-18.125-8.5-10.75-19T96 304t3.125-20.5 10.75-19T128 256t18.125 8.5 10.75 19T160 304zm160 0q0 10-3.125 20.5t-10.75 19T288 352t-18.125-8.5-10.75-19T256 304t3.125-20.5 10.75-19T288 256t18.125 8.5 10.75 19T320 304zm40 0q0-30-17.25-51T296 232q-10.25 0-48.75 5.25Q229.5 240 208 240t-39.25-2.75Q130.75 232 120 232q-29.5 0-46.75 21T56 304q0 22 8 38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0 37.25-1.75t35-7.375 30.5-15 20.25-25.75T360 304zm56-44q0 51.75-15.25 82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5T212 416q-19.5 0-35.5-.75t-36.875-3.125-38.125-7.5-34.25-12.875T37 371.5t-21.5-28.75Q0 312 0 260q0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25 30.875Q171.5 96 212 96q37 0 70 8 26.25-20.5 46.75-30.25T376 64q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34 99.5z"/></svg>
+      
+    </defs>
+  </svg>
+  
+  <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer">
+  <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search">
+  <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+  <a href="#convergence_test" tabindex="1" class="md-skip"> Skip to content </a>
+  <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex navheader">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="index.html" title="HTESP v1.0 documentation"
+           class="md-header-nav__button md-logo">
+          
+            &nbsp;
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          <span class="md-header-nav__topic">HTESP v1.0 documentation</span>
+          <span class="md-header-nav__topic"> convergence_test </span>
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+        
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" action="search.html" method="get" name="search">
+      <input type="text" class="md-search__input" name="q" placeholder=""Search""
+             autocapitalize="off" autocomplete="off" spellcheck="false"
+             data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+      </div>
+      
+      
+  
+  <script src="_static/javascripts/version_dropdown.js"></script>
+  <script>
+    var json_loc = ""versions.json"",
+        target_loc = "../",
+        text = "Versions";
+    $( document ).ready( add_version_dropdown(json_loc, target_loc, text));
+  </script>
+  
+
+    </div>
+  </nav>
+</header>
+
+  
+  <div class="md-container">
+    
+    
+    
+  <nav class="md-tabs" data-md-component="tabs">
+    <div class="md-tabs__inner md-grid">
+      <ul class="md-tabs__list">
+          <li class="md-tabs__item"><a href="index.html" class="md-tabs__link">HTESP v1.0 documentation</a></li>
+          <li class="md-tabs__item"><a href="utils.html" class="md-tabs__link">Modules</a></li>
+      </ul>
+    </div>
+  </nav>
+    <main class="md-main">
+      <div class="md-main__inner md-grid" data-md-component="container">
+        
+          <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+            <div class="md-sidebar__scrollwrap">
+              <div class="md-sidebar__inner">
+                <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href="index.html" title="HTESP v1.0 documentation" class="md-nav__button md-logo">
+      
+        <img src="_static/" alt=" logo" width="48" height="48">
+      
+    </a>
+    <a href="index.html"
+       title="HTESP v1.0 documentation">HTESP v1.0 documentation</a>
+  </label>
+  
+
+</nav>
+              </div>
+            </div>
+          </div>
+          <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+            <div class="md-sidebar__scrollwrap">
+              <div class="md-sidebar__inner">
+                
+<nav class="md-nav md-nav--secondary">
+    <label class="md-nav__title" for="__toc">"Contents"</label>
+  <ul class="md-nav__list" data-md-scrollfix="">
+        <li class="md-nav__item"><a href="#convergence-test--page-root" class="md-nav__link">convergence_test</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#convergence_test.kpoint_vasp" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">kpoint_vasp()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#convergence_test.submission" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">submission()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#convergence_test.main_vasp" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">main_vasp()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#convergence_test.kpoint_qe" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">kpoint_qe()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#convergence_test.main_qe" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">main_qe()</span></code></a>
+        </li></ul>
+            </nav>
+        </li>
+    
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+  </ul>
+  </ul>
+</nav>
+              </div>
+            </div>
+          </div>
+        
+        <div class="md-content">
+          <article class="md-content__inner md-typeset" role="main">
+            
+  <section id="module-convergence_test">
+<span id="convergence-test"></span><h1 id="convergence-test--page-root">convergence_test<a class="headerlink" href="#convergence-test--page-root" title="Link to this heading">¶</a></h1>
+<p>Module to submit convergence tests.
+Runs with ‘mainprogram convtest’</p>
+<p class="rubric">Functions</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#convergence_test.kpoint_qe" title="convergence_test.kpoint_qe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">kpoint_qe</span></code></a>(kpoint, mpid)</p></td>
+<td><p>Insert k-points into the SCF input file.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#convergence_test.kpoint_vasp" title="convergence_test.kpoint_vasp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">kpoint_vasp</span></code></a>(kpoint[, kconv])</p></td>
+<td><p>Function to write kpoint.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#convergence_test.main_qe" title="convergence_test.main_qe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">main_qe</span></code></a>(file_name, parameter, start, end)</p></td>
+<td><p>Execute convergence test calculations for kinetic energy cutoff.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#convergence_test.main_vasp" title="convergence_test.main_vasp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">main_vasp</span></code></a>(file_name, parameter, start, end)</p></td>
+<td><p>Execute convergence test calculations for kinetic energy cutoff.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#convergence_test.submission" title="convergence_test.submission"><code class="xref py py-obj docutils literal notranslate"><span class="pre">submission</span></code></a>(param, jobscript, A, B, jj)</p></td>
+<td><p>Submit a jobscript for computation based on parameters.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py function">
+<dt class="sig sig-object py" id="convergence_test.kpoint_vasp">
+<span class="sig-prename descclassname"><span class="pre">convergence_test.</span></span><span class="sig-name descname"><span class="pre">kpoint_vasp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kpoint</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kconv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/convergence_test.html#kpoint_vasp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#convergence_test.kpoint_vasp" title="Link to this definition">¶</a></dt>
+<dd><p>Function to write kpoint.</p>
+<p>Parameters:
+- kpoint (list): List containing the k-point coordinates.
+- mpid (str): The ID of the compound.
+- compound (str): The name of the compound.</p>
+<p>Returns:
+- None</p>
+<p>Example:
+To write kpoints for a convergence calculation:
+&gt;&gt;&gt; kpoint_vasp([2, 2, 2], kconv=True)</p>
+<p>To write kpoints for a regular calculation:
+&gt;&gt;&gt; kpoint_vasp([4, 4, 4])</p>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="convergence_test.submission">
+<span class="sig-prename descclassname"><span class="pre">convergence_test.</span></span><span class="sig-name descname"><span class="pre">submission</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jobscript</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">B</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/convergence_test.html#submission"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#convergence_test.submission" title="Link to this definition">¶</a></dt>
+<dd><p>Submit a jobscript for computation based on parameters.</p>
+<p>Parameters:
+- param (str): Parameter type, ‘ecut’ or ‘kpoint’.
+- jobscript (str): Name of the jobscript to be submitted.
+- A (str): Materials Id.
+- B (str): Name for the compound.
+- jj (str or tuple): The value of the parameter. If param is ‘ecut’, it’s a string;</p>
+<blockquote>
+<div><p>if param is ‘kpoint’, it’s a list (e.g., (kx, ky, kz)).</p>
+</div></blockquote>
+<p>Returns:
+None
+Example:</p>
+<p>To submit a jobscript named ‘myjob.sh’ for computation with parameter type ‘ecut’,
+Materials Id ‘mp-123’, compound name ‘Si’, and parameter value ‘500’:
+&gt;&gt;&gt; submission(‘ecut’, ‘myjob.sh’, ‘mp-123’, ‘Si’, ‘500’)</p>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="convergence_test.main_vasp">
+<span class="sig-prename descclassname"><span class="pre">convergence_test.</span></span><span class="sig-name descname"><span class="pre">main_vasp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/convergence_test.html#main_vasp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#convergence_test.main_vasp" title="Link to this definition">¶</a></dt>
+<dd><p>Execute convergence test calculations for kinetic energy cutoff.</p>
+<p>Parameters:
+- file_name (str): File holding materials id and name information.
+- parameter (str): Parameter to control the type of calculation.
+- start (int) : Starting index
+- end (int) : Ending index (not included)</p>
+<p>Returns:
+- None</p>
+<p>This function iterates through the specified range of indices and performs convergence test calculations.
+It modifies input files, creates directories, and submits jobs based on the provided parameter.</p>
+<p>Example:
+To perform a convergence test for kinetic energy cutoff (‘ecut’) from index 1 to 10:
+&gt;&gt;&gt; main_vasp(“mpid.in”, “ecut”, 1, 10)</p>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="convergence_test.kpoint_qe">
+<span class="sig-prename descclassname"><span class="pre">convergence_test.</span></span><span class="sig-name descname"><span class="pre">kpoint_qe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kpoint</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mpid</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/convergence_test.html#kpoint_qe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#convergence_test.kpoint_qe" title="Link to this definition">¶</a></dt>
+<dd><p>Insert k-points into the SCF input file.</p>
+<p>Parameters:
+- kpoint (list): List containing the k-point coordinates.
+- mpid (str): The ID of the compound.</p>
+<p>Returns:
+- None</p>
+<p>Example:
+&gt;&gt;&gt; kpoint_qe([0.5, 0.5, 0.5], “mp-12345”)</p>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="convergence_test.main_qe">
+<span class="sig-prename descclassname"><span class="pre">convergence_test.</span></span><span class="sig-name descname"><span class="pre">main_qe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/convergence_test.html#main_qe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#convergence_test.main_qe" title="Link to this definition">¶</a></dt>
+<dd><p>Execute convergence test calculations for kinetic energy cutoff.</p>
+<p>Parameters:
+- file_name (str): File holding materials id and name information.
+- parameter (str): Parameter to control the type of calculation.
+- start (int) : Starting index
+- end (int) : Ending index (not included)</p>
+<p>Returns:
+- None</p>
+<p>This function iterates through the specified range of indices and performs convergence test calculations.
+It modifies input files, creates directories, and submits jobs based on the provided parameter.</p>
+<p>Example:
+&gt;&gt;&gt; main_qe(“mpid.in”, “ecut”, 1, 5)</p>
+</dd></dl>
+</section>
+
+
+          </article>
+        </div>
+      </div>
+    </main>
+  </div>
+  <footer class="md-footer">
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+          
+            <a href="poscar_to_vasp.html" title="poscar_to_vasp"
+               class="md-flex md-footer-nav__link md-footer-nav__link--prev"
+               rel="prev">
+              <div class="md-flex__cell md-flex__cell--shrink">
+                <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+              </div>
+              <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+                <span class="md-flex__ellipsis">
+                  <span
+                      class="md-footer-nav__direction"> "Previous" </span> poscar_to_vasp </span>
+              </div>
+            </a>
+          
+          
+            <a href="kpath.html" title="kpath"
+               class="md-flex md-footer-nav__link md-footer-nav__link--next"
+               rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
+                class="md-flex__ellipsis"> <span
+                class="md-footer-nav__direction"> "Next" </span> kpath </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink"><i
+                class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          
+        </a>
+        
+      </nav>
+    </div>
+    <div class="md-footer-meta md-typeset">
+      <div class="md-footer-meta__inner md-grid">
+        <div class="md-footer-copyright">
+          <div class="md-footer-copyright__highlight">
+              &#169; Copyright 2024, Niraj K Nepal.
+              
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script src="_static/javascripts/application.js"></script>
+  <script>app.initialize({version: "1.0.4", url: {base: ".."}})</script>
+  </body>
+</html>

@@ -4,26 +4,9 @@
 .. automodule:: qe_axsf2cellpos
 
    
-   
-   
-
-   
-   
    .. rubric:: Functions
 
    .. autosummary::
    
       main
    
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-

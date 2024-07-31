@@ -4,26 +4,9 @@
 .. automodule:: matdyn_dos
 
    
-   
-   
-
-   
-   
    .. rubric:: Functions
 
    .. autosummary::
    
       matdyn_dos
    
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-
