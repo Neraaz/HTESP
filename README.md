@@ -13,8 +13,8 @@ ______________
                                               Program written by
 
                                 Niraj K Nepal, PhD       &       Lin-Lin Wang, PhD                        
-                          Email: nnepal@ameslab.gov              Email: llw@ameslab.gov 
-                                 tug11655@temple.edu                              
+                          Email: nepalneeraz@gmail.com              Email: llw@ameslab.gov 
+                                                               
 
 
 _____________________________________________________________________________________________________________________________________
@@ -128,7 +128,7 @@ Note: To run the `mainprogram` command without encountering errors, ensure you c
 
 Written and maintained by
 
-#### Niraj K. Nepal (nnepal@ameslab.gov, niraj.nepal@temple.edu)
+#### Niraj K. Nepal (nepalneeraz@gmail.com)
 
 Postdoctoral Researcher, Ames National Laboratory
 
