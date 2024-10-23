@@ -1,7 +1,7 @@
 Contribution
 ---------------
 
-(Written and maintained by) Niraj K. Nepal (nnepal@ameslab.gov, niraj.nepal@temple.edu)
+(Written and maintained by) Niraj K. Nepal (nepalneeraz@gmail.com)
 
 Postdoctoral Researcher, Ames National Laboratory
 
