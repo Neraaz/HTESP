@@ -84,7 +84,7 @@ cd HTESP
 ## Conda environment
 Make sure the conda is available either via miniconda or anaconda installation
 
-conda create --name myenv python==3.9.12
+conda create --name myenv python==3.10.0 (Please use python version newer than 3.10)
 
 source activate myenv
 
