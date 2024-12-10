@@ -130,4 +130,14 @@ After installation,
     Provide path to src file
     
     export PYTHONPATH="path_to_HTESP/src:$PYTHONPATH"
+
+----------------------------
+Check basic commands
+----------------------------
+
+.. code-block:: bash
+
+    mainprogram basicinfo
+
+    Please read carefully. For VASP, find commands to configure the path to your POTCAR files using the pymatgen command `pmg`.
     
