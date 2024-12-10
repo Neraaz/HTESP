@@ -5,7 +5,7 @@ setuptools.setup(
     name="HTESP",
     version="v1.0",
     author="Niraj K. Nepal",
-    author_email="nnepal@ameslab.gov, niraj.nepal@temple.edu",
+    author_email="nepalneeraz@gmail.com",
     license="",
     description="Package to perform high-throughput QE and VASP calculations",
     url="https://github.com/Neraaz/HTESP",
@@ -23,7 +23,7 @@ setuptools.setup(
     ],
     # scripts=["alignn/alignn_train_folder.py"],
     packages=setuptools.find_packages(),
-    python_requires=">=3.7",
+    python_requires=">=3.10",
     classifiers=[
         "Programming Language :: Python :: 3 + Bash Scripting",
         "Operating System :: UNIX",
