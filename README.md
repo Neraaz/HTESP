@@ -134,7 +134,7 @@ Written and maintained by
 
 #### Niraj K. Nepal (nepalneeraz@gmail.com)
 
-Postdoctoral Researcher, Ames National Laboratory
+Senior Computational Scientist, Pittsburgh Supercomputing Center
 
 #### Lin-Lin Wang
 
