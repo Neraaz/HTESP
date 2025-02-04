@@ -46,7 +46,7 @@
   
   
     <title>poscar_to_vasp &#8212; HTESP v1.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=83e35b93" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=75810a84" />
     <link rel="stylesheet" type="text/css" href="../_static/material.css?v=79c92029" />
     <script src="../_static/documentation_options.js?v=e160b93e"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
@@ -195,18 +195,18 @@
 <span class="sd">"""</span>
 <span class="sd">Program to write vasp inputfiles from poscars in mpid.vasp format</span>
 <span class="sd">"""</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">glob</span>
-<span class="kn">from</span> <span class="nn">pymatgen.core</span> <span class="kn">import</span> <span class="n">structure</span>
-<span class="kn">from</span> <span class="nn">pymatgen.io.vasp.sets</span> <span class="kn">import</span> <span class="n">MPRelaxSet</span>
-<span class="kn">from</span> <span class="nn">pymatgen.symmetry.analyzer</span> <span class="kn">import</span> <span class="n">SpacegroupAnalyzer</span>
-<span class="kn">from</span> <span class="nn">cif_to_gsinput</span> <span class="kn">import</span> <span class="n">pos_to_kpt</span>
-<span class="kn">from</span> <span class="nn">write_potcar</span> <span class="kn">import</span> <span class="n">poscar2potcar</span>
-<span class="kn">from</span> <span class="nn">htepc</span> <span class="kn">import</span> <span class="n">MpConnect</span>
-<span class="kn">from</span> <span class="nn">check_json</span> <span class="kn">import</span> <span class="n">config</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">glob</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">structure</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.io.vasp.sets</span><span class="w"> </span><span class="kn">import</span> <span class="n">MPRelaxSet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.symmetry.analyzer</span><span class="w"> </span><span class="kn">import</span> <span class="n">SpacegroupAnalyzer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cif_to_gsinput</span><span class="w"> </span><span class="kn">import</span> <span class="n">pos_to_kpt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">write_potcar</span><span class="w"> </span><span class="kn">import</span> <span class="n">poscar2potcar</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">htepc</span><span class="w"> </span><span class="kn">import</span> <span class="n">MpConnect</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">check_json</span><span class="w"> </span><span class="kn">import</span> <span class="n">config</span>
 <div class="viewcode-block" id="main">
 <a class="viewcode-back" href="../poscar_to_vasp.html#poscar_to_vasp.main">[docs]</a>
-<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Main function to prepare VASP input files and directories for relaxation.</span>
 

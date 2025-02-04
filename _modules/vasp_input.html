@@ -46,7 +46,7 @@
   
   
     <title>vasp_input &#8212; HTESP v1.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=83e35b93" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=75810a84" />
     <link rel="stylesheet" type="text/css" href="../_static/material.css?v=79c92029" />
     <script src="../_static/documentation_options.js?v=e160b93e"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
@@ -193,20 +193,20 @@
 <span class="c1">#"""Writen by Niraj K. Nepal, Ph.D.</span>
 <span class="sd">"""This script will download vasp input files from materials project database.</span>
 <span class="sd">Script is run within 'download-input' bash script."""</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">import</span> <span class="nn">warnings</span>
-<span class="kn">from</span> <span class="nn">pymatgen.io.vasp.sets</span> <span class="kn">import</span> <span class="n">MPRelaxSet</span>
-<span class="kn">from</span> <span class="nn">pymatgen.symmetry.analyzer</span> <span class="kn">import</span> <span class="n">SpacegroupAnalyzer</span>
-<span class="kn">from</span> <span class="nn">cif_to_gsinput</span> <span class="kn">import</span> <span class="n">pos_to_kpt</span>
-<span class="kn">from</span> <span class="nn">write_potcar</span> <span class="kn">import</span> <span class="n">poscar2potcar</span>
-<span class="kn">from</span> <span class="nn">htepc</span> <span class="kn">import</span> <span class="n">MpConnect</span>
-<span class="kn">from</span> <span class="nn">check_json</span> <span class="kn">import</span> <span class="n">config</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.io.vasp.sets</span><span class="w"> </span><span class="kn">import</span> <span class="n">MPRelaxSet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.symmetry.analyzer</span><span class="w"> </span><span class="kn">import</span> <span class="n">SpacegroupAnalyzer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cif_to_gsinput</span><span class="w"> </span><span class="kn">import</span> <span class="n">pos_to_kpt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">write_potcar</span><span class="w"> </span><span class="kn">import</span> <span class="n">poscar2potcar</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">htepc</span><span class="w"> </span><span class="kn">import</span> <span class="n">MpConnect</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">check_json</span><span class="w"> </span><span class="kn">import</span> <span class="n">config</span>
 <span class="c1"># To ignore all warnings</span>
 <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">"ignore"</span><span class="p">)</span>
 <div class="viewcode-block" id="vasp_input">
 <a class="viewcode-back" href="../vasp_input.html#vasp_input.vasp_input">[docs]</a>
-<span class="k">def</span> <span class="nf">vasp_input</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">compound</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">vasp_input</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">compound</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Download VASP input files from the Materials Project.</span>
 <span class="sd">    Downloads INCAR, POSCAR, POTCAR, and KPOINTS inside Rmpid-compound/relax folder.</span>
@@ -264,7 +264,7 @@
 
 <div class="viewcode-block" id="main">
 <a class="viewcode-back" href="../vasp_input.html#vasp_input.main">[docs]</a>
-<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    main function</span>
 <span class="sd">    """</span>

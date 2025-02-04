@@ -46,7 +46,7 @@
   
   
     <title>kpath &#8212; HTESP v1.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=83e35b93" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=75810a84" />
     <link rel="stylesheet" type="text/css" href="../_static/material.css?v=79c92029" />
     <script src="../_static/documentation_options.js?v=e160b93e"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
@@ -192,18 +192,18 @@
 <span></span><span class="ch">#!/usr/bin/env python</span>
 <span class="c1">#"""Writen by Niraj K. Nepal, Ph.D."""</span>
 <span class="sd">"""Module to handle kpath for high-symmetry lines"""</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">from</span> <span class="nn">ase.io</span> <span class="kn">import</span> <span class="n">espresso</span><span class="p">,</span><span class="n">vasp</span>
-<span class="kn">import</span> <span class="nn">pylab</span>
-<span class="kn">from</span> <span class="nn">pymatgen.io.vasp.inputs</span> <span class="kn">import</span> <span class="n">Kpoints</span>
-<span class="kn">from</span> <span class="nn">pymatgen.core</span> <span class="kn">import</span> <span class="n">Structure</span>
-<span class="kn">from</span> <span class="nn">pymatgen.symmetry.bandstructure</span> <span class="kn">import</span> <span class="n">HighSymmKpath</span>
-<span class="kn">from</span> <span class="nn">check_json</span> <span class="kn">import</span> <span class="n">config</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ase.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">espresso</span><span class="p">,</span><span class="n">vasp</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pylab</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.io.vasp.inputs</span><span class="w"> </span><span class="kn">import</span> <span class="n">Kpoints</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Structure</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.symmetry.bandstructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">HighSymmKpath</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">check_json</span><span class="w"> </span><span class="kn">import</span> <span class="n">config</span>
 
 <div class="viewcode-block" id="kpath">
 <a class="viewcode-back" href="../kpath.html#kpath.kpath">[docs]</a>
-<span class="k">def</span> <span class="nf">kpath</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="n">npoint</span><span class="p">,</span><span class="n">kcutoff</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">kpath</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="n">npoint</span><span class="p">,</span><span class="n">kcutoff</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Function to write k-point mesh along the high-symmetry path of the Brillouin zone (BZ).</span>
 
@@ -281,7 +281,7 @@
 
 <div class="viewcode-block" id="printk">
 <a class="viewcode-back" href="../kpath.html#kpath.printk">[docs]</a>
-<span class="k">def</span> <span class="nf">printk</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">printk</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Print k-point mesh within high-symmetry points and between them.</span>
 
@@ -329,7 +329,7 @@
 
 <div class="viewcode-block" id="make_line_kpt">
 <a class="viewcode-back" href="../kpath.html#kpath.make_line_kpt">[docs]</a>
-<span class="k">def</span> <span class="nf">make_line_kpt</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s2">"KPOINTS"</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">make_line_kpt</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s2">"KPOINTS"</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Function to create high symmetry points for line mode using pymatgen.</span>
 
@@ -387,7 +387,7 @@
 
 <div class="viewcode-block" id="main">
 <a class="viewcode-back" href="../kpath.html#kpath.main">[docs]</a>
-<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Main function for executing different modes of k-point generation.</span>
 

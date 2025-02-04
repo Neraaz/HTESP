@@ -46,7 +46,7 @@
   
   
     <title>create_epw_inputs &#8212; HTESP v1.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=83e35b93" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=75810a84" />
     <link rel="stylesheet" type="text/css" href="../_static/material.css?v=79c92029" />
     <script src="../_static/documentation_options.js?v=e160b93e"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
@@ -192,22 +192,22 @@
 <span></span><span class="ch">#!/usr/bin/env python</span>
 <span class="c1">#"""Writen by Niraj K. Nepal, Ph.D."""</span>
 <span class="sd">"""Module to prepare input files for wannier90 and EPW calculations"""</span>
-<span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">glob</span>
-<span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">import</span> <span class="nn">math</span> <span class="k">as</span> <span class="nn">m</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">lmfit</span> <span class="kn">import</span> <span class="n">Model</span>
-<span class="kn">from</span> <span class="nn">scipy.special</span> <span class="kn">import</span> <span class="n">erfc</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">from</span> <span class="nn">kpoint_path</span> <span class="kn">import</span> <span class="n">kpoint_path</span>
-<span class="kn">from</span> <span class="nn">wannier90</span> <span class="kn">import</span> <span class="n">epw_bandcheck</span>
-<span class="kn">from</span> <span class="nn">check_json</span> <span class="kn">import</span> <span class="n">config</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">glob</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">m</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">lmfit</span><span class="w"> </span><span class="kn">import</span> <span class="n">Model</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.special</span><span class="w"> </span><span class="kn">import</span> <span class="n">erfc</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kpoint_path</span><span class="w"> </span><span class="kn">import</span> <span class="n">kpoint_path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">wannier90</span><span class="w"> </span><span class="kn">import</span> <span class="n">epw_bandcheck</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">check_json</span><span class="w"> </span><span class="kn">import</span> <span class="n">config</span>
 
 <div class="viewcode-block" id="phonon_input">
 <a class="viewcode-back" href="../create_epw_inputs.html#create_epw_inputs.phonon_input">[docs]</a>
-<span class="k">def</span> <span class="nf">phonon_input</span><span class="p">(</span><span class="n">mass_file</span><span class="p">,</span> <span class="n">qpoint_file</span><span class="p">,</span> <span class="n">mpid</span><span class="p">,</span> <span class="n">compound</span><span class="p">,</span> <span class="n">prefix</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">phonon_input</span><span class="p">(</span><span class="n">mass_file</span><span class="p">,</span> <span class="n">qpoint_file</span><span class="p">,</span> <span class="n">mpid</span><span class="p">,</span> <span class="n">compound</span><span class="p">,</span> <span class="n">prefix</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    function to write ph.in file for phonon calculation</span>
 <span class="sd">    parameters</span>
@@ -278,7 +278,7 @@
 
 <div class="viewcode-block" id="prepare_nscf">
 <a class="viewcode-back" href="../create_epw_inputs.html#create_epw_inputs.prepare_nscf">[docs]</a>
-<span class="k">def</span> <span class="nf">prepare_nscf</span><span class="p">(</span><span class="n">grid_file</span><span class="p">,</span><span class="n">what</span><span class="o">=</span><span class="s1">'nscf'</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">prepare_nscf</span><span class="p">(</span><span class="n">grid_file</span><span class="p">,</span><span class="n">what</span><span class="o">=</span><span class="s1">'nscf'</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    function to write file for non-scf calculations</span>
 <span class="sd">    parameters</span>
@@ -308,7 +308,7 @@
 
 <div class="viewcode-block" id="projwfc">
 <a class="viewcode-back" href="../create_epw_inputs.html#create_epw_inputs.projwfc">[docs]</a>
-<span class="k">def</span> <span class="nf">projwfc</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span><span class="n">mpid</span><span class="p">,</span><span class="n">compound</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">projwfc</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span><span class="n">mpid</span><span class="p">,</span><span class="n">compound</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    function to write projwfc.in file for orbital projection calculation</span>
 <span class="sd">    parameters</span>
@@ -339,7 +339,7 @@
 
 <div class="viewcode-block" id="ciftoxsf">
 <a class="viewcode-back" href="../create_epw_inputs.html#create_epw_inputs.ciftoxsf">[docs]</a>
-<span class="k">def</span> <span class="nf">ciftoxsf</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span><span class="n">outfile</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">ciftoxsf</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span><span class="n">outfile</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    function to change .cif file to .xsf format, suitable for xcrysden.</span>
 <span class="sd">    parameters</span>
@@ -354,7 +354,7 @@
 
 <div class="viewcode-block" id="func_erfc">
 <a class="viewcode-back" href="../create_epw_inputs.html#create_epw_inputs.func_erfc">[docs]</a>
-<span class="k">def</span> <span class="nf">func_erfc</span><span class="p">(</span><span class="n">xdata</span><span class="p">,</span><span class="n">aparam</span><span class="p">,</span><span class="n">bparam</span><span class="p">,</span><span class="n">func_type</span><span class="o">=</span><span class="s1">'erfc'</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">func_erfc</span><span class="p">(</span><span class="n">xdata</span><span class="p">,</span><span class="n">aparam</span><span class="p">,</span><span class="n">bparam</span><span class="p">,</span><span class="n">func_type</span><span class="o">=</span><span class="s1">'erfc'</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    erfc function erfc((x-a)/b)</span>
 <span class="sd">    parameters</span>
@@ -377,7 +377,7 @@
 
 <div class="viewcode-block" id="scdmfit">
 <a class="viewcode-back" href="../create_epw_inputs.html#create_epw_inputs.scdmfit">[docs]</a>
-<span class="k">def</span> <span class="nf">scdmfit</span><span class="p">(</span><span class="n">func</span><span class="p">,</span><span class="n">file_name</span><span class="p">,</span><span class="n">mpid</span><span class="p">,</span><span class="n">compound</span><span class="p">,</span><span class="n">fermi</span><span class="p">,</span><span class="n">entang</span><span class="o">=</span><span class="s1">'erfc'</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">scdmfit</span><span class="p">(</span><span class="n">func</span><span class="p">,</span><span class="n">file_name</span><span class="p">,</span><span class="n">mpid</span><span class="p">,</span><span class="n">compound</span><span class="p">,</span><span class="n">fermi</span><span class="p">,</span><span class="n">entang</span><span class="o">=</span><span class="s1">'erfc'</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    function to fit erfc function and calculate SCDM parameters</span>
 <span class="sd">    to generate automatic projections for  wannierization</span>
@@ -441,7 +441,7 @@
 <span class="c1"># Also, lambda_qnu projection or atomic projection to the phonon band.</span>
 <div class="viewcode-block" id="band_file_epw">
 <a class="viewcode-back" href="../create_epw_inputs.html#create_epw_inputs.band_file_epw">[docs]</a>
-<span class="k">def</span> <span class="nf">band_file_epw</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">compound</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">band_file_epw</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">compound</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    function to include 'nosym = .true.' inside QE scf.in file</span>
 <span class="sd">    for bandstructure calculation</span>
@@ -466,7 +466,7 @@
 
 <div class="viewcode-block" id="pw2wan_input">
 <a class="viewcode-back" href="../create_epw_inputs.html#create_epw_inputs.pw2wan_input">[docs]</a>
-<span class="k">def</span> <span class="nf">pw2wan_input</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">compound</span><span class="p">,</span><span class="n">prefix</span><span class="p">,</span><span class="n">proj</span><span class="o">=</span><span class="s2">" "</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">pw2wan_input</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">compound</span><span class="p">,</span><span class="n">prefix</span><span class="p">,</span><span class="n">proj</span><span class="o">=</span><span class="s2">" "</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    function to write pw2wan input file</span>
 <span class="sd">    parameters</span>
@@ -511,7 +511,7 @@
 
 <div class="viewcode-block" id="epw_sc_from_json">
 <a class="viewcode-back" href="../create_epw_inputs.html#create_epw_inputs.epw_sc_from_json">[docs]</a>
-<span class="k">def</span> <span class="nf">epw_sc_from_json</span><span class="p">(</span><span class="n">json_file</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="s2">"epw.in"</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">epw_sc_from_json</span><span class="p">(</span><span class="n">json_file</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="s2">"epw.in"</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Write input file for EPW calculations based on JSON configuration.</span>
 
@@ -546,7 +546,7 @@
 
 <div class="viewcode-block" id="epw_sc">
 <a class="viewcode-back" href="../create_epw_inputs.html#create_epw_inputs.epw_sc">[docs]</a>
-<span class="k">def</span> <span class="nf">epw_sc</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">compound</span><span class="p">,</span><span class="n">prefix</span><span class="p">,</span><span class="n">qpoint_file</span><span class="p">,</span><span class="n">kpoint_file</span><span class="p">,</span><span class="n">proj</span><span class="o">=</span><span class="s2">" "</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="s2">"epw.in"</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">epw_sc</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">compound</span><span class="p">,</span><span class="n">prefix</span><span class="p">,</span><span class="n">qpoint_file</span><span class="p">,</span><span class="n">kpoint_file</span><span class="p">,</span><span class="n">proj</span><span class="o">=</span><span class="s2">" "</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="s2">"epw.in"</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    function to write input file for EPW calculations. Default: 'epw.in'</span>
 
@@ -622,7 +622,7 @@
 
 <div class="viewcode-block" id="main">
 <a class="viewcode-back" href="../create_epw_inputs.html#create_epw_inputs.main">[docs]</a>
-<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    main function</span>
 <span class="sd">    """</span>

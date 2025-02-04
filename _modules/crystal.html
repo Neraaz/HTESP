@@ -46,7 +46,7 @@
   
   
     <title>crystal &#8212; HTESP v1.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=83e35b93" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=75810a84" />
     <link rel="stylesheet" type="text/css" href="../_static/material.css?v=79c92029" />
     <script src="../_static/documentation_options.js?v=e160b93e"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
@@ -192,16 +192,16 @@
 <span></span><span class="ch">#!/usr/bin/env python</span>
 <span class="c1">#"""Writen by Niraj K. Nepal, Ph.D."""</span>
 <span class="sd">"""Module to extract information about systems for running calculations"""</span>
-<span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">import</span> <span class="nn">spglib</span> <span class="k">as</span> <span class="nn">spg</span>
-<span class="kn">from</span> <span class="nn">pymatgen.core</span> <span class="kn">import</span> <span class="n">structure</span>
-<span class="kn">from</span> <span class="nn">pymatgen.io.pwscf</span> <span class="kn">import</span> <span class="n">PWInput</span>
-<span class="kn">from</span> <span class="nn">ase.io</span> <span class="kn">import</span> <span class="n">espresso</span><span class="p">,</span> <span class="n">vasp</span>
-<span class="kn">from</span> <span class="nn">ase.cell</span> <span class="kn">import</span> <span class="n">Cell</span>
-<span class="kn">from</span> <span class="nn">htepc</span> <span class="kn">import</span> <span class="n">MpConnect</span> <span class="k">as</span> <span class="n">mpc</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">spglib</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">spg</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">structure</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.io.pwscf</span><span class="w"> </span><span class="kn">import</span> <span class="n">PWInput</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ase.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">espresso</span><span class="p">,</span> <span class="n">vasp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ase.cell</span><span class="w"> </span><span class="kn">import</span> <span class="n">Cell</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">htepc</span><span class="w"> </span><span class="kn">import</span> <span class="n">MpConnect</span> <span class="k">as</span> <span class="n">mpc</span>
 <div class="viewcode-block" id="crystal_extract">
 <a class="viewcode-back" href="../crystal.html#crystal.crystal_extract">[docs]</a>
-<span class="k">def</span> <span class="nf">crystal_extract</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">crystal_extract</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Function to extract lattice parameters from Quantum Espresso (QE) input files using ASE package.</span>
 
@@ -234,7 +234,7 @@
 
 <div class="viewcode-block" id="convex_hull">
 <a class="viewcode-back" href="../crystal.html#crystal.convex_hull">[docs]</a>
-<span class="k">def</span> <span class="nf">convex_hull</span><span class="p">(</span><span class="n">comp</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">convex_hull</span><span class="p">(</span><span class="n">comp</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Function to extract energy above hull from the Materials Project database.</span>
 
@@ -256,7 +256,7 @@
 
 <div class="viewcode-block" id="main">
 <a class="viewcode-back" href="../crystal.html#crystal.main">[docs]</a>
-<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Main function to extract properties from Materials Project and relaxed outputs.</span>
 

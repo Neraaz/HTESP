@@ -47,7 +47,7 @@
   
   
     <title>Package structure &#8212; HTESP v1.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=83e35b93" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=75810a84" />
     <link rel="stylesheet" type="text/css" href="_static/material.css?v=79c92029" />
     <script src="_static/documentation_options.js?v=e160b93e"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
@@ -263,7 +263,7 @@ Inside<span class="w"> </span>src,<span class="w"> </span>there<span class="w"> 
 <section id="conda-environment">
 <h1 id="conda-environment">Conda environment<a class="headerlink" href="#conda-environment" title="Link to this heading">¶</a></h1>
 <p>Make sure the conda is available either via <a class="reference external" href="https://docs.anaconda.com/free/miniconda/">miniconda</a> or <a class="reference external" href="https://www.anaconda.com/download/success">anaconda</a> installation</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>create<span class="w"> </span>--name<span class="w"> </span>myenv<span class="w"> </span><span class="nv">python</span><span class="o">==</span><span class="m">3</span>.10.0<span class="w"> </span><span class="o">(</span>Please<span class="w"> </span>use<span class="w"> </span>python<span class="w"> </span>version<span class="w"> </span>newer<span class="w"> </span>than<span class="w"> </span><span class="m">3</span>.10<span class="o">)</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>create<span class="w"> </span>--name<span class="w"> </span>myenv<span class="w"> </span><span class="nv">python</span><span class="o">==</span><span class="m">3</span>.10.0<span class="w"> </span><span class="o">(</span>Please<span class="w"> </span>use<span class="w"> </span>python<span class="w"> </span>version<span class="w"> </span>newer<span class="w"> </span>than<span class="w"> </span><span class="m">3</span>.10,<span class="w"> </span>depending<span class="w"> </span>on<span class="w"> </span>python<span class="w"> </span>version<span class="w"> </span><span class="k">in</span><span class="w"> </span>your<span class="w"> </span>conda<span class="w"> </span>environment<span class="o">)</span>
 
 <span class="nb">source</span><span class="w"> </span>activate<span class="w"> </span>myenv
 </pre></div>
@@ -306,6 +306,10 @@ Inside<span class="w"> </span>src,<span class="w"> </span>there<span class="w"> 
 Provide<span class="w"> </span>path<span class="w"> </span>to<span class="w"> </span>src<span class="w"> </span>file
 
 <span class="nb">export</span><span class="w"> </span><span class="nv">PYTHONPATH</span><span class="o">=</span><span class="s2">"path_to_HTESP/src:</span><span class="nv">$PYTHONPATH</span><span class="s2">"</span>
+
+Also,<span class="w"> </span>provide<span class="w"> </span>PYTHONPATH<span class="w"> </span>to<span class="w"> </span>your<span class="w"> </span>installed<span class="w"> </span>packages<span class="w"> </span><span class="k">in</span><span class="w"> </span>conda<span class="w"> </span>environment,
+
+<span class="nb">export</span><span class="w"> </span><span class="nv">PYTHONPATH</span><span class="o">=</span><span class="s2">"/your_home_directory/.conda/envs/your_conda_environment/lib/python3.x/site-packages:</span><span class="nv">$PYTHONPATH</span><span class="s2">"</span>
 </pre></div>
 </div>
 </section>

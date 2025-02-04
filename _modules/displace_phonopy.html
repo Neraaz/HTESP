@@ -46,7 +46,7 @@
   
   
     <title>displace_phonopy &#8212; HTESP v1.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=83e35b93" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=75810a84" />
     <link rel="stylesheet" type="text/css" href="../_static/material.css?v=79c92029" />
     <script src="../_static/documentation_options.js?v=e160b93e"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
@@ -193,13 +193,13 @@
 <span class="c1">#"""Written by Niraj K. Nepal,Ph.D."""</span>
 <span class="sd">"""Module to process band.yaml file from phonopy calculations to extract eigenvectors"""</span>
 <span class="c1"># coding: utf-8</span>
-<span class="kn">import</span> <span class="nn">yaml</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">pymatgen.core</span> <span class="kn">import</span> <span class="n">structure</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">yaml</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">structure</span>
 
 <div class="viewcode-block" id="DisplacePhonopy">
 <a class="viewcode-back" href="../displace_phonopy.html#displace_phonopy.DisplacePhonopy">[docs]</a>
-<span class="k">class</span> <span class="nc">DisplacePhonopy</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">DisplacePhonopy</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    A class to handle displacement based on VASP+PHONOPY band.yaml file.</span>
 <span class="sd">    To obtain eigenvectors on band.yaml, switch on eigenvector tag to true in band.conf file.</span>
@@ -237,7 +237,7 @@
 <span class="sd">    &gt;&gt;&gt; displace.applydisplace() #Apply distortion to the structure, provided an undistorted</span>
 <span class="sd">    &gt;&gt;&gt; #structure exists as POSCAR file</span>
 <span class="sd">    """</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">filename</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">filename</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">eigen</span> <span class="o">=</span> <span class="kc">None</span>
@@ -245,7 +245,7 @@
 
 <div class="viewcode-block" id="DisplacePhonopy.parse">
 <a class="viewcode-back" href="../displace_phonopy.html#displace_phonopy.DisplacePhonopy.parse">[docs]</a>
-    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Parses the YAML file specified by 'filename'.</span>
 
@@ -262,7 +262,7 @@
 
 <div class="viewcode-block" id="DisplacePhonopy.print_qpt">
 <a class="viewcode-back" href="../displace_phonopy.html#displace_phonopy.DisplacePhonopy.print_qpt">[docs]</a>
-    <span class="k">def</span> <span class="nf">print_qpt</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">print_qpt</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Prints the q-point positions from the parsed data.</span>
 
@@ -276,7 +276,7 @@
 
 <div class="viewcode-block" id="DisplacePhonopy.mass_extract">
 <a class="viewcode-back" href="../displace_phonopy.html#displace_phonopy.DisplacePhonopy.mass_extract">[docs]</a>
-    <span class="k">def</span> <span class="nf">mass_extract</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">mass_extract</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Returns list of masses of the ions</span>
 <span class="sd">        """</span>
@@ -291,7 +291,7 @@
 
 <div class="viewcode-block" id="DisplacePhonopy.print_mode">
 <a class="viewcode-back" href="../displace_phonopy.html#displace_phonopy.DisplacePhonopy.print_mode">[docs]</a>
-    <span class="k">def</span> <span class="nf">print_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">iqpt</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">print_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">iqpt</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Prints the energy modes for a given q-point index.</span>
 
@@ -312,7 +312,7 @@
 
 <div class="viewcode-block" id="DisplacePhonopy.negative_freq">
 <a class="viewcode-back" href="../displace_phonopy.html#displace_phonopy.DisplacePhonopy.negative_freq">[docs]</a>
-    <span class="k">def</span> <span class="nf">negative_freq</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">negative_freq</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Identifies q-points with negative frequencies and returns them as a dictionary.</span>
 
@@ -338,7 +338,7 @@
 
 <div class="viewcode-block" id="DisplacePhonopy.geteigenvec">
 <a class="viewcode-back" href="../displace_phonopy.html#displace_phonopy.DisplacePhonopy.geteigenvec">[docs]</a>
-    <span class="k">def</span> <span class="nf">geteigenvec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">iqpt</span><span class="p">,</span><span class="n">imode</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">geteigenvec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">iqpt</span><span class="p">,</span><span class="n">imode</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Retrieves the eigenvectors for a specified q-point index and mode index.</span>
 
@@ -359,7 +359,7 @@
 
 <div class="viewcode-block" id="DisplacePhonopy.applydisplace">
 <a class="viewcode-back" href="../displace_phonopy.html#displace_phonopy.DisplacePhonopy.applydisplace">[docs]</a>
-    <span class="k">def</span> <span class="nf">applydisplace</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">applydisplace</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Applies displacement to the structure based on the eigenvectors.</span>
 

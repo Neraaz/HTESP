@@ -46,7 +46,7 @@
   
   
     <title>structure_group &#8212; HTESP v1.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=83e35b93" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=75810a84" />
     <link rel="stylesheet" type="text/css" href="../_static/material.css?v=79c92029" />
     <script src="../_static/documentation_options.js?v=e160b93e"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
@@ -193,15 +193,15 @@
 <span class="c1">#"""Written by Niraj K. Nepal, Ph.D."""</span>
 <span class="sd">"""Module to group structures from different database"""</span>
 <span class="c1"># coding: utf-8</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">pymatgen.core</span> <span class="kn">import</span> <span class="n">Structure</span>
-<span class="kn">from</span> <span class="nn">pymatgen.io.pwscf</span> <span class="kn">import</span> <span class="n">PWInput</span>
-<span class="kn">from</span> <span class="nn">pymatgen.symmetry.analyzer</span> <span class="kn">import</span> <span class="n">SpacegroupAnalyzer</span>
-<span class="kn">from</span> <span class="nn">pymatgen.analysis.structure_matcher</span> <span class="kn">import</span> <span class="n">StructureMatcher</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Structure</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.io.pwscf</span><span class="w"> </span><span class="kn">import</span> <span class="n">PWInput</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.symmetry.analyzer</span><span class="w"> </span><span class="kn">import</span> <span class="n">SpacegroupAnalyzer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.analysis.structure_matcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">StructureMatcher</span>
 
 <div class="viewcode-block" id="read_structure_file">
 <a class="viewcode-back" href="../structure_group.html#structure_group.read_structure_file">[docs]</a>
-<span class="k">def</span> <span class="nf">read_structure_file</span><span class="p">(</span><span class="n">filepath</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">read_structure_file</span><span class="p">(</span><span class="n">filepath</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Read structure from a file.</span>
 
@@ -219,7 +219,7 @@
 
 <div class="viewcode-block" id="create_structure_list">
 <a class="viewcode-back" href="../structure_group.html#structure_group.create_structure_list">[docs]</a>
-<span class="k">def</span> <span class="nf">create_structure_list</span><span class="p">(</span><span class="n">input_file</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_structure_list</span><span class="p">(</span><span class="n">input_file</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Create a list of structures from the input file.</span>
 
@@ -251,7 +251,7 @@
 
 <div class="viewcode-block" id="write_unique_structures">
 <a class="viewcode-back" href="../structure_group.html#structure_group.write_unique_structures">[docs]</a>
-<span class="k">def</span> <span class="nf">write_unique_structures</span><span class="p">(</span><span class="n">unique_structures</span><span class="p">,</span> <span class="n">output_file</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">write_unique_structures</span><span class="p">(</span><span class="n">unique_structures</span><span class="p">,</span> <span class="n">output_file</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Write unique structures to an output file and copy files to a directory.</span>
 
@@ -275,7 +275,7 @@
 
 <div class="viewcode-block" id="main">
 <a class="viewcode-back" href="../structure_group.html#structure_group.main">[docs]</a>
-<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Main function to process structures from an input file, group them into unique structures,</span>
 <span class="sd">    and write the results to an output file.</span>

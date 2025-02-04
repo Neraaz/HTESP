@@ -46,7 +46,7 @@
   
   
     <title>elastic &#8212; HTESP v1.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=83e35b93" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=75810a84" />
     <link rel="stylesheet" type="text/css" href="../_static/material.css?v=79c92029" />
     <script src="../_static/documentation_options.js?v=e160b93e"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
@@ -192,25 +192,25 @@
 <span></span><span class="ch">#!/usr/bin/env python</span>
 <span class="c1">#"""Writen by Niraj K. Nepal, Ph.D. (tug11655@temple.edu)"""</span>
 <span class="sd">"""Module to perform elastic calculations"""</span>
-<span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">pymatgen.io.vasp.inputs</span> <span class="kn">import</span> <span class="n">Poscar</span>
-<span class="kn">from</span> <span class="nn">pymatgen.io.vasp.sets</span> <span class="kn">import</span> <span class="n">MPRelaxSet</span>
-<span class="kn">from</span> <span class="nn">pymatgen.io</span> <span class="kn">import</span> <span class="n">pwscf</span>
-<span class="kn">from</span> <span class="nn">pymatgen.io.vasp.sets</span> <span class="kn">import</span> <span class="n">Vasprun</span>
-<span class="kn">from</span> <span class="nn">pymatgen.symmetry.analyzer</span> <span class="kn">import</span> <span class="n">SpacegroupAnalyzer</span>
-<span class="kn">from</span> <span class="nn">pymatgen.core</span> <span class="kn">import</span> <span class="n">structure</span>
-<span class="kn">from</span> <span class="nn">pymatgen.analysis.elasticity</span> <span class="kn">import</span> <span class="n">diff_fit</span><span class="p">,</span><span class="n">ElasticTensor</span><span class="p">,</span><span class="n">Stress</span>
-<span class="kn">from</span> <span class="nn">pymatgen.analysis.elasticity</span> <span class="kn">import</span> <span class="n">DeformedStructureSet</span><span class="p">,</span><span class="n">find_eq_stress</span>
-<span class="kn">from</span> <span class="nn">cif_to_gsinput</span> <span class="kn">import</span> <span class="n">pos_to_kpt</span>
-<span class="kn">from</span> <span class="nn">write_potcar</span> <span class="kn">import</span> <span class="n">poscar2potcar</span>
-<span class="kn">from</span> <span class="nn">htepc</span> <span class="kn">import</span> <span class="n">MpConnect</span>
-<span class="kn">from</span> <span class="nn">check_json</span> <span class="kn">import</span> <span class="n">config</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.io.vasp.inputs</span><span class="w"> </span><span class="kn">import</span> <span class="n">Poscar</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.io.vasp.sets</span><span class="w"> </span><span class="kn">import</span> <span class="n">MPRelaxSet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">pwscf</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.io.vasp.sets</span><span class="w"> </span><span class="kn">import</span> <span class="n">Vasprun</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.symmetry.analyzer</span><span class="w"> </span><span class="kn">import</span> <span class="n">SpacegroupAnalyzer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">structure</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.analysis.elasticity</span><span class="w"> </span><span class="kn">import</span> <span class="n">diff_fit</span><span class="p">,</span><span class="n">ElasticTensor</span><span class="p">,</span><span class="n">Stress</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.analysis.elasticity</span><span class="w"> </span><span class="kn">import</span> <span class="n">DeformedStructureSet</span><span class="p">,</span><span class="n">find_eq_stress</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cif_to_gsinput</span><span class="w"> </span><span class="kn">import</span> <span class="n">pos_to_kpt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">write_potcar</span><span class="w"> </span><span class="kn">import</span> <span class="n">poscar2potcar</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">htepc</span><span class="w"> </span><span class="kn">import</span> <span class="n">MpConnect</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">check_json</span><span class="w"> </span><span class="kn">import</span> <span class="n">config</span>
 
 <div class="viewcode-block" id="deformation">
 <a class="viewcode-back" href="../elastic.html#elastic.deformation">[docs]</a>
-<span class="k">def</span> <span class="nf">deformation</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">obj</span><span class="p">,</span><span class="n">dft</span><span class="p">,</span><span class="n">orig_prefix</span><span class="p">,</span><span class="n">deformed_struc</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">deformation</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">obj</span><span class="p">,</span><span class="n">dft</span><span class="p">,</span><span class="n">orig_prefix</span><span class="p">,</span><span class="n">deformed_struc</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Function to create deformed structures utilizing pymatgen.analysis.elastic class.</span>
 
@@ -331,7 +331,7 @@
 
 <div class="viewcode-block" id="main">
 <a class="viewcode-back" href="../elastic.html#elastic.main">[docs]</a>
-<span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">orig_prefix</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">orig_prefix</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Main function to handle deformation and elastic computations.</span>
 

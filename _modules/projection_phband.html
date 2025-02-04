@@ -46,7 +46,7 @@
   
   
     <title>projection_phband &#8212; HTESP v1.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=83e35b93" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=75810a84" />
     <link rel="stylesheet" type="text/css" href="../_static/material.css?v=79c92029" />
     <script src="../_static/documentation_options.js?v=e160b93e"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
@@ -192,10 +192,10 @@
 <span></span><span class="ch">#!/usr/bin/env python</span>
 <span class="c1">#"""Writen by Niraj K. Nepal, Ph.D."""</span>
 <span class="sd">"""Module to plot atom-projected phonon band dispersion"""</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">ase.io</span> <span class="kn">import</span> <span class="n">espresso</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ase.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">espresso</span>
 <span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">threshold</span><span class="o">=</span><span class="mi">100000</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span><span class="n">suppress</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">formatter</span><span class="o">=</span><span class="p">{</span><span class="s1">'float_kind'</span><span class="p">:</span><span class="s1">'</span><span class="si">{:0.2f}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">})</span>
 <span class="n">MSG</span><span class="o">=</span><span class="s2">"""</span>
 <span class="s2">Format of phonproj.in file</span>
@@ -211,7 +211,7 @@
 
 <div class="viewcode-block" id="write_phonproj_in">
 <a class="viewcode-back" href="../projection_phband.html#projection_phband.write_phonproj_in">[docs]</a>
-<span class="k">def</span> <span class="nf">write_phonproj_in</span><span class="p">(</span><span class="n">comp</span><span class="p">,</span><span class="n">nkpoint</span><span class="p">,</span><span class="n">filename</span><span class="p">,</span><span class="n">outfile</span><span class="o">=</span><span class="s1">'phonproj.in'</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">write_phonproj_in</span><span class="p">(</span><span class="n">comp</span><span class="p">,</span><span class="n">nkpoint</span><span class="p">,</span><span class="n">filename</span><span class="p">,</span><span class="n">outfile</span><span class="o">=</span><span class="s1">'phonproj.in'</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Function to write the 'phonproj.in' file required for atomic projection.</span>
 
@@ -252,7 +252,7 @@
 
 <div class="viewcode-block" id="reading_input">
 <a class="viewcode-back" href="../projection_phband.html#projection_phband.reading_input">[docs]</a>
-<span class="k">def</span> <span class="nf">reading_input</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">reading_input</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Function to read the 'phonproj.in' file.</span>
 
@@ -309,7 +309,7 @@
 
 <div class="viewcode-block" id="parse_input">
 <a class="viewcode-back" href="../projection_phband.html#projection_phband.parse_input">[docs]</a>
-<span class="k">def</span> <span class="nf">parse_input</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="n">nat</span><span class="p">,</span><span class="n">nqpt</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">parse_input</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="n">nat</span><span class="p">,</span><span class="n">nqpt</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Function to parse eigenvector file in .eig format obtained from matdyn.x using matdyn.in.</span>
 
@@ -365,7 +365,7 @@
 
 <div class="viewcode-block" id="projection">
 <a class="viewcode-back" href="../projection_phband.html#projection_phband.projection">[docs]</a>
-<span class="k">def</span> <span class="nf">projection</span><span class="p">(</span><span class="n">pol_q_mode</span><span class="p">,</span><span class="n">ion</span><span class="p">,</span><span class="n">indices</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">projection</span><span class="p">(</span><span class="n">pol_q_mode</span><span class="p">,</span><span class="n">ion</span><span class="p">,</span><span class="n">indices</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Function to calculate atomic projection for mode nu and wavevector q.</span>
 
@@ -405,7 +405,7 @@
 
 <div class="viewcode-block" id="print_to_file">
 <a class="viewcode-back" href="../projection_phband.html#projection_phband.print_to_file">[docs]</a>
-<span class="k">def</span> <span class="nf">print_to_file</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">print_to_file</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Function to save mode resolved projection in phonon-compound.prog.gp format.</span>
 
@@ -429,7 +429,7 @@
 
 <div class="viewcode-block" id="main">
 <a class="viewcode-back" href="../projection_phband.html#projection_phband.main">[docs]</a>
-<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Main function to generate phonon projections and print ion-color associations.</span>
 

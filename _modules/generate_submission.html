@@ -46,7 +46,7 @@
   
   
     <title>generate_submission &#8212; HTESP v1.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=83e35b93" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=75810a84" />
     <link rel="stylesheet" type="text/css" href="../_static/material.css?v=79c92029" />
     <script src="../_static/documentation_options.js?v=e160b93e"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
@@ -192,14 +192,14 @@
 <span></span><span class="ch">#!/usr/bin/env python</span>
 <span class="c1">#"""Written by Niraj K. Nepal, Ph.D."""</span>
 <span class="sd">"""Module to prepare job submission scripts"""</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">glob</span>
-<span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">from</span> <span class="nn">ifermi_plot</span> <span class="kn">import</span> <span class="n">ifermi</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">glob</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ifermi_plot</span><span class="w"> </span><span class="kn">import</span> <span class="n">ifermi</span>
 
 <div class="viewcode-block" id="generate_submission_files">
 <a class="viewcode-back" href="../generate_submission.html#generate_submission.generate_submission_files">[docs]</a>
-<span class="k">def</span> <span class="nf">generate_submission_files</span><span class="p">(</span><span class="n">which_calc</span><span class="p">,</span> <span class="n">parallel_command</span><span class="p">,</span> <span class="n">nproc</span><span class="p">,</span> <span class="n">command_list</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">generate_submission_files</span><span class="p">(</span><span class="n">which_calc</span><span class="p">,</span> <span class="n">parallel_command</span><span class="p">,</span> <span class="n">nproc</span><span class="p">,</span> <span class="n">command_list</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Generate submission files based on the calculation type, parallel command, number of processors,</span>
 <span class="sd">    and a dictionary of commands.</span>
@@ -279,7 +279,7 @@
 
 <div class="viewcode-block" id="main">
 <a class="viewcode-back" href="../generate_submission.html#generate_submission.main">[docs]</a>
-<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Load parameters from a JSON file, generate submission files based on the specified calculation type,</span>
 <span class="sd">    and create a script containing the submission commands.</span>

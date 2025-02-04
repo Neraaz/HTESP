@@ -46,7 +46,7 @@
   
   
     <title>htepc &#8212; HTESP v1.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=83e35b93" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=75810a84" />
     <link rel="stylesheet" type="text/css" href="../_static/material.css?v=79c92029" />
     <script src="../_static/documentation_options.js?v=e160b93e"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
@@ -192,26 +192,26 @@
 <span></span><span class="ch">#!/usr/bin/env python</span>
 <span class="c1">#"""Writen by Niraj K. Nepal, Ph.D."""</span>
 <span class="sd">"""Module to prepare QE input files"""</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">scipy.linalg</span> <span class="k">as</span> <span class="nn">alg</span>
-<span class="kn">from</span> <span class="nn">ase.io</span> <span class="kn">import</span> <span class="n">espresso</span><span class="p">,</span><span class="n">cif</span>
-<span class="kn">from</span> <span class="nn">ase.cell</span> <span class="kn">import</span> <span class="n">Cell</span>
-<span class="kn">from</span> <span class="nn">pymatgen.io.cif</span> <span class="kn">import</span> <span class="n">CifWriter</span>
-<span class="kn">from</span> <span class="nn">pymatgen.io.vasp.sets</span> <span class="kn">import</span> <span class="n">MPRelaxSet</span>
-<span class="kn">from</span> <span class="nn">pymatgen.io</span> <span class="kn">import</span> <span class="n">pwscf</span>
-<span class="kn">from</span> <span class="nn">pymatgen.core.structure</span> <span class="kn">import</span> <span class="n">Structure</span>
-<span class="kn">from</span> <span class="nn">pymatgen.core.lattice</span> <span class="kn">import</span> <span class="n">Lattice</span>
-<span class="kn">from</span> <span class="nn">pymatgen.core.periodic_table</span> <span class="kn">import</span> <span class="n">Element</span>
-<span class="kn">from</span> <span class="nn">pymatgen.symmetry.analyzer</span> <span class="kn">import</span> <span class="n">SpacegroupAnalyzer</span>
-<span class="kn">from</span> <span class="nn">mp_api.client</span> <span class="kn">import</span> <span class="n">MPRester</span>
-<span class="kn">from</span> <span class="nn">kpath</span> <span class="kn">import</span> <span class="n">kpath</span>
-<span class="kn">from</span> <span class="nn">check_json</span> <span class="kn">import</span> <span class="n">config</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">OrderedDict</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scipy.linalg</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">alg</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ase.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">espresso</span><span class="p">,</span><span class="n">cif</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ase.cell</span><span class="w"> </span><span class="kn">import</span> <span class="n">Cell</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.io.cif</span><span class="w"> </span><span class="kn">import</span> <span class="n">CifWriter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.io.vasp.sets</span><span class="w"> </span><span class="kn">import</span> <span class="n">MPRelaxSet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">pwscf</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.core.structure</span><span class="w"> </span><span class="kn">import</span> <span class="n">Structure</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.core.lattice</span><span class="w"> </span><span class="kn">import</span> <span class="n">Lattice</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.core.periodic_table</span><span class="w"> </span><span class="kn">import</span> <span class="n">Element</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.symmetry.analyzer</span><span class="w"> </span><span class="kn">import</span> <span class="n">SpacegroupAnalyzer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mp_api.client</span><span class="w"> </span><span class="kn">import</span> <span class="n">MPRester</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kpath</span><span class="w"> </span><span class="kn">import</span> <span class="n">kpath</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">check_json</span><span class="w"> </span><span class="kn">import</span> <span class="n">config</span>
 <span class="n">input_data</span> <span class="o">=</span> <span class="n">config</span><span class="p">()</span>
 <div class="viewcode-block" id="pos_to_kpt">
 <a class="viewcode-back" href="../htepc.html#htepc.pos_to_kpt">[docs]</a>
-<span class="k">def</span> <span class="nf">pos_to_kpt</span><span class="p">(</span><span class="n">structure_filename</span><span class="p">,</span><span class="n">kpoint_density</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">pos_to_kpt</span><span class="p">(</span><span class="n">structure_filename</span><span class="p">,</span><span class="n">kpoint_density</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Obtain k-point mesh from a structure file.</span>
 
@@ -256,7 +256,7 @@
 
 <div class="viewcode-block" id="MpConnect">
 <a class="viewcode-back" href="../htepc.html#htepc.MpConnect">[docs]</a>
-<span class="k">class</span> <span class="nc">MpConnect</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MpConnect</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Class for connecting to Materials Project (MP) via MP API, extracting properties,</span>
 <span class="sd">    and preparing input files for Quantum Espresso (QE) calculations.</span>
@@ -322,7 +322,7 @@
 <span class="sd">    &gt;&gt;&gt; obj.setting_qeinput()  # Set up Quantum Espresso input files based on the retrieved data</span>
 <span class="sd">    """</span>
     <span class="c1"># Intialize the class</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"config.json"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"../../config.json"</span><span class="p">):</span>
             <span class="n">input_data</span> <span class="o">=</span> <span class="n">config</span><span class="p">()</span>
             <span class="n">key</span> <span class="o">=</span> <span class="n">input_data</span><span class="p">[</span><span class="s2">"mpi_key"</span><span class="p">][</span><span class="s2">"API_KEY"</span><span class="p">]</span>
@@ -357,7 +357,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">comp_list</span> <span class="o">=</span> <span class="kc">None</span>
 <div class="viewcode-block" id="MpConnect.setting">
 <a class="viewcode-back" href="../htepc.html#htepc.MpConnect.setting">[docs]</a>
-    <span class="k">def</span> <span class="nf">setting</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">comp</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setting</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">comp</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialize the process with a Materials ID.</span>
 
@@ -411,7 +411,7 @@
 
 <div class="viewcode-block" id="MpConnect.get_prop_list">
 <a class="viewcode-back" href="../htepc.html#htepc.MpConnect.get_prop_list">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_prop_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_prop_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Print the list of properties available when downloading the data.</span>
 
@@ -430,7 +430,7 @@
         <span class="c1">#return self.mpr.materials.summary.search(material_ids=[self.mpid],fields=self.prop).dict().keys()</span>
 <div class="viewcode-block" id="MpConnect.download">
 <a class="viewcode-back" href="../htepc.html#htepc.MpConnect.download">[docs]</a>
-    <span class="k">def</span> <span class="nf">download</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">filetype</span><span class="o">=</span><span class="s1">'cif'</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">download</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">filetype</span><span class="o">=</span><span class="s1">'cif'</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Download the structure file.</span>
 
@@ -449,7 +449,7 @@
 
 <div class="viewcode-block" id="MpConnect.property">
 <a class="viewcode-back" href="../htepc.html#htepc.MpConnect.property">[docs]</a>
-    <span class="k">def</span> <span class="nf">property</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">property</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">         Extract a particular property.</span>
 
@@ -471,7 +471,7 @@
 
 <div class="viewcode-block" id="MpConnect.getkpt">
 <a class="viewcode-back" href="../htepc.html#htepc.MpConnect.getkpt">[docs]</a>
-    <span class="k">def</span> <span class="nf">getkpt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">primitive</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">getkpt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">primitive</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Compute k-points based on k-point density.</span>
 <span class="sd">        Parameters:</span>
@@ -515,7 +515,7 @@
 
 <div class="viewcode-block" id="MpConnect.getevenkpt">
 <a class="viewcode-back" href="../htepc.html#htepc.MpConnect.getevenkpt">[docs]</a>
-    <span class="k">def</span> <span class="nf">getevenkpt</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">getevenkpt</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Make the k-point mesh even.</span>
 
@@ -543,7 +543,7 @@
 
 <div class="viewcode-block" id="MpConnect.getecut_sssp">
 <a class="viewcode-back" href="../htepc.html#htepc.MpConnect.getecut_sssp">[docs]</a>
-    <span class="k">def</span> <span class="nf">getecut_sssp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">element</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">getecut_sssp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">element</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Obtain the kinetic energy cutoff for a specific element.</span>
 
@@ -572,7 +572,7 @@
 
 <div class="viewcode-block" id="MpConnect.maxecut_sssp">
 <a class="viewcode-back" href="../htepc.html#htepc.MpConnect.maxecut_sssp">[docs]</a>
-    <span class="k">def</span> <span class="nf">maxecut_sssp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">maxecut_sssp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Choose the maximum kinetic energy cutoff among elements in a compound.</span>
 
@@ -618,7 +618,7 @@
 
 <div class="viewcode-block" id="MpConnect.maxecut_sssp_for_subs">
 <a class="viewcode-back" href="../htepc.html#htepc.MpConnect.maxecut_sssp_for_subs">[docs]</a>
-    <span class="k">def</span> <span class="nf">maxecut_sssp_for_subs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">maxecut_sssp_for_subs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Determine the maximum kinetic energy cutoff among elements in a compound during the substitution process.</span>
 
@@ -650,7 +650,7 @@
 
 <div class="viewcode-block" id="MpConnect.ecut_set">
 <a class="viewcode-back" href="../htepc.html#htepc.MpConnect.ecut_set">[docs]</a>
-    <span class="k">def</span> <span class="nf">ecut_set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">ecutwfc</span><span class="o">=</span><span class="mf">50.0</span><span class="p">,</span><span class="n">ecutrho</span><span class="o">=</span><span class="mf">400.0</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">ecut_set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">ecutwfc</span><span class="o">=</span><span class="mf">50.0</span><span class="p">,</span><span class="n">ecutrho</span><span class="o">=</span><span class="mf">400.0</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Function to set kinetic energy cutoffs</span>
 <span class="sd">        """</span>
@@ -660,7 +660,7 @@
 
 <div class="viewcode-block" id="MpConnect.get_properties">
 <a class="viewcode-back" href="../htepc.html#htepc.MpConnect.get_properties">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">property_name</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">property_name</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Function to extract multiple properties from MP.</span>
 <span class="sd">        parameters</span>
@@ -682,7 +682,7 @@
 
 <div class="viewcode-block" id="MpConnect.setting_qeinput">
 <a class="viewcode-back" href="../htepc.html#htepc.MpConnect.setting_qeinput">[docs]</a>
-    <span class="k">def</span> <span class="nf">setting_qeinput</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">calculation</span><span class="o">=</span><span class="s1">'vc-relax'</span><span class="p">,</span><span class="n">occupations</span><span class="o">=</span><span class="s1">'smearing'</span><span class="p">,</span><span class="n">restart_mode</span><span class="o">=</span><span class="s1">'from_scratch'</span><span class="p">,</span><span class="n">pseudo_dir</span><span class="o">=</span><span class="s1">'./'</span><span class="p">,</span><span class="n">smearing</span><span class="o">=</span><span class="mf">0.02</span><span class="p">,</span><span class="n">smearing_type</span><span class="o">=</span><span class="s1">'gauss'</span><span class="p">,</span><span class="n">etot_conv_thr</span><span class="o">=</span><span class="mf">1e-05</span><span class="p">,</span><span class="n">forc_conv_thr</span><span class="o">=</span><span class="mf">1e-04</span><span class="p">,</span><span class="n">conv_thr</span><span class="o">=</span><span class="mf">1e-16</span><span class="p">,</span><span class="n">ion_dynamics</span><span class="o">=</span><span class="s1">'bfgs'</span><span class="p">,</span><span class="n">cell_dynamics</span><span class="o">=</span><span class="s1">'bfgs'</span><span class="p">,</span><span class="n">magnetic</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">primitive</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setting_qeinput</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">calculation</span><span class="o">=</span><span class="s1">'vc-relax'</span><span class="p">,</span><span class="n">occupations</span><span class="o">=</span><span class="s1">'smearing'</span><span class="p">,</span><span class="n">restart_mode</span><span class="o">=</span><span class="s1">'from_scratch'</span><span class="p">,</span><span class="n">pseudo_dir</span><span class="o">=</span><span class="s1">'./'</span><span class="p">,</span><span class="n">smearing</span><span class="o">=</span><span class="mf">0.02</span><span class="p">,</span><span class="n">smearing_type</span><span class="o">=</span><span class="s1">'gauss'</span><span class="p">,</span><span class="n">etot_conv_thr</span><span class="o">=</span><span class="mf">1e-05</span><span class="p">,</span><span class="n">forc_conv_thr</span><span class="o">=</span><span class="mf">1e-04</span><span class="p">,</span><span class="n">conv_thr</span><span class="o">=</span><span class="mf">1e-16</span><span class="p">,</span><span class="n">ion_dynamics</span><span class="o">=</span><span class="s1">'bfgs'</span><span class="p">,</span><span class="n">cell_dynamics</span><span class="o">=</span><span class="s1">'bfgs'</span><span class="p">,</span><span class="n">magnetic</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">primitive</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Function to create input file for QE ground-state calculations.</span>
 
@@ -754,11 +754,11 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">structure</span> <span class="o">=</span> <span class="n">tmpstructure</span>
         <span class="c1"># Generate the input file based on the chosen calculation type</span>
         <span class="k">if</span> <span class="n">calculation</span> <span class="o">==</span> <span class="s1">'vc-relax'</span><span class="p">:</span>
-            <span class="n">filename</span> <span class="o">=</span> <span class="n">pwscf</span><span class="o">.</span><span class="n">PWInput</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="p">,</span> <span class="n">pseudo</span><span class="o">=</span><span class="n">pseudo1</span><span class="p">,</span> <span class="n">control</span><span class="o">=</span><span class="n">control</span><span class="p">,</span> <span class="n">system</span><span class="o">=</span><span class="n">system</span><span class="p">,</span><span class="n">electrons</span><span class="o">=</span><span class="n">electrons</span><span class="p">,</span> <span class="n">kpoints_grid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kpt</span><span class="p">,</span> <span class="n">ions</span><span class="o">=</span><span class="p">{</span><span class="s1">'ion_dynamics'</span><span class="p">:</span><span class="n">ion_dynamics</span><span class="p">},</span> <span class="n">cell</span><span class="o">=</span><span class="p">{</span><span class="s1">'cell_dynamics'</span><span class="p">:</span><span class="n">cell_dynamics</span><span class="p">,</span><span class="s1">'press_conv_thr'</span><span class="p">:</span><span class="mf">0.05</span><span class="p">})</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="n">pwscf</span><span class="o">.</span><span class="n">PWInput</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="p">,</span> <span class="n">pseudo</span><span class="o">=</span><span class="n">pseudo1</span><span class="p">,</span> <span class="n">control</span><span class="o">=</span><span class="n">control</span><span class="p">,</span> <span class="n">system</span><span class="o">=</span><span class="n">system</span><span class="p">,</span><span class="n">electrons</span><span class="o">=</span><span class="n">electrons</span><span class="p">,</span> <span class="n">kpoints_grid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kpt</span><span class="p">,</span> <span class="n">ions</span><span class="o">=</span><span class="p">{</span><span class="s1">'ion_dynamics'</span><span class="p">:</span><span class="n">ion_dynamics</span><span class="p">},</span> <span class="n">cell</span><span class="o">=</span><span class="p">{</span><span class="s1">'cell_dynamics'</span><span class="p">:</span><span class="n">cell_dynamics</span><span class="p">,</span><span class="s1">'press_conv_thr'</span><span class="p">:</span><span class="mf">0.05</span><span class="p">},</span> <span class="n">format_options</span><span class="o">=</span><span class="p">{</span><span class="s2">"coord_decimals"</span><span class="p">:</span> <span class="mi">10</span><span class="p">})</span>
         <span class="k">elif</span> <span class="n">calculation</span> <span class="o">==</span> <span class="s1">'relax'</span><span class="p">:</span>
-            <span class="n">filename</span> <span class="o">=</span> <span class="n">pwscf</span><span class="o">.</span><span class="n">PWInput</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="p">,</span> <span class="n">pseudo</span><span class="o">=</span><span class="n">pseudo1</span><span class="p">,</span> <span class="n">control</span><span class="o">=</span><span class="n">control</span><span class="p">,</span> <span class="n">system</span><span class="o">=</span><span class="n">system</span><span class="p">,</span><span class="n">electrons</span><span class="o">=</span><span class="n">electrons</span><span class="p">,</span> <span class="n">kpoints_grid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kpt</span><span class="p">,</span> <span class="n">ions</span><span class="o">=</span><span class="p">{</span><span class="s1">'ion_dynamics'</span><span class="p">:</span><span class="n">ion_dynamics</span><span class="p">})</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="n">pwscf</span><span class="o">.</span><span class="n">PWInput</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="p">,</span> <span class="n">pseudo</span><span class="o">=</span><span class="n">pseudo1</span><span class="p">,</span> <span class="n">control</span><span class="o">=</span><span class="n">control</span><span class="p">,</span> <span class="n">system</span><span class="o">=</span><span class="n">system</span><span class="p">,</span><span class="n">electrons</span><span class="o">=</span><span class="n">electrons</span><span class="p">,</span> <span class="n">kpoints_grid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kpt</span><span class="p">,</span> <span class="n">ions</span><span class="o">=</span><span class="p">{</span><span class="s1">'ion_dynamics'</span><span class="p">:</span><span class="n">ion_dynamics</span><span class="p">},</span> <span class="n">format_options</span><span class="o">=</span><span class="p">{</span><span class="s2">"coord_decimals"</span><span class="p">:</span> <span class="mi">10</span><span class="p">})</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">filename</span> <span class="o">=</span> <span class="n">pwscf</span><span class="o">.</span><span class="n">PWInput</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="p">,</span> <span class="n">pseudo</span><span class="o">=</span><span class="n">pseudo1</span><span class="p">,</span> <span class="n">control</span><span class="o">=</span><span class="n">control</span><span class="p">,</span> <span class="n">system</span><span class="o">=</span><span class="n">system</span><span class="p">,</span><span class="n">electrons</span><span class="o">=</span><span class="n">electrons</span><span class="p">,</span> <span class="n">kpoints_grid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kpt</span><span class="p">)</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="n">pwscf</span><span class="o">.</span><span class="n">PWInput</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="p">,</span> <span class="n">pseudo</span><span class="o">=</span><span class="n">pseudo1</span><span class="p">,</span> <span class="n">control</span><span class="o">=</span><span class="n">control</span><span class="p">,</span> <span class="n">system</span><span class="o">=</span><span class="n">system</span><span class="p">,</span><span class="n">electrons</span><span class="o">=</span><span class="n">electrons</span><span class="p">,</span> <span class="n">kpoints_grid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kpt</span><span class="p">,</span> <span class="n">format_options</span><span class="o">=</span><span class="p">{</span><span class="s2">"coord_decimals"</span><span class="p">:</span> <span class="mi">10</span><span class="p">})</span>
         <span class="c1"># Write input file</span>
         <span class="n">filename</span><span class="o">.</span><span class="n">write_file</span><span class="p">(</span><span class="s2">"temp.in"</span><span class="p">)</span>
         <span class="c1"># Adjust the input file format and save it with the appropriate filename</span>
@@ -822,7 +822,7 @@
 
 <div class="viewcode-block" id="reorder_dictionary">
 <a class="viewcode-back" href="../htepc.html#htepc.reorder_dictionary">[docs]</a>
-<span class="k">def</span> <span class="nf">reorder_dictionary</span><span class="p">(</span><span class="n">original_dict</span><span class="p">,</span> <span class="n">new_order</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">reorder_dictionary</span><span class="p">(</span><span class="n">original_dict</span><span class="p">,</span> <span class="n">new_order</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Reorder the keys of a dictionary based on a new list of keywords and return the list of keys.</span>
 
@@ -848,7 +848,7 @@
 
 <div class="viewcode-block" id="extract_elements_with_spin">
 <a class="viewcode-back" href="../htepc.html#htepc.extract_elements_with_spin">[docs]</a>
-<span class="k">def</span> <span class="nf">extract_elements_with_spin</span><span class="p">(</span><span class="n">original_list</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">extract_elements_with_spin</span><span class="p">(</span><span class="n">original_list</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Extract elements with their spin values from the given list.</span>
 
@@ -872,7 +872,7 @@
 
 <div class="viewcode-block" id="convert_species_list">
 <a class="viewcode-back" href="../htepc.html#htepc.convert_species_list">[docs]</a>
-<span class="k">def</span> <span class="nf">convert_species_list</span><span class="p">(</span><span class="n">original_list</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">convert_species_list</span><span class="p">(</span><span class="n">original_list</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Rename elements in the original list with elements with different spins.</span>
 
@@ -914,7 +914,7 @@
 
 
 
-<span class="k">def</span> <span class="nf">ase_cell_to_structure</span><span class="p">(</span><span class="n">ase_cell</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">ase_cell_to_structure</span><span class="p">(</span><span class="n">ase_cell</span><span class="p">):</span>
     <span class="c1"># Extract lattice vectors from ASE Atoms object</span>
     <span class="n">lattice_vectors</span> <span class="o">=</span> <span class="n">ase_cell</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
     
@@ -935,14 +935,14 @@
 
 <div class="viewcode-block" id="INPUTscf">
 <a class="viewcode-back" href="../htepc.html#htepc.INPUTscf">[docs]</a>
-<span class="k">class</span> <span class="nc">INPUTscf</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">INPUTscf</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    class to process QE input files</span>
 <span class="sd">    parameters</span>
 <span class="sd">    ------------------</span>
 <span class="sd">    filename: (str) QE input file</span>
 <span class="sd">    """</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">filename</span><span class="o">=</span><span class="s1">'scf.in'</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">filename</span><span class="o">=</span><span class="s1">'scf.in'</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ase_cell</span> <span class="o">=</span> <span class="n">espresso</span><span class="o">.</span><span class="n">read_espresso_in</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
         <span class="c1"># Convert the ASE cell.io.espresso object to a pymatgen Structure object</span>
@@ -963,7 +963,7 @@
 
 <div class="viewcode-block" id="INPUTscf.scftocif">
 <a class="viewcode-back" href="../htepc.html#htepc.INPUTscf.scftocif">[docs]</a>
-    <span class="k">def</span> <span class="nf">scftocif</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">output</span><span class="o">=</span><span class="s1">'file.cif'</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">scftocif</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">output</span><span class="o">=</span><span class="s1">'file.cif'</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Function to convert QE input file to structure file in .cif format</span>
 <span class="sd">        parameters</span>
@@ -979,7 +979,7 @@
 
 <div class="viewcode-block" id="INPUTscf.cellpar">
 <a class="viewcode-back" href="../htepc.html#htepc.INPUTscf.cellpar">[docs]</a>
-    <span class="k">def</span> <span class="nf">cellpar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cellpar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Function to calculate cell lengths and angles</span>
 <span class="sd">        Returns</span>
@@ -993,7 +993,7 @@
 
 <div class="viewcode-block" id="INPUTscf.standardize">
 <a class="viewcode-back" href="../htepc.html#htepc.INPUTscf.standardize">[docs]</a>
-    <span class="k">def</span> <span class="nf">standardize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">mpid</span><span class="p">,</span><span class="n">output</span><span class="o">=</span><span class="s2">"standard.in"</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">standardize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">mpid</span><span class="p">,</span><span class="n">output</span><span class="o">=</span><span class="s2">"standard.in"</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Function to get symmetrized structure.</span>
 <span class="sd">        parameters</span>
@@ -1020,7 +1020,7 @@
 
 <div class="viewcode-block" id="INPUTscf.generate_kpath">
 <a class="viewcode-back" href="../htepc.html#htepc.INPUTscf.generate_kpath">[docs]</a>
-    <span class="k">def</span> <span class="nf">generate_kpath</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">nqpoint</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span><span class="n">kcut</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="s1">'kpath.in'</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">generate_kpath</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">nqpoint</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span><span class="n">kcut</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="s1">'kpath.in'</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Function to generate and write k-point mesh for bandstructure calculation to a file</span>
 <span class="sd">        parameters</span>
@@ -1045,7 +1045,7 @@
 
 <div class="viewcode-block" id="INPUTscf.setting_input">
 <a class="viewcode-back" href="../htepc.html#htepc.INPUTscf.setting_input">[docs]</a>
-    <span class="k">def</span> <span class="nf">setting_input</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">comp</span><span class="p">,</span><span class="n">mass</span><span class="p">,</span><span class="n">qpoint</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setting_input</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">comp</span><span class="p">,</span><span class="n">mass</span><span class="p">,</span><span class="n">qpoint</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Function to setup input</span>
 <span class="sd">        parameters</span>
@@ -1065,7 +1065,7 @@
 
 <div class="viewcode-block" id="INPUTscf.create_elph">
 <a class="viewcode-back" href="../htepc.html#htepc.INPUTscf.create_elph">[docs]</a>
-    <span class="k">def</span> <span class="nf">create_elph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">output</span><span class="o">=</span><span class="s1">'elph.in'</span><span class="p">,</span><span class="n">tol</span><span class="o">=</span><span class="mf">0.00000000000001</span><span class="p">,</span><span class="n">sigma</span><span class="o">=</span><span class="mf">0.005</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_elph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">output</span><span class="o">=</span><span class="s1">'elph.in'</span><span class="p">,</span><span class="n">tol</span><span class="o">=</span><span class="mf">0.00000000000001</span><span class="p">,</span><span class="n">sigma</span><span class="o">=</span><span class="mf">0.005</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">         Function similar to elph.py file inside src/</span>
 <span class="sd">        """</span>
@@ -1092,7 +1092,7 @@
 
 <div class="viewcode-block" id="INPUTscf.create_q2r">
 <a class="viewcode-back" href="../htepc.html#htepc.INPUTscf.create_q2r">[docs]</a>
-    <span class="k">def</span> <span class="nf">create_q2r</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">output</span><span class="o">=</span><span class="s1">'q2r.in'</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_q2r</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">output</span><span class="o">=</span><span class="s1">'q2r.in'</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">         Function similar to q2r.py file inside src/</span>
 <span class="sd">        """</span>
@@ -1109,7 +1109,7 @@
 
 <div class="viewcode-block" id="INPUTscf.create_matdyn">
 <a class="viewcode-back" href="../htepc.html#htepc.INPUTscf.create_matdyn">[docs]</a>
-    <span class="k">def</span> <span class="nf">create_matdyn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="s1">'matdyn.in'</span><span class="p">,</span><span class="n">nqpt</span><span class="o">=</span><span class="mi">60</span><span class="p">,</span><span class="n">kcut</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_matdyn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="s1">'matdyn.in'</span><span class="p">,</span><span class="n">nqpt</span><span class="o">=</span><span class="mi">60</span><span class="p">,</span><span class="n">kcut</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">         Function similar to matdyn.py file inside src/</span>
 <span class="sd">        """</span>
@@ -1136,7 +1136,7 @@
 
 <div class="viewcode-block" id="INPUTscf.create_phdos">
 <a class="viewcode-back" href="../htepc.html#htepc.INPUTscf.create_phdos">[docs]</a>
-    <span class="k">def</span> <span class="nf">create_phdos</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">kpts</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="s1">'phdos.in'</span><span class="p">,</span><span class="n">ndos</span><span class="o">=</span><span class="mi">200</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_phdos</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">kpts</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="s1">'phdos.in'</span><span class="p">,</span><span class="n">ndos</span><span class="o">=</span><span class="mi">200</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">         Function similar to matdyn_dos.py file inside src/</span>
 <span class="sd">        """</span>
@@ -1159,7 +1159,7 @@
 
 <div class="viewcode-block" id="INPUTscf.create_dos">
 <a class="viewcode-back" href="../htepc.html#htepc.INPUTscf.create_dos">[docs]</a>
-    <span class="k">def</span> <span class="nf">create_dos</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">out1</span><span class="o">=</span><span class="s1">'dos.in'</span><span class="p">,</span><span class="n">out2</span><span class="o">=</span><span class="s1">'pdos.in'</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_dos</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">out1</span><span class="o">=</span><span class="s1">'dos.in'</span><span class="p">,</span><span class="n">out2</span><span class="o">=</span><span class="s1">'pdos.in'</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">         Function similar to dos.py file inside src/</span>
 <span class="sd">        """</span>
@@ -1183,7 +1183,7 @@
 
 <div class="viewcode-block" id="INPUTscf.post_band">
 <a class="viewcode-back" href="../htepc.html#htepc.INPUTscf.post_band">[docs]</a>
-    <span class="k">def</span> <span class="nf">post_band</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="s1">'band.in'</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">post_band</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="s1">'band.in'</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">         Function similar to band.py file inside src/</span>
 <span class="sd">        """</span>
@@ -1199,7 +1199,7 @@
 
 <div class="viewcode-block" id="INPUTscf.post_phband">
 <a class="viewcode-back" href="../htepc.html#htepc.INPUTscf.post_phband">[docs]</a>
-    <span class="k">def</span> <span class="nf">post_phband</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="s1">'phonband.in'</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">post_phband</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="s1">'phonband.in'</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">         Function similar to phonband.py file inside src/</span>
 <span class="sd">        """</span>
@@ -1216,7 +1216,7 @@
 
 <div class="viewcode-block" id="scf_to_dos_scf">
 <a class="viewcode-back" href="../htepc.html#htepc.scf_to_dos_scf">[docs]</a>
-<span class="k">def</span> <span class="nf">scf_to_dos_scf</span><span class="p">(</span><span class="n">input_file</span><span class="o">=</span><span class="s1">'scf.in'</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="s1">'scf-dos.in'</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">scf_to_dos_scf</span><span class="p">(</span><span class="n">input_file</span><span class="o">=</span><span class="s1">'scf.in'</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="s1">'scf-dos.in'</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Function to change QE input file from using smearing to 'tetrahedra' method, mainly for DOS calculation</span>
 
@@ -1235,7 +1235,7 @@
 
 <div class="viewcode-block" id="insert">
 <a class="viewcode-back" href="../htepc.html#htepc.insert">[docs]</a>
-<span class="k">def</span> <span class="nf">insert</span><span class="p">(</span><span class="n">input_file</span><span class="o">=</span><span class="s1">'scf.in'</span><span class="p">,</span><span class="n">output</span><span class="o">=</span><span class="s1">'scf-new.in'</span><span class="p">,</span><span class="n">keyword</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">where</span><span class="o">=</span><span class="s2">"after"</span><span class="p">,</span><span class="n">what</span><span class="o">=</span><span class="s2">""</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">insert</span><span class="p">(</span><span class="n">input_file</span><span class="o">=</span><span class="s1">'scf.in'</span><span class="p">,</span><span class="n">output</span><span class="o">=</span><span class="s1">'scf-new.in'</span><span class="p">,</span><span class="n">keyword</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">where</span><span class="o">=</span><span class="s2">"after"</span><span class="p">,</span><span class="n">what</span><span class="o">=</span><span class="s2">""</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Function to insert keyword in input file</span>
 <span class="sd">    parameters</span>
@@ -1254,19 +1254,19 @@
 <span class="c1"># Extract relaxed structure and update QE input.</span>
 <div class="viewcode-block" id="OUTPUTscf">
 <a class="viewcode-back" href="../htepc.html#htepc.OUTPUTscf">[docs]</a>
-<span class="k">class</span> <span class="nc">OUTPUTscf</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">OUTPUTscf</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    class to extract relax structure from QE output file and update input file</span>
 <span class="sd">    parameters</span>
 <span class="sd">    ---------------------</span>
 <span class="sd">    filename : (str) QE output file. Default: 'scf.out'</span>
 <span class="sd">    """</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">filename</span><span class="o">=</span><span class="s1">'scf.out'</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">filename</span><span class="o">=</span><span class="s1">'scf.out'</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>
 
 <div class="viewcode-block" id="OUTPUTscf.extract_relax">
 <a class="viewcode-back" href="../htepc.html#htepc.OUTPUTscf.extract_relax">[docs]</a>
-    <span class="k">def</span> <span class="nf">extract_relax</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">output</span><span class="o">=</span><span class="s1">'relax.dat'</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">extract_relax</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">output</span><span class="o">=</span><span class="s1">'relax.dat'</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Function to extract cell and positions of crystal structures from scf output file and write to a file</span>
 <span class="sd">        parameters</span>
@@ -1277,7 +1277,7 @@
 
 <div class="viewcode-block" id="OUTPUTscf.update_scf">
 <a class="viewcode-back" href="../htepc.html#htepc.OUTPUTscf.update_scf">[docs]</a>
-    <span class="k">def</span> <span class="nf">update_scf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">input_file</span><span class="o">=</span><span class="s1">'scf.in'</span><span class="p">,</span><span class="n">output</span><span class="o">=</span><span class="s1">'scf-new.in'</span><span class="p">,</span><span class="n">what</span><span class="o">=</span><span class="s1">'structure'</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_scf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">input_file</span><span class="o">=</span><span class="s1">'scf.in'</span><span class="p">,</span><span class="n">output</span><span class="o">=</span><span class="s1">'scf-new.in'</span><span class="p">,</span><span class="n">what</span><span class="o">=</span><span class="s1">'structure'</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Function to update QE input file and update with new structure</span>
 <span class="sd">        parameters</span>

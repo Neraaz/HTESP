@@ -46,7 +46,7 @@
   
   
     <title>oqmd_extract &#8212; HTESP v1.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=83e35b93" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=75810a84" />
     <link rel="stylesheet" type="text/css" href="../_static/material.css?v=79c92029" />
     <script src="../_static/documentation_options.js?v=e160b93e"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
@@ -192,23 +192,23 @@
 <span></span><span class="ch">#!/usr/bin/env python</span>
 <span class="c1">#"""Writen by Niraj K. Nepal, Ph.D."""</span>
 <span class="sd">"""Module to extract data from OQMD database"""</span>
-<span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">re</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span>
-<span class="kn">from</span> <span class="nn">ase.io.vasp</span> <span class="kn">import</span> <span class="n">read_vasp</span>
-<span class="kn">from</span> <span class="nn">pymatgen.io.vasp.sets</span> <span class="kn">import</span> <span class="n">MPRelaxSet</span>
-<span class="kn">from</span> <span class="nn">pymatgen.core</span> <span class="kn">import</span> <span class="n">structure</span>
-<span class="kn">from</span> <span class="nn">pymatgen.symmetry.analyzer</span> <span class="kn">import</span> <span class="n">SpacegroupAnalyzer</span>
-<span class="kn">import</span> <span class="nn">qmpy_rester</span> <span class="k">as</span> <span class="nn">qr</span>
-<span class="kn">from</span> <span class="nn">cif_to_gsinput</span> <span class="kn">import</span> <span class="n">pos_to_kpt</span>
-<span class="kn">from</span> <span class="nn">write_potcar</span> <span class="kn">import</span> <span class="n">poscar2potcar</span>
-<span class="kn">from</span> <span class="nn">htepc</span> <span class="kn">import</span> <span class="n">MpConnect</span>
-<span class="kn">from</span> <span class="nn">check_json</span> <span class="kn">import</span> <span class="n">config</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ase.io.vasp</span><span class="w"> </span><span class="kn">import</span> <span class="n">read_vasp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.io.vasp.sets</span><span class="w"> </span><span class="kn">import</span> <span class="n">MPRelaxSet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">structure</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.symmetry.analyzer</span><span class="w"> </span><span class="kn">import</span> <span class="n">SpacegroupAnalyzer</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">qmpy_rester</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">qr</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cif_to_gsinput</span><span class="w"> </span><span class="kn">import</span> <span class="n">pos_to_kpt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">write_potcar</span><span class="w"> </span><span class="kn">import</span> <span class="n">poscar2potcar</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">htepc</span><span class="w"> </span><span class="kn">import</span> <span class="n">MpConnect</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">check_json</span><span class="w"> </span><span class="kn">import</span> <span class="n">config</span>
 
 <div class="viewcode-block" id="poscar_to_input">
 <a class="viewcode-back" href="../oqmd_extract.html#oqmd_extract.poscar_to_input">[docs]</a>
-<span class="k">def</span> <span class="nf">poscar_to_input</span><span class="p">(</span><span class="n">calc_type</span><span class="p">,</span><span class="n">mpid</span><span class="p">,</span><span class="n">compound</span><span class="p">,</span><span class="n">keven</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">poscar_to_input</span><span class="p">(</span><span class="n">calc_type</span><span class="p">,</span><span class="n">mpid</span><span class="p">,</span><span class="n">compound</span><span class="p">,</span><span class="n">keven</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Function to convert POSCAR into ground-state input files.</span>
 
@@ -330,7 +330,7 @@
 
 <div class="viewcode-block" id="search">
 <a class="viewcode-back" href="../oqmd_extract.html#oqmd_extract.search">[docs]</a>
-<span class="k">def</span> <span class="nf">search</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span><span class="n">properties</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">search</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span><span class="n">properties</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Function to search compounds.</span>
 
@@ -417,7 +417,7 @@
 
 <div class="viewcode-block" id="download">
 <a class="viewcode-back" href="../oqmd_extract.html#oqmd_extract.download">[docs]</a>
-<span class="k">def</span> <span class="nf">download</span><span class="p">(</span><span class="n">calc_type</span><span class="p">,</span><span class="n">start</span><span class="p">,</span><span class="n">end</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">download</span><span class="p">(</span><span class="n">calc_type</span><span class="p">,</span><span class="n">start</span><span class="p">,</span><span class="n">end</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Function to create input files.</span>
 

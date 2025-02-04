@@ -46,7 +46,7 @@
   
   
     <title>fitting_elph_smearing &#8212; HTESP v1.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=83e35b93" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=75810a84" />
     <link rel="stylesheet" type="text/css" href="../_static/material.css?v=79c92029" />
     <script src="../_static/documentation_options.js?v=e160b93e"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
@@ -196,16 +196,16 @@
 <span class="sd">fit Tc = exp(-A*sigma**(1/3) + B) to obtain the value of decay</span>
 <span class="sd">parameter "A".</span>
 <span class="sd">"""</span>
-<span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 
 
 <div class="viewcode-block" id="func">
 <a class="viewcode-back" href="../fitting_elph_smearing.html#fitting_elph_smearing.func">[docs]</a>
-<span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="n">xdata</span><span class="p">,</span><span class="n">aval</span><span class="p">,</span><span class="n">bval</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">func</span><span class="p">(</span><span class="n">xdata</span><span class="p">,</span><span class="n">aval</span><span class="p">,</span><span class="n">bval</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Computes the value of a linear function at given points.</span>
 
@@ -230,7 +230,7 @@
 
 <div class="viewcode-block" id="parse_lambda">
 <a class="viewcode-back" href="../fitting_elph_smearing.html#fitting_elph_smearing.parse_lambda">[docs]</a>
-<span class="k">def</span> <span class="nf">parse_lambda</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">parse_lambda</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Parses the lambda.out file obtained from lambda.x of Quantum ESPRESSO (QE).</span>
 <span class="sd">    Creates a new file named "lambda.txt" containing columns for lambda, omega_log, and Tc.</span>
@@ -251,7 +251,7 @@
 
 <div class="viewcode-block" id="fit_param">
 <a class="viewcode-back" href="../fitting_elph_smearing.html#fitting_elph_smearing.fit_param">[docs]</a>
-<span class="k">def</span> <span class="nf">fit_param</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">compound</span><span class="p">,</span><span class="n">ind</span><span class="p">,</span><span class="n">a_mgb2</span><span class="p">,</span><span class="n">begin_sigma</span><span class="p">,</span><span class="n">n_sigma</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">fit_param</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">compound</span><span class="p">,</span><span class="n">ind</span><span class="p">,</span><span class="n">a_mgb2</span><span class="p">,</span><span class="n">begin_sigma</span><span class="p">,</span><span class="n">n_sigma</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Performs a fitting procedure to obtain exponential decay parameters and creates plots of the fitting.</span>
 
@@ -340,7 +340,7 @@
 
 <div class="viewcode-block" id="main">
 <a class="viewcode-back" href="../fitting_elph_smearing.html#fitting_elph_smearing.main">[docs]</a>
-<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Main function to perform fitting procedure for electron-phonon coupling and handle input/output files.</span>
 

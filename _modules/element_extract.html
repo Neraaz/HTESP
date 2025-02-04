@@ -46,7 +46,7 @@
   
   
     <title>element_extract &#8212; HTESP v1.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=83e35b93" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=75810a84" />
     <link rel="stylesheet" type="text/css" href="../_static/material.css?v=79c92029" />
     <script src="../_static/documentation_options.js?v=e160b93e"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
@@ -192,13 +192,13 @@
 <span></span><span class="ch">#!/usr/bin/env python</span>
 <span class="c1">#"""Writen by Niraj K. Nepal, Ph.D."""</span>
 <span class="sd">"""Module to extract data from materials project database"""</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">glob</span>
-<span class="kn">import</span> <span class="nn">warnings</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">from</span> <span class="nn">mp_api.client</span> <span class="kn">import</span> <span class="n">MPRester</span>
-<span class="kn">from</span> <span class="nn">htepc</span> <span class="kn">import</span> <span class="n">MpConnect</span>
-<span class="kn">from</span> <span class="nn">check_json</span> <span class="kn">import</span> <span class="n">config</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">glob</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mp_api.client</span><span class="w"> </span><span class="kn">import</span> <span class="n">MPRester</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">htepc</span><span class="w"> </span><span class="kn">import</span> <span class="n">MpConnect</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">check_json</span><span class="w"> </span><span class="kn">import</span> <span class="n">config</span>
 <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">'ignore'</span><span class="p">)</span>
 <span class="c1"># Make sure that you have the Materials API key.</span>
 <span class="c1"># MPRester if needed, e.g, MPRester("API_KEY")</span>
@@ -206,7 +206,7 @@
 
 <div class="viewcode-block" id="create_folder">
 <a class="viewcode-back" href="../element_extract.html#element_extract.create_folder">[docs]</a>
-<span class="k">def</span> <span class="nf">create_folder</span><span class="p">(</span><span class="n">parent_folder</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_folder</span><span class="p">(</span><span class="n">parent_folder</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Function to create a 'download' folder</span>
 <span class="sd">    parameters</span>
@@ -219,7 +219,7 @@
 
 <div class="viewcode-block" id="download">
 <a class="viewcode-back" href="../element_extract.html#element_extract.download">[docs]</a>
-<span class="k">def</span> <span class="nf">download</span><span class="p">(</span><span class="n">elm</span><span class="p">,</span><span class="n">num_el</span><span class="p">,</span><span class="n">exclude_el</span><span class="p">,</span><span class="n">properties</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">download</span><span class="p">(</span><span class="n">elm</span><span class="p">,</span><span class="n">num_el</span><span class="p">,</span><span class="n">exclude_el</span><span class="p">,</span><span class="n">properties</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Extracts various properties for compounds that satisfy certain criteria from the Materials Project database.</span>
 
@@ -296,7 +296,7 @@
 
 <div class="viewcode-block" id="stable">
 <a class="viewcode-back" href="../element_extract.html#element_extract.stable">[docs]</a>
-<span class="k">def</span> <span class="nf">stable</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">stable</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Filters the compounds for those having negative formation energy.</span>
 
@@ -318,7 +318,7 @@
 
 <div class="viewcode-block" id="convexhull">
 <a class="viewcode-back" href="../element_extract.html#element_extract.convexhull">[docs]</a>
-<span class="k">def</span> <span class="nf">convexhull</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">convexhull</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Filters the compounds close to the convex hull.</span>
 
@@ -339,7 +339,7 @@
 
 <div class="viewcode-block" id="metal_filter">
 <a class="viewcode-back" href="../element_extract.html#element_extract.metal_filter">[docs]</a>
-<span class="k">def</span> <span class="nf">metal_filter</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">metal_filter</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Filters metallic compounds from the input DataFrame.</span>
 
@@ -360,7 +360,7 @@
 
 <div class="viewcode-block" id="data_combine">
 <a class="viewcode-back" href="../element_extract.html#element_extract.data_combine">[docs]</a>
-<span class="k">def</span> <span class="nf">data_combine</span><span class="p">(</span><span class="n">data1</span><span class="p">,</span><span class="n">data2</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">data_combine</span><span class="p">(</span><span class="n">data1</span><span class="p">,</span><span class="n">data2</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Combines two pandas DataFrames into a single DataFrame.</span>
 
@@ -394,7 +394,7 @@
 <span class="c1">#    return data</span>
 <div class="viewcode-block" id="remove">
 <a class="viewcode-back" href="../element_extract.html#element_extract.remove">[docs]</a>
-<span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">element_list</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">remove</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">element_list</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Removes compounds containing specified elements from the DataFrame.</span>
 
@@ -430,7 +430,7 @@
 
 <div class="viewcode-block" id="data_one_element_compound">
 <a class="viewcode-back" href="../element_extract.html#element_extract.data_one_element_compound">[docs]</a>
-<span class="k">def</span> <span class="nf">data_one_element_compound</span><span class="p">(</span><span class="n">elm</span><span class="p">,</span><span class="n">ntype</span><span class="p">,</span><span class="n">exclude_el</span><span class="p">,</span><span class="n">properties</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">data_one_element_compound</span><span class="p">(</span><span class="n">elm</span><span class="p">,</span><span class="n">ntype</span><span class="p">,</span><span class="n">exclude_el</span><span class="p">,</span><span class="n">properties</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Extracts information for compounds containing only one element.</span>
 
@@ -460,7 +460,7 @@
 
 <div class="viewcode-block" id="data_two_element_compound">
 <a class="viewcode-back" href="../element_extract.html#element_extract.data_two_element_compound">[docs]</a>
-<span class="k">def</span> <span class="nf">data_two_element_compound</span><span class="p">(</span><span class="n">el1</span><span class="p">,</span><span class="n">el2</span><span class="p">,</span><span class="n">ntype</span><span class="p">,</span><span class="n">exclude_el</span><span class="p">,</span><span class="n">properties</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">data_two_element_compound</span><span class="p">(</span><span class="n">el1</span><span class="p">,</span><span class="n">el2</span><span class="p">,</span><span class="n">ntype</span><span class="p">,</span><span class="n">exclude_el</span><span class="p">,</span><span class="n">properties</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Extracts information for compounds containing two elements.</span>
 
@@ -493,7 +493,7 @@
 
 <div class="viewcode-block" id="create_input">
 <a class="viewcode-back" href="../element_extract.html#element_extract.create_input">[docs]</a>
-<span class="k">def</span> <span class="nf">create_input</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_input</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Reads 'download.csv' file inside 'download' folder and creates 'input.in' and 'mpid-list.in' files</span>
 <span class="sd">    for further downloading and calculations.</span>
@@ -527,7 +527,7 @@
 
 <div class="viewcode-block" id="extract">
 <a class="viewcode-back" href="../element_extract.html#element_extract.extract">[docs]</a>
-<span class="k">def</span> <span class="nf">extract</span><span class="p">(</span><span class="n">ntype</span><span class="p">,</span><span class="n">properties</span><span class="p">,</span><span class="n">elm</span><span class="p">,</span><span class="n">exclude_el</span><span class="p">,</span><span class="n">nelm</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">metal</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">extract</span><span class="p">(</span><span class="n">ntype</span><span class="p">,</span><span class="n">properties</span><span class="p">,</span><span class="n">elm</span><span class="p">,</span><span class="n">exclude_el</span><span class="p">,</span><span class="n">nelm</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">metal</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
             <span class="n">neg_fe</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
             <span class="n">thermo_stable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
             <span class="n">ordering</span><span class="o">=</span><span class="s1">'NM'</span><span class="p">,</span>
@@ -598,7 +598,7 @@
 
 <div class="viewcode-block" id="download_by_entry">
 <a class="viewcode-back" href="../element_extract.html#element_extract.download_by_entry">[docs]</a>
-<span class="k">def</span> <span class="nf">download_by_entry</span><span class="p">(</span><span class="n">entries</span><span class="p">,</span><span class="n">must_include</span><span class="p">,</span><span class="n">size_constraint</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span><span class="n">ntype_constraint</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span><span class="n">FE</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">thermo_stable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">metal</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">magnetic</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">spacegroup</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">properties</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">download_by_entry</span><span class="p">(</span><span class="n">entries</span><span class="p">,</span><span class="n">must_include</span><span class="p">,</span><span class="n">size_constraint</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span><span class="n">ntype_constraint</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span><span class="n">FE</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">thermo_stable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">metal</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">magnetic</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">spacegroup</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">properties</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Function to extract and create input files using "mp_api.client.MPRester.get_entries_in_chemsys" Function of the materials project API package (pip install mp_api).</span>
 <span class="sd">    This mode is turned on when using 'mode':'chemsys' in 'download.py' file.</span>
@@ -721,7 +721,7 @@
 
 <div class="viewcode-block" id="main">
 <a class="viewcode-back" href="../element_extract.html#element_extract.main">[docs]</a>
-<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Main function to orchestrate the data extraction and input file creation process.</span>
 

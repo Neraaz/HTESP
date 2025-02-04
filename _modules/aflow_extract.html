@@ -46,7 +46,7 @@
   
   
     <title>aflow_extract &#8212; HTESP v1.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=83e35b93" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=75810a84" />
     <link rel="stylesheet" type="text/css" href="../_static/material.css?v=79c92029" />
     <script src="../_static/documentation_options.js?v=e160b93e"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
@@ -197,26 +197,26 @@
 <span class="sd">"""</span>
 <span class="c1"># coding: utf-8</span>
 <span class="c1"># Extracting Carbon compounds</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">import</span> <span class="nn">ast</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ast</span>
 <span class="c1">#import json</span>
-<span class="kn">from</span> <span class="nn">urllib.request</span> <span class="kn">import</span> <span class="n">urlopen</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">urllib.request</span><span class="w"> </span><span class="kn">import</span> <span class="n">urlopen</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 <span class="c1">#from ase.cell import Cell</span>
-<span class="kn">from</span> <span class="nn">pymatgen.core.structure</span> <span class="kn">import</span> <span class="n">IStructure</span>
-<span class="kn">from</span> <span class="nn">pymatgen.core</span> <span class="kn">import</span> <span class="n">structure</span><span class="p">,</span> <span class="n">lattice</span>
-<span class="kn">from</span> <span class="nn">pymatgen.core.composition</span> <span class="kn">import</span> <span class="n">Composition</span>
-<span class="kn">from</span> <span class="nn">pymatgen.analysis.structure_matcher</span> <span class="kn">import</span> <span class="n">StructureMatcher</span>
-<span class="kn">from</span> <span class="nn">pymatgen.symmetry.analyzer</span> <span class="kn">import</span> <span class="n">SpacegroupAnalyzer</span>
-<span class="kn">from</span> <span class="nn">oqmd_extract</span> <span class="kn">import</span> <span class="n">poscar_to_input</span>
-<span class="kn">from</span> <span class="nn">cif_to_gsinput</span> <span class="kn">import</span> <span class="n">pos_to_kpt</span>
-<span class="kn">from</span> <span class="nn">write_potcar</span> <span class="kn">import</span> <span class="n">poscar2potcar</span>
-<span class="kn">from</span> <span class="nn">htepc</span> <span class="kn">import</span> <span class="n">INPUTscf</span>
-<span class="kn">from</span> <span class="nn">check_json</span> <span class="kn">import</span> <span class="n">config</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.core.structure</span><span class="w"> </span><span class="kn">import</span> <span class="n">IStructure</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">structure</span><span class="p">,</span> <span class="n">lattice</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.core.composition</span><span class="w"> </span><span class="kn">import</span> <span class="n">Composition</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.analysis.structure_matcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">StructureMatcher</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.symmetry.analyzer</span><span class="w"> </span><span class="kn">import</span> <span class="n">SpacegroupAnalyzer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">oqmd_extract</span><span class="w"> </span><span class="kn">import</span> <span class="n">poscar_to_input</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cif_to_gsinput</span><span class="w"> </span><span class="kn">import</span> <span class="n">pos_to_kpt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">write_potcar</span><span class="w"> </span><span class="kn">import</span> <span class="n">poscar2potcar</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">htepc</span><span class="w"> </span><span class="kn">import</span> <span class="n">INPUTscf</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">check_json</span><span class="w"> </span><span class="kn">import</span> <span class="n">config</span>
 <div class="viewcode-block" id="properties_string">
 <a class="viewcode-back" href="../aflow_extract.html#aflow_extract.properties_string">[docs]</a>
-<span class="k">def</span> <span class="nf">properties_string</span><span class="p">(</span><span class="n">dict_param</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">properties_string</span><span class="p">(</span><span class="n">dict_param</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Function to create a string for URL search from the dictionary provided in config.json.</span>
 
@@ -313,7 +313,7 @@
 
 <div class="viewcode-block" id="search_data">
 <a class="viewcode-back" href="../aflow_extract.html#aflow_extract.search_data">[docs]</a>
-<span class="k">def</span> <span class="nf">search_data</span><span class="p">(</span><span class="n">dict_param</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">search_data</span><span class="p">(</span><span class="n">dict_param</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Function to search data via AFLOW database.</span>
 
@@ -373,7 +373,7 @@
 
 <div class="viewcode-block" id="poscar_create">
 <a class="viewcode-back" href="../aflow_extract.html#aflow_extract.poscar_create">[docs]</a>
-<span class="k">def</span> <span class="nf">poscar_create</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">poscar_create</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Function to create a POSCAR file from data obtained from a query.</span>
 
@@ -437,7 +437,7 @@
 
 <div class="viewcode-block" id="download">
 <a class="viewcode-back" href="../aflow_extract.html#aflow_extract.download">[docs]</a>
-<span class="k">def</span> <span class="nf">download</span><span class="p">(</span><span class="n">calc_type</span><span class="p">,</span><span class="n">start</span><span class="p">,</span><span class="n">end</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">download</span><span class="p">(</span><span class="n">calc_type</span><span class="p">,</span><span class="n">start</span><span class="p">,</span><span class="n">end</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Function to create input files.</span>
 
@@ -507,7 +507,7 @@
 
 <div class="viewcode-block" id="main">
 <a class="viewcode-back" href="../aflow_extract.html#aflow_extract.main">[docs]</a>
-<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Main program.</span>
 

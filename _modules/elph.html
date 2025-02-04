@@ -46,7 +46,7 @@
   
   
     <title>elph &#8212; HTESP v1.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=83e35b93" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=75810a84" />
     <link rel="stylesheet" type="text/css" href="../_static/material.css?v=79c92029" />
     <script src="../_static/documentation_options.js?v=e160b93e"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
@@ -192,17 +192,17 @@
 <span></span><span class="ch">#!/usr/bin/env python</span>
 <span class="c1">#"""Writen by Niraj K. Nepal, Ph.D."""</span>
 <span class="sd">"""Module to prepare QE el-ph calculations"""</span>
-<span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">glob</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">pymatgen.io.pwscf</span> <span class="kn">import</span> <span class="n">PWInput</span>
-<span class="kn">from</span> <span class="nn">pymatgen.symmetry.analyzer</span> <span class="kn">import</span> <span class="n">SpacegroupAnalyzer</span>
-<span class="kn">from</span> <span class="nn">check_json</span> <span class="kn">import</span> <span class="n">config</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">glob</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.io.pwscf</span><span class="w"> </span><span class="kn">import</span> <span class="n">PWInput</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.symmetry.analyzer</span><span class="w"> </span><span class="kn">import</span> <span class="n">SpacegroupAnalyzer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">check_json</span><span class="w"> </span><span class="kn">import</span> <span class="n">config</span>
 
 <div class="viewcode-block" id="elph_in">
 <a class="viewcode-back" href="../elph.html#elph.elph_in">[docs]</a>
-<span class="k">def</span> <span class="nf">elph_in</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">comp</span><span class="p">,</span><span class="n">prefix</span><span class="p">,</span><span class="n">elphmode</span><span class="o">=</span><span class="s2">"serial"</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">elph_in</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">comp</span><span class="p">,</span><span class="n">prefix</span><span class="p">,</span><span class="n">elphmode</span><span class="o">=</span><span class="s2">"serial"</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 
 <span class="sd">    Default filename: 'elph-mpid-compound.in'</span>
@@ -279,7 +279,7 @@
 
 <div class="viewcode-block" id="write_file">
 <a class="viewcode-back" href="../elph.html#elph.write_file">[docs]</a>
-<span class="k">def</span> <span class="nf">write_file</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span><span class="n">output</span><span class="p">,</span><span class="n">mass</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">nion</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">mass_flag</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">parallel_q_flag</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">i_q</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span><span class="n">parallel_ir_flag</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">i_irr</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">only_init</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">write_file</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span><span class="n">output</span><span class="p">,</span><span class="n">mass</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">nion</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">mass_flag</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">parallel_q_flag</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">i_q</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span><span class="n">parallel_ir_flag</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">i_irr</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">only_init</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Write input file for electron-phonon coupling calculation.</span>
 
@@ -345,7 +345,7 @@
 
 <div class="viewcode-block" id="irr_q">
 <a class="viewcode-back" href="../elph.html#elph.irr_q">[docs]</a>
-<span class="k">def</span> <span class="nf">irr_q</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">comp</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">irr_q</span><span class="p">(</span><span class="n">mpid</span><span class="p">,</span><span class="n">comp</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Function to write irreducible qpoint in high_symm.in file,</span>
 <span class="sd">    necessary for computing character table with phonopy</span>
@@ -370,7 +370,7 @@
 
 <div class="viewcode-block" id="parse_symmetry_analysis">
 <a class="viewcode-back" href="../elph.html#elph.parse_symmetry_analysis">[docs]</a>
-<span class="k">def</span> <span class="nf">parse_symmetry_analysis</span><span class="p">(</span><span class="n">file_name</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">parse_symmetry_analysis</span><span class="p">(</span><span class="n">file_name</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Parse symmetry analysis from symmetry_analysis.in file.</span>
 <span class="sd">    from mainprogram phono5</span>

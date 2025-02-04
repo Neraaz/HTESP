@@ -46,7 +46,7 @@
   
   
     <title>plot_bandproj &#8212; HTESP v1.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=83e35b93" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=75810a84" />
     <link rel="stylesheet" type="text/css" href="../_static/material.css?v=79c92029" />
     <script src="../_static/documentation_options.js?v=e160b93e"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
@@ -193,20 +193,20 @@
 <span class="sd">"""</span>
 <span class="sd">Script to process projection data</span>
 <span class="sd">"""</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">import</span> <span class="nn">glob</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">pymatgen.io.pwscf</span> <span class="kn">import</span> <span class="n">PWInput</span>
-<span class="kn">from</span> <span class="nn">pymatgen.io.vasp.sets</span> <span class="kn">import</span> <span class="n">Incar</span>
-<span class="kn">from</span> <span class="nn">pymatgen.core</span> <span class="kn">import</span> <span class="n">structure</span>
-<span class="kn">from</span> <span class="nn">check_json</span> <span class="kn">import</span> <span class="n">config</span>
-<span class="kn">from</span> <span class="nn">plot</span> <span class="kn">import</span> <span class="n">plot</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">glob</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.io.pwscf</span><span class="w"> </span><span class="kn">import</span> <span class="n">PWInput</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.io.vasp.sets</span><span class="w"> </span><span class="kn">import</span> <span class="n">Incar</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">structure</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">check_json</span><span class="w"> </span><span class="kn">import</span> <span class="n">config</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">plot</span><span class="w"> </span><span class="kn">import</span> <span class="n">plot</span>
 
 <div class="viewcode-block" id="PROCARProcessor">
 <a class="viewcode-back" href="../plot_bandproj.html#plot_bandproj.PROCARProcessor">[docs]</a>
-<span class="k">class</span> <span class="nc">PROCARProcessor</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">PROCARProcessor</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    A class to process PROCAR file and extract band information.</span>
 
@@ -254,7 +254,7 @@
 <span class="sd">    &gt;&gt;&gt; procar_processor.clean()</span>
 <span class="sd">    ```</span>
 <span class="sd">    """</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">procar_file</span><span class="p">,</span> <span class="n">band_file</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">procar_file</span><span class="p">,</span> <span class="n">band_file</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialize PROCARProcessor with the provided PROCAR file and band file.</span>
 
@@ -276,7 +276,7 @@
         <span class="c1"># uniform k-mesh and high-symmetry k-mesh</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">nkpoint_extra</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">_parse_procar_header</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">band_file</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_parse_procar_header</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">band_file</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Parse header information from the PROCAR file.</span>
 
@@ -309,7 +309,7 @@
         <span class="c1"># with 2 sets of k-points in KPOINTS</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">skip</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">nband</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">nkpoint_extra</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">nkpoint</span><span class="p">,</span> <span class="n">nband</span><span class="p">,</span> <span class="n">nion</span><span class="p">,</span> <span class="n">ncol</span><span class="p">,</span> <span class="n">col</span>
-    <span class="k">def</span> <span class="nf">_parse_structure</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_parse_structure</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Parse structure information from the POSCAR file.</span>
 
@@ -326,7 +326,7 @@
 
 <div class="viewcode-block" id="PROCARProcessor.print_info">
 <a class="viewcode-back" href="../plot_bandproj.html#plot_bandproj.PROCARProcessor.print_info">[docs]</a>
-    <span class="k">def</span> <span class="nf">print_info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">print_info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Print available options for elements and orbitals.</span>
 <span class="sd">        """</span>
@@ -339,7 +339,7 @@
 
 <div class="viewcode-block" id="PROCARProcessor.clean">
 <a class="viewcode-back" href="../plot_bandproj.html#plot_bandproj.PROCARProcessor.clean">[docs]</a>
-    <span class="k">def</span> <span class="nf">clean</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">clean</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Clean up temporary files created during processing.</span>
 <span class="sd">        """</span>
@@ -350,7 +350,7 @@
                     <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="sa">f</span><span class="s2">"rm </span><span class="si">{</span><span class="n">file_</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_parse_procar_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_parse_procar_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Parse data from the PROCAR file.</span>
 
@@ -421,7 +421,7 @@
 
 <div class="viewcode-block" id="PROCARProcessor.extract_data">
 <a class="viewcode-back" href="../plot_bandproj.html#plot_bandproj.PROCARProcessor.extract_data">[docs]</a>
-    <span class="k">def</span> <span class="nf">extract_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">elm</span><span class="p">,</span><span class="n">orb</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">extract_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">elm</span><span class="p">,</span><span class="n">orb</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Extract data for a specific element and orbital.</span>
 
@@ -457,7 +457,7 @@
 
 <div class="viewcode-block" id="PROCARProcessor.extract_data_2">
 <a class="viewcode-back" href="../plot_bandproj.html#plot_bandproj.PROCARProcessor.extract_data_2">[docs]</a>
-    <span class="k">def</span> <span class="nf">extract_data_2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">elm</span><span class="p">,</span><span class="n">orb</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">extract_data_2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">elm</span><span class="p">,</span><span class="n">orb</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Extract data for a specific element and orbital, summing over suborbitals.</span>
 
@@ -490,7 +490,7 @@
 
 <div class="viewcode-block" id="PROCARProcessor.write_band_orbital">
 <a class="viewcode-back" href="../plot_bandproj.html#plot_bandproj.PROCARProcessor.write_band_orbital">[docs]</a>
-    <span class="k">def</span> <span class="nf">write_band_orbital</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orb</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">write_band_orbital</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orb</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Write orbital data to the specified file.</span>
 
@@ -521,7 +521,7 @@
 
 <div class="viewcode-block" id="PROCARProcessor.write_band_element">
 <a class="viewcode-back" href="../plot_bandproj.html#plot_bandproj.PROCARProcessor.write_band_element">[docs]</a>
-    <span class="k">def</span> <span class="nf">write_band_element</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elm</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">write_band_element</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elm</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Write element data to the specified file.</span>
 
@@ -550,7 +550,7 @@
 
 <div class="viewcode-block" id="find_all_indices">
 <a class="viewcode-back" href="../plot_bandproj.html#plot_bandproj.find_all_indices">[docs]</a>
-<span class="k">def</span> <span class="nf">find_all_indices</span><span class="p">(</span><span class="n">lst</span><span class="p">,</span> <span class="n">element</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">find_all_indices</span><span class="p">(</span><span class="n">lst</span><span class="p">,</span> <span class="n">element</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Find all indices of a specific element in a list.</span>
 
@@ -575,7 +575,7 @@
 
 <div class="viewcode-block" id="DataProcessor">
 <a class="viewcode-back" href="../plot_bandproj.html#plot_bandproj.DataProcessor">[docs]</a>
-<span class="k">class</span> <span class="nc">DataProcessor</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">DataProcessor</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    A class to process projection data in "proj.out*" format from QE calculations.</span>
 
@@ -604,7 +604,7 @@
 <span class="sd">    Example:</span>
 <span class="sd">    &gt;&gt;&gt; processor = DataProcessor(structure_file="scf.in", proj_file="proj.out*")</span>
 <span class="sd">    """</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">structure_file</span><span class="o">=</span><span class="s2">"scf.in"</span><span class="p">,</span> <span class="n">proj_file</span><span class="o">=</span><span class="s2">"proj.out*"</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">structure_file</span><span class="o">=</span><span class="s2">"scf.in"</span><span class="p">,</span> <span class="n">proj_file</span><span class="o">=</span><span class="s2">"proj.out*"</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialize DataProcessor with structure and projection files.</span>
 
@@ -626,7 +626,7 @@
 
 <div class="viewcode-block" id="DataProcessor.convert_gnu">
 <a class="viewcode-back" href="../plot_bandproj.html#plot_bandproj.DataProcessor.convert_gnu">[docs]</a>
-    <span class="k">def</span> <span class="nf">convert_gnu</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">convert_gnu</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Convert data file to GNU plot format.</span>
 
@@ -651,7 +651,7 @@
                 <span class="n">write_gnu</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span></div>
 
 
-    <span class="k">def</span> <span class="nf">combine_orbital</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">orb</span><span class="p">,</span> <span class="n">if_gnu</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">combine_orbital</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">orb</span><span class="p">,</span> <span class="n">if_gnu</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Combine projection data for a specific orbital and write to files.</span>
 
@@ -687,14 +687,14 @@
 
 <div class="viewcode-block" id="DataProcessor.clean">
 <a class="viewcode-back" href="../plot_bandproj.html#plot_bandproj.DataProcessor.clean">[docs]</a>
-    <span class="k">def</span> <span class="nf">clean</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">delete_file</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">clean</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">delete_file</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Deleting file</span>
 <span class="sd">        """</span>
         <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="sa">f</span><span class="s2">"rm </span><span class="si">{</span><span class="n">delete_file</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_parse_proj_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">structure_file</span><span class="p">,</span> <span class="n">proj_file</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_parse_proj_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">structure_file</span><span class="p">,</span> <span class="n">proj_file</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Parse projection file to extract relevant data.</span>
 
@@ -750,7 +750,7 @@
 
 <div class="viewcode-block" id="DataProcessor.write_proj_elm_orbi">
 <a class="viewcode-back" href="../plot_bandproj.html#plot_bandproj.DataProcessor.write_proj_elm_orbi">[docs]</a>
-    <span class="k">def</span> <span class="nf">write_proj_elm_orbi</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">write_proj_elm_orbi</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Write projection data for each element/orbital combination.</span>
 <span class="sd">        """</span>
@@ -809,7 +809,7 @@
 
 <div class="viewcode-block" id="DataProcessor.print_info">
 <a class="viewcode-back" href="../plot_bandproj.html#plot_bandproj.DataProcessor.print_info">[docs]</a>
-    <span class="k">def</span> <span class="nf">print_info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">print_info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Printing available options</span>
 <span class="sd">        """</span>
@@ -819,7 +819,7 @@
 
 <div class="viewcode-block" id="DataProcessor.extract_data">
 <a class="viewcode-back" href="../plot_bandproj.html#plot_bandproj.DataProcessor.extract_data">[docs]</a>
-    <span class="k">def</span> <span class="nf">extract_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">elm</span><span class="p">,</span><span class="n">name</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">extract_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">elm</span><span class="p">,</span><span class="n">name</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Extract projection data for a specific element and orbital and save it to a file.</span>
 
@@ -839,7 +839,7 @@
 
 <div class="viewcode-block" id="DataProcessor.extract_data_2">
 <a class="viewcode-back" href="../plot_bandproj.html#plot_bandproj.DataProcessor.extract_data_2">[docs]</a>
-    <span class="k">def</span> <span class="nf">extract_data_2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">elm</span><span class="p">,</span><span class="n">name</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">extract_data_2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">elm</span><span class="p">,</span><span class="n">name</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Extract projection data for a specific element and orbital and save it to a file,</span>
 <span class="sd">        while summing contributions from multiple suborbitals if applicable.</span>
@@ -876,7 +876,7 @@
 
 <div class="viewcode-block" id="DataProcessor.combine_element">
 <a class="viewcode-back" href="../plot_bandproj.html#plot_bandproj.DataProcessor.combine_element">[docs]</a>
-    <span class="k">def</span> <span class="nf">combine_element</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">elm</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">combine_element</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">elm</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Combine projection data for a specific element and save it to a file.</span>
 
@@ -899,7 +899,7 @@
 
 <div class="viewcode-block" id="DataProcessor.combine_orbital">
 <a class="viewcode-back" href="../plot_bandproj.html#plot_bandproj.DataProcessor.combine_orbital">[docs]</a>
-    <span class="k">def</span> <span class="nf">combine_orbital</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">orb</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">combine_orbital</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">orb</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Combine projection data for a specific orbital and save it to a file.</span>
 
@@ -922,7 +922,7 @@
 
 <div class="viewcode-block" id="DataProcessor.convert_to_numpy">
 <a class="viewcode-back" href="../plot_bandproj.html#plot_bandproj.DataProcessor.convert_to_numpy">[docs]</a>
-    <span class="k">def</span> <span class="nf">convert_to_numpy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_data</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">convert_to_numpy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_data</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Convert input data to a NumPy array.</span>
 
@@ -942,7 +942,7 @@
 
 <div class="viewcode-block" id="main">
 <a class="viewcode-back" href="../plot_bandproj.html#plot_bandproj.main">[docs]</a>
-<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Main function to execute the program</span>
 <span class="sd">    """</span>
