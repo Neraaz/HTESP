@@ -86,7 +86,7 @@ def pymatgen_cif(infile):
     """
     # Parse the CIF file using CifParser
     cif_parser = CifParser(infile)
-    structure = cif_parser.get_structures()[0]  # Assuming there's only one structure in the CIF
+    structure = cif_parser.parse_structures()[0]  # Assuming there's only one structure in the CIF
     oxidation = False
     # Check the oxidation states and merge sites if present
     for elem in structure.elements:

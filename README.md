@@ -122,6 +122,10 @@ Provide path to src file
 
 export PYTHONPATH="path_to_HTESP/src:$PYTHONPATH"
 
+Also, provide PYTHONPATH to your installed packages in conda environment,
+
+export PYTHONPATH="/your_home_directory/.conda/envs/your_conda_environment/lib/python3.x/site-packages:$PYTHONPATH"
+
 Note: To run the `mainprogram` command without encountering errors, ensure you copy the `config.json` file from the `/utility/input_files/` directory to the working directory.
 
 ### Contributors

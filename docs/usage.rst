@@ -74,7 +74,7 @@ Make sure the conda is available either via `miniconda <https://docs.anaconda.co
 
 .. code-block:: bash
 
-    conda create --name myenv python==3.10.0 (Please use python version newer than 3.10)
+    conda create --name myenv python==3.10.0 (Please use python version newer than 3.10, depending on python version in your conda environment)
     
     source activate myenv
 
@@ -130,6 +130,10 @@ After installation,
     Provide path to src file
     
     export PYTHONPATH="path_to_HTESP/src:$PYTHONPATH"
+
+    Also, provide PYTHONPATH to your installed packages in conda environment,
+
+    export PYTHONPATH="/your_home_directory/.conda/envs/your_conda_environment/lib/python3.x/site-packages:$PYTHONPATH"
 
 ----------------------------
 Check basic commands

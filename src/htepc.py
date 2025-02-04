@@ -523,11 +523,11 @@ class MpConnect:
             self.structure = tmpstructure
         # Generate the input file based on the chosen calculation type
         if calculation == 'vc-relax':
-            filename = pwscf.PWInput(self.structure, pseudo=pseudo1, control=control, system=system,electrons=electrons, kpoints_grid=self.kpt, ions={'ion_dynamics':ion_dynamics}, cell={'cell_dynamics':cell_dynamics,'press_conv_thr':0.05})
+            filename = pwscf.PWInput(self.structure, pseudo=pseudo1, control=control, system=system,electrons=electrons, kpoints_grid=self.kpt, ions={'ion_dynamics':ion_dynamics}, cell={'cell_dynamics':cell_dynamics,'press_conv_thr':0.05}, format_options={"coord_decimals": 10})
         elif calculation == 'relax':
-            filename = pwscf.PWInput(self.structure, pseudo=pseudo1, control=control, system=system,electrons=electrons, kpoints_grid=self.kpt, ions={'ion_dynamics':ion_dynamics})
+            filename = pwscf.PWInput(self.structure, pseudo=pseudo1, control=control, system=system,electrons=electrons, kpoints_grid=self.kpt, ions={'ion_dynamics':ion_dynamics}, format_options={"coord_decimals": 10})
         else:
-            filename = pwscf.PWInput(self.structure, pseudo=pseudo1, control=control, system=system,electrons=electrons, kpoints_grid=self.kpt)
+            filename = pwscf.PWInput(self.structure, pseudo=pseudo1, control=control, system=system,electrons=electrons, kpoints_grid=self.kpt, format_options={"coord_decimals": 10})
         # Write input file
         filename.write_file("temp.in")
         # Adjust the input file format and save it with the appropriate filename
