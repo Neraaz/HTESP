@@ -63,6 +63,12 @@ for ((ii=$1; ii<$2; ++ii)); do
        
        cd R$A-$B/phonopy
         cp ../relax/scf.in scf.in
+        sed -n '/&CONTROL/,/ATOMIC_POSITIONS/p' scf.in | sed '$d' > scf-header.in
+        sed -n '/K_POINTS/,/CELL_PARAMETERS/p' scf.in | sed '$d'  > kpoint.dat
+        sed -n '/CELL_PARAMETERS/,/ATOMIC_SPECIES/p' scf.in > cellpar.dat
+	sed -n '/ATOMIC_POSITIONS/,/K_POINTS/p' scf.in | sed '$d' > position.dat
+	rm scf.in
+	cat scf-header.in species.in position.dat cellpar.dat kpoint.dat > scf.in
         if [[ -f setting.conf ]]; then
           phonopy --qe -d setting.conf -c scf.in
         else
@@ -76,13 +82,20 @@ for ((ii=$1; ii<$2; ++ii)); do
         rm position.dat
         sed -n '/&CONTROL/,/ATOMIC_POSITIONS/p' scf.in | sed '$d' | sed "s/'vc-relax'/'scf'/" | sed '/nat/d' | sed '/pseudo_dir/d' | sed "/calculation = 'scf',/a pseudo_dir = '../../../pp/'," | sed '/&IONS/,$d' | sed "/ibrav = 0,/a nat = $nat," > scf-header.in
         sed -n '/ATOMIC_SPECIES/,/ATOMIC_POSITIONS crystal/p' scf.in | sed '$d' > species.in
-        sed -n '/K_POINTS/,/CELL_PARAMETERS/p' scf.in | sed '$d' | sed '1d' > kpoint.dat
+	sed -n '/K_POINTS/,$p' scf.in | sed '1d' > kpoint.dat
         mk1=$(cat kpoint.dat | awk '{print $1}')
         mk2=$(cat kpoint.dat | awk '{print $2}')
         mk3=$(cat kpoint.dat | awk '{print $3}')
-        nk1=$(echo $mk1/2 | bc)
-        nk2=$(echo $mk2/2 | bc)
-        nk3=$(echo $mk3/2 | bc)
+	read f1 f2 f3 <<< $(grep -oP 'DIM=\K.*' setting.conf)
+        if [[ -f setting.conf ]]; then
+          nk1=$(echo $mk1/$f1 | bc)
+          nk2=$(echo $mk2/$f2 | bc)
+          nk3=$(echo $mk3/$f3 | bc)
+        else
+          nk1=$(echo $mk1/2 | bc)
+          nk2=$(echo $mk2/2 | bc)
+          nk3=$(echo $mk3/2 | bc)
+	fi
         echo "K_POINTS automatic" > kpoint.dat
         echo "$nk1 $nk2 $nk3 0 0 0" >> kpoint.dat
         sed -n '/CELL_PARAMETERS/,/ATOMIC_SPECIES/p' supercell.in | sed '$d' | sed '1d' > cellpar.dat
@@ -142,7 +155,7 @@ for ((ii=$1; ii<$2; ++ii)); do
       fi
       cp vasp-phonopy.in R$A-$B/phonopy/vasp.in
       cd R$A-$B/phonopy
-       cp ../relax/config.json .
+       cp ../../config.json .
        cp ../relax/INCAR .
        cp ../relax/POSCAR .
        cp ../relax/POTCAR .
