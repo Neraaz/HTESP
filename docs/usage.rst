@@ -122,6 +122,8 @@ After installation,
 ----------------------------
 
 .. code-block:: bash
+ 
+    Make sure that the path to the **bin** directory containing the VASP and QE executables is provided (for example, provide PATH in ~/.bashrc), or that these executables are accessible to the code.    
 
     Provide path to ~/src/bash folder in ~/.bashrc
     
