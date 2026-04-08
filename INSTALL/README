@@ -1,0 +1,7 @@
+requirements1.txt is for python-3.11
+
+conda create --name myenv python==3.11.0
+
+simply copy requirements1.txt to ../requirements.txt
+
+This seems to work. For higher python version, simply use requirements.txt as it is.

@@ -1,0 +1,12 @@
+numpy==2.4.4
+scipy==1.17.1
+pandas==3.0.2
+matplotlib==3.10.8
+ase==3.28.0
+pymatgen-core==2026.4.7
+bsym==2.2.0
+lmfit==1.3.4
+ifermi==0.3.7
+emmet-core==0.86.3
+mp_api==0.46.0
+qmpy-rester==0.2.0

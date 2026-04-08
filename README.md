@@ -84,11 +84,13 @@ cd HTESP
 ## Conda environment
 Make sure the conda is available either via miniconda or anaconda installation
 
-conda create --name myenv python==3.10.0 (Please use python version newer than 3.10)
+conda create --name myenv python==3.11.0 (Please use python version newer than 3.11)
 
 source activate myenv
 
 ## Install requirements
+
+Dependencies listed in INSTALL/requirements1.txt works for python 3.11 build.
 
 pip install -r requirements.txt
 

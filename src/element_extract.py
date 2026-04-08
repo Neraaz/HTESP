@@ -82,6 +82,8 @@ def download(elm,num_el,exclude_el,properties):
             for propty in properties:
                 if propty == "structure":
                     property_list.append(search.structure.get_space_group_info()[0])
+                elif propty == "material_id":
+                    property_list.append(search['material_id'].string)
                 else:
                     property_list.append(search.dict()[propty])
             for j,prop in enumerate(property_list):
@@ -484,6 +486,8 @@ def download_by_entry(entries,must_include,size_constraint=20,ntype_constraint=5
             for propty in properties:
                 if propty == "structure":
                     property_list.append(obj.data['symmetry']['symbol'])
+                elif propty == "material_id":
+                    property_list.append(mpid)
                 else:
                     property_list.append(obj.data[propty])
             for j,prop in enumerate(property_list):

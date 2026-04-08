@@ -198,6 +198,8 @@ class MpConnect:
         self.data = self.data.dict()
         # Extract relevant information from the fetched data
         self.mpid = self.data['material_id']
+        if self.mpid != self.comp:
+            self.mpid = self.comp
         symbol_comp = ""
         elm = list(self.data['composition'].keys())
         count = list(self.data['composition'].values())
