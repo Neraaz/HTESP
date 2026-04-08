@@ -74,13 +74,15 @@ Make sure the conda is available either via `miniconda <https://docs.anaconda.co
 
 .. code-block:: bash
 
-    conda create --name myenv python==3.10.0 (Please use python version newer than 3.10, depending on python version in your conda environment)
+    conda create --name myenv python==3.11.0 (Please use python version newer than 3.11, depending on python version in your conda environment)
     
     source activate myenv
 
 ----------------------------
 Install requirements
 ----------------------------
+
+Dependencies listed in INSTALL/requirements1.txt works for python 3.11 build.
     
     pip install -r requirements.txt
 

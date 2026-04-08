@@ -1,0 +1,22 @@
+﻿create\_epw\_inputs
+===================
+
+.. automodule:: create_epw_inputs
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      band_file_epw
+      ciftoxsf
+      epw_sc
+      epw_sc_from_json
+      func_erfc
+      main
+      phonon_input
+      prepare_nscf
+      projwfc
+      pw2wan_input
+      scdmfit
+   

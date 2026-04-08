@@ -1,0 +1,24 @@
+﻿element\_extract
+================
+
+.. automodule:: element_extract
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      convexhull
+      create_folder
+      create_input
+      data_combine
+      data_one_element_compound
+      data_two_element_compound
+      download
+      download_by_entry
+      extract
+      main
+      metal_filter
+      remove
+      stable
+   

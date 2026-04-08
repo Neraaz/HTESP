@@ -1,0 +1,12 @@
+﻿write\_potcar
+=============
+
+.. automodule:: write_potcar
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      poscar2potcar
+   

@@ -1,0 +1,15 @@
+﻿kpath
+=====
+
+.. automodule:: kpath
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      kpath
+      main
+      make_line_kpt
+      printk
+   

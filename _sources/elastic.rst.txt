@@ -1,0 +1,13 @@
+﻿elastic
+=======
+
+.. automodule:: elastic
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      deformation
+      main
+   
