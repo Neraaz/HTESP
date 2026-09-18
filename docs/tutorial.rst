@@ -220,7 +220,7 @@ In this section, we explored techniques for extracting data and generating input
       "ntype": [1, 2],
       "elm": ["B"],
       "prop": ["material_id", "formula_pretty", "structure", "formation_energy_per_atom", "band_gap", "energy_above_hull", "total_magnetization", "ordering", "total_magnetization_normalized_formula_units", "num_magnetic_sites", "theoretical", "nsites"],
-      "ordering": "NM",
+      "ordering": ["NM", "Unknown"],
       "nsites": 10,
       "spacegroup": null
     },

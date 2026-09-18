@@ -42,7 +42,8 @@ from pathlib import Path
 #: the dependencies declared in pyproject.toml ``[project] dependencies``,
 #: as import names (``PyYAML`` imports as ``yaml``, ``mp_api`` as ``mp_api``).
 REQUIRED = ("numpy", "scipy", "pandas", "matplotlib", "pymatgen", "mp_api",
-            "ase", "spglib", "yaml", "bsym", "lmfit", "qmpy_rester")
+            "emmet.core", "ase", "spglib", "yaml", "bsym", "lmfit",
+            "qmpy_rester")
 
 #: optional extras -> the import names they provide
 EXTRAS = {
@@ -64,6 +65,7 @@ DISTRIBUTION = {
     "sklearn": "scikit-learn",
     "qmpy_rester": "qmpy-rester",
     "mp_api": "mp-api",
+    "emmet.core": "emmet-core",
 }
 
 #: import name -> the extra that provides it, so the hint can be the whole

@@ -35,29 +35,47 @@ classifiers = [
 # spglib (crystal.py), PyYAML (displace_phonopy.py) and plotly, while making
 # ifermi, matminer and scikit-learn hard requirements although only one
 # optional command needs each.
+# These are exact pins, matching requirements.txt and INSTALL/requirements1.txt
+# version for version.  They used to be `>=` floors, which meant `pip install
+# -e .` -- the documented way to install HTESP -- ignored the pinned files
+# entirely and resolved whatever was newest.  That is how an environment ended
+# up on pymatgen 2026.8.30 while both requirements files said 2026.3.23, with
+# nothing to report the difference.  Pinning here makes the one install command
+# everybody actually runs reproduce the tested environment.
+#
+# The cost is that HTESP now refuses to co-install with anything wanting a
+# different numpy/scipy/pandas, so install it into its own environment.  To
+# relax a pin, change it in all three files together --
+# tests/test_packaging.py checks that the two requirements files agree.
 dependencies = [
-    "numpy>=1.23",
-    "scipy>=1.9",
-    "pandas>=1.5",
-    "matplotlib>=3.6",
-    "pymatgen>=2023.1",
+    "numpy==2.4.4",
+    "scipy==1.17.1",
+    "pandas==3.0.2",
+    "matplotlib==3.10.8",
+    "pymatgen==2026.3.23",
     # the distribution is `mp-api`; `mp_api` is the module it installs
-    "mp-api>=0.33",
-    "ase>=3.22",
-    "spglib>=2.0",
-    "PyYAML>=6.0",
-    "bsym>=1.0",
-    "lmfit>=1.1",
+    "mp-api==0.46.0",
+    # mp-api 0.46.0 declares `emmet-core>=0.86.3` with no upper bound and
+    # imports `BSPathType` from `emmet.core.electronic_structure`.  0.86.3
+    # defines it there; 0.87.1 does not, so an unpinned resolve installs an
+    # emmet-core that breaks `import mp_api.client`.  Pinned here as well as in
+    # the requirements files, because only this one binds `pip install -e .`.
+    "emmet-core==0.86.3",
+    "ase==3.28.0",
+    "spglib==2.7.0",
+    "PyYAML==6.0.3",
+    "bsym==2.2.0",
+    "lmfit==1.3.4",
     # qmpy-rester is required, not an extra: `mainprogram oqmd-search` and
     # `oqmd-download` are ordinary commands, and htesp/oqmd_extract.py imports
     # it at module scope -- which htesp/aflow_extract.py then imports too, so
     # the AFLOW path needs it as well.
-    "qmpy-rester>=0.2",
+    "qmpy-rester==0.2.0",
 ]
 
 [project.optional-dependencies]
 ml = ["matminer>=0.9", "scikit-learn>=1.2"]
-fermisurface = ["ifermi>=0.3", "plotly>=5.0"]
+fermisurface = ["ifermi==0.3.7", "plotly==7.1.0"]
 docs = ["sphinx>=7.0", "sphinx-material", "sphinx-autodoc-typehints"]
 test = ["pytest>=7.0", "pytest-cov"]
 all = [

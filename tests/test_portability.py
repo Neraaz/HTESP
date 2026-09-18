@@ -409,7 +409,7 @@ class Check(unittest.TestCase):
         declared = re.findall(r'"([A-Za-z0-9_.-]+)', block)
         #: distribution name -> import name, where they differ
         as_import = {"PyYAML": "yaml", "mp-api": "mp_api",
-                     "qmpy-rester": "qmpy_rester"}
+                     "qmpy-rester": "qmpy_rester", "emmet-core": "emmet.core"}
         expected = {as_import.get(name, name).lower() for name in declared}
         self.assertEqual({name.lower() for name in REQUIRED}, expected)
 
