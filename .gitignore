@@ -1,0 +1,68 @@
+# byte code / build
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.eggs/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# editors / OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# HTESP run artefacts -- generated, never committed
+log
+job
+slurm-*.out
+.htesp_job.json
+.htesp_scratch/
+R*-*/
+scf_dir/
+elph_dir/
+q2r_dir/
+matdyn_dir/
+kpath/
+plots/
+completed/
+convergence_result/
+cif/
+IFERMI/
+magmom_file/
+WT_dir/
+mpid.in
+mpid-list-2.in
+mpid-finished.in
+mpid-notfinished.in
+mpid-list-not-relaxed.in
+mpid-list-elph-*.in
+mpid-charge*.in
+mpid-pressure-*.in
+mpid-magnetic.in
+mpid-deformed.in
+mpid-substitute.in
+mpid-atom-list.in
+result.csv
+econv.csv
+elastic.csv
+eos-fit.dat
+thermo_out.txt
+e-v.dat
+BZ.pdf
+
+# never commit credentials
+credentials
+*.key
+
+# output of the tutorial runner (tutorials/run_tutorials.py)
+tutorial_runs_root/
+tutorial_runs/
+
+# macOS AppleDouble sidecars, written when the tree is copied to a
+# non-HFS filesystem (scp/rsync/tar to an HPC login node)
+._*

@@ -1,0 +1,25 @@
+To prepare input files after relaxation (tutorial9), execute:
+
+```
+mainprogram epw1
+```
+
+To prepare further necessary input files.
+
+For preparing wannier90 input files, utilize band structure and partial DOS (pDOS) information (tutorial12) to define energy windows for disentanglement and projections (wannier functions).
+
+Use wannier90.json files along with the necessary input files.
+
+Update the "job_script" dictionary with the necessary commands to create the job submission script "run-vasp.sh" using:
+
+```
+mainprogram jobscript
+```
+
+Finally, prepare input files with the "projection.in" file that contains projections. If not found, random projections are used.
+
+Execute:
+
+```
+mainprogram wann-file
+```

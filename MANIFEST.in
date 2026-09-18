@@ -1,0 +1,9 @@
+include LICENSE README.md CHANGELOG.md
+include htesp/data/*.json
+recursive-include bin *
+recursive-include docs *.rst *.py Makefile make.bat
+recursive-include tests *.py
+prune examples
+prune legacy
+prune _removed
+prune _reports

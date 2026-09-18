@@ -1,6 +1,9 @@
 LICENSE
 ---------
 
+HTESP is distributed under a modified MIT licence.  The text below is
+``LICENSE`` in the repository root, verbatim, and is the authoritative version.
+
 Copyright 2024, Iowa State University
 
 This material was produced under U.S. Government contract DE-AC02-07CH11358 for Ames National Laboratory, which is operated by Iowa State University for the U.S. Department of Energy. The Government is granted for itself and others acting on its behalf a paid-up, nonexclusive, irrevocable worldwide license in this material to reproduce, prepare derivative works, and perform publicly and display publicly. The U.S. Government has rights to use, reproduce, and distribute this software.  If software is modified to produce derivative works, such modified software should be clearly marked, so as not to confuse it with the version available from The Ames Laboratory.

@@ -6,7 +6,7 @@ mainprogram epw1
 
 To prepare further necessary input files.
 
-For preparing wannier90 input files, utilize band structure and partial DOS (pDOS) information (tutorial12) to define energy windows for disentanglement and projections (wannier functions).
+For preparing wannier90 input files, utilize band structure and partial DOS (pDOS) information (tutorial11) to define energy windows for disentanglement and projections (wannier functions).
 
 Use wannier90.json files along with the necessary input files.
 

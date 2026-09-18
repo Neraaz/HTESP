@@ -1,0 +1,120 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "htesp"
+version = "2.0.0"
+description = "High Throughput Electronic Structure Package: automated Quantum ESPRESSO and VASP campaigns"
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.10"
+keywords = [
+    "superconductivity", "electron-phonon", "quantum-espresso", "vasp",
+    "wannier90", "wanniertools", "phonopy", "epw", "high-throughput",
+]
+authors = [
+    { name = "Niraj K. Nepal", email = "nnepal@ameslab.gov" },
+    { name = "Lin-Lin Wang", email = "llw@ameslab.gov" },
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: POSIX",
+    "Operating System :: MacOS",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Chemistry",
+    "Topic :: Scientific/Engineering :: Physics",
+]
+
+# The original setup.py omitted matplotlib (it is imported by six modules),
+# spglib (crystal.py), PyYAML (displace_phonopy.py) and plotly, while making
+# ifermi, matminer and scikit-learn hard requirements although only one
+# optional command needs each.
+dependencies = [
+    "numpy>=1.23",
+    "scipy>=1.9",
+    "pandas>=1.5",
+    "matplotlib>=3.6",
+    "pymatgen>=2023.1",
+    # the distribution is `mp-api`; `mp_api` is the module it installs
+    "mp-api>=0.33",
+    "ase>=3.22",
+    "spglib>=2.0",
+    "PyYAML>=6.0",
+    "bsym>=1.0",
+    "lmfit>=1.1",
+    # qmpy-rester is required, not an extra: `mainprogram oqmd-search` and
+    # `oqmd-download` are ordinary commands, and htesp/oqmd_extract.py imports
+    # it at module scope -- which htesp/aflow_extract.py then imports too, so
+    # the AFLOW path needs it as well.
+    "qmpy-rester>=0.2",
+]
+
+[project.optional-dependencies]
+ml = ["matminer>=0.9", "scikit-learn>=1.2"]
+fermisurface = ["ifermi>=0.3", "plotly>=5.0"]
+docs = ["sphinx>=7.0", "sphinx-material", "sphinx-autodoc-typehints"]
+test = ["pytest>=7.0", "pytest-cov"]
+all = [
+    "htesp[ml]", "htesp[fermisurface]",
+]
+
+[project.urls]
+Homepage = "https://github.com/Neraaz/HTESP"
+Documentation = "https://neraaz.github.io/HTESP/"
+
+[project.scripts]
+mainprogram = "htesp.cli:main"
+htesp = "htesp.cli:main"
+htesp-workflow = "htesp.workflow:main"
+htesp-tutorials = "tutorials.run_tutorials:main"
+# `htesp-check` probes each compiled dependency in a child interpreter, so a
+# wheel built for the wrong architecture is reported rather than aborting the
+# process.  It is the first thing to run on a new machine (x86_64 or arm64).
+htesp-check = "htesp.check:main"
+
+[tool.setuptools]
+# The 51 former bash scripts are shipped as shims in bin/ rather than as
+# console_scripts, so that putting bin/ on $PATH reproduces exactly the old
+# "export PATH=$PATH:path_to_HTESP/src/bash" install step.
+script-files = [
+    "bin/atom-scan", "bin/band-distort-scan", "bin/band-scan", "bin/bandp-scan",
+    "bin/bandscf-scan", "bin/cancel_job", "bin/charge-input", "bin/check_calc",
+    "bin/checkfreq-scan", "bin/clean-scan", "bin/coarse-scan", "bin/create-inputs",
+    "bin/distortion-energy-scan", "bin/distortion-relax-scan", "bin/distortion.sh",
+    "bin/dos-scan", "bin/dosp-scan", "bin/double-kmesh", "bin/download-input",
+    "bin/dynmat-scan", "bin/elph_finished_but_not_copied_to_completed_folder",
+    "bin/energy-distort-scan", "bin/epw-bash-scripts", "bin/extract-scan",
+    "bin/fine-scan", "bin/further-relax-input", "bin/further-relax-scan",
+    "bin/generate_submission_file.sh", "bin/history.sh", "bin/ifermi-scan",
+    "bin/info-scan", "bin/jobscript.sh", "bin/lambda-scan", "bin/magmom-extract",
+    "bin/matdyn-dos-scan", "bin/matdyn-scan", "bin/pdos-scan", "bin/ph-scan",
+    "bin/phcheck-scan", "bin/phonband-scan", "bin/phonopy-scan", "bin/plot-scan",
+    "bin/pressure-input", "bin/pressure-ph-scan", "bin/pressure-relax-scan",
+    "bin/pressure-reset", "bin/q2r-scan", "bin/relax-scan", "bin/sitesub-scan",
+    "bin/sumpdos.sh", "bin/vasp-phonopy.sh", "bin/wt-bash-scripts",
+]
+
+[tool.setuptools.packages.find]
+include = ["htesp*", "tutorials*"]
+
+[tool.setuptools.package-data]
+htesp = ["data/*.json"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+filterwarnings = ["ignore::DeprecationWarning"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "B", "UP", "C4", "SIM"]
+ignore = ["E501"]

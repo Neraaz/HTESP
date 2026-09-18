@@ -50,4 +50,4 @@ DFT = VASP
 
 Execute command:
 
-mainprogram elastic-compute. Elastic properties are stored in "elastic.csv" file.
+mainprogram compute-elastic. Elastic properties are stored in "elastic.csv" file.

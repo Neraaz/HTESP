@@ -4,25 +4,53 @@ Submission scripts generation
 
 **Bash script**:
 
-Generate submission files with "generate_submission_file.sh" scripts.
+Generate submission files with the ``generate_submission_file.sh`` shim in
+``bin/``:
 
-generate_submission.sh help ==> help with the scripts
+.. code-block:: bash
 
-Make ready "batch.header" file
+    generate_submission_file.sh help
+
+Make ready the ``batch.header`` file:
 
 .. code-block:: bash
 
     #!/bin/bash
-    
+
     ## SBATCH commands
-    
+
     #SBATCH ....
-    
+
+    #module load ....
+
+There are two generators, and they treat
+:ref:`batch.header <batch-label>` differently.
+
+``generate_submission_file.sh`` **substitutes** a placeholder: the header must
+contain a line reading exactly ``submission here``, which is replaced by the run
+command.  A header without that line produces ``run-*.sh`` scripts that set up
+the job and then run nothing.  None of the headers shipped in ``examples/``
+carries the line, so add it before using this script:
+
+.. code-block:: bash
+
+    #!/bin/bash
+
+    #SBATCH --partition=dense --ntasks=1 --cpus-per-task=48 --time=1-0
+
     #module load ....
 
     submission here
-    
-Add 'submission here' in the last line to :ref:`batch <batch-label>`. The bash script will replace this placeholder with the appropriate commands. Execute the following command to generate submission files for Quantum Espresso electron-phonon coupling calculations using mpirun (parallel command) and 48 cores. Make sure to customize the "batch.header" file according to the desired number of cores.
+
+``mainprogram jobscript`` (below) **appends** instead: it copies the header and
+writes the run command after its last line, so the header holds the scheduler
+directives and the module loads and nothing else.  That is what the shipped
+headers are written for, and it is the generator to prefer.
+
+Execute the following command to generate submission files for Quantum Espresso
+electron-phonon coupling calculations using mpirun (parallel command) and 48
+cores.  Make sure to customize the ``batch.header`` file according to the desired
+number of cores.
 
 .. code-block:: bash
 
@@ -30,49 +58,68 @@ Add 'submission here' in the last line to :ref:`batch <batch-label>`. The bash s
 
 It generates bunch of submission scripts for electron-phonon coupling (EPC) with QE package.
 
-Other available options are epw-elph, wannier_band, and vasp.     
+Other available options are epw-elph, wannier_band, and vasp.
+
+Worked example: ``examples/QE/tutorial1`` and ``examples/VASP/tutorial1``.
 
 **command line**:
 
-This requires adjusting appropriate keys and values in :ref:`jobscript <job-label>` dictionary in config.json file.
+This requires adjusting appropriate keys and values in the
+:ref:`job_script <job-label>` dictionary in ``config.json``: ``which_calc``,
+``parallel_command``, ``nproc`` and ``command_list``.
 
 .. code-block:: bash
 
     mainprogram jobscript
+
+One ``run-{command}.sh`` is written per entry of ``command_list``, each being
+``batch.header`` with the command appended.  With ``"command_combine": true``
+all of them go into a single ``run-{last_command}.sh`` in the order given.
+No placeholder line is needed.
 
 
 --------------------------------------
   Preparing folder for calculations
 --------------------------------------
 
-1.Begin by creating a working directory:
+1. Begin by creating a working directory:
 
-.. code-block:: bash
+   .. code-block:: bash
 
-    mkdir work_dir
+       mkdir work_dir
+       cd work_dir
 
-    cd work_dir
+2. Copy the ``config.json`` file from the ``utility/input_files`` directory --
+   see :ref:`config.json <json-label>` -- into it.  That is the code's input
+   file.  It does not have to be complete: whatever it does not mention comes
+   from the packaged default, and ``mainprogram config-validate`` reports
+   anything that is wrong.
 
-2.Locate the ``config.json`` file from the ``utility/input_files`` directory, referenced as :ref:`config.json <json-label>`, which functions as the code's input file.
+3. In addition to ``config.json`` there are several input files in the ``.in``
+   format.  For VASP calculations, use the :ref:`vasp.in <vasp-label>` file.
 
-3.In addition to the ``config.json`` file, there exist several input files in the ".in" format, intended for direct processing by bash scripts. For VASP calculations, utilize the :ref:`vasp.in <vasp-label>` file.
+4. Search for data, either in a database or in the ``.cif`` or ``.vasp`` files
+   in the working directory:
 
-4.Execute the 
+   .. code-block:: bash
 
-.. code-block:: bash
+       mainprogram search
 
-    mainprogram search 
+   This writes ``input.in`` and ``mpid-list.in`` -- except in ``fromcif`` and
+   ``fromvasp`` mode.  Edit the first and second indices in ``input.in`` to
+   select the range of ``mpid-list.in`` you want.  Remember that the second
+   index is exclusive.  ``mainprogram search`` needs ``$MP_API_KEY`` to be set;
+   see :ref:`mpi_key <mpikey-label>`.
 
-command to search for data either in the database or in .cif or .vasp files within the working directory. This action generates ``input.in`` and ``mpid-list.in`` files, excluding ``fromcif`` and ``fromvasp`` mode. Proceed to modify the first and second indices in ``input.in`` to generate input files in accordance with the ``mpid-list.in`` file.
+5. Generate the :ref:`input files <pwd-label>`:
 
+   .. code-block:: bash
 
-5.Utilize 
+       mainprogram download
 
-.. code-block:: bash
-
-    mainprogram download
-
-to generate :ref:`input files <pwd-label>`. This will generate VASP (or QE) input files, if ``DFT = VASP (or QE)`` is set in :ref:`input.in <inputin-label>`. Now the :ref:`mpid.in <mpid-label>` is created. Always set ``DFT = VASP (or QE)`` in :ref:`input.in <inputin-label>` to proceed with calculations.
+   This writes VASP (or QE) input files according to the ``DFT = VASP`` (or
+   ``DFT = QE``) line in :ref:`input.in <inputin-label>`, and creates
+   :ref:`mpid.in <mpid-label>`.  Always set that line before going further.
 
 For QE, it creates ``scf_dir`` directory and put ``scf-{id}.in`` files inside it. For VASP, it creates the ``R{id}-{name}/relax`` folder and put ``INCAR POSCAR POTCAR KPOINTS`` inside it. For example, for MgB2 where ``mpid = mp-763`` and ``name = 'B2Mg1'``, folders named ``Rmp-763-B2Mg1/relax`` will be created to store the downloaded files for VASP, whereas ``scf-mp-763.in`` will be present inside ``scf_dir``. See :ref:`working folder <pwd-label>`.
 
@@ -90,7 +137,7 @@ There are 2 modes to generate input files from structure files.
 
 This mode is activated when ``'mode':'fromcif'`` is set in the :ref:`download <download-label>` section.
 
-.. code-block:: json
+.. code-block:: text
 
     "download": {
       "mode": "fromcif",
@@ -101,7 +148,7 @@ By default, it utilizes Pymatgen to explore CIF files.
 
 If ``"use_cif2cell"`` is set to ``true``, it employs the cif2cell package to convert ``.cif`` files to input files.
 
-.. code-block:: json
+.. code-block:: text
 
     "inp": {
       "start": 1,
@@ -137,7 +184,7 @@ Inputs with magnetic ordering
 
 For QE, one can generate input file with FM ordering by setting ``magnetic`` flag to ``true``.
 
-.. code-block:: json
+.. code-block:: text
 
     "pwscf_in": {
       "magnetic": true,
@@ -161,7 +208,7 @@ Combining data from different database
 In this section, we explored techniques for extracting data and generating input files from three distinct databases, subsequently amalgamating them. To facilitate this process, we employed the following ``download`` keyword in the :ref:`config.json <json-label>` input configuration. In this context, we will delve into the phase diagram of MgB2 using the convex hull method. To achieve this, we require the ground-state configurations of Mg, B, and Mg-B compounds, which we can extract from databases that offer extensive resources.
 
 
-.. code-block:: json
+.. code-block:: text
 
   "download": {
     "mode": "chemsys",
@@ -226,7 +273,7 @@ In this section, we explored techniques for extracting data and generating input
   },
 
 
-. **Data from Materials Project**:
+**Data from Materials Project**:
 
 - Here, we use ``chemsys`` mode.
 
@@ -249,7 +296,7 @@ In this section, we explored techniques for extracting data and generating input
     # Now VASP input files are stored within R{id}-{name} folder and the {id} and {name} are stored in ``mpid.in`` file.
 
 
-. **Data from OQMD database**:
+**Data from OQMD database**:
 
 Similarly, once adjusting parameters in ``oqmd`` dictionary, we execute following two commands:
 
@@ -264,7 +311,7 @@ Similarly, once adjusting parameters in ``oqmd`` dictionary, we execute followin
     # Likewise, {id} and {name} are appended to the mpid.in file, with inputs generated within the R{id}-{name} directory.
 
 
-. **Data from AFLOW database**:
+**Data from AFLOW database**:
 
 Now, we adjust ``aflow`` dictionary as in example. Similarly, we execute following two commands:
 
@@ -456,6 +503,8 @@ Please check :ref:`conv_test <convtest-label>` dictionary:
     # Collect Total Energies and Store Results in convergence_result folder.
     mainprogram 22
 
+Worked example: ``examples/QE/tutorial10`` and ``examples/VASP/tutorial10``.
+
 
 .. _relax-label:
 
@@ -484,6 +533,9 @@ For subsequent scf relaxations without folder creation, execute:
     mainprogram 3
 
 Repeat processes 2 and 3 multiple times until the system is fully relaxed.
+
+Worked example: ``examples/QE/tutorial9`` and ``examples/VASP/tutorial9``.  Most
+of the later tutorials start from the relaxed structure these produce.
 
 .. _EPC:
 
@@ -536,11 +588,19 @@ Check the status of the EPC calculations with
 
     mainprogram checkph
 
-After a converged EPC calculations, postprocessing is performed:
+After a converged EPC calculations, postprocessing is performed.  Run the five
+processes one after another:
 
 .. code-block:: bash
 
-    mainprogram 8-12
+    mainprogram 8      # q2r-scan:       force constants in real space
+    mainprogram 9      # matdyn-scan:    phonon dispersion
+    mainprogram 10     # matdyn-dos-scan: phonon density of states
+    mainprogram 11     # lambda-scan:    lambda.x
+    mainprogram 12     # phonband-scan:  post-process the phonon bands
+
+``mainprogram`` takes one process per invocation.  A range such as ``8-12`` is
+not a command and is rejected.
 
 Perform plotting with:
 
@@ -556,22 +616,32 @@ To extract the results, creating the result.csv file and storing relaxed structu
 
     mainprogram 21
 
-Finally, clean heavy files and copy to a folder named "completed" with:
+Finally, clean heavy files and copy the finished run to a folder named
+``completed``:
 
 .. code-block:: bash
 
     mainprogram 20
 
+Process ``20`` is ``clean-scan``: it **deletes** the wavefunctions and the bulky
+directories and moves what remains to ``completed/``.  Run it only when you are
+finished with a compound, and check the ``start`` and ``end`` indices in
+``input.in`` before you do -- ``--dry-run`` does not currently hold back the
+deletion in this process or in ``28``.
+
 With the ``substitution``, ``pressure``, and ``charge calculations`` modes, we can progress towards identifying those near the convex hull and exploring phonon-mediated superconductivity.
+
+Worked example: ``examples/QE/tutorial11`` (MgB2, DFPT electron-phonon coupling
+and Tc).  There is no VASP counterpart.
 
 --------------------------------------
  Atom-projected phonon dispersion
 --------------------------------------
 
-1.Make sure .eig file is present inside R{id}-{name}/calc folder
+1. Make sure .eig file is present inside R{id}-{name}/calc folder
 
 
-2.Use ``phonproj`` keyword in :ref:`input.in <inputin-label>` file in the plot section, and perform ``mainprogram 19``.
+2. Use ``phonproj`` keyword in :ref:`input.in <inputin-label>` file in the plot section, and perform ``mainprogram 19``.
    This step creates following files inside R{id}-{name}/calc/ folder.
 
    phonon-name.proj.gp ==> Has atomic projection for one atoms followed by others. name would be 'MgB2'
@@ -580,7 +650,7 @@ With the ``substitution``, ``pressure``, and ``charge calculations`` modes, we c
    
    phonon-B.proj ==> separate file for B projection
 
-3.Check ``plot-proj-{id}-{name}.pdf`` insides plots directory. Here is an example of Y2C3: Y (red) and C (blue).
+3. Check ``plot-proj-{id}-{name}.pdf`` insides plots directory. Here is an example of Y2C3: Y (red) and C (blue).
 
 .. image:: _static/atom_proj.jpg
    :align: center
@@ -604,28 +674,41 @@ For QE, after structure relaxation, execute:
 
 .. code-block:: bash
 
-    # Perform Bandstructure Calculation (QE). R{id}-{name}/bands folder created.
-    mainprogram 13-15
-    
-    # Perform Density of States (DOS) Calculation (QE). R{id}-{name}/dos folder created.
-    mainprogram 16-17
-    
-    # Perform Partial Density of States (PDOS) Calculation (QE)
-    mainprogram 20
-    
-    # Perform Bandstructure Calculation (VASP)
-    mainprogram 13 15
-    
-    # Perform Density of States (DOS) Calculation (VASP)
-    mainprogram 16
-    
-    # Perform Partial Density of States (PDOS) Calculation (VASP)
-    mainprogram 16
-    
-    # Plotting (QE and VASP)
-    mainprogram 19 # Check band_stat.csv inside R{id}-{name}/bands/, which store minimum and maximum eigenvalues of different bands, useful to locate energy windows for wannierization process.
+    # Bandstructure (QE).  R{id}-{name}/bands folder created.
+    mainprogram 13      # bandscf-scan: stage the calculation
+    mainprogram 14      # band-scan:    non-scf band structure
+    mainprogram 15      # bandp-scan:   post-process with bands.x
 
-Here, each process needs to execute one at a time. For example, ``13-15`` means executing ``13``, ``14``, and ``15`` in serial mode, while ``13 15`` means executing ``13`` and ``15`` individually.
+    # Density of states (QE).  R{id}-{name}/dos folder created.
+    mainprogram 16      # dos-scan:     nscf for the DOS
+    mainprogram 17      # dosp-scan:    total DOS with dos.x
+
+    # Partial density of states (QE)
+    mainprogram 18      # pdos-scan:    partial DOS with projwfc.x
+
+    # Bandstructure (VASP)
+    mainprogram 13
+    mainprogram 15
+
+    # Density of states and partial DOS (VASP).  VASP writes both from the
+    # same run, so process 16 covers the total and the projected DOS.
+    mainprogram 16
+
+    # Plotting (QE and VASP)
+    mainprogram 19
+
+Process ``19`` also writes ``band_stat.csv`` inside ``R{id}-{name}/bands/``, which
+stores the minimum and maximum eigenvalue of each band -- useful for locating the
+energy windows for the wannierisation process.
+
+Each process is a separate invocation; ``mainprogram`` accepts one process at a
+time.  There is no range syntax: a range such as ``13-15`` is not a command and
+is rejected with exit status ``2``.
+
+Partial DOS is process ``18``.  Do not use ``20``, which is ``clean-scan`` and
+deletes the wavefunctions.
+
+Worked example: ``examples/QE/tutorial12`` and ``examples/VASP/tutorial11``.
 
 
 ----------------------------------------
@@ -652,13 +735,13 @@ Ensure that the ``{name}.dyn`` file exists inside the R{id}-{name}/calc/ folder,
 
 To obtain unique relaxed energies, follow these steps:
 
-1. Copy ``extract_single_distort`` and ``distort-extract.py`` from the ``utility/distortion`` folder.
+1. Copy ``extract_single_distort`` and ``distort_extract.py`` from the ``utility/distortion`` folder.
 
 2. Execute ``./extract_single_distort start end mpid-list.in`` in your terminal. Replace ``start`` and ``end`` with appropriate indices, and ``mpid-list.in`` with the relevant file containing compound information.
 
 3. This process extracts unique ground-state energies for any compound and stores the results in the ``distorted-energy.csv`` file.    
 
-.. _pressure-label:
+.. _pressure-calc-label:
 
 --------------------------------------
   Pressure calculation
@@ -701,12 +784,13 @@ For VASP:
 
 For phonon calculations with pressure:
 
-- Use the "ph-q.in" file for the Gamma point calculation. Other generic q-points can also be used.
-  
-.. code-block:: bash
+- Use the ``ph-q.in`` file for the Gamma point calculation.  Other generic
+  q-points can also be used.
 
-    0 0 0 
-    T
+  .. code-block:: bash
+
+      0 0 0
+      T
 
   Here, ``T`` denotes a metal; otherwise, it is considered nonmetallic.
 
@@ -716,20 +800,23 @@ Perform the following operations:
 
 .. code-block:: bash
 
-    mainprogram 26 : Perform SCF relaxation.
-
-    mainprogram 27: Perform phonon calculation.
+    mainprogram 26      # pressure-relax-scan: scf for every pressure or volume
+    mainprogram 27      # pressure-ph-scan:    phonons for every pressure
 
 Additionally, you can incorporate ``mpid-pressure.in`` in ``input.in`` and conduct other calculations.
 
 Execute ``mainprogram 28`` to clean pressure folders.
+
+Worked example: ``examples/QE/tutorial13`` and ``examples/VASP/tutorial12``.
 
 ----------------------------------------------------
  Substitution calculations
 ----------------------------------------------------
 
 
-To access help, type ``site_subs.py h``.
+Site substitution is implemented in ``htesp/site_subs.py`` and driven by the
+:ref:`substitute <substitute-label>` section of ``config.json``; there is no
+separate command-line helper.
 
 In the ``config.json`` file, ensure the existence of the :ref:`substitute <substitute-label>`  keyword. To execute the substitution, run:
 
@@ -739,8 +826,8 @@ In the ``config.json`` file, ensure the existence of the :ref:`substitute <subst
 
 There are two modes of substitution:
 
-1.Element Replacement Mode:
-   
+**Mode 1 -- element replacement**
+
 Replace an element in a parent compound with a dictionary of elements and the number of sites as key-value pairs.
 
 For example, for the compound MgB2 requiring substitution for ``B``, the substitution key will be as follows:
@@ -759,8 +846,10 @@ For VASP, ``Rmp-763-1-MgB2`` and ``Rmp-763-2-MgB2`` folders will be created with
 
 To use the functionality, ensure the presence of the ``bsym`` package.
 
-2.Dictionary Replacement Mode:
-   
+Worked example: ``examples/QE/tutorial14`` and ``examples/VASP/tutorial13``.
+
+**Mode 2 -- dictionary replacement**
+
 Utilize a dictionary in which all keys are replaced by their corresponding value pairs.
 
 .. code-block:: bash
@@ -776,7 +865,7 @@ Fermi Surface
 
 Perform :ref:`structure relaxation <relax-label>`.
 
-First, generate a :ref:`job script <job-label>` ``run-ifermi.sh``. If not present, then ``run-vasp.sh`` script will be used with default commands (look for ifermi-scan script inside bash). We can utilize :ref:`ifermi.json <ifermi>` file for customized ``run-ifermi.sh`` script. Once, we edit based on our need,
+First, generate a :ref:`job script <job-label>` ``run-ifermi.sh``. If not present, then ``run-vasp.sh`` script will be used with default commands (see the ``ifermi-scan`` shim in ``bin/``). We can utilize :ref:`ifermi.json <ifermi>` file for customized ``run-ifermi.sh`` script. Once, we edit based on our need,
 execute:
 
 .. code-block:: bash
@@ -785,7 +874,7 @@ execute:
 
 For Fermi surface calculations using IFERMI:
 
-1. Install the IFERMI package from [https://fermisurfaces.github.io/IFermi/introduction.html#installation](https://fermisurfaces.github.io/IFermi/introduction.html#installation).
+1. Install the IFermi package: `IFermi installation <https://fermisurfaces.github.io/IFermi/introduction.html#installation>`_, or ``pip install "htesp[fermisurface]"``.
 
 2. Once the ``vasprun.xml`` file is created inside ``R{id}-{name}/relax/``, execute 
 
@@ -793,15 +882,20 @@ For Fermi surface calculations using IFERMI:
 
     mainprogram fermisurface
 
-to generate Fermi surfaces in different formats using the IFERMI package. Check for required dependencies for 
-various plotting option. For example, you may need ``kaleido (pip install -U kaleido)`` package to export figures from plotly.
+to generate Fermi surfaces in different formats using the IFermi package. Check for required dependencies for
+various plotting option. For example, you may need the ``kaleido`` package
+(``pip install -U kaleido``) to export figures from plotly.
+
+Worked example: ``examples/VASP/tutorial21``.  It ships only the reference
+archive, so copy a relaxed ``vasprun.xml`` from ``examples/VASP/tutorial9`` into
+``R{id}-{name}/relax/`` before running it.
 
 
 ---------------------------------------
 Thermodynamic stability (Convex Hull)
 ---------------------------------------
 
-A.Prepare input files
+**Prepare input files**
 
 Suppose we are computing phase diagram of ``MgB2``, then we need to download all the elemental solids, binary solids corresponding to composition ``Mg-B``. We do that by switching on the ``chemsys`` mode in :ref:`download <download-label>` keyword in :ref:`config.json <json-label>`.
 
@@ -851,13 +945,16 @@ Execute:
 
     mainprogram e0
 
-to collect the total energy per atom. It will create ``econv_vasp.csv`` file. Finally, execute:
+to collect the total energy per atom. It writes ``econv.csv``, for both QE and
+VASP. Finally, execute:
 
 .. code-block:: bash
 
     mainprogram pd
 
-to compute phase diagram. Data are stored in ``convexhull.csv`` and ``convexhull.pdf`` plot is created. The display of unstable mode is regulated by the "chull_cutoff" key. 
+to compute phase diagram. Data are stored in ``convexhull.csv`` and ``convexhull.pdf`` plot is created. The display of unstable mode is regulated by the "chull_cutoff" key.
+
+Worked example: ``examples/QE/tutorial16`` and ``examples/VASP/tutorial15``.
 
 .. _magenum-label:
 
@@ -918,9 +1015,81 @@ This creates input files with ``mpid-magnetic.in`` file. Update ``mpid-magnetic.
 
 Similarly repeat ``process 2 and 3`` for complete relaxation.
 
+Worked example: ``examples/QE/tutorial21`` and ``examples/VASP/tutorial20``.
+
 ---------------------------
 Magnetic force theorem
 ---------------------------
+
+The magnetic anisotropy energy is the difference in total energy between two
+magnetisation directions.  Those differences are of the order of :math:`\mu`eV
+per atom, so subtracting two independently converged self-consistent runs is
+rarely accurate enough.  The force theorem takes the difference from a single
+converged charge density instead: converge the collinear, spin-orbit-free
+ground state once, then run each magnetisation direction non-self-consistently
+on that fixed density and compare band energies.
+
+HTESP automates the direction part for VASP.  Set the ``anisotropy`` mode in the
+:ref:`magmom <magmom-label>` dictionary of ``config.json``:
+
+.. code-block:: json
+
+    {
+      "magmom": {
+        "magmom": {"Mn": 5, "B": 0},
+        "type": "anisotropy",
+        "saxis": [[0, 0, 1], [1, 0, 0], [1, 1, 0], [1, 1, 1]],
+        "order": []
+      }
+    }
+
+Then:
+
+1.  Perform :ref:`structure relaxation <relax-label>` and let the collinear run
+    converge.  Add ``LCHARG .TRUE.`` to :ref:`vasp.in <vasp-label>` so that the
+    ``CHGCAR`` survives, and update the ``INCAR`` with ``mainprogram download``.
+
+2.  Add ``LSORBIT .TRUE.`` to :ref:`vasp.in <vasp-label>` (before the lines that
+    hold a key with no value) and, for the force-theorem step, ``ICHARG 11`` so
+    that each direction reads the converged density instead of recomputing it.
+    Update the ``INCAR`` again with ``mainprogram download``.  With ``LSORBIT``
+    set, ``MAGMOM`` is rewritten in ``mx my mz`` form.
+
+3.  Generate one directory per magnetisation direction:
+
+    .. code-block:: bash
+
+        mainprogram magenum
+
+    This creates ``R{id}-saxis-{xyz}-{name}/relax`` for every entry of ``saxis``,
+    copies the ``INCAR``, ``POSCAR``, ``POTCAR``, ``KPOINTS`` and, when it
+    exists, the ``CHGCAR`` of the converged run, rewrites ``SAXIS`` in each, and
+    lists them in ``mpid-magnetic.in``.
+
+4.  Put ``mpid-magnetic.in`` in :ref:`input.in <inputin-label>` and submit the
+    directions:
+
+    .. code-block:: bash
+
+        mainprogram 1
+
+5.  Collect the energies:
+
+    .. code-block:: bash
+
+        mainprogram e0
+
+    The anisotropy energies are the differences between the rows of
+    ``econv.csv``, one row per direction.
+
+Without ``ICHARG 11`` each direction is converged self-consistently, which is a
+valid but more expensive and noisier route to the same number.
+
+For Quantum ESPRESSO this is not implemented: ``mainprogram magenum`` with
+``"type": "anisotropy"`` prints ``To be implemented`` and writes nothing.  Build
+the ``nscf`` runs by hand (``lforcet = .true.``, ``nosym = .true.``,
+``startingpot = 'file'``, ``noncolin = .true.``, ``lspinorb = .true.``) from the
+inputs process ``4`` produced.
 
 ----------------------------
 Computing elastic constants
@@ -943,6 +1112,8 @@ Once the calculations are completed, execute the following command:
     mainprogram compute-elastic
 
 This command computes the elastic constants and stores the results in the ``elastic.csv`` file. Make sure, your results are converged with respect to ``plane-wave energy cutoff`` and ``k-point mesh``.
+
+Worked example: ``examples/QE/tutorial15`` and ``examples/VASP/tutorial14``.
 
 
 ----------------------------------
@@ -1005,7 +1176,75 @@ Wannier interpolated bandstructure
 
 Perform :ref:`structure relaxation <relax-label>`.
 
-Additionally, compute :ref:`DFT band structures and atom and orbital projected density of states (DOS) <band-dos-label>`. The DOS information can be valuable for selecting initial projections, while band structures stored in the band_stat.csv file can aid in choosing energy windows.
+Additionally, compute :ref:`DFT band structures and atom and orbital projected
+density of states (DOS) <band-dos-label>`.  The DOS tells you which orbitals sit
+at the Fermi level and therefore what to project onto; ``band_stat.csv``, written
+by process ``19`` into ``R{id}-{name}/bands/``, gives the minimum and maximum
+eigenvalue of every band and therefore the disentanglement and frozen windows.
+
+The complete worked instance is ``examples/QE/tutorial19`` (MgB2).  The steps
+are:
+
+1.  Build every downstream QE input from the relaxed structure:
+
+    .. code-block:: bash
+
+        mainprogram 4
+
+2.  Write the scf and nscf inputs the wannierisation needs:
+
+    .. code-block:: bash
+
+        mainprogram epw1
+
+3.  Copy ``wannier90.json`` from ``utility/input_files`` into the working
+    directory and set the windows and the plotting flags in it -- see
+    :ref:`wannier90.json <wannier90-label>`.  ``dis_win_min`` / ``dis_win_max``
+    bound the states entering the disentanglement, ``dis_froz_min`` /
+    ``dis_froz_max`` the states reproduced exactly.  Read all four off
+    ``band_stat.csv`` and the projected DOS.
+
+4.  Set ``"which_calc": "wannier"`` in the :ref:`job_script <job-label>`
+    dictionary with the command list ``["scf", "nscf", "wannier_prepare",
+    "pw2wannier90", "wannier_band"]``, and generate ``run-wannier_band.sh``:
+
+    .. code-block:: bash
+
+        mainprogram jobscript
+
+5.  Write the projections.  Put them in a :ref:`projection.in <inputin-label>`
+    file in the working directory -- one species per line, for example
+    ``Mg:s`` and ``B:pz;px;py`` -- and run:
+
+    .. code-block:: bash
+
+        mainprogram wann-file
+
+    ``mainprogram wann-random`` uses random projections when you have no
+    ``projection.in``, and ``mainprogram wann-scdm`` derives them from an SCDM
+    fit (this needs ``lmfit``, and the extra steps ``mainprogram epw3`` and
+    ``mainprogram epw4`` beforehand).
+
+6.  Check ``pw2wan.in`` and ``ex.win`` inside ``R{id}-{name}/epw/`` and adjust
+    them if you need Wannier90 settings the JSON file does not cover.  Submit
+    ``run-wannier_band.sh``.
+
+7.  Plot the interpolated bands by putting ``wann_band`` in the plot line of
+    :ref:`input.in <inputin-label>` and running:
+
+    .. code-block:: bash
+
+        mainprogram 19
+
+    To compare the interpolated bands against QE on exactly the same k-points,
+    run ``mainprogram epw5`` first: it prepares a QE band calculation on the
+    k-points of the Wannier calculation.
+
+The interpolated Hamiltonian ``ex_hr.dat`` written here is also the input to the
+WannierTools calculations (``mainprogram wt1`` and ``mainprogram wt2``; see
+``mainprogram wt-info``) and to the EPW calculations
+(``mainprogram epw-file``, ``epw-random``, ``epw-scdm``; see
+``mainprogram epw-info``).
 
 
 -------------------------
@@ -1044,7 +1283,8 @@ Post-processing processes to obtain phonon dispersion plots are:
 
     mainprogram 19
 
-Please, refer to :ref:`command line info <command>` for description of these commands.
+Please, refer to the :ref:`command reference <command-label>` for a description
+of these commands.
 
 
 - **Supercell method**:
@@ -1063,13 +1303,15 @@ For this method, we utilize Phonopy with either Quantum ESPRESSO (QE) or VASP. P
     #Generate band.conf file and plot phonon dispersion.
     mainprogram phono4
 
+Worked example: ``examples/QE/tutorial17`` and ``examples/VASP/tutorial16``.
+
 --------------------------
 Equation of states
 --------------------------
 
 To collect energy-volume data for different pressures and perform relaxation, use the ``ev-collect`` command. This command generates an ``e-v.dat`` file in each directory corresponding to a specific pressure. Follow the steps below:
 
-1. First, create input files for different pressures and perform relaxation (:ref:`repeat this <pressure-label>`).
+1. First, create input files for different pressures and perform relaxation (:ref:`repeat this <pressure-calc-label>`).
 
 2. After relaxation, execute the main program ``ev-collect`` to extract energy-volume data. This program automatically generates an ``e-v.dat`` file in each directory corresponding to a specific pressure.
 
@@ -1089,11 +1331,13 @@ Execute the main program ``eos-bm`` to analyze the energy-volume data and obtain
 
 To plot various volume-energy, pressure-volume, and pressure-enthalpy curves, follow these steps:
 
-1. **Copy Plotting Script:** Copy the script ``birch_murnaghan_enthalpy.py`` from the utility ``useful_scripts`` directory.
+1. **Copy the plotting script:** copy ``utility/usefull_scripts/birch_murnaghan_enthalpy.py`` into the working directory.
 
 2. **Execute the Script:** Execute the copied script using the command ``python birch_murnaghan_enthalpy.py``. Use the "help" option to get started and understand the plotting options available.
 
-3. **Rename ``e-v.dat`` Files:** Ensure that each ``e-v.dat`` file from different directories is renamed to follow the format ``e-v-1.dat``, ``e-v-2.dat``, and so on. This ensures that the script can process multiple energy-volume datasets.
+3. **Rename** ``e-v.dat`` **files:** Ensure that each ``e-v.dat`` file from different directories is renamed to follow the format ``e-v-1.dat``, ``e-v-2.dat``, and so on. This ensures that the script can process multiple energy-volume datasets.
+
+Worked example: ``examples/QE/tutorial18`` and ``examples/VASP/tutorial17``.
 
 
 --------------------------
@@ -1117,6 +1361,8 @@ For VASP:
 - Folders named ``R{mpid}-{icharge}`` are created, each containing the necessary input files for a specific net charge.
 
 In both cases, a file named ``mpid-charge.in`` is generated to list the material ID and compound name of these input files.
+
+Worked example: ``examples/QE/tutorial20`` and ``examples/VASP/tutorial19``.
 
 
 ------------------------------

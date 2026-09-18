@@ -41,20 +41,64 @@ batch.header
 -------------------
 
 This file is used to generate job submission scripts for different calculations.
+It holds the scheduler directives and the module loads, and nothing else:
 
 .. code-block:: bash
 
     #!/bin/bash
-    
-    ## SBATCH commands
-    
-    #SBATCH ....
-    
+
+    #SBATCH --partition=dense --ntasks=1 --cpus-per-task=48 --time=1-0
+
     #module load ....
-    
 
+``mainprogram jobscript`` copies this file and appends the run command of each
+entry of ``job_script.command_list`` after its last line, writing one
+``run-{command}.sh`` per entry.  Nothing has to be reserved in the header for
+that.
 
-These lines constitute standard content for any batch submission script.
+The older ``generate_submission_file.sh`` script works differently: it
+*substitutes* a line reading exactly ``submission here``.  If you use that
+script, add such a line at the point where the run command belongs.  The headers
+shipped in ``examples/`` do not have one, because they are written for
+``mainprogram jobscript``.
+
+Generating a first header
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The headers in ``examples/`` name a partition (``dense``) and a module that
+exist on one cluster and nowhere else, so a copied header is usually rejected
+by the scheduler before any calculation starts.  ``--init-header`` writes one
+from what *this* machine reports instead:
+
+.. code-block:: bash
+
+    mainprogram jobscript --init-header qe      # or: vasp
+
+It asks SLURM for the partitions (``sinfo``), the accounts this user may
+charge (``sacctmgr``), the cores per node of the chosen partition, and whether
+any generic resource is configured at all (``scontrol show config``); it asks
+Lmod for the ``qe``/``quantum-espresso`` or ``vasp`` modules, preferring the
+one Lmod marks ``(D)``; and it looks for ``ibrun``, ``srun`` or ``mpirun`` on
+``$PATH``.  Anything it cannot determine is written as a ``# TODO`` comment
+rather than guessed, and the other partitions and accounts it found are listed
+in comments so the choice can be changed by uncommenting.
+
+No run command is written into the header.  ``mainprogram jobscript`` appends
+that line itself, from ``job_script.parallel_command`` and ``job_script.nproc``
+in ``config.json``; a command in the header would be run *as well*, before the
+one that matters.  The launcher the generator found is therefore reported as a
+comment naming the two configuration values to set.
+
+Two limits are worth knowing.  ``--gres=gpu:N`` is emitted only on a cluster
+whose SLURM configuration actually defines GRES types; a GPU machine that
+schedules whole nodes reports ``GresTypes = (null)`` and gets no ``--gres``
+line, because emitting one there produces a job the scheduler refuses.  And
+the wall time and node count are placeholders -- the generator knows nothing
+about the size of the study.  Read the file before submitting anything with
+it.
+
+An existing ``batch.header`` is never overwritten; pass ``--force`` to replace
+one.
 
    
 .. _json-label:
@@ -65,41 +109,82 @@ config.json
 
 This `JSON <https://docs.python.org/3/library/json.html>`_ file serves as the main input file of the package. It contains a dictionary with various keys to configure different aspects of the package's functionality.
 
+The same mapping in JSON and in Python:
+
+.. code-block:: json
+
+    {
+      "name": "John",
+      "age": 30,
+      "is_student": false,
+      "favorite_fruits": ["apple", "banana", "orange"],
+      "address": null
+    }
+
 .. code-block:: python
 
-    JSON: {
-        "name": "John",
-        "age": 30,
-        "is_student": false,
-        "favorite_fruits": ["apple", "banana", "orange"],
-        "address": null
-    }
-    
-    Python: {
+    {
         "name": "John",
         "age": 30,
         "is_student": False,
         "favorite_fruits": ["apple", "banana", "orange"],
-        "address": None
+        "address": None,
     }
-    
-    In JSON, boolean values are represented as "true" and "false", while in Python they are represented as True and False.
-    
-    JSON uses "null" to represent the absence of value, whereas Python uses None.
-    
-    Lists are represented with square brackets [] in both JSON and Python, and they contain comma-separated values.
+
+In JSON, boolean values are written ``true`` and ``false``, where Python writes
+``True`` and ``False``.  JSON writes ``null`` where Python writes ``None``.
+Lists use square brackets ``[]`` in both, with comma-separated values.
+
+Where the file is read from
+---------------------------
+
+``config.json`` is looked for in the working directory and in up to five parent
+directories, so a helper running in ``R<id>-<name>/pressure/R.../relax`` finds
+the campaign's file without a copy in every folder.  ``$HTESP_CONFIG`` (or
+``--config FILE``) overrides the search and may name either a file or a
+directory.
+
+Whatever is found is deep-merged over the packaged default,
+``htesp/data/config.json``, which carries every key the code reads.  A file
+written for an older version of HTESP therefore keeps working: keys it does not
+mention come from the default rather than raising ``KeyError``.  The merged
+result is cached, so a long campaign parses the file once.
+
+Check a file before a campaign with:
+
+.. code-block:: bash
+
+    mainprogram config-validate
+
+It prints the path actually used, then every problem it can find: missing
+sections, values of the wrong type, an ``elph_mode`` that is not one of the four
+accepted values, and whether a Materials Project API key is available.  It exits
+non-zero when something is wrong.
+
+The full shipped configuration
+------------------------------
+
+This is ``htesp/data/config.json`` verbatim -- the default every user file is
+merged over, and a working starting point to copy into the working directory.
+
+.. config-json-start
+   Generated from htesp/data/config.json by docs/gen_param_block.py.
+   Run that script after changing the shipped default; do not edit by hand.
 
 .. code-block:: json
 
     {
       "job_script": {
-      "batch":"batch.header",
-      "which_calc": "qe",
-      "parallel_command": "mpirun",
-      "nproc": "1",
-      "command_list":["scf","elph"],
-      "command_combine":false,
-      "calc_visible_with":"id"
+        "batch": "batch.header",
+        "which_calc": "qe",
+        "parallel_command": "mpirun",
+        "nproc": "4",
+        "command_list": [
+          "scf",
+          "elph"
+        ],
+        "command_combine": false,
+        "calc_visible_with": "id"
       },
       "mpi_key": {
         "API_KEY": {
@@ -107,22 +192,45 @@ This `JSON <https://docs.python.org/3/library/json.html>`_ file serves as the ma
         }
       },
       "download": {
-        "mode": "chemsys",
+        "mode": "element",
         "element": {
           "metal": false,
           "FE": false,
           "thermo_stable": false,
-          "exclude": ["Lu"],
-          "ntype": [1, 2],
-          "elm": ["B"],
-          "prop": ["material_id", "formula_pretty", "structure", "formation_energy_per_atom", "band_gap", "energy_above_hull", "total_magnetization", "ordering", "total_magnetization_normalized_formula_units", "num_magnetic_sites", "theoretical", "nsites"],
-          "ordering": "NM",
+          "exclude": [
+            "Lu"
+          ],
+          "ntype": [
+            1,
+            2
+          ],
+          "elm": [
+            "B"
+          ],
+          "prop": [
+            "material_id",
+            "formula_pretty",
+            "structure",
+            "formation_energy_per_atom",
+            "band_gap",
+            "energy_above_hull",
+            "total_magnetization",
+            "ordering",
+            "total_magnetization_normalized_formula_units",
+            "num_magnetic_sites",
+            "theoretical",
+            "nsites"
+          ],
+          "ordering": [
+            "NM",
+            "Unknown"
+          ],
           "nsites": 10,
           "spacegroup": null
         },
         "inp": {
           "start": 1,
-          "end": 20,
+          "end": 65,
           "nkpt": 200,
           "evenkpt": false,
           "plot": "phband",
@@ -131,10 +239,16 @@ This `JSON <https://docs.python.org/3/library/json.html>`_ file serves as the ma
           "kpath_pbc": null
         },
         "chemsys": {
-          "entries": ["Cr", "Pd", "P"],
+          "entries": [
+            "Mg",
+            "B"
+          ],
           "size_constraint": 60,
-          "ntype_constraint": 4,
-          "must_include": ["Cr","Pd","P"],
+          "ntype_constraint": 3,
+          "must_include": [
+            "Mg",
+            "B"
+          ],
           "FE": false,
           "thermo_stable": 0.08,
           "metal": false,
@@ -142,151 +256,216 @@ This `JSON <https://docs.python.org/3/library/json.html>`_ file serves as the ma
           "spacegroup": null
         },
         "oqmd": {
-          "limit": 400,
-          "entries": ["Mg", "B"],
+          "limit": 1000,
+          "entries": [
+            "Mg",
+            "B"
+          ],
           "size_constraint": 60,
-          "ntype_constraint": 4,
+          "ntype_constraint": 3,
           "must_include": [],
           "metal": false,
           "magnetic": true,
           "spacegroup": null,
           "thermo_stable": true,
           "FE": true,
-          "prop": ["composition", "spacegroup", "volume", "band_gap", "stability"]
-          },
+          "prop": [
+            "composition",
+            "spacegroup",
+            "volume",
+            "band_gap",
+            "stability"
+          ]
+        },
         "aflow": {
-            "elm": ["B"],
-            "nelm": 5,
-            "nsites": 10,
-            "metal": true,
-            "FE": true,
-            "spacegroup": null,
-            "limit": 5000,
-            "filter": false,
-            "prop": ["spacegroup_relax", "Pearson_symbol_relax"]
-            ]
+          "elm": [
+            "Mg",
+            "B"
+          ],
+          "nelm": 2,
+          "nsites": 60,
+          "metal": false,
+          "FE": false,
+          "spacegroup": null,
+          "filter": false,
+          "limit": 5000,
+          "prop": [
+            "spacegroup_relax",
+            "Pearson_symbol_relax"
+          ]
         }
       },
       "conv_test": {
-         "param": "ecut",
-         "ecut": [400, 500, 600],
-         "kpoint": [[6, 6, 6], [12, 12, 12], [18, 18, 18]]
-        },
+        "param": "ecut",
+        "ecut": [
+          400,
+          500,
+          600
+        ],
+        "kpoint": [
+          [
+            6,
+            6,
+            6
+          ],
+          [
+            12,
+            12,
+            12
+          ],
+          [
+            18,
+            18,
+            18
+          ]
+        ]
+      },
       "magmom": {
         "magmom": {
           "Cr": 5,
           "Pd": 0,
-          "P": 0
+          "I": 0
         },
-        "type":"",
-        "saxis":[[0,0,1],[1,0,0],[1,1,0],[1,1,1]],
-        "order": ["ferromagnetic", "antiferromagnetic", "ferrimagnetic_by_motif"]
+        "type": "anisotropy",
+        "saxis": [
+          [
+            0,
+            0,
+            1
+          ],
+          [
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            1,
+            0
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "order": [
+          "ferromagnetic",
+          "antiferromagnetic",
+          "ferrimagnetic_by_motif"
+        ],
+        "force_theorem": false
       },
       "pseudo": {
         "pot": {
-          "H":"H",
-          "He":"He",
-          "Li":"Li_sv",
-          "Be":"Be",
-          "B":"B",
-          "C":"C",
-          "N":"N",
-          "O":"O",
-          "F":"F",
-          "Ne":"Ne",
-          "Na":"Na_pv",
-          "Mg":"Mg",
-          "Al":"Al",
-          "Si":"Si",
-          "P":"P",
-          "S":"S",
-          "Cl":"Cl",
-          "Ar":"Ar",
-          "K":"K_sv",
-          "Ca":"Ca_sv",
-          "Sc":"Sc_sv",
-          "Ti":"Ti_sv",
-          "V":"V_sv",
-          "Cr":"Cr_pv",
-          "Mn":"Mn_pv",
-          "Fe":"Fe",
-          "Co":"Co",
-          "Ni":"Ni",
-          "Cu":"Cu",
-          "Zn":"Zn",
-          "Ga":"Ga_d",
-          "Ge":"Ge_d",
-          "As":"As",
-          "Se":"Se",
-          "Br":"Br",
-          "Kr":"Kr",
-          "Rb":"Rb_sv",
-          "Sr":"Sr_sv",
-          "Y":"Y_sv",
-          "Zr":"Zr_sv",
-          "Nb":"Nb_sv",
-          "Mo":"Mo_sv",
-          "Tc":"Tc_pv",
-          "Ru":"Ru_pv",
-          "Rh":"Rh_pv",
-          "Pd":"Pd",
-          "Ag":"Ag",
-          "Cd":"Cd",
-          "In":"In_d",
-          "Sn":"Sn_d",
-          "Sb":"Sb",
-          "Te":"Te",
-          "I":"I",
-          "Xe":"Xe",
-          "Cs":"Cs_sv",
-          "Ba":"Ba_sv",
-          "La":"La",
-          "Ce":"Ce",
-          "Pr":"Pr_3",
-          "Nd":"Nd_3",
-          "Pm":"Pm_3",
-          "Sm":"Sm_3",
-          "Eu":"Eu_2",
-          "Gd":"Gd_3",
-          "Tb":"Tb_3",
-          "Dy":"Dy_3",
-          "Ho":"Ho_3",
-          "Er":"Er_3",
-          "Tm":"Tm_3",
-          "Yb":"Yb_2",
-          "Lu":"Lu_3",
-          "Hf":"Hf_pv",
-          "Ta":"Ta_pv",
-          "W":"W_sv",
-          "Re":"Re",
-          "Os":"Os",
-          "Ir":"Ir",
-          "Pt":"Pt",
-          "Au":"Au",
-          "Hg":"Hg",
-          "Tl":"Tl_d",
-          "Pb":"Pb_d",
-          "Bi":"Bi_d",
-          "Po":"Po_d",
-          "At":"At",
-          "Rn":"Rn",
-          "Fr":"Fr_sv",
-          "Ra":"Ra_sv",
-          "Ac":"Ac",
-          "Th":"Th",
-          "Pa":"Pa",
-          "U":"U",
-          "Np":"Np",
-          "Pu":"Pu",
-          "Am":"Am",
-          "Cm":"Cm"
-         },
+          "H": "H",
+          "He": "He",
+          "Li": "Li_sv",
+          "Be": "Be",
+          "B": "B",
+          "C": "C",
+          "N": "N",
+          "O": "O",
+          "F": "F",
+          "Ne": "Ne",
+          "Na": "Na_pv",
+          "Mg": "Mg",
+          "Al": "Al",
+          "Si": "Si",
+          "P": "P",
+          "S": "S",
+          "Cl": "Cl",
+          "Ar": "Ar",
+          "K": "K_sv",
+          "Ca": "Ca_sv",
+          "Sc": "Sc_sv",
+          "Ti": "Ti_sv",
+          "V": "V_sv",
+          "Cr": "Cr_pv",
+          "Mn": "Mn_pv",
+          "Fe": "Fe",
+          "Co": "Co",
+          "Ni": "Ni",
+          "Cu": "Cu",
+          "Zn": "Zn",
+          "Ga": "Ga_d",
+          "Ge": "Ge_d",
+          "As": "As",
+          "Se": "Se",
+          "Br": "Br",
+          "Kr": "Kr",
+          "Rb": "Rb_sv",
+          "Sr": "Sr_sv",
+          "Y": "Y_sv",
+          "Zr": "Zr_sv",
+          "Nb": "Nb_sv",
+          "Mo": "Mo_sv",
+          "Tc": "Tc_pv",
+          "Ru": "Ru_pv",
+          "Rh": "Rh_pv",
+          "Pd": "Pd",
+          "Ag": "Ag",
+          "Cd": "Cd",
+          "In": "In_d",
+          "Sn": "Sn_d",
+          "Sb": "Sb",
+          "Te": "Te",
+          "I": "I",
+          "Xe": "Xe",
+          "Cs": "Cs_sv",
+          "Ba": "Ba_sv",
+          "La": "La",
+          "Ce": "Ce",
+          "Pr": "Pr_3",
+          "Nd": "Nd_3",
+          "Pm": "Pm_3",
+          "Sm": "Sm_3",
+          "Eu": "Eu_2",
+          "Gd": "Gd_3",
+          "Tb": "Tb_3",
+          "Dy": "Dy_3",
+          "Ho": "Ho_3",
+          "Er": "Er_3",
+          "Tm": "Tm_3",
+          "Yb": "Yb_2",
+          "Lu": "Lu_3",
+          "Hf": "Hf_pv",
+          "Ta": "Ta_pv",
+          "W": "W_sv",
+          "Re": "Re",
+          "Os": "Os",
+          "Ir": "Ir",
+          "Pt": "Pt",
+          "Au": "Au",
+          "Hg": "Hg",
+          "Tl": "Tl_d",
+          "Pb": "Pb_d",
+          "Bi": "Bi_d",
+          "Po": "Po_d",
+          "At": "At",
+          "Rn": "Rn",
+          "Fr": "Fr_sv",
+          "Ra": "Ra_sv",
+          "Ac": "Ac",
+          "Th": "Th",
+          "Pa": "Pa",
+          "U": "U",
+          "Np": "Np",
+          "Pu": "Pu",
+          "Am": "Am",
+          "Cm": "Cm"
+        },
         "PSEUDO": {
           "H": 60,
+          "He": 50,
           "Li": 40,
           "Be": 40,
+          "B": 35,
+          "C": 45,
           "N": 60,
+          "O": 60,
           "F": 45,
+          "Ne": 50,
           "Na": 40,
           "Mg": 30,
           "Al": 30,
@@ -294,6 +473,7 @@ This `JSON <https://docs.python.org/3/library/json.html>`_ file serves as the ma
           "P": 30,
           "S": 35,
           "Cl": 40,
+          "Ar": 60,
           "K": 60,
           "Ca": 30,
           "Sc": 40,
@@ -309,7 +489,9 @@ This `JSON <https://docs.python.org/3/library/json.html>`_ file serves as the ma
           "Ga": 70,
           "Ge": 40,
           "As": 35,
+          "Se": 30,
           "Br": 30,
+          "Kr": 45,
           "Rb": 30,
           "Sr": 30,
           "Y": 35,
@@ -327,9 +509,24 @@ This `JSON <https://docs.python.org/3/library/json.html>`_ file serves as the ma
           "Sb": 40,
           "Te": 30,
           "I": 35,
+          "Xe": 60,
           "Cs": 30,
           "Ba": 30,
           "La": 40,
+          "Ce": 50,
+          "Pr": 40,
+          "Nd": 40,
+          "Pm": 40,
+          "Sm": 40,
+          "Eu": 40,
+          "Gd": 40,
+          "Tb": 40,
+          "Dy": 40,
+          "Ho": 40,
+          "Er": 40,
+          "Tm": 40,
+          "Yb": 40,
+          "Lu": 45,
           "Hf": 50,
           "Ta": 45,
           "W": 30,
@@ -337,6 +534,7 @@ This `JSON <https://docs.python.org/3/library/json.html>`_ file serves as the ma
           "Os": 40,
           "Ir": 55,
           "Pt": 35,
+          "Au": 45,
           "Hg": 50,
           "Tl": 50,
           "Pb": 40,
@@ -354,8 +552,13 @@ This `JSON <https://docs.python.org/3/library/json.html>`_ file serves as the ma
           "Pu": 30,
           "Am": 30,
           "Cm": 30,
-          "B": 35,
-          "C": 45
+          "Bk": 60,
+          "Cf": 60,
+          "Es": 60,
+          "Fm": 60,
+          "Md": 60,
+          "No": 60,
+          "Lr": 60
         }
       },
       "substitute": {
@@ -397,7 +600,12 @@ This `JSON <https://docs.python.org/3/library/json.html>`_ file serves as the ma
           "electron_maxstep": 300
         }
       },
-      "strain": [-0.01, -0.005, 0.005, 0.01],
+      "strain": [
+        -0.01,
+        -0.005,
+        0.005,
+        0.01
+      ],
       "wanniertools_input": {
         "tb_file": {
           "Hrfile": "'ex_hr.dat'",
@@ -450,32 +658,62 @@ This `JSON <https://docs.python.org/3/library/json.html>`_ file serves as the ma
           "surf_onsite": "0.0"
         },
         "surface": {
-          "surface": [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+          "surface": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ],
           "KPATH_SLAB": {},
           "KPLANE_SLAB": {},
           "EFFECTIVE_MASS": "0.0",
           "SELECTED_ATOMS": {}
         }
       },
-     "kptden": 0.025,
-     "chull_cutoff": 0.04,
-     "kpt_opt": true,
-     "elph_mode": "serial",
-     "plot": {
-        "xlim": null,
-        "ylim" : [-5, 5],
-        "atomproj": null,
+      "kptden": 0.025,
+      "chull_cutoff": 0.04,
+      "kpt_opt": true,
+      "elph_mode": "serial",
+      "plot": {
+        "xlim": [
+          -8,
+          10
+        ],
+        "ylim": [
+          -5,
+          5
+        ],
+        "atomproj": 0.6,
         "bandproj": {
           "proj_type": "element-orbital",
-          "proj": {"Zr": "dxz", "Pd": "dxz"},
+          "proj": {
+            "Zr": "dxz",
+            "Pd": "dxz"
+          },
           "colormap": "Reds"
-        }
+        },
+        "a2f_smearing": null,
+        "dos_ylim": null
+      }
     }
+
+.. config-json-end
 
 
 - **job_script**: Information about creating job submission scripts. :ref:`here <job-label>`
 
-- **mpi_key**: Materials Project API key. If not provided, data extraction from the Materials Project is not possible. However, extraction from the OQMD and AFLOW databases is still accessible without any key. :ref:`here <mpikey-label>`
+- **mpi_key**: Legacy home of the Materials Project API key. Set ``$MP_API_KEY`` instead; leave the placeholder in the file. Without a key, extraction from the Materials Project is not possible, but the OQMD and AFLOW databases are still accessible. :ref:`here <mpikey-label>`
 
 - **download**: Information required for downloading and preparing inputs. :ref:`here <download-label>`
 
@@ -507,9 +745,13 @@ This `JSON <https://docs.python.org/3/library/json.html>`_ file serves as the ma
 
   - **parallel_irr**: Parallel over q-points and irreducible representations
 
-    - **only_init**:  Use this key first to obtain irreducible representations.
+  - **only_init**: Run only the initialisation that writes the irreducible
+    representations.  This is a fourth value of ``elph_mode``, not a sub-option
+    of ``parallel_irr``: set ``"elph_mode": "only_init"`` and run process ``7``
+    first, then set ``"elph_mode": "parallel_irr"`` and run process ``7`` again.
 
-- **plot**: Plot variables, especially, x-limit (list of 2 numbers) and y-limit.
+- **plot**: Plot variables: the energy window, the projections and the two
+  optional keys described under :ref:`plot <plot-label>`.
 
 
 .. _job-label:
@@ -518,7 +760,7 @@ This `JSON <https://docs.python.org/3/library/json.html>`_ file serves as the ma
 job_script
 --------------------
 
-.. code-block:: json
+.. code-block:: text
 
     "job_script": {
       "batch": "batch.header",
@@ -531,11 +773,11 @@ job_script
 
 - **batch**: Usual batch script
 
-- **which_calc**: Type of calculations. Available options: ``'QE'`` or ``'qe'``, ``'VASP'`` or ``'vasp'``, ``'wannier'``, ``'epw'``, etc.
+- **which_calc**: Type of calculations. One of ``"qe"``, ``"vasp"``, ``"wannier"`` or ``"epw"``. The value is normalised before use, so ``"QE"``, ``"VASP"``, ``"WANNIER"`` and ``"EPW"`` work exactly as well as the lower-case spellings. Anything else is rejected with a message naming the four accepted values.
 
-- **parallel_command**: Parralization command. Available options: mpirun, srun, ...
+- **parallel_command**: The MPI launcher, e.g. ``"mpirun"``, ``"srun"`` or ``"ibrun"``. How ``nproc`` is passed to it follows the launcher: the ``mpirun`` family (``mpirun``, ``mpiexec``, ``mpiexec.hydra``, ``orterun``) gets ``-np N``, ``srun`` and ``aprun`` get ``-n N``, and ``ibrun`` is given no count at all because it runs the whole SLURM allocation and rejects one. A launcher this list does not know gets ``-np N``, which is right for the mpirun-family wrappers sites usually install. If the value already contains a flag of its own -- ``"srun --cpu-bind=cores -n 8"`` -- it is used exactly as written and no count is added. An empty value runs the executable directly, with no launcher.
 
-- **nproc**: Numper of processer to use.
+- **nproc**: Number of processes to launch. With ``ibrun`` it does not reach the launcher, so there it only has to agree with the ``#SBATCH`` directives in :ref:`batch.header <batch-label>`.
 
 - **command_list**: List of command to execute.
 
@@ -573,13 +815,16 @@ job_script
 
     - **wannier**: Performing WANNIER90 calculations with VASP. This add ``wannier90.x wannier90`` in ``batch.header`` file.
 
-.. _ifermi:
-
     - **ifermi**: Utilizing ifermi package to compute Fermi surface related properties, ``'ifermi'``. Please locate the ``ifermi.json`` file in the ``utility/input_files`` directory and move it to the current working directory.
 
     - **Note**: Please checkout original documentation of the `ifermi package <https://fermisurfaces.github.io/IFermi/cli.html>`_. Use ``true`` or ``false`` for keys that don't have values. When set to ``true,`` the key will be included as a flag in the command.
 
-      .. code-block:: json
+.. _ifermi:
+
+ifermi.json
+^^^^^^^^^^^
+
+.. code-block:: json
 
             {
                 "info": {
@@ -677,9 +922,38 @@ job_script
 mpi_key
 --------------------
 
-Find your materials project key here, under API key section.
+The Materials Project API key is **not** kept in ``config.json``.  Export it
+instead:
 
-https://next-gen.materialsproject.org/api#api-key
+.. code-block:: bash
+
+    export MP_API_KEY=your_key_here
+
+Get a key from https://next-gen.materialsproject.org/api#api-key, under the API
+key section.
+
+For a permanent setting without putting the key in your shell history, write it
+to ``~/.config/htesp/credentials``:
+
+.. code-block:: bash
+
+    mkdir -p ~/.config/htesp
+    printf 'MP_API_KEY=your_key_here\n' > ~/.config/htesp/credentials
+    chmod 600 ~/.config/htesp/credentials
+
+The key is looked up in this order:
+
+1. ``$MP_API_KEY``;
+2. a ``MP_API_KEY=...`` line in ``~/.config/htesp/credentials``;
+3. ``mpi_key.API_KEY.key`` in ``config.json``.
+
+The ``mpi_key`` section still exists so that old configurations load, and every
+shipped example carries the placeholder ``"use_your_API_KEY"``, which is treated
+as "no key".  Leave it as the placeholder: a key committed to a repository or
+copied between working directories is a key you have to revoke.
+
+Without a key, ``mainprogram search`` and ``mainprogram download`` stop with a
+message telling you how to set one.  The OQMD and AFLOW searches need no key.
 
 .. _download-label:
 
@@ -689,7 +963,7 @@ download
 
 It has a dictionary of the form.
 
-.. code-block:: json
+.. code-block:: text
 
     "download": {
         "mode": "element",
@@ -745,7 +1019,7 @@ It has a dictionary of the form.
           "spacegroup": null,
           "limit": 5000,
           "filter": false,
-          "prop": ["spacegroup_relax", "Pearson_symbol_relax"]}
+          "prop": ["spacegroup_relax", "Pearson_symbol_relax"]}}
 
 - **(A)mode**:
 
@@ -787,7 +1061,12 @@ It has a dictionary of the form.
     - List of properties to extract.
   
   - **ordering**: 
-    - Magnetic ordering to search. ``"NM"`` for nonmagnetic, ``"FM"`` for ferro, and ``"AFM"`` for antiferromagnetic, and so on.
+    - Magnetic ordering to keep. Accepts three forms:
+    - a **string** -- ``"NM"`` nonmagnetic, ``"FM"`` ferromagnetic, ``"AFM"`` antiferromagnetic, ``"FiM"`` ferrimagnetic, ``"Unknown"`` (see below);
+    - a **list** -- keep any of its values, e.g. ``["NM", "Unknown"]``. **This is the shipped default.**
+    - ``null`` -- apply no ordering filter at all.
+    - **About** ``"Unknown"``: Materials Project reports it for any material that has no magnetism calculation, and that is now a large fraction of the database. In a search over boron binaries it was 202 of 465 hits, and 158 of the 222 that survived the metal and formation-energy filters. ``"Unknown"`` therefore means "nobody computed the ordering", not "this material is magnetic" -- so excluding it silently discards most of the database. A bare ``"NM"`` is easy to mistake for a broken search: 465 compounds in, 2 rows out.
+    - Use ``"NM"`` alone only when you want materials explicitly determined to be nonmagnetic, and are content to lose the uncomputed ones.
   
   - **nsites**: 
     - Total number of ions in the compound.
@@ -830,10 +1109,12 @@ It has a dictionary of the form.
   - **kpath_pbc**: Determine periodic boundary condition for kpath with ``default [1, 1, 1] for 3D``. Generating kpath for 2D systems with vacuum along z-direction requires [1, 1, 0]
 
 - **(C)chemsys**:
-  - The "chemsys" keyword mirrors the construction of the Materials Project database and is utilized to search for compounds. 
+
+  - The "chemsys" keyword mirrors the construction of the Materials Project database and is utilized to search for compounds.
 
   - **entries**:
-    -It employs the "mp_api.client.MPRester.get_entries_in_chemsys" function to explore atoms, binary, ternary, and other combinations based on the "entries" keyword.
+
+    - It employs the "mp_api.client.MPRester.get_entries_in_chemsys" function to explore atoms, binary, ternary, and other combinations based on the "entries" keyword.
     - This functionality is valuable in studying thermodynamic stability using convex hull phase diagrams.
     - Besides "entries", other keys within chemsys include:
 
@@ -930,7 +1211,7 @@ It has a dictionary of the form.
 conv_test
 -------------------
 
-.. code-block:: json
+.. code-block:: text
 
   "conv_test": {
      "param": "ecut",
@@ -941,13 +1222,13 @@ conv_test
 
 - **conv_test**: This provides the parameters for the convergence tests.
 
-  -**param**: Parameter to perform convergence tests. Available options are ``ecut`` and ``kpoint``.
+  - **param**: Parameter to perform convergence tests. Available options are ``ecut`` and ``kpoint``.
 
-  -**ecut**: List of kinetic energy cutoff (eV for VASP and Ry for QE).
+  - **ecut**: List of kinetic energy cutoff (eV for VASP and Ry for QE).
 
-  -**kpoint**: List of kpoint mesh.
+  - **kpoint**: List of kpoint mesh.
 
-  -**Note**: For ``ecut`` convergence, smallest ``kmesh`` is utilized and vice-versa. 
+  - **Note**: For ``ecut`` convergence, smallest ``kmesh`` is utilized and vice-versa.
 
 
 .. _magmom-label:
@@ -956,7 +1237,7 @@ conv_test
 magmom
 --------------------
 
-.. code-block:: json
+.. code-block:: text
 
     "magmom": {
         "magmom": {
@@ -986,7 +1267,7 @@ magmom
 pseudo
 --------------------
 
-.. code-block:: json
+.. code-block:: text
 
     "pseudo": {
         "pot": {
@@ -1025,7 +1306,7 @@ pseudo
 substitute
 --------------------
 
-.. code-block:: json
+.. code-block:: text
 
     "substitute": {
         "mode": 2,
@@ -1050,7 +1331,7 @@ Parents compound needed for substitution.
 pwscf_in
 --------------------
 
-.. code-block:: json
+.. code-block:: text
 
     "pwscf_in": {
         "magnetic": false,
@@ -1089,7 +1370,7 @@ pwscf_in
 strain
 --------------------
 
-.. code-block:: json
+.. code-block:: text
 
     "strain": [-0.01, -0.005, 0.005, 0.01]
 
@@ -1102,7 +1383,7 @@ List of strain (both tensile (+ve) and compressive (-ve)) for deforming relaxed 
 wanniertools_input
 --------------------
 
-.. code-block:: json
+.. code-block:: text
 
     "wanniertools_input": {
         "tb_file": {
@@ -1161,36 +1442,63 @@ wanniertools_input
 
 This keyword provides input parameters for WannierTools calculations. While it has the capability to function with codes other than QE, only QE is currently implemented in our codebase. The definition of these input parameters can be found in the `WannierTools Documentation <http://www.wanniertools.com/input.html>`_.
 
+.. _plot-label:
+
 ----------------------
 plot
 ----------------------
 
 It has following keys and values.
 
-- **xlim/ylim**: List showing range of the plot along x- or y- direction.
+- **xlim/ylim**: List of two numbers giving the range of the plot along x or y.
+  For band structures and DOS plots ``ylim`` is the *energy* window in eV
+  relative to the Fermi level.
 
-- **atomproj**: Cutoff for plotting atomic projection on phonon dispersion. 
+- **dos_ylim**: List of two numbers bounding the DOS axis -- the height of the
+  density of states, not the energy.  Optional; when it is ``null`` the DOS axis
+  is scaled to the data.  Set it when you want several compounds drawn on the
+  same DOS scale.  ``ylim`` no longer has any effect on the DOS axis.
 
-- **bandproj**: Dictionary requires for projected band structure. 
+- **a2f_smearing**: One-based index of the electron-phonon smearing whose
+  Eliashberg function :math:`\alpha^2F(\omega)` is plotted.  QE writes one
+  ``a2F`` file per value of ``degauss`` in the el-ph calculation; ``1`` is the
+  first (smallest) smearing, ``2`` the second, and so on.  Optional; when it is
+  ``null`` the previous behaviour is kept and the last smearing found is used.
+  Check the ``lambda.out`` file for the list of smearings and pick the one in
+  the converged plateau.
 
-  - **plot_type**: Available options are:
-  
-   - **element**: String or list of strings representing species. for eg.: "Mg" or ["Mg", "B"]
-   
-   - **orbital**: String or list of strings representing orbitals. for eg.: "px", "dxy" for VASP and "2px", "2dxy" for QE.
-   
-   - **element-orbital**: Dictionary of elements and orbitals combinations. Variaous options are
-   
-   - **QE**:
-   
-   {"Mg": "3s", "B": "2p"}, {"Mg": "3s", "B": ["2px", "2py", "2pz"]}, {"Mg": "3s", "B": "2px"}, etc.
-   
-   - **VASP**:
-   
-   {"Mg": "s", "B": "p"}, {"Mg": "s", "B": ["px", "py", "pz"]}, {"Mg": "s", "B": "px"}, etc.
+- **atomproj**: Cutoff for plotting atomic projection on phonon dispersion.
 
-   - **colormap**: Color map to use for projection. Its better use sequential colormaps such as "Reds", "Greens", etc.
-     Look `matplotlib colormap <https://matplotlib.org/stable/users/explain/colors/colormaps.html>`_ for more options.
+- **bandproj**: Dictionary required for the projected band structure.  It has
+  three keys, ``proj_type``, ``proj`` and ``colormap``.
+
+  - **proj_type**: What ``proj`` holds.  One of:
+
+    - **element**: a species, or a list of species -- ``"Mg"`` or
+      ``["Mg", "B"]``.
+
+    - **orbital**: an orbital, or a list of orbitals -- ``"px"``, ``"dxy"`` for
+      VASP, and ``"2px"``, ``"2dxy"`` for QE.
+
+    - **element-orbital**: a dictionary mapping species to orbitals.
+
+      For QE: ``{"Mg": "3s", "B": "2p"}``,
+      ``{"Mg": "3s", "B": ["2px", "2py", "2pz"]}``,
+      ``{"Mg": "3s", "B": "2px"}``.
+
+      For VASP: ``{"Mg": "s", "B": "p"}``,
+      ``{"Mg": "s", "B": ["px", "py", "pz"]}``, ``{"Mg": "s", "B": "px"}``.
+
+  - **proj**: the projection itself, in whichever of the three forms
+    ``proj_type`` names.
+
+  - **colormap**: colour map to use for the projection.  Sequential maps such as
+    ``"Reds"`` or ``"Greens"`` read best; see the `matplotlib colormaps
+    <https://matplotlib.org/stable/users/explain/colors/colormaps.html>`_ for
+    the full list.
+
+Turn ``bandproj`` on only after the band structure has been processed and
+plotted with ``eband`` or ``vasp-line``.
 
 .. _wannier90-label:
 

@@ -1,12 +1,4 @@
-numpy
-scipy
-pandas
-matplotlib
-ase
-pymatgen
-bsym
-lmfit
-mp_api
-qmpy-rester
-sphinx
+# Documentation build. Equivalent to `pip install -e ".[docs]"`.
+sphinx>=7.0
 sphinx-material
+sphinx-autodoc-typehints

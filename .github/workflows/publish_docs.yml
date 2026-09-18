@@ -2,33 +2,54 @@ name: Publish Documentation
 
 on:
   push:
-    branches:
-      - main  # Adjust the branch name if needed
+    branches: [main]
+  workflow_dispatch:
+
+# Deploy with the workflow's own token rather than a personal GH_TOKEN.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3  # Update to v3
+      - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v4  # Update to the latest version compatible with Node.js 20
+      - uses: actions/setup-python@v5
         with:
-          python-version: '3.x'  # Specify your Python version
+          python-version: "3.11"
+          cache: pip
 
-      - name: Install dependencies
+      - name: Install the package and the docs dependencies
         run: |
-          pip install -r requirement_docs.txt
+          python -m pip install --upgrade pip
+          pip install -e ".[docs]"
 
-      - name: Build documentation
+      - name: Check the generated pages are current
         run: |
-          make -C docs clean html
+          python tools/gen_command_rst.py --check
+          python docs/gen_param_block.py --check
+          python docs/check_docs.py
 
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+      - name: Build
+        run: make -C docs clean html SPHINXOPTS="-W --keep-going"
+
+      - uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GH_TOKEN }}
-          publish_dir: docs/_build/html
+          path: docs/_build/html
 
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

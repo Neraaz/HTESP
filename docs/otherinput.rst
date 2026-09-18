@@ -41,8 +41,9 @@ First column is just the identifier, second column is material id, and the third
 mpid.in
 ---------------------
 
-Similar file as of :ref:`mpid-list.in <pwd-label>`. But only written after executing "mainprogram download" command. This simply
-checks duplication and only updated for new materials id, and acts as the tracking file.
+Same format as ``mpid-list.in`` above, but written by ``mainprogram download``.
+It checks for duplication, is only extended with new materials ids, and acts as
+the tracking file for every later command.
 
 .. _vasp-label:
 
@@ -160,6 +161,7 @@ The ``ph-q.in`` file consists of the following information on different lines:
     metal_info
 
 Where:
+
 - ``xq1 xq2 xq3`` represent the cartesian wavevector coordinates in the unit of 2*pi/(lattice parameters).
 - ``metal_info`` indicates the material type. 'T' or 't' (true) for metals.
 
@@ -177,7 +179,8 @@ non magnetic and at q = 0. Don't set this if q != 0 or metallic system. `epsil <
 projection.in
 ---------------------
 
-This file is necessary for specifying projections when running process = epw6-file or epw8-file.
+This file is necessary for specifying projections when running ``mainprogram wann-file``
+(wannierisation) or ``mainprogram epw-file`` (EPW).
 
 .. code-block:: bash
 
@@ -256,7 +259,7 @@ For QE
 
    v2 -1
 
-In QE, the tot_charge <https://www.quantum-espresso.org/Doc/INPUT_PW.html#idm289>_ is +1 when one electron is missing and -1 when one electron is added.
+In QE, `tot_charge <https://www.quantum-espresso.org/Doc/INPUT_PW.html#idm289>`_ is +1 when one electron is missing and -1 when one electron is added.
 
 For VASP
 

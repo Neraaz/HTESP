@@ -1,11 +1,43 @@
-numpy
-scipy
-pandas
-matplotlib
-ase
-pymatgen
-bsym
-lmfit
-ifermi
-mp_api
-qmpy-rester
+# Pinned runtime dependencies, matching INSTALL/requirements1.txt.
+#
+# pyproject.toml remains the source of truth for *which* packages are needed;
+# this file fixes the versions, and `pip install -r requirements.txt` installs
+# exactly the required set.  It holds the 12 packages declared in
+# [project] dependencies -- tests/test_packaging.py checks that the names match
+# -- plus one pinned transitive dependency, explained below.
+#
+# INSTALL/requirements1.txt is this same set plus the htesp[fermisurface] extra
+# (ifermi, plotly), and carries the full reasoning for the mp-api/emmet-core
+# pairing.  Keep the two in step.
+#
+# Optional packages are deliberately NOT here.  matminer, scikit-learn, ifermi,
+# plotly, pytest and sphinx are extras:
+#
+#   pip install .                    # the required set
+#   pip install ".[ml]"              # + matminer, scikit-learn
+#   pip install ".[fermisurface]"    # + ifermi, plotly
+#   pip install ".[all]"             # ml + fermisurface
+#   pip install -e ".[test,docs]"    # development
+#
+# `htesp-check` reports what is installed against what is declared, and names
+# the extra to install for anything missing.
+
+numpy==2.4.4
+scipy==1.17.1
+pandas==3.0.2
+matplotlib==3.10.8
+pymatgen==2026.4.7
+mp-api==0.46.0
+ase==3.28.0
+spglib==2.7.0
+PyYAML==6.0.3
+bsym==2.2.0
+lmfit==1.3.4
+qmpy-rester==0.2.0
+
+# --- pinned transitive dependency -------------------------------------------
+# mp-api 0.46.0 declares `emmet-core>=0.86.3` with no upper bound and imports
+# `BSPathType` from `emmet.core.electronic_structure`.  0.86.3 defines it there;
+# 0.87.1 does not, so an unpinned resolve installs an emmet-core that breaks
+# `import mp_api.client` with `ImportError: cannot import name 'BSPathType'`.
+emmet-core==0.86.3

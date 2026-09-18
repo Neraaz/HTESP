@@ -1,5 +1,4 @@
-.. HTESP documentation master file, created by
-   sphinx-quickstart on Sun Feb 11 09:33:42 2024.
+.. HTESP documentation master file.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
@@ -11,12 +10,16 @@ Welcome to HTESP's documentation!
    :width: 600px
    :height: 400px
 
-Introducing HTESP, the High Throughput Electronic Structure Package, designed for Quantum Espresso (QE) and VASP simulations. HTESP streamlines input file preparation from the Materials Project, OQMD, and AFLOW databases and offers a wide range of functionalities, from basic ground-state calculations to advanced electron-phonon studies and superconductivity analyses. With seamless integration with QE and VASP, HTESP empowers researchers to explore complex material landscapes, automate calculations, and investigate material electronic structures efficiently.
+HTESP, the High Throughput Electronic Structure Package, drives Quantum ESPRESSO
+(QE) and VASP calculations on a SLURM cluster.  It prepares input files from the
+Materials Project, OQMD and AFLOW databases, and covers everything from
+ground-state relaxation to electron-phonon coupling, superconducting Tc,
+wannierisation, elastic constants, phase diagrams and Fermi surfaces.
 
+Start with :doc:`usage` to install it, then :doc:`tutorial` for the campaigns and
+:doc:`examples` for the 42 worked examples that ship with the package.
 
 * :ref:`search`
-
-
 
 Installation
 -------------
@@ -52,6 +55,34 @@ Tutorials
 .. toctree::
 
    tutorial
+
+Worked examples
+----------------
+
+.. toctree::
+
+   examples
+
+Parallelism and the workflow layer
+-----------------------------------
+
+.. toctree::
+
+   workflow
+
+Running the tutorials end to end
+---------------------------------
+
+.. toctree::
+
+   tutorial_runner
+
+Testing and contributing
+-------------------------
+
+.. toctree::
+
+   testing
 
 License
 ---------

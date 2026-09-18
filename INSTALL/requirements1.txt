@@ -1,12 +1,68 @@
+# One pinned, known-good environment.  pyproject.toml remains the source of
+# truth for *which* packages are needed; this file only fixes versions.
+#
+# Scope: the 12 required packages, plus htesp[fermisurface] (ifermi, plotly),
+# plus emmet-core, which is pinned because mp-api's resolution of it has broken
+# before.  htesp[ml], htesp[test] and htesp[docs] are not here; install those as
+# extras.
+#
+# The pins themselves are architecture-independent; the wheels behind them are
+# not.  Check the result with `htesp-check` before trusting a new machine.
+#
+# WHY mp-api AND emmet-core ARE PINNED TOGETHER.  Verified against upstream on
+# 2026-09-17:
+#
+#   * mp-api 0.46.0 requires `emmet-core>=0.86.3` with no upper bound, and
+#     `mp_api/client/mprester.py` does `from emmet.core.electronic_structure
+#     import BSPathType`.  emmet-core 0.86.3 defines BSPathType there;
+#     0.87.1 does not -- it was moved.  So emmet-core >= 0.87 breaks
+#     `import mp_api.client` with `ImportError: cannot import name
+#     'BSPathType'`, and the declared floor does not protect against it.
+#     The pair below (0.46.0 + 0.86.3) is the one that works.
+#
+#   * mp-api AFTER 0.46.0 adds hard dependencies on pyarrow and deltalake
+#     (0.45.0 and 0.46.0 have neither) and moves to `emmet-core>=0.87.1`.
+#     deltalake's Rust extension bundles a jemalloc built for 4 KiB memory
+#     pages; one such wheel aborts the interpreter at import (SIGABRT, not
+#     ImportError) on a kernel with 64 KiB pages -- TACC Vista's
+#     `...aarch64+64k`.  Staying on 0.46.0 avoids deltalake entirely.
+#     If you do move to a newer mp-api on such a machine, rebuild deltalake:
+#
+#         JEMALLOC_SYS_WITH_LG_PAGE=16 pip install --force-reinstall \
+#             --no-cache-dir --no-binary deltalake deltalake    # needs cargo
+#
+# TWO COMBINATIONS ARE KNOWN TO WORK:
+#
+#   mp-api==0.45.0  with emmet-core 0.87.x   -- verified running on TACC Vista
+#                                               (aarch64, 64 KiB pages),
+#                                               2026-09-17.  No deltalake
+#                                               dependency at all.  Pulls maggma
+#                                               and smart_open, which 0.46.0
+#                                               dropped.
+#   mp-api==0.46.0  with emmet-core==0.86.3  -- the pair pinned below; verified
+#                                               from upstream source, not run.
+#
+# `htesp-check` distinguishes the failures: MISSING (not installed),
+# BROKEN (installed, import fails -- a version conflict) and ABORTED
+# (the interpreter died -- a wheel/kernel mismatch).
+#
+# --- required (mirrors [project] dependencies in pyproject.toml) ------------
 numpy==2.4.4
 scipy==1.17.1
 pandas==3.0.2
 matplotlib==3.10.8
+pymatgen==2026.4.7
+mp-api==0.46.0
 ase==3.28.0
-pymatgen-core==2026.4.7
+spglib==2.7.0
+PyYAML==6.0.3
 bsym==2.2.0
 lmfit==1.3.4
-ifermi==0.3.7
-emmet-core==0.86.3
-mp_api==0.46.0
 qmpy-rester==0.2.0
+
+# --- pinned transitive dependency of mp-api ---------------------------------
+emmet-core==0.86.3
+
+# --- htesp[fermisurface] ----------------------------------------------------
+ifermi==0.3.7
+plotly==7.1.0

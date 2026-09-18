@@ -1,7 +1,23 @@
-requirements1.txt is for python-3.11
+Installation is now a single step from the repository root:
 
-conda create --name myenv python==3.11.0
+    pip install .                     # or: pip install -e ".[test,docs]"
 
-simply copy requirements1.txt to ../requirements.txt
+pyproject.toml is the single source of truth for *which* packages are needed.
+The two requirements files fix the versions: requirements.txt in the repository
+root pins the required set, and requirements1.txt here is that same set plus the
+htesp[fermisurface] extra, with the reasoning behind the pins written above them.
+A test keeps the versions in the two files identical.
 
-This seems to work. For higher python version, simply use requirements.txt as it is.
+Python 3.10 or newer. phonopy is installed separately, because it is a binary
+tool rather than a library:
+
+    conda install -c conda-forge phonopy
+
+requirements1.txt is one pinned, known-good environment: the required set plus
+the htesp[fermisurface] extra. Use it only when a fresh `pip install .` fails to
+resolve. It is not the source of truth -- pyproject.toml is -- and it does not
+cover htesp[ml], htesp[test] or htesp[docs].
+
+On a new machine, check the result with `htesp-check`: it reports the
+architecture, the memory page size and every dependency, and names the extra to
+install for anything missing.
