@@ -262,6 +262,23 @@ with it.  It also carries the one-off configuration steps.
                            the bin/ of this Python environment)
      --fortran-compiler FC
                            compiler for --install-enumlib (default: gfortran)
+     --install-phonopy     install phonopy, which the eleven 'mainprogram
+                           phono*' commands shell out to; conda-forge by
+                           default, as INSTALL/README specifies
+     --installer {auto,conda,mamba,pip}
+                           how --install-phonopy installs (default: auto --
+                           mamba, then conda, then pip)
+     --phonopy-version V   exact phonopy version for --install-phonopy (default:
+                           newest the channel offers)
+
+``--install-phonopy`` prefers conda-forge because that channel ships phonopy
+prebuilt; ``-p`` pins the install to the interpreter running ``htesp-check``,
+so it cannot land in the ``base`` environment where HTESP would not see it.  On
+a non-conda interpreter it falls back to pip, where phonopy builds from source
+and needs a C compiler.  An existing ``phonopy`` on ``$PATH`` is left alone.
+Afterwards the executable is run once (``phonopy --help``; phonopy has no
+``--version`` flag) so that an installer exiting ``0`` without putting anything
+on ``$PATH`` is reported rather than believed.
 
 Exit status is ``0`` only when every required dependency imports.
 

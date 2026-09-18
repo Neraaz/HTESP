@@ -40,7 +40,11 @@ htesp/            the package
   inputin.py      the six-line input.in control file
   help_text.py    the four long help blocks (docs/command.rst generated from it)
   banner.py       logo, authors, citation, __version__
-  check.py        `htesp-check` dependency/architecture report
+  check.py        `htesp-check` dependency/architecture report, plus
+                  --set_mp_api, --config_vasp_pot, --install-enumlib,
+                  --install-phonopy (conda-forge, `-p sys.prefix`;
+                  phonopy has NO --version flag, probe with --help)
+                  and --clean
   check_json.py   back-compat shim re-exporting htesp.config
   generate_submission.py  run-*.sh writer.  `launch()` spells the
                   process count per launcher: -np (mpirun family),

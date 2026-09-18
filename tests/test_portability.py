@@ -575,5 +575,102 @@ class CleanSourceTree(unittest.TestCase):
                 self.assertNotIn(untouched, body)
 
 
+class InstallPhonopy(unittest.TestCase):
+    """`htesp-check --install-phonopy`.
+
+    INSTALL/README told people to run `conda install -c conda-forge phonopy`
+    by hand.  A documented command nobody runs is how the eleven `mainprogram
+    phono*` commands end up failing with `phonopy: command not found` several
+    steps into a campaign -- htesp/workflow.py shells out to the executable,
+    not to the Python package.
+    """
+
+    def test_the_flag_and_its_options_exist(self):
+        import argparse
+        import contextlib
+        import io
+
+        from htesp.check import main as check_main
+
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            with self.assertRaises(SystemExit):
+                check_main(["--help"])
+        text = buf.getvalue()
+        for flag in ("--install-phonopy", "--installer", "--phonopy-version"):
+            with self.subTest(flag=flag):
+                self.assertIn(flag, text)
+
+    def test_conda_forge_is_what_the_readme_specifies(self):
+        """The channel is not incidental: conda-forge ships phonopy prebuilt,
+        which is the whole reason INSTALL/README names it."""
+        source = (ROOT / "htesp" / "check.py").read_text()
+        block = source.split("def install_phonopy", 1)[1].split("\ndef ", 1)[0]
+        self.assertIn("conda-forge", block)
+
+    def test_the_conda_install_targets_this_interpreter(self):
+        """Without -p, a conda run from an activated shell can put the
+        executable in base, where HTESP will not find it."""
+        source = (ROOT / "htesp" / "check.py").read_text()
+        block = source.split("def install_phonopy", 1)[1].split("\ndef ", 1)[0]
+        self.assertIn('"-p", sys.prefix', block)
+
+    def test_an_existing_phonopy_is_not_reinstalled_over(self):
+        import shutil
+        import unittest.mock as mock
+
+        from htesp import check
+
+        with mock.patch.object(check.shutil, "which", return_value="/somewhere/phonopy"):
+            with mock.patch("subprocess.run") as run:
+                self.assertEqual(check.install_phonopy(), 0)
+                run.assert_not_called()
+
+    def test_a_requested_version_that_disagrees_is_reported_not_forced(self):
+        import unittest.mock as mock
+
+        from htesp import check
+
+        with mock.patch.object(check.shutil, "which", return_value="/somewhere/phonopy"):
+            with mock.patch.object(check, "_phonopy_version", return_value="2.0.0"):
+                self.assertEqual(check.install_phonopy(version="9.9.9"), 1)
+
+    def test_a_missing_forced_installer_is_an_error_not_a_silent_fallback(self):
+        import unittest.mock as mock
+
+        from htesp import check
+
+        with mock.patch.object(check.shutil, "which", return_value=None):
+            self.assertEqual(check.install_phonopy(installer="conda"), 1)
+
+    def test_the_version_probe_uses_help_not_version(self):
+        """phonopy has no --version flag: it exits 2 with a usage dump, which
+        would read as a broken install."""
+        source = (ROOT / "htesp" / "check.py").read_text()
+        block = source.split("def _phonopy_runs", 1)[1].split("\ndef ", 1)[0]
+        self.assertIn('"--help"', block)
+        self.assertNotIn('"--version"', block)
+
+    def test_a_failed_install_reports_the_installer_output(self):
+        """'it failed' without the reason sends people to the mailing list."""
+        import subprocess
+        import unittest.mock as mock
+
+        from htesp import check
+
+        failed = subprocess.CompletedProcess(
+            args=[], returncode=1, stdout="", stderr="PackagesNotFoundError: phonopy")
+        with mock.patch.object(check.shutil, "which", return_value=None):
+            with mock.patch("subprocess.run", return_value=failed):
+                import contextlib
+                import io
+
+                buf = io.StringIO()
+                with contextlib.redirect_stdout(buf):
+                    status = check.install_phonopy(installer="pip")
+        self.assertEqual(status, 1)
+        self.assertIn("PackagesNotFoundError", buf.getvalue())
+
+
 if __name__ == "__main__":
     unittest.main()

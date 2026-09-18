@@ -108,7 +108,7 @@ Three things pip **cannot** install, because they are not Python packages:
 
 | what | needed for | how |
 |---|---|---|
-| **phonopy** | `mainprogram phono1`…`phono5` | `conda install -c conda-forge phonopy` |
+| **phonopy** | `mainprogram phono1`…`phono5`, `phono-qha`, `eos-bm` | `htesp-check --install-phonopy` (conda-forge, or `--installer pip`) |
 | **enumlib** | `mainprogram magenum` with `magmom.type: "ordering"` | `htesp-check --install-enumlib` (compiles from source; conda-forge has linux-64/osx-64 only) |
 | **VASP POTCARs** | anything that writes VASP inputs | licensed — obtain them yourself, then `htesp-check --config_vasp_pot` |
 
@@ -128,17 +128,20 @@ htesp-check --set_mp_api <your key>
 # 3. VASP POTCARs (skip if you only run Quantum ESPRESSO)
 htesp-check --config_vasp_pot /path/to/POT_GGA_PAW_PBE
 
-# 4. enumlib, only for magnetic-ordering enumeration
+# 4. phonopy, for the phonon commands
+htesp-check --install-phonopy
+
+# 5. enumlib, only for magnetic-ordering enumeration
 htesp-check --install-enumlib
 
-# 5. the compatibility shims, if you use the 1.x script names
+# 6. the compatibility shims, if you use the 1.x script names
 export PATH="/path/to/HTESP/bin:$PATH"
 
-# 6. a project configuration to edit
+# 7. a project configuration to edit
 mainprogram config-init           # writes config.json here
 mainprogram config-validate       # says which file is in use and what is wrong
 
-# 7. a batch header for this cluster (see "Submitting to a scheduler")
+# 8. a batch header for this cluster (see "Submitting to a scheduler")
 mainprogram jobscript --init-header qe    # or: vasp
 ```
 

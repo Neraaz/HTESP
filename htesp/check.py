@@ -644,6 +644,140 @@ def install_enumlib(prefix: str | None = None, compiler: str = "gfortran") -> in
 
 
 
+def install_phonopy(installer: str = "auto", version: str | None = None) -> int:
+    """Install phonopy (--install-phonopy).
+
+    ``INSTALL/README`` has told people to run ``conda install -c conda-forge
+    phonopy`` by hand, on the grounds that phonopy is a binary tool rather than
+    a library and so does not belong in ``pyproject.toml``.  That is still the
+    right place for it, but a documented command nobody runs is how eleven
+    ``mainprogram phono*`` commands end up failing with ``phonopy: command not
+    found`` several steps into a campaign -- ``htesp/workflow.py`` shells out to
+    the ``phonopy`` executable, not to the Python package.
+
+    conda-forge is preferred because that is what the README specifies and what
+    ships the compiled pieces prebuilt; pip is the fallback for a non-conda
+    interpreter, where phonopy builds from source and needs a C compiler.
+
+    Parameters
+    ----------
+    installer : str
+        ``"auto"`` (mamba, then conda, then pip), or one of ``"conda"``,
+        ``"mamba"``, ``"pip"`` to force one.
+    version : str or None
+        An exact version to request, e.g. ``"2.38.0"``.  None takes the newest
+        the channel offers.
+
+    Returns
+    -------
+    int
+        0 when ``phonopy`` runs afterwards, 1 otherwise.
+    """
+    import shutil as _shutil
+    import subprocess as _subprocess
+
+    existing = _shutil.which("phonopy")
+    if existing:
+        found_version = _phonopy_version()
+        print("phonopy is already on PATH: {}{}"
+              .format(existing, " (" + found_version + ")" if found_version else ""))
+        if version and found_version and found_version != version:
+            print("  --phonopy-version asked for {}; reinstall over it with:"
+                  .format(version))
+            print("    {} install -y -c conda-forge phonopy=={}"
+                  .format(installer if installer != "auto" else "conda", version))
+            return 1
+        print("  nothing to do; remove it first if you want a different build.")
+        return 0
+
+    in_conda = (Path(sys.prefix) / "conda-meta").is_dir()
+    if installer == "auto":
+        chosen = None
+        if in_conda:
+            chosen = next((t for t in ("mamba", "conda") if _shutil.which(t)), None)
+        tool = chosen or "pip"
+    else:
+        tool = installer
+        if tool in ("conda", "mamba") and _shutil.which(tool) is None:
+            print("{} is not on PATH.".format(tool))
+            print("  install it, or use --install-phonopy --installer pip")
+            return 1
+
+    spec = "phonopy" + ("==" + version if version else "")
+    if tool in ("conda", "mamba"):
+        # -p pins the target to THIS interpreter's environment: without it a
+        # conda run from an activated shell can land the executable in base,
+        # where htesp will not see it.
+        command = [tool, "install", "-y", "-p", sys.prefix, "-c", "conda-forge", spec]
+    else:
+        if not in_conda:
+            print("note: not a conda environment, so falling back to pip.")
+            print("      phonopy builds from source there and needs a C compiler;")
+            print("      conda-forge ships it prebuilt (see INSTALL/README).")
+        command = [sys.executable, "-m", "pip", "install", spec]
+
+    print("installing phonopy with: {}".format(" ".join(str(c) for c in command)))
+    try:
+        proc = _subprocess.run(command, capture_output=True, text=True, timeout=3600)
+    except (OSError, _subprocess.TimeoutExpired) as exc:
+        print("  {} failed to run: {}".format(tool, exc))
+        return 1
+    if proc.returncode != 0:
+        tail = (proc.stderr or proc.stdout).strip().splitlines()[-10:]
+        print("  {} failed (exit {}):".format(tool, proc.returncode))
+        for line in tail:
+            print("    " + line)
+        if tool == "pip":
+            print("  conda-forge ships a prebuilt phonopy:")
+            print("    htesp-check --install-phonopy --installer conda")
+        return 1
+
+    # An installer that exits 0 is not the same as a working executable: a pip
+    # install into a --user directory, or a conda env that is not the active
+    # one, both leave PATH untouched.  Verify what HTESP will actually run.
+    found = _shutil.which("phonopy") or str(Path(sys.prefix) / "bin" / "phonopy")
+    if not _phonopy_runs(found):
+        print("  installed, but 'phonopy' does not run from {}".format(found))
+        print("  add it to PATH with:")
+        print('    export PATH="{}:$PATH"'.format(Path(sys.prefix) / "bin"))
+        return 1
+    reported = _phonopy_version()
+    print("  installed: {}{}".format(found,
+                                     " (" + reported + ")" if reported else ""))
+    if _shutil.which("phonopy") is None:
+        print('  NOTE: not on PATH yet -- export PATH="{}:$PATH"'
+              .format(Path(sys.prefix) / "bin"))
+    return 0
+
+
+def _phonopy_runs(executable: str) -> bool:
+    """Whether ``executable`` starts and parses arguments.
+
+    phonopy has no ``--version`` flag -- it exits 2 with a usage dump, which
+    reads like a broken install when it is nothing of the kind -- so the probe
+    is ``--help``, which exits 0.  The installed executable is a ``/bin/sh``
+    wrapper, so its version has to come from the package metadata instead.
+    """
+    import subprocess as _subprocess
+
+    try:
+        proc = _subprocess.run([executable, "--help"], capture_output=True,
+                               text=True, timeout=120)
+    except (OSError, _subprocess.SubprocessError):
+        return False
+    return proc.returncode == 0
+
+
+def _phonopy_version() -> str:
+    """The phonopy version in this interpreter's environment, or ``""``."""
+    from importlib import metadata as _metadata
+
+    try:
+        return _metadata.version("phonopy")
+    except Exception:
+        return ""
+
+
 def _mask(key: str) -> str:
     """``'abcd...wxyz'`` -- never print a credential in full."""
     key = str(key)
@@ -860,6 +994,17 @@ def main(argv: list | None = None) -> int:
                              "(default: the bin/ of this Python environment)")
     parser.add_argument("--fortran-compiler", metavar="FC", default="gfortran",
                         help="compiler for --install-enumlib (default: gfortran)")
+    parser.add_argument("--install-phonopy", action="store_true",
+                        help="install phonopy, which the eleven 'mainprogram "
+                             "phono*' commands shell out to; conda-forge by "
+                             "default, as INSTALL/README specifies")
+    parser.add_argument("--installer", choices=("auto", "conda", "mamba", "pip"),
+                        default="auto",
+                        help="how --install-phonopy installs (default: auto -- "
+                             "mamba, then conda, then pip)")
+    parser.add_argument("--phonopy-version", metavar="V", default=None,
+                        help="exact phonopy version for --install-phonopy "
+                             "(default: newest the channel offers)")
     args = parser.parse_args(argv)
 
     if args.clean:
@@ -870,6 +1015,8 @@ def main(argv: list | None = None) -> int:
         return configure_vasp_potcars(args.config_vasp_pot)
     if args.install_enumlib:
         return install_enumlib(args.prefix, args.fortran_compiler)
+    if args.install_phonopy:
+        return install_phonopy(args.installer, args.phonopy_version)
 
     result = report(extras=not args.no_extras)
     if args.json:

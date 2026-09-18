@@ -11,7 +11,16 @@ A test keeps the versions in the two files identical.
 Python 3.10 or newer. phonopy is installed separately, because it is a binary
 tool rather than a library:
 
+    htesp-check --install-phonopy
+
+which runs the conda-forge install below against the interpreter htesp-check is
+running under, then checks that the executable actually runs -- the phono*
+commands shell out to `phonopy`, not to the Python package. To do it by hand:
+
     conda install -c conda-forge phonopy
+
+On a non-conda interpreter, `htesp-check --install-phonopy` falls back to pip,
+where phonopy builds from source and needs a C compiler.
 
 requirements1.txt is one pinned, known-good environment: the required set plus
 the htesp[fermisurface] extra. Use it only when a fresh `pip install .` fails to

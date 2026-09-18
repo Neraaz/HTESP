@@ -264,9 +264,24 @@ mainprogram basicinfo
    shows which file is in use and what is wrong with it.  To start from a copy, take
    utility/input_files/config.json into the working directory and edit it.  Any key you
    leave out falls back to the packaged default, so an older config.json still works.
-   Set the Materials Project API key in the environment: export MP_API_KEY=<your key>
+   Set the Materials Project API key with:  htesp-check --set_mp_api <your key>
+   It is verified against the API before being written to ~/.config/htesp/credentials
+   (mode 0600), so a typo never replaces a working key.  'export MP_API_KEY=<your key>'
+   still works and wins when set, but it lives only in the shell that exported it: a
+   batch job, a nohup-ed sweep or a new terminal loses it and the database commands
+   start skipping.  Never put the key in config.json.
    
    process = jobscript generates the job scripts for the calculations
+   
+     It appends each run command to batch.header, which holds the scheduler
+     directives and module loads.  To write a starting batch.header for this
+     cluster -- partition, account, cores per node and module read from SLURM
+     and Lmod -- run:
+   
+         mainprogram jobscript --init-header qe      (or: vasp)
+   
+     An existing batch.header is kept; add --force to replace it.  Read the
+     result before submitting: the node count and wall time are placeholders.
    
    process = search, search for data in materials project database
    
