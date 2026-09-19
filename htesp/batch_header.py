@@ -77,6 +77,10 @@ CODE_EXECUTABLE = {"qe": "pw.x", "vasp": "vasp_std"}
 #: MPI launchers, in the order they are preferred when several exist
 LAUNCHERS = ("ibrun", "srun", "mpirun", "mpiexec")
 
+#: ``name`` or ``name/version`` and nothing else.  Used to tell a prerequisite
+#: line apart from the prose that follows it in ``module spider`` output.
+_MODULE_SPEC = re.compile(r"^[A-Za-z0-9_.+-]+(/[A-Za-z0-9_.+-]+)*$")
+
 TIMEOUT = 25
 
 
@@ -196,6 +200,162 @@ def modules(code: str) -> list[str]:
     return found
 
 
+def loaded_modules() -> list[str]:
+    """What this shell already has loaded, as ``name/version`` strings."""
+    lmod = os.environ.get("LMOD_CMD")
+    if not lmod or not Path(lmod).exists():
+        return []
+    out = []
+    for line in _run([lmod, "bash", "--terse", "list"]).splitlines():
+        line = line.strip()
+        if not line or line.endswith(":") or "=" in line or line.startswith("export"):
+            continue
+        out.append(line)
+    return out
+
+
+def _version_key(name: str) -> tuple:
+    """Sort key for ``qe/7.3`` / ``vasp/5.4.4.pl2``: numbers numerically."""
+    _, _, version = name.partition("/")
+    parts = []
+    for chunk in re.split(r"[._-]", version):
+        parts.append((0, int(chunk)) if chunk.isdigit() else (1, chunk))
+    return tuple(parts)
+
+
+def latest(names) -> str | None:
+    """The highest-versioned of *names*.
+
+    ``modules()`` puts Lmod's ``(D)`` default first, which is the right thing
+    to *load*.  This is for probing: the newest build is the one whose help
+    text describes the toolchain the site currently expects, and on a site
+    that defaults to an older build the newer one is still what a new study
+    should be told about.
+    """
+    names = list(names)
+    return max(names, key=_version_key) if names else None
+
+
+def prerequisites(module: str) -> tuple[list[str], str]:
+    """Modules that must be loaded before ``module`` can be.
+
+    On a **hierarchical** Lmod site -- which most HPC centres now are -- an
+    application module is not visible until the compiler and MPI it was built
+    against are loaded.  ``qe/7.3`` on this machine lives under
+    ``/opt/apps/nvidia24/openmpi5/modulefiles``, so ``module load qe`` in a job
+    script fails with "these module(s) exist but cannot be loaded as
+    requested" unless ``nvidia`` and ``openmpi`` came first.  It works
+    interactively only because the login shell already has them.
+
+    ``module help`` is asked **first**, and its answer is taken whenever it
+    gives one.  That text is written by whoever built the module: on
+    Bridges-2 it says ``> module load intel-oneapi
+    QuantumEspresso/7.5-intel``, naming a runtime dependency that Lmod's
+    hierarchy does not model at all.  It is a statement of intent, where
+    ``spider`` is a derivation from the module tree.
+
+    ``module spider`` is consulted only when help names no prerequisite --
+    which is the common case, since most help text says no more than
+    ``module load qe/7.3``.  Vista is exactly that: help adds nothing, and
+    spider is what reveals ``nvidia cuda openmpi``.  So "help first" is a
+    preference, not an exclusion; dropping spider when help merely *exists*
+    would break every hierarchical site.
+
+    Returns
+    -------
+    (names, line)
+        ``names`` are unversioned, to be loaded in order; ``line`` is the exact
+        versioned combination spider gave, for the comment above them, and is
+        empty when the answer came from help.
+    """
+    lmod = os.environ.get("LMOD_CMD")
+    if not lmod or not Path(lmod).exists() or not module:
+        return [], ""
+    # `module help qe/7.3` and `module help qe` both work -- the second
+    # resolves to the site default -- but a site that names its builds
+    # `QuantumEspresso/7.5-intel` may only carry the help on one of them, so
+    # try the exact build first and fall back to the bare name.
+    helptext = _run([lmod, "bash", "help", module])
+    stem = module.split("/", 1)[0]
+    if stem != module and "module load" not in helptext:
+        helptext = _run([lmod, "bash", "help", stem])
+    from_help = _help_prerequisites(module, helptext)
+    if from_help:
+        return from_help, ""
+
+    text = _run([lmod, "bash", "spider", module])
+    marker = "You will need to load all module(s) on any one of the lines below"
+    if marker not in text:
+        # A flat site says "This module can be loaded directly" and has no
+        # hierarchy block -- but spider's own Help copy may still spell out a
+        # toolchain that `module help` did not.
+        return _help_prerequisites(module, text), ""
+    block = text.split(marker, 1)[1]
+    options = []
+    for line in block.splitlines()[1:]:
+        line = line.strip()
+        if not line:
+            if options:                      # the list ends at the blank line
+                break
+            continue
+        if line.startswith("-") or "=" in line or ":" in line:
+            break
+        parts = line.split()
+        # The "Help:" section that follows carries prose and its own
+        # "module load qe/7.3" line -- which is the *incomplete* advice this
+        # function exists to correct, and which would parse as the three
+        # "modules" module, load and qe.  Only accept a line whose every token
+        # is a bare module spec.
+        if not all(_MODULE_SPEC.match(part) for part in parts):
+            break
+        options.append(parts)
+    if not options:
+        return [], ""
+    have = set(loaded_modules())
+    best = max(options, key=lambda parts: len(have.intersection(parts)))
+    names = [part.split("/", 1)[0] for part in best]
+    for extra in _help_prerequisites(module, text):
+        if extra not in names:
+            names.append(extra)
+    return names, "  ".join(best)
+
+
+def _help_prerequisites(module: str, text: str) -> list[str]:
+    """Modules the module's own Help text says to load alongside it.
+
+    Lmod's hierarchy does not express every dependency.  Bridges-2 reports
+    ``This module can be loaded directly: module load
+    QuantumEspresso/7.5-intel`` -- no hierarchy at all -- while the Help
+    underneath says::
+
+        To load the module type
+        > module load intel-oneapi QuantumEspresso/7.5-intel
+
+    ``intel-oneapi`` carries the Intel MPI and MKL runtimes that build is
+    linked against.  Loading QE alone puts ``pw.x`` on ``PATH`` and then fails
+    at run time on a missing shared library, which is a far more confusing
+    failure than a module that refuses to load.
+
+    Only the tokens *before* the module itself are taken, and only from a line
+    that actually names it; the Help of a hierarchical module says plainly
+    ``module load qe/7.3``, which yields nothing, as it should.
+    """
+    stem = module.split("/", 1)[0].lower()
+    for line in text.splitlines():
+        line = line.strip().lstrip(">$ ").strip()
+        if not line.startswith("module load "):
+            continue
+        parts = line[len("module load "):].split()
+        if not all(_MODULE_SPEC.match(part) for part in parts):
+            continue
+        before = []
+        for part in parts:
+            if part.split("/", 1)[0].lower() == stem:
+                return [name.split("/", 1)[0] for name in before]
+            before.append(part)
+    return []
+
+
 def launcher() -> str | None:
     """The MPI launcher this machine appears to use."""
     for name in LAUNCHERS:
@@ -257,6 +417,24 @@ def build(code: str, partition: str | None = None, account: str | None = None,
         lines += ["# accounts you may charge: " + ", ".join(accts), ""]
 
     if module:
+        # A hierarchical site hides the application module until its compiler
+        # and MPI are loaded, so those have to come first or the job dies on
+        # "these module(s) exist but cannot be loaded as requested".
+        # Probe the newest build: its help text describes the toolchain the
+        # site currently expects.  What gets *loaded* is still the bare name,
+        # so Lmod resolves it to the site default.
+        needs, exact = prerequisites(latest(mods) or module)
+        if needs:
+            if exact:
+                lines.append("# {} is built against a specific compiler/MPI; "
+                             "'module spider {}'".format(module, module))
+                lines.append("# reports this combination, so load it first:")
+                lines.append("#   " + exact)
+            else:
+                lines.append("# {}'s own 'module spider' help says to load "
+                             "these alongside it".format(module))
+                lines.append("# (the runtimes it is linked against):")
+            lines.append("module load " + " ".join(needs))
         # Load the bare name, not "qe/7.3": Lmod then resolves it to whatever
         # the site has marked default, so the header keeps working when 7.3 is
         # retired -- which it will be, long before anyone edits this file
@@ -292,6 +470,26 @@ def build(code: str, partition: str | None = None, account: str | None = None,
     return "\n".join(lines)
 
 
+#: printed after every generated header.  The probes answer what this machine
+#: reports; they cannot know what a particular build needs at run time, and a
+#: module chain that is one module short fails inside the job, minutes after
+#: the queue accepted it, with an error that names a shared library rather
+#: than a module.
+WRITE_WARNING = """
+CHECK THIS FILE BEFORE SUBMITTING WITH IT.
+  It was assembled from what SLURM and Lmod report here, which is a starting
+  point and not a working job script.  In particular:
+    * make sure every module the build needs is loaded, including its
+      dependencies -- the toolchain written above comes from 'module spider'
+      and a site can have requirements Lmod does not model;
+    * check it in a login shell first:
+          source {path} && which {code}
+      If that prints nothing, the module chain is incomplete.
+    * the node count and wall time are placeholders, and the partition is
+      whichever this machine offered -- neither knows the size of your study.
+"""
+
+
 def write(path, code: str, force: bool = False, **kwargs) -> int:
     """Write :func:`build` to ``path``.  Returns a process exit status."""
     target = Path(path)
@@ -308,4 +506,5 @@ def write(path, code: str, force: bool = False, **kwargs) -> int:
     todos = sum(1 for line in text.splitlines() if "TODO" in line)
     if todos:
         print("  {} TODO line(s) to fill in before submitting".format(todos))
+    print(WRITE_WARNING.format(path=target, code=CODE_EXECUTABLE[normalise_code(code)]))
     return 0

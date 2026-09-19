@@ -236,7 +236,11 @@ This writes a header from what *this* machine reports: the partitions and their
 cores per node (`sinfo`), the accounts you may charge (`sacctmgr`), whether the
 cluster defines any generic resource at all (`scontrol show config`), the
 `qe`/`quantum-espresso` or `vasp` modules Lmod offers — preferring the one Lmod
-marks `(D)` — and whichever of `ibrun`, `srun` or `mpirun` is on `PATH`. The
+marks `(D)` — and whichever of `ibrun`, `srun` or `mpirun` is on `PATH`. On a
+hierarchical Lmod site it also asks `module spider` which compiler/MPI the code
+was built against and loads that chain first, because `module load qe` on its
+own fails there with "these module(s) exist but cannot be loaded as
+requested". The
 other partitions and accounts it found are written as comments, so switching is
 a matter of uncommenting a line. No run command is written into the header:
 `mainprogram jobscript` appends that itself from `job_script.parallel_command`
@@ -244,6 +248,13 @@ and `job_script.nproc`, so the launcher it found is reported as a comment
 naming the `config.json` values to set. How the process count is spelled
 follows the launcher — `-np N` for the `mpirun` family, `-n N` for `srun` and
 `aprun`, and nothing at all for `ibrun`, which runs the whole allocation.
+
+`--init-header` prints a warning every time it writes one, and it is worth
+heeding: read the file and make sure every module the build needs is loaded,
+**dependencies included**. A chain one module short is accepted by the
+scheduler and then fails inside the job with an error naming a shared library
+rather than a module. Check it in a login shell first — `source batch.header
+&& which pw.x` — and if that prints nothing the chain is incomplete.
 
 It is a starting point, not a submit-ready job. Whatever the probes cannot
 answer is left as a `# TODO` comment rather than guessed, and the node count and

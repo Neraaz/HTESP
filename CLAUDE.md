@@ -54,7 +54,22 @@ htesp/            the package
   batch_header.py `jobscript --init-header qe|vasp`: probes SLURM
                   (sinfo/sacctmgr/scontrol) and Lmod ($LMOD_CMD, and
                   note listings go to stderr and `(D)` may be padded
-                  far from the name) to write a starting batch.header
+                  far from the name) to write a starting batch.header.
+                  Lmod here is HIERARCHICAL: qe/7.3 lives under
+                  /opt/apps/nvidia24/openmpi5/modulefiles and is
+                  invisible until nvidia+openmpi are loaded, so
+                  `module load qe` alone dies in a job script.
+                  prerequisites() asks `module help` FIRST (the module
+                  author's own "module load intel-oneapi QE/7.5-intel",
+                  as on Bridges-2) and falls back to `module spider`
+                  only when help names no prerequisite -- which is the
+                  usual case, Vista included, where spider is the only
+                  source of nvidia/cuda/openmpi.  Prose is rejected by
+                  a module-spec regex: the Help block that follows the
+                  hierarchy block would otherwise parse as modules.
+                  Emitted unversioned, like the code module; the probe
+                  uses the NEWEST build.  write() prints a warning to
+                  check the file and its module dependencies.
   data/config.json  packaged default config (every key, placeholder API key)
   <the rest>      science modules, unchanged in purpose from 1.x
 bin/              52 POSIX-sh shims, one per former bash script

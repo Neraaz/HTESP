@@ -210,7 +210,25 @@ def _ensure_batch_header(tutorial: Tutorial, workdir: Path,
         return
     target.write_text(text)
     LOG.debug("%s: wrote batch.header for this cluster", tutorial.code)
+    _warn_about_headers()
     _match_launcher(workdir)
+
+
+#: the header warning belongs in front of a real campaign, but once -- a
+#: 42-tutorial sweep writes 42 of these.
+_HEADER_WARNING_SHOWN = False
+
+
+def _warn_about_headers() -> None:
+    global _HEADER_WARNING_SHOWN
+    if _HEADER_WARNING_SHOWN:
+        return
+    _HEADER_WARNING_SHOWN = True
+    LOG.warning(
+        "batch.header is generated per work directory from what SLURM and "
+        "Lmod report here.  Read one before a real run and make sure every "
+        "module the build needs is loaded, dependencies included -- a chain "
+        "that is one module short fails inside the job, not at submission.")
 
 
 def _match_launcher(workdir: Path) -> None:

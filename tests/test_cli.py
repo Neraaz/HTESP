@@ -332,5 +332,434 @@ class InitBatchHeader(unittest.TestCase):
             self.assertIn("TODO", batch_header.build("qe"))
 
 
+class ModuleDependencies(unittest.TestCase):
+    """A hierarchical Lmod site hides an application until its toolchain is in.
+
+    `qe/7.3` on this machine lives under
+    /opt/apps/nvidia24/openmpi5/modulefiles, so `module load qe` in a job
+    script fails with "these module(s) exist but cannot be loaded as
+    requested" unless nvidia and openmpi came first.  It works when you type it
+    interactively only because the login shell already has them, which is
+    exactly the kind of difference that turns into a job that dies on line one.
+    """
+
+    SPIDER = """
+    You will need to load all module(s) on any one of the lines below before the "qe/7.3" module is available to load.
+
+      nvidia/24.5  cuda/12.5  openmpi/5.0.5
+      nvidia/24.7  cuda/12.6  openmpi/5.0.5
+
+----------------------------------------------------------------------------
+  Help:
+"""
+
+    def test_the_prerequisite_line_is_parsed(self):
+        import unittest.mock as mock
+
+        from htesp import batch_header
+
+        with mock.patch.object(batch_header, "_run", return_value=self.SPIDER):
+            with mock.patch.object(batch_header, "loaded_modules", return_value=[]):
+                with mock.patch.dict(batch_header.os.environ,
+                                     {"LMOD_CMD": batch_header.__file__}):
+                    names, exact = batch_header.prerequisites("qe/7.3")
+        self.assertEqual(names, ["nvidia", "cuda", "openmpi"])
+        self.assertIn("nvidia/24.5", exact)
+
+    def test_the_combination_matching_this_machine_wins(self):
+        """Several combinations are offered; the one the login shell is
+        already running is the one demonstrably working here."""
+        import unittest.mock as mock
+
+        from htesp import batch_header
+
+        with mock.patch.object(batch_header, "_run", return_value=self.SPIDER):
+            with mock.patch.object(batch_header, "loaded_modules",
+                                   return_value=["nvidia/24.7", "openmpi/5.0.5"]):
+                with mock.patch.dict(batch_header.os.environ,
+                                     {"LMOD_CMD": batch_header.__file__}):
+                    _, exact = batch_header.prerequisites("qe/7.3")
+        self.assertIn("nvidia/24.7", exact)
+        self.assertNotIn("24.5", exact)
+
+    def test_a_flat_site_gets_no_prerequisite_lines(self):
+        """Not every site is hierarchical; inventing a toolchain there would
+        break a header that would otherwise have worked."""
+        import unittest.mock as mock
+
+        from htesp import batch_header
+
+        with mock.patch.object(batch_header, "_run", return_value="qe/7.3\n"):
+            with mock.patch.dict(batch_header.os.environ,
+                                 {"LMOD_CMD": batch_header.__file__}):
+                self.assertEqual(batch_header.prerequisites("qe/7.3"), ([], ""))
+
+    def test_no_lmod_is_not_an_error(self):
+        import unittest.mock as mock
+
+        from htesp import batch_header
+
+        with mock.patch.dict(batch_header.os.environ, {}, clear=True):
+            self.assertEqual(batch_header.prerequisites("qe/7.3"), ([], ""))
+            self.assertEqual(batch_header.loaded_modules(), [])
+
+    def test_the_prerequisites_are_loaded_before_the_code(self):
+        import os
+
+        from htesp import batch_header
+
+        if not os.environ.get("LMOD_CMD"):
+            self.skipTest("no Lmod on this machine")
+        module = (batch_header.modules("qe") or [None])[0]
+        if not module or not batch_header.prerequisites(module)[0]:
+            self.skipTest("no hierarchical qe module here")
+        lines = [l for l in batch_header.build("qe").splitlines()
+                 if l.startswith("module load")]
+        self.assertGreaterEqual(len(lines), 2)
+        self.assertTrue(lines[-1].endswith(" qe"), lines)
+
+    def test_the_prerequisites_are_unversioned_too(self):
+        """Same reasoning as the code module: a pinned toolchain goes stale."""
+        import os
+
+        from htesp import batch_header
+
+        if not os.environ.get("LMOD_CMD"):
+            self.skipTest("no Lmod on this machine")
+        for line in batch_header.build("qe").splitlines():
+            if line.startswith("module load"):
+                for name in line.split()[2:]:
+                    self.assertNotIn("/", name)
+
+
+class HelpTextDependencies(unittest.TestCase):
+    """Lmod's hierarchy does not express every dependency.
+
+    Bridges-2 reports "This module can be loaded directly: module load
+    QuantumEspresso/7.5-intel" -- no hierarchy at all -- while the Help
+    underneath says "module load intel-oneapi QuantumEspresso/7.5-intel".
+    intel-oneapi carries the Intel MPI and MKL runtimes that build is linked
+    against, so loading QE alone puts pw.x on PATH and then fails at run time
+    on a missing shared library, which is far more confusing than a module
+    that refuses to load.
+    """
+
+    BRIDGES = '\n  QuantumEspresso: QuantumEspresso/7.5-intel\n\n    This module can be loaded directly: module load QuantumEspresso/7.5-intel\n\n    Help:\n      This module is built with intel compiler, intel MPI, intel MKL and ELPA.\n\n      To load the module type\n\n      > module load intel-oneapi QuantumEspresso/7.5-intel\n\n      To unload the module type\n\n      > module unload QuantumEspresso/7.5-intel\n'
+    HIERARCHY_THEN_PROSE = '\n    You will need to load all module(s) on any one of the lines below before the "qe/7.3" module is available to load.\n\n      nvidia/24.7  cuda/12.6  openmpi/5.0.5\n      To run codes in quantum espresso include the following lines\n'
+    BOTH_SOURCES = '\n    You will need to load all module(s) on any one of the lines below before the "qe/7.3" module is available to load.\n\n      intel/2024  impi/2021\n\n    Help:\n      > module load intel-oneapi intel qe/7.3\n'
+    VISTA_HELP = '\n    Help:\n      To run codes in quantum espresso, include the following lines:\n      module load qe/7.3\n      ibrun pw.x -input input.scf\n'
+
+    def _prereqs(self, text, module, help_text=""):
+        """*text* is what spider returns; help is empty unless given.
+
+        `module help` is asked first now, so a test aimed at spider has to
+        leave help silent or it never gets there.
+        """
+        import unittest.mock as mock
+
+        from htesp import batch_header
+
+        def fake(command):
+            return help_text if command[2] == "help" else text
+
+        with mock.patch.object(batch_header, "_run", side_effect=fake):
+            with mock.patch.dict(batch_header.os.environ,
+                                 {"LMOD_CMD": batch_header.__file__}):
+                return batch_header.prerequisites(module)
+
+    def test_a_flat_site_still_yields_its_toolchain(self):
+        names, exact = self._prereqs(self.BRIDGES, "QuantumEspresso/7.5-intel")
+        self.assertEqual(names, ["intel-oneapi"])
+        self.assertEqual(exact, "")          # no hierarchy combination to quote
+
+    def test_the_module_is_not_its_own_prerequisite(self):
+        names, _ = self._prereqs(self.BRIDGES, "QuantumEspresso/7.5-intel")
+        self.assertNotIn("QuantumEspresso", names)
+
+    def test_an_unload_line_is_not_mistaken_for_a_load(self):
+        names, _ = self._prereqs(self.BRIDGES, "QuantumEspresso/7.5-intel")
+        self.assertNotIn("unload", names)
+
+    def test_help_that_names_only_the_module_yields_nothing(self):
+        """Vista's help says plainly "module load qe/7.3"."""
+        self.assertEqual(self._prereqs(self.VISTA_HELP, "qe/7.3"), ([], ""))
+
+    def test_prose_never_parses_as_a_module_list(self):
+        """The Help block follows the hierarchy block, and a line of English
+        would otherwise become several "modules"."""
+        names, _ = self._prereqs(self.HIERARCHY_THEN_PROSE, "qe/7.3")
+        self.assertEqual(names, ["nvidia", "cuda", "openmpi"])
+        self.assertNotIn("run", names)
+
+    def test_the_hierarchy_and_spiders_help_copy_are_merged(self):
+        """Within the spider path both halves count, without duplicates."""
+        names, _ = self._prereqs(self.BOTH_SOURCES, "qe/7.3")
+        self.assertEqual(names, ["intel", "impi", "intel-oneapi"])
+
+    def test_module_help_wins_outright_when_it_answers(self):
+        """It is the module author speaking, so it is not merged with the
+        hierarchy -- it replaces it."""
+        names, exact = self._prereqs(
+            self.BOTH_SOURCES, "qe/7.3",
+            help_text="> module load site-toolchain qe/7.3\n")
+        self.assertEqual(names, ["site-toolchain"])
+        self.assertEqual(exact, "")
+
+
+class LatestVersionIsProbed(unittest.TestCase):
+    """The newest build is the one whose help describes the current toolchain.
+
+    What gets loaded is still the bare name, so Lmod resolves it to the site
+    default; only the probe uses the exact version.
+    """
+
+    def test_versions_sort_numerically_not_lexically(self):
+        from htesp.batch_header import latest
+
+        self.assertEqual(latest(["vasp/6.4.3", "vasp/5.4.4.pl2"]), "vasp/6.4.3")
+        self.assertEqual(latest(["qe/7.9", "qe/7.10"]), "qe/7.10")
+        self.assertEqual(latest(["a/1.2", "a/1.10"]), "a/1.10")
+
+    def test_a_suffixed_version_does_not_crash_the_sort(self):
+        from htesp.batch_header import latest
+
+        self.assertEqual(latest(["QuantumEspresso/7.5-intel",
+                                 "QuantumEspresso/6.7-pgi"]),
+                         "QuantumEspresso/7.5-intel")
+
+    def test_an_empty_list_is_not_an_error(self):
+        from htesp.batch_header import latest
+
+        self.assertIsNone(latest([]))
+
+    def test_the_header_probes_the_latest_but_loads_the_bare_name(self):
+        import os
+
+        from htesp import batch_header
+
+        if not os.environ.get("LMOD_CMD"):
+            self.skipTest("no Lmod on this machine")
+        if not batch_header.modules("vasp"):
+            self.skipTest("no vasp module here")
+        text = batch_header.build("vasp")
+        loads = [l for l in text.splitlines() if l.startswith("module load")]
+        self.assertTrue(loads)
+        self.assertTrue(loads[-1].endswith(" vasp"), loads)
+
+
+class ModuleHelpIsAlsoASource(unittest.TestCase):
+    """`module help <name>` carries the same instruction as spider's Help.
+
+    On Bridges-2 both `module help QuantumEspresso` (which resolves to the
+    site default) and `module spider QuantumEspresso/7.5-intel` print
+    "> module load intel-oneapi QuantumEspresso/7.5-intel".  Reading both
+    means a site that carries the text in only one of them still works.
+    """
+
+    HELP = '------------ Module Specific Help for "QuantumEspresso/7.5-intel" ------------\nQuantumEspresso 7.5\n\nThis module is built with intel compiler, intel MPI, intel MKL, and ELPA.\n\nTo load the module type\n\n> module load intel-oneapi QuantumEspresso/7.5-intel\n\nTo unload the module type\n\n> module unload QuantumEspresso/7.5-intel\n'
+
+    def test_the_toolchain_is_read_out_of_module_help(self):
+        import unittest.mock as mock
+
+        from htesp import batch_header
+
+        # spider says nothing useful; help carries the instruction
+        def fake(command):
+            return self.HELP if "help" in command else "no hierarchy here\n"
+
+        with mock.patch.object(batch_header, "_run", side_effect=fake):
+            with mock.patch.dict(batch_header.os.environ,
+                                 {"LMOD_CMD": batch_header.__file__}):
+                names, exact = batch_header.prerequisites(
+                    "QuantumEspresso/7.5-intel")
+        self.assertEqual(names, ["intel-oneapi"])
+        self.assertEqual(exact, "")
+
+    def test_the_bare_name_is_tried_when_the_exact_build_has_no_help(self):
+        """`module help qe` resolves to the default and may be the only one
+        carrying the text."""
+        import unittest.mock as mock
+
+        from htesp import batch_header
+
+        asked = []
+
+        def fake(command):
+            asked.append(" ".join(command[1:]))
+            if command[-2:] == ["help", "QuantumEspresso"]:
+                return self.HELP
+            return "nothing\n"
+
+        with mock.patch.object(batch_header, "_run", side_effect=fake):
+            with mock.patch.dict(batch_header.os.environ,
+                                 {"LMOD_CMD": batch_header.__file__}):
+                names, _ = batch_header.prerequisites(
+                    "QuantumEspresso/7.5-intel")
+        self.assertEqual(names, ["intel-oneapi"])
+        self.assertIn("bash help QuantumEspresso", asked)
+
+
+class TheHeaderComesWithAWarning(unittest.TestCase):
+    """A generated header is a starting point, not a working job script.
+
+    The probes answer what this machine reports; they cannot know what a
+    particular build needs at run time.  A module chain that is one module
+    short is accepted by the queue and then fails inside the job, minutes
+    later, with an error naming a shared library rather than a module.
+    """
+
+    def test_writing_a_header_warns(self):
+        import contextlib
+        import io
+        import tempfile
+        from pathlib import Path as _Path
+
+        from htesp import batch_header
+
+        with tempfile.TemporaryDirectory() as tmp:
+            target = _Path(tmp) / "batch.header"
+            buf = io.StringIO()
+            with contextlib.redirect_stdout(buf):
+                batch_header.write(target, "qe")
+            printed = buf.getvalue()
+        self.assertIn("CHECK THIS FILE BEFORE SUBMITTING", printed)
+        self.assertIn("dependencies", printed)
+
+    def test_the_warning_names_the_file_and_a_way_to_check_it(self):
+        import contextlib
+        import io
+        import tempfile
+        from pathlib import Path as _Path
+
+        from htesp import batch_header
+
+        with tempfile.TemporaryDirectory() as tmp:
+            target = _Path(tmp) / "batch.header"
+            buf = io.StringIO()
+            with contextlib.redirect_stdout(buf):
+                batch_header.write(target, "qe")
+            printed = buf.getvalue()
+        self.assertIn(str(target), printed)
+        self.assertIn("source", printed)
+        self.assertIn("pw.x", printed)
+
+    def test_the_vasp_warning_names_the_vasp_executable(self):
+        import contextlib
+        import io
+        import tempfile
+        from pathlib import Path as _Path
+
+        from htesp import batch_header
+
+        with tempfile.TemporaryDirectory() as tmp:
+            buf = io.StringIO()
+            with contextlib.redirect_stdout(buf):
+                batch_header.write(_Path(tmp) / "batch.header", "vasp")
+        self.assertIn("vasp_std", buf.getvalue())
+
+    def test_a_refused_overwrite_does_not_warn(self):
+        """Nothing was written, so there is nothing to check."""
+        import contextlib
+        import io
+        import tempfile
+        from pathlib import Path as _Path
+
+        from htesp import batch_header
+
+        with tempfile.TemporaryDirectory() as tmp:
+            target = _Path(tmp) / "batch.header"
+            target.write_text("# mine\n")
+            buf = io.StringIO()
+            with contextlib.redirect_stdout(buf):
+                self.assertEqual(batch_header.write(target, "qe"), 1)
+        self.assertNotIn("CHECK THIS FILE", buf.getvalue())
+
+    def test_the_tutorial_runner_warns_once_not_once_per_tutorial(self):
+        """A 42-tutorial sweep writes 42 headers."""
+        import logging
+        import unittest.mock as mock
+
+        from tutorials import workdirs
+
+        workdirs._HEADER_WARNING_SHOWN = False
+        with mock.patch.object(workdirs.LOG, "warning") as warned:
+            workdirs._warn_about_headers()
+            workdirs._warn_about_headers()
+            workdirs._warn_about_headers()
+        self.assertEqual(warned.call_count, 1)
+        workdirs._HEADER_WARNING_SHOWN = False
+
+
+class HelpIsAskedBeforeSpider(unittest.TestCase):
+    """`module help` is the module author speaking; spider is a derivation.
+
+    Help is asked first and its answer taken whenever it gives one.  It is a
+    preference, not an exclusion: most help text says no more than
+    "module load qe/7.3", and on a hierarchical site spider is the only thing
+    that reveals the toolchain.  Dropping spider whenever help merely exists
+    would break every such site, this one included.
+    """
+
+    def _run_with(self, help_text, spider_text):
+        import unittest.mock as mock
+
+        from htesp import batch_header
+
+        asked = []
+
+        def fake(command):
+            asked.append(command[2])
+            return help_text if command[2] == "help" else spider_text
+
+        with mock.patch.object(batch_header, "_run", side_effect=fake):
+            with mock.patch.object(batch_header, "loaded_modules", return_value=[]):
+                with mock.patch.dict(batch_header.os.environ,
+                                     {"LMOD_CMD": batch_header.__file__}):
+                    return batch_header.prerequisites("qe/7.3"), asked
+
+    HIERARCHY = "\n".join([
+        "",
+        '    You will need to load all module(s) on any one of the lines below before the "qe/7.3" module is available to load.',
+        "",
+        "      nvidia/24.7  cuda/12.6  openmpi/5.0.5",
+        "",
+    ])
+
+    def test_spider_is_not_run_when_help_answers(self):
+        answer = "To load the module type\n> module load intel-oneapi qe/7.3\n"
+        (names, exact), asked = self._run_with(answer, self.HIERARCHY)
+        self.assertEqual(names, ["intel-oneapi"])
+        self.assertEqual(exact, "")
+        self.assertNotIn("spider", asked)
+
+    def test_spider_is_used_when_help_names_no_prerequisite(self):
+        """Vista: help says only "module load qe/7.3", which is the
+        incomplete advice this exists to correct."""
+        answer = "To run pw.x include:\nmodule load qe/7.3\nibrun pw.x\n"
+        (names, exact), asked = self._run_with(answer, self.HIERARCHY)
+        self.assertEqual(names, ["nvidia", "cuda", "openmpi"])
+        self.assertIn("nvidia/24.7", exact)
+        self.assertIn("spider", asked)
+
+    def test_spider_is_used_when_there_is_no_help_at_all(self):
+        (names, _), asked = self._run_with("", self.HIERARCHY)
+        self.assertEqual(names, ["nvidia", "cuda", "openmpi"])
+        self.assertIn("spider", asked)
+
+    def test_this_machine_still_gets_its_toolchain(self):
+        """The regression this ordering could have caused, checked live."""
+        import os
+
+        from htesp import batch_header
+
+        if not os.environ.get("LMOD_CMD"):
+            self.skipTest("no Lmod on this machine")
+        module = (batch_header.modules("qe") or [None])[0]
+        if not module:
+            self.skipTest("no qe module here")
+        names, _ = batch_header.prerequisites(module)
+        self.assertTrue(names, "help-first must not lose the hierarchy chain")
+
+
 if __name__ == "__main__":
     unittest.main()

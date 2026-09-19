@@ -79,6 +79,85 @@ name the same code; the module search behind it looks for each of those
 spellings too, because a site that installs ``QuantumESPRESSO/7.1`` would
 otherwise get a ``TODO`` where the ``module load`` belongs.
 
+Module dependencies
+^^^^^^^^^^^^^^^^^^^
+
+Most HPC centres run a **hierarchical** Lmod, where an application module is
+not visible at all until the compiler and MPI it was built against are loaded.
+On TACC Vista ``qe/7.3`` lives under
+``/opt/apps/nvidia24/openmpi5/modulefiles``, so a job script containing only
+``module load qe`` dies on its first line with *"these module(s) exist but
+cannot be loaded as requested"*.  Typing the same command interactively works,
+because the login shell already has the toolchain -- which is exactly the kind
+of difference that only shows up once the job has been queued.
+
+``--init-header`` therefore asks ``module spider <name>/<version>`` which
+combinations make the module available, picks the one sharing most modules
+with the current environment (that combination is demonstrably working here),
+and writes it out first:
+
+.. code-block:: bash
+
+    # qe/7.3 is built against a specific compiler/MPI; 'module spider qe/7.3'
+    # reports this combination, so load it first:
+    #   nvidia/24.7  cuda/12.5  openmpi/5.0.5
+    module load nvidia cuda openmpi
+    module load qe
+
+The prerequisites are written unversioned for the same reason the code module
+is: Lmod resolves each to the site default, and the exact combination found is
+kept in the comment above them for pinning by hand.
+
+Two sources are read, in this order:
+
+``module help`` -- asked first, and believed
+    This is whoever built the module speaking.  On Bridges-2 it says::
+
+        > module load intel-oneapi QuantumEspresso/7.5-intel
+
+    ``intel-oneapi`` carries the Intel MPI and MKL runtimes that build is
+    linked against; Lmod's hierarchy does not model it at all, and that site
+    reports ``This module can be loaded directly``.  Loading Quantum ESPRESSO
+    alone there puts ``pw.x`` on ``PATH`` and then fails at run time on a
+    missing shared library -- a much more confusing failure than a module that
+    refuses to load.  The exact build is asked first and the bare name second,
+    since ``module help qe`` resolves to the site default.
+
+``module spider`` -- only when help names no prerequisite
+    The hierarchy block lists every combination that makes the module
+    visible; the one sharing most modules with the current environment is
+    chosen, because that combination is demonstrably working here.  Its own
+    copy of the Help block is read too, and merged.
+
+"Help first" is a preference, not an exclusion.  Most help text says no more
+than ``module load qe/7.3`` -- Vista's does -- and there ``spider`` is the only
+thing that reveals ``nvidia cuda openmpi``.  Skipping ``spider`` whenever help
+merely *exists* would break every hierarchical site.
+
+Only the tokens *before* the module itself are taken, and only from a line
+that names it -- so Vista's help, which says plainly ``module load qe/7.3``,
+correctly yields nothing.  Prose is rejected: every token on a candidate line
+has to look like ``name`` or ``name/version``, or the ``To run codes in
+quantum espresso include the following lines`` that follows the hierarchy
+block would parse as eight modules.
+
+The version probed is the **newest** build, since its help describes the
+toolchain the site currently expects; what the header actually loads is still
+the bare name.
+
+.. warning::
+
+   A generated header is a starting point, not a working job script, and
+   ``--init-header`` says so every time it writes one.  Read the file and make
+   sure every module the build needs is loaded, **dependencies included** --
+   a chain that is one module short is accepted by the scheduler and then
+   fails inside the job, minutes later, with an error naming a shared library
+   rather than a module.  The quickest check is a login shell::
+
+       source batch.header && which pw.x      # or vasp_std
+
+   If that prints nothing, the module chain is incomplete.
+
 It asks SLURM for the partitions (``sinfo``), the accounts this user may
 charge (``sacctmgr``), the cores per node of the chosen partition, and whether
 any generic resource is configured at all (``scontrol show config``); it asks
