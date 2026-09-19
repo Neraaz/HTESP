@@ -58,6 +58,19 @@ htesp/            the package
   data/config.json  packaged default config (every key, placeholder API key)
   <the rest>      science modules, unchanged in purpose from 1.x
 bin/              52 POSIX-sh shims, one per former bash script
+tutorials/        catalog.py builds the 42-tutorial catalogue and
+                  groups it into dependency waves (`waves()`); the
+                  runner does ONE wave per invocation under --wave,
+                  and state.json records each wave's status so a
+                  campaign can pause for days while jobs run.
+                  Real mode also asks `sacct` how each job ENDED (leaving
+                  squeue != succeeding) and greps the output for the
+                  convergence markers workflow.py uses (finishing !=
+                  converging).  Seeding overwrites batch.header per folder
+                  with batch_header.build() when sinfo exists, and sets
+                  job_script.parallel_command to the detected launcher --
+                  ibrun is TACC-only, elsewhere srun/mpirun.  nproc is
+                  never touched: it is the study's choice.
 legacy/bash/      the 52 original bash scripts, unmodified, for reference
 tests/            240 unittest tests (run under pytest or unittest)
 tools/            check_names.py (undefined-name scan), gen_command_rst.py

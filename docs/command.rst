@@ -33,10 +33,12 @@ These may be added to any command:
     Use ``FILE`` instead of searching for ``config.json``.  Equivalent to
     ``$HTESP_CONFIG``.
 
-``--init-header qe|vasp``
+``--init-header CODE``
     Only with ``jobscript``: write a starting ``batch.header`` for that code,
-    filled in from what SLURM and Lmod report on this machine.  Existing
-    headers are kept unless ``--force`` is given.
+    filled in from what SLURM and Lmod report on this machine.  ``CODE`` is
+    ``vasp`` or any spelling of Quantum ESPRESSO (``qe``, ``QE``,
+    ``QuantumEspresso``, ``quantum-espresso``).  Existing headers are kept
+    unless ``--force`` is given.
 
 ``--force``
     Overwrite a file the command would otherwise refuse to replace.
@@ -279,6 +281,9 @@ mainprogram basicinfo
      and Lmod -- run:
    
          mainprogram jobscript --init-header qe      (or: vasp)
+   
+     'qe', 'QE', 'QuantumEspresso' and 'quantum-espresso' all name the
+     same code.
    
      An existing batch.header is kept; add --force to replace it.  Read the
      result before submitting: the node count and wall time are placeholders.

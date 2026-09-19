@@ -4,6 +4,7 @@ from __future__ import annotations
 import contextlib
 import io
 import unittest
+from pathlib import Path
 
 from tests.helpers import TempProject
 
@@ -207,11 +208,51 @@ class InitBatchHeader(unittest.TestCase):
         self.assertEqual(args.process, "jobscript")
         self.assertEqual(args.init_header, "qe")
 
-    def test_only_qe_and_vasp_are_accepted(self):
-        from htesp.cli import build_parser
+    def test_every_spelling_of_the_code_is_accepted(self):
+        """Sites, and people, write Quantum ESPRESSO every way there is."""
+        from htesp.batch_header import normalise_code
 
-        with self.assertRaises(SystemExit):
-            build_parser().parse_args(["jobscript", "--init-header", "abinit"])
+        for spelling in ("qe", "QE", "QuantumEspresso", "QUANTUMESPRESSO",
+                         "quantum-espresso", "quantum_espresso",
+                         "Quantum ESPRESSO", "espresso", "pw"):
+            with self.subTest(spelling=spelling):
+                self.assertEqual(normalise_code(spelling), "qe")
+        for spelling in ("vasp", "VASP", "Vasp"):
+            with self.subTest(spelling=spelling):
+                self.assertEqual(normalise_code(spelling), "vasp")
+
+    def test_an_unknown_code_says_what_it_takes(self):
+        """argparse no longer screens the value, so the message has to."""
+        from htesp.batch_header import normalise_code
+
+        with self.assertRaises(ValueError) as caught:
+            normalise_code("abinit")
+        self.assertIn("quantumespresso", str(caught.exception))
+        self.assertIn("abinit", str(caught.exception))
+
+    def test_an_unknown_code_exits_two_rather_than_tracebacks(self):
+        import contextlib
+        import io
+        import tempfile
+
+        from htesp.cli import Context, cmd_jobscript
+
+        with tempfile.TemporaryDirectory() as tmp:
+            ctx = Context.__new__(Context)
+            ctx.init_header, ctx.force, ctx.root = "abinit", False, Path(tmp)
+            buf = io.StringIO()
+            with contextlib.redirect_stdout(buf):
+                self.assertEqual(cmd_jobscript(ctx, []), 2)
+        self.assertIn("abinit", buf.getvalue())
+
+    def test_the_module_search_covers_the_common_spellings(self):
+        """A module name this list misses puts a TODO where the `module load`
+        belongs, on a machine that has the module."""
+        from htesp.batch_header import MODULE_NAMES
+
+        for name in ("qe", "quantum-espresso", "quantumespresso", "espresso"):
+            with self.subTest(name=name):
+                self.assertIn(name, MODULE_NAMES["qe"])
 
     def test_gres_is_omitted_when_the_cluster_has_none(self):
         """Vista is a GPU machine whose GresTypes is (null); an emitted

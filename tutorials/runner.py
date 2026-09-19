@@ -30,11 +30,12 @@ from pathlib import Path
 from typing import Sequence
 
 from tutorials.catalog import (CATALOG, EXAMPLES, PACKAGE_ROOT, Step,
-                               Tutorial, searched_for_examples)
-from tutorials.state import (BLOCKED, DONE, FAILED, RUNNING, SKIPPED, RunState,
-                             StepState, TutorialState, step_key)
+                               Tutorial, searched_for_examples, waves)
+from tutorials.state import (BLOCKED, DONE, FAILED, PENDING, RUNNING, SKIPPED,
+                             RunState, StepState, TutorialState, step_key)
 from tutorials.workdirs import (collect_job_ids, missing_artifacts,
-                                patch_input_in, seed_workdir, wait_for_jobs)
+                                patch_input_in, relaxation_converged,
+                                seed_workdir, wait_for_jobs)
 
 LOG = logging.getLogger("htesp.tutorials")
 
@@ -71,6 +72,10 @@ class RunOptions:
     step_timeout: float = DEFAULT_STEP_TIMEOUT
     workers: int | None = None
     from_step: str | None = None
+    #: which dependency wave to run: None runs the whole selection in one pass
+    #: (what every earlier version did), an int runs exactly that wave, and
+    #: "next" runs the lowest-numbered wave the checkpoint has not finished.
+    wave: int | str | None = None
     verbose: bool = False
     python: str = sys.executable
     examples: Path = EXAMPLES
@@ -314,16 +319,83 @@ class TutorialRunner:
         """Run every selected tutorial; always returns a saved checkpoint."""
         self.options.runs_root.mkdir(parents=True, exist_ok=True)
         self.options.logs_root.mkdir(parents=True, exist_ok=True)
+        plan = waves(self.codes, self.catalog)
+        number, codes = self._wave_to_run(plan)
+        if codes is None:                      # nothing left to do
+            self.state.save()
+            return self.state
+        record = self.state.wave(number, codes) if number is not None else None
+        if record is not None:
+            record.status, record.started = RUNNING, time.time()
+            LOG.info("wave %d of %d: %d tutorial(s) -- %s",
+                     number, len(plan) - 1, len(codes), ", ".join(codes))
+            self.state.save()
         try:
-            for code in self.codes:
+            for code in codes:
                 self._run_tutorial(code)
         except KeyboardInterrupt:
             self.state.interrupted = True
             self._mark_running_as_interrupted()
             LOG.error("interrupted -- the checkpoint is at %s", self.state.path)
+        if record is not None:
+            self._close_wave(record, plan)
         self.state.save()
         self._clean_work_dirs()
         return self.state
+
+    # -- waves -------------------------------------------------------------- #
+    def _wave_to_run(self, plan: list[list[str]]) -> tuple[int | None, list[str] | None]:
+        """Which wave this invocation covers, and the codes in it.
+
+        ``(None, every code)`` is the historical single-pass run; that is still
+        the default, because in --dry-run and --no-dft nothing is ever queued
+        and there is nothing to wait between waves *for*.
+        """
+        wanted = self.options.wave
+        if wanted is None:
+            return None, list(self.codes)
+        if wanted == "next":
+            number = self.state.next_wave(plan)
+            if number is None:
+                LOG.info("every wave is done (%d of %d); nothing to run",
+                         len(plan), len(plan))
+                return None, None
+        else:
+            number = int(wanted)
+            if not 0 <= number < len(plan):
+                LOG.error("wave %d does not exist: this selection has waves 0-%d",
+                          number, len(plan) - 1)
+                return None, None
+        return number, list(plan[number])
+
+    def _close_wave(self, record, plan: list[list[str]]) -> None:
+        """Record how the wave ended, and say what to run next.
+
+        A wave is DONE only when every tutorial in it is; anything else leaves
+        it FAILED, so ``--wave next`` offers it again rather than stepping over
+        it onto structures that were never produced.
+        """
+        record.finished = time.time()
+        bad = [code for code in record.codes
+               if self.state.tutorials.get(code, TutorialState(code=code)).status
+               not in (DONE, SKIPPED)]
+        if self.state.interrupted:
+            record.status, record.reason = FAILED, "interrupted with Ctrl-C"
+        elif bad:
+            record.status = FAILED
+            record.reason = "did not finish: " + ", ".join(bad)
+        else:
+            record.status = DONE
+        following = record.number + 1
+        if record.status != DONE:
+            LOG.error("wave %d did not finish (%s); fix those, then re-run "
+                      "--wave %d", record.number, record.reason, record.number)
+        elif following < len(plan):
+            LOG.info("wave %d done.  Wait for its jobs to finish, then run "
+                     "'htesp-tutorials --resume --wave next' for wave %d (%s)",
+                     record.number, following, ", ".join(plan[following]))
+        else:
+            LOG.info("wave %d done -- that was the last one.", record.number)
 
     def _clean_work_dirs(self) -> None:
         """Drop work directories the user asked not to keep.
@@ -541,6 +613,33 @@ class TutorialRunner:
                 return other
         return ""
 
+    def _unconverged(self, step: Step, workdir: Path) -> str:
+        """``""`` when *step*'s relaxations converged, else what is wrong.
+
+        A DFT code can exit 0, and its job can be COMPLETED, without the
+        structure having relaxed: QE stops at ``nstep`` and VASP at ``NSW``,
+        both leaving a full set of output files that satisfy an artefact glob.
+        Everything downstream then runs on a structure that is not relaxed, and
+        produces numbers that look entirely reasonable.  The strings checked
+        here are the same ones htesp/workflow.py uses to decide whether a
+        relaxation is finished.
+        """
+        if not step.check_converged or self.options.mode != REAL:
+            return ""
+        problems = []
+        for pattern in step.job_dirs or ():
+            for directory in sorted(workdir.glob(pattern)):
+                verdict = relaxation_converged(directory)
+                if verdict is False:
+                    problems.append(directory.relative_to(workdir).as_posix())
+        if not problems:
+            return ""
+        return ("the run finished but did not converge in "
+                + ", ".join(problems[:5])
+                + (f" (and {len(problems) - 5} more)" if len(problems) > 5 else "")
+                + " -- everything downstream would start from an unrelaxed "
+                  "structure")
+
     def _run_subprocess(self, step: Step, state: StepState, workdir: Path,
                         log_path: Path) -> None:
         timeout = step.timeout or self.options.step_timeout
@@ -627,6 +726,16 @@ class TutorialRunner:
                     return
                 if not ok:
                     state.unverifiable, state.reason = True, problem
+                elif problem:
+                    # the jobs finished, and sacct says at least one did not
+                    # finish *well*.  That is a failure, not an unverifiable:
+                    # the scheduler said so plainly.
+                    state.status, state.reason = FAILED, problem
+                    return
+            unconverged = self._unconverged(step, workdir)
+            if unconverged:
+                state.status, state.reason = FAILED, unconverged
+                return
         state.missing = missing_artifacts(workdir, step.artifacts)
         if state.missing:
             state.status = FAILED

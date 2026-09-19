@@ -146,6 +146,14 @@ class Step:
         enumlib.  Those are a separate C/Fortran package, not a Python
         dependency, so preflight warns when they are absent rather than letting
         the step die three minutes in with a RuntimeError.
+    check_converged
+        The step submits a *structural relaxation*, so finishing is not the
+        same as succeeding: QE stops at ``nstep`` and VASP at ``NSW``, both
+        leaving a complete set of output files that satisfy an artefact glob.
+        With this set, the runner reads those outputs for the same convergence
+        markers ``htesp/workflow.py`` uses and fails the step when the
+        structure did not relax -- otherwise every dependent tutorial starts
+        from an unrelaxed cell and returns plausible, wrong numbers.
     after
         Ids of earlier steps *in this tutorial* whose output this step consumes.
         When one of them was skipped there is nothing for this step to read, so
@@ -167,6 +175,7 @@ class Step:
     needs_dft_output: bool = False
     needs_enumlib: bool = False
     needs_potcar: bool = False
+    check_converged: bool = False
     after: tuple[str, ...] = ()
     note: str = ""
 
@@ -461,6 +470,42 @@ def topological_order(codes: Iterable[str],
 
     for code in wanted:
         visit(code)
+    return out
+
+
+def waves(codes: Iterable[str],
+          catalog: dict[str, Tutorial] | None = None) -> list[list[str]]:
+    """Group *codes* into dependency waves: wave *n* may start once *n-1* ends.
+
+    A real campaign cannot be one pass.  Wave 0 is everything that depends on
+    nothing -- input generation, the database front ends, and the relaxation
+    hubs -- and it ends with jobs sitting in the queue.  Nothing in wave 1 can
+    honestly start until those relaxations have finished and converged, because
+    wave 1 *is* the tutorials that read the relaxed structure.  Running the
+    whole catalogue in one pass either blocks for days inside `squeue` polling
+    or, worse, proceeds on a structure that is not relaxed yet.
+
+    The grouping is derived from ``depends_on`` alone, so it stays correct as
+    the catalogue changes; a tutorial whose dependency was not selected counts
+    as a root, matching :func:`topological_order`, which drops unselected
+    dependencies rather than pulling them in.
+
+    Returns
+    -------
+    list[list[str]]
+        Wave 0 first.  Each wave is in topological order, so it can be run as
+        it stands.  An empty selection gives an empty list.
+    """
+    catalog = CATALOG if catalog is None else catalog
+    ordered = topological_order(codes, catalog)
+    selected = set(ordered)
+    depth: dict[str, int] = {}
+    for code in ordered:                      # topological order: deps first
+        deps = [d for d in catalog[code].depends_on if d in selected]
+        depth[code] = 1 + max((depth[d] for d in deps), default=-1)
+    out: list[list[str]] = [[] for _ in range(max(depth.values(), default=-1) + 1)]
+    for code in ordered:
+        out[depth[code]].append(code)
     return out
 
 

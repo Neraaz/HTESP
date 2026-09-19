@@ -31,11 +31,45 @@ import shutil
 import subprocess
 from pathlib import Path
 
-#: module names each code is known by, most specific first
+#: module names each code is known by.  Sites spell Quantum ESPRESSO every way
+#: there is -- "qe/7.3" here, "QuantumESPRESSO/7.1" at the next site -- and a
+#: name this list misses means the header comes out with a TODO where the
+#: module load belongs, on a machine that has the module.  Matching is
+#: case-insensitive on the part before the "/".
 MODULE_NAMES = {
-    "qe": ("quantum-espresso", "quantum_espresso", "espresso", "qe"),
-    "vasp": ("vasp",),
+    "qe": ("quantum-espresso", "quantum_espresso", "quantumespresso",
+           "quantum-espresso-gpu", "qe-gpu", "espresso", "qe"),
+    "vasp": ("vasp", "vasp-gpu", "vasp_gpu"),
 }
+
+#: spellings accepted for the code itself, so `--init-header QuantumEspresso`
+#: works as well as `--init-header qe`
+CODE_ALIASES = {
+    "qe": "qe",
+    "quantumespresso": "qe",
+    "quantum-espresso": "qe",
+    "quantum_espresso": "qe",
+    "espresso": "qe",
+    "pw": "qe",
+    "vasp": "vasp",
+}
+
+
+def normalise_code(code: str) -> str:
+    """Map any accepted spelling of a code onto ``"qe"`` or ``"vasp"``.
+
+    Raises
+    ------
+    ValueError
+        When the spelling is not one HTESP writes headers for.
+    """
+    key = str(code).strip().lower().replace(" ", "")
+    try:
+        return CODE_ALIASES[key]
+    except KeyError:
+        raise ValueError(
+            "code must be one of {}, not {!r}"
+            .format(", ".join(sorted(CODE_ALIASES)), code)) from None
 
 #: the executable each code is driven by, used to check a module really provides it
 CODE_EXECUTABLE = {"qe": "pw.x", "vasp": "vasp_std"}
@@ -128,7 +162,10 @@ def modules(code: str) -> list[str]:
     lmod = os.environ.get("LMOD_CMD")
     if not lmod or not Path(lmod).exists():
         return []
-    names = MODULE_NAMES.get(code, ())
+    try:
+        names = MODULE_NAMES[normalise_code(code)]
+    except ValueError:
+        return []
     listing = _run([lmod, "bash", "avail"])
     found, default, previous = [], None, None
     # Lmod pads the default marker away from the name --
@@ -170,9 +207,7 @@ def launcher() -> str | None:
 def build(code: str, partition: str | None = None, account: str | None = None,
           time: str = "1-0", module: str | None = None) -> str:
     """Return the text of a starting ``batch.header`` for ``code``."""
-    code = code.lower()
-    if code not in MODULE_NAMES:
-        raise ValueError("code must be 'qe' or 'vasp', not {!r}".format(code))
+    code = normalise_code(code)
 
     parts = partitions()
     chosen = None

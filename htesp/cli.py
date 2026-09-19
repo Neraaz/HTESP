@@ -231,18 +231,25 @@ class Context:
 def cmd_jobscript(ctx: Context, rest: list[str]) -> int:
     """``mainprogram jobscript`` -- build the submission scripts.
 
-    ``--init-header qe|vasp`` instead writes a starting ``batch.header`` by
-    asking SLURM and Lmod what this machine has.  The shipped examples say
-    ``--partition=dense``, which exists on one cluster and nowhere else, so
-    copying one produces a job the scheduler rejects before anything runs.
+    ``--init-header qe|QuantumEspresso|vasp`` instead writes a starting
+    ``batch.header`` by asking SLURM and Lmod what this machine has.  The
+    shipped examples say ``--partition=dense``, which exists on one cluster and
+    nowhere else, so copying one produces a job the scheduler rejects before
+    anything runs.
     """
     if ctx.init_header:
         from htesp import batch_header
         from htesp.config import config as _config
 
         name = _config(ctx.root).get("job_script", {}).get("batch", "batch.header")
-        return batch_header.write(ctx.root / name, ctx.init_header,
-                                  force=ctx.force)
+        try:
+            return batch_header.write(ctx.root / name, ctx.init_header,
+                                      force=ctx.force)
+        except ValueError as exc:
+            # argparse no longer screens the value, so an unrecognised code
+            # arrives here; print what it takes rather than a traceback.
+            print("--init-header: {}".format(exc))
+            return 2
     from htesp import generate_submission
     generate_submission.main()
     return 0
@@ -521,10 +528,14 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--root", default=".", help="project directory (default: .)")
     parser.add_argument("--config", default=None,
                         help="config.json to use instead of searching for one")
+    # `choices` is not used here: it would have to spell out every accepted
+    # capitalisation, and its error message lists them all.  batch_header
+    # .normalise_code accepts "qe", "QE", "QuantumEspresso", "quantum-espresso"
+    # and "vasp" alike, and says what it takes when it does not recognise one.
     parser.add_argument("--init-header", metavar="CODE", default=None,
-                        choices=("qe", "vasp", "QE", "VASP"),
                         help="with 'jobscript': write a starting batch.header "
-                             "for this code, filled in from SLURM and Lmod")
+                             "for this code (qe|QuantumEspresso|vasp), filled "
+                             "in from what SLURM and Lmod report here")
     parser.add_argument("--force", action="store_true",
                         help="overwrite a file the command would otherwise "
                              "refuse to replace (config-init)")

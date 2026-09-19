@@ -543,6 +543,364 @@ class PotcarlessStepsAreSkippedNotDone(unittest.TestCase):
         potcars_available.cache_clear()
 
 
+class DependencyWaves(unittest.TestCase):
+    """Running a real campaign in waves.
+
+    Wave 0 ends with relaxations sitting in the queue.  Nothing in wave 1 can
+    honestly start until those have finished and converged, because wave 1 *is*
+    the tutorials that read the relaxed structure.  One pass over the whole
+    catalogue either blocks for days inside squeue polling or proceeds on a
+    structure that is not relaxed yet -- and the second is silently wrong,
+    which is worse than failing.
+    """
+
+    def _catalog(self):
+        from tutorials.catalog import CATALOG
+
+        return CATALOG
+
+    def test_wave_zero_is_everything_that_depends_on_nothing(self):
+        from tutorials.catalog import select, waves
+
+        catalog = self._catalog()
+        plan = waves(select(catalog=catalog), catalog)
+        self.assertTrue(plan)
+        for code in plan[0]:
+            with self.subTest(code=code):
+                self.assertEqual(catalog[code].depends_on, ())
+
+    def test_every_tutorial_appears_exactly_once(self):
+        from tutorials.catalog import select, waves
+
+        catalog = self._catalog()
+        codes = select(catalog=catalog)
+        flat = [code for wave in waves(codes, catalog) for code in wave]
+        self.assertEqual(sorted(flat), sorted(codes))
+
+    def test_a_dependency_is_always_in_an_earlier_wave(self):
+        """The whole point: nothing runs before what it reads."""
+        from tutorials.catalog import select, waves
+
+        catalog = self._catalog()
+        codes = select(catalog=catalog)
+        plan = waves(codes, catalog)
+        number = {code: i for i, wave in enumerate(plan) for code in wave}
+        for code, index in number.items():
+            for dep in catalog[code].depends_on:
+                if dep in number:
+                    with self.subTest(code=code, dep=dep):
+                        self.assertLess(number[dep], index)
+
+    def test_an_unselected_dependency_makes_the_dependent_a_root(self):
+        """topological_order drops dependencies outside the selection, so the
+        wave numbers must agree with it rather than inventing a wave for a
+        tutorial that will not run."""
+        from tutorials.catalog import select, waves
+
+        catalog = self._catalog()
+        plan = waves(select(only=["QE/11"], catalog=catalog), catalog)
+        self.assertEqual(plan, [["QE/11"]])
+
+    def test_the_wave_plan_survives_a_restart(self):
+        import tempfile
+
+        from tutorials.state import DONE, RunState
+
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "state.json"
+            state = RunState(path=path)
+            state.wave(0, ["QE/9"]).status = DONE
+            state.wave(1, ["QE/11"])
+            state.save()
+
+            back = RunState.load(path)
+            self.assertEqual(back.waves["0"].status, DONE)
+            self.assertEqual(back.waves["1"].codes, ["QE/11"])
+            self.assertEqual(back.next_wave([["QE/9"], ["QE/11"]]), 1)
+
+    def test_a_failed_wave_is_offered_again_not_stepped_over(self):
+        """Wave 1 reads what wave 0 produced; if wave 0 failed, there is
+        nothing to read."""
+        import tempfile
+
+        from tutorials.state import FAILED, RunState
+
+        with tempfile.TemporaryDirectory() as tmp:
+            state = RunState(path=Path(tmp) / "state.json")
+            state.wave(0, ["QE/9"]).status = FAILED
+            self.assertEqual(state.next_wave([["QE/9"], ["QE/11"]]), 0)
+
+    def test_forgetting_a_tutorial_unfinishes_its_wave(self):
+        """--restart --only QE/9 must not leave wave 0 marked done, or the
+        next run would step straight over the tutorial it just cleared."""
+        import tempfile
+
+        from tutorials.state import DONE, PENDING, RunState
+
+        with tempfile.TemporaryDirectory() as tmp:
+            state = RunState(path=Path(tmp) / "state.json")
+            state.wave(0, ["QE/9", "QE/2"]).status = DONE
+            state.wave(1, ["QE/11"]).status = DONE
+            state.reset(["QE/9"])
+            self.assertEqual(state.waves["0"].status, PENDING)
+            self.assertEqual(state.waves["1"].status, DONE)
+
+    def test_an_old_checkpoint_loads_with_no_waves(self):
+        """The field is additive: a checkpoint written before waves existed is
+        still a valid checkpoint, not a schema mismatch that discards hours."""
+        import json
+        import tempfile
+
+        from tutorials.state import SCHEMA_VERSION, RunState
+
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "state.json"
+            path.write_text(json.dumps({"version": SCHEMA_VERSION,
+                                        "mode": "real", "tutorials": {}}))
+            state = RunState.load(path)
+            self.assertEqual(state.waves, {})
+            self.assertEqual(state.mode, "real")
+
+    def test_without_the_flag_the_run_is_one_pass_as_before(self):
+        """--dry-run and --no-dft queue nothing, so there is nothing to wait
+        between waves for; every earlier invocation must keep working."""
+        source = (ROOT / "tutorials" / "runner.py").read_text()
+        block = source.split("def _wave_to_run", 1)[1].split("\n    def ", 1)[0]
+        self.assertIn("if wanted is None:", block)
+        self.assertIn("return None, list(self.codes)", block)
+
+    def test_the_cli_offers_the_flag(self):
+        import argparse
+        import contextlib
+        import io
+
+        from tutorials.run_tutorials import build_parser
+
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            with self.assertRaises(SystemExit):
+                build_parser().parse_args(["--help"])
+        text = buf.getvalue()
+        self.assertIn("--wave", text)
+        self.assertIn("--list-waves", text)
+
+
+class JobFinishedIsNotJobSucceeded(unittest.TestCase):
+    """Two ways a step used to pass while having failed.
+
+    A job id leaves `squeue` whether it COMPLETED, FAILED, TIMED OUT, was
+    CANCELLED or ran out of memory; and both DFT codes stop at their ionic-step
+    limit and exit cleanly.  Either way a full set of output files is left
+    behind, the artefact globs match, the step is recorded DONE -- and every
+    dependent tutorial then runs on a structure that was never relaxed, which
+    is silently wrong rather than merely broken.
+    """
+
+    # -- sacct ------------------------------------------------------------- #
+    def test_a_completed_job_is_the_only_good_state(self):
+        import unittest.mock as mock
+
+        from tutorials import workdirs
+
+        with mock.patch.object(workdirs, "job_states",
+                               return_value={"1": "COMPLETED", "2": "COMPLETED"}):
+            self.assertEqual(workdirs.check_job_states(["1", "2"]), "")
+
+    def test_a_walltime_kill_is_reported_in_words(self):
+        import unittest.mock as mock
+
+        from tutorials import workdirs
+
+        with mock.patch.object(workdirs, "job_states", return_value={"7": "TIMEOUT"}):
+            problem = workdirs.check_job_states(["7"])
+        self.assertIn("TIMEOUT", problem)
+        self.assertIn("hit the wall time", problem)
+
+    def test_every_bad_state_is_caught(self):
+        import unittest.mock as mock
+
+        from tutorials import workdirs
+
+        for state in ("FAILED", "TIMEOUT", "OUT_OF_MEMORY", "CANCELLED",
+                      "NODE_FAIL", "PREEMPTED"):
+            with self.subTest(state=state):
+                with mock.patch.object(workdirs, "job_states",
+                                       return_value={"1": state}):
+                    self.assertTrue(workdirs.check_job_states(["1"]))
+
+    def test_cancelled_by_someone_keeps_only_the_state(self):
+        """sacct writes 'CANCELLED by 12345'; the uid is not part of it."""
+        import subprocess
+        import unittest.mock as mock
+
+        from tutorials import workdirs
+
+        done = subprocess.CompletedProcess(args=[], returncode=0,
+                                           stdout="55|CANCELLED by 1001\n", stderr="")
+        with mock.patch.object(workdirs.shutil, "which", return_value="/usr/bin/sacct"):
+            with mock.patch("subprocess.run", return_value=done):
+                self.assertEqual(workdirs.job_states(["55"]), {"55": "CANCELLED"})
+
+    def test_no_sacct_is_not_the_same_as_every_job_failed(self):
+        """Accounting is not enabled everywhere."""
+        import unittest.mock as mock
+
+        from tutorials import workdirs
+
+        with mock.patch.object(workdirs.shutil, "which", return_value=None):
+            self.assertEqual(workdirs.job_states(["1"]), {})
+            self.assertEqual(workdirs.check_job_states(["1"]), "")
+
+    # -- convergence -------------------------------------------------------- #
+    def test_a_converged_vasp_relaxation_is_recognised(self):
+        import tempfile
+
+        from tutorials.workdirs import relaxation_converged
+
+        with tempfile.TemporaryDirectory() as tmp:
+            (Path(tmp) / "OUTCAR").write_text(
+                "lots of output\n reached required accuracy - stopping "
+                "structural energy minimisation\n General timing\n")
+            self.assertIs(relaxation_converged(Path(tmp)), True)
+
+    def test_a_vasp_run_that_used_every_ionic_step_is_not_converged(self):
+        """NSW reached without EDIFFG: OUTCAR and CONTCAR both exist, so the
+        artefact check passes and only this catches it."""
+        import tempfile
+
+        from tutorials.workdirs import relaxation_converged
+
+        with tempfile.TemporaryDirectory() as tmp:
+            (Path(tmp) / "OUTCAR").write_text("ionic step 60\n General timing\n")
+            (Path(tmp) / "CONTCAR").write_text("Mg B2\n")
+            self.assertIs(relaxation_converged(Path(tmp)), False)
+
+    def test_a_converged_qe_relaxation_is_recognised(self):
+        import tempfile
+
+        from tutorials.workdirs import relaxation_converged
+
+        with tempfile.TemporaryDirectory() as tmp:
+            (Path(tmp) / "relax.out").write_text(
+                "End of BFGS Geometry Optimization\n JOB DONE.\n")
+            self.assertIs(relaxation_converged(Path(tmp)), True)
+
+    def test_a_qe_run_out_of_steps_is_not_converged(self):
+        import tempfile
+
+        from tutorials.workdirs import relaxation_converged
+
+        with tempfile.TemporaryDirectory() as tmp:
+            (Path(tmp) / "relax.out").write_text(
+                "The maximum number of steps has been reached\n JOB DONE.\n")
+            self.assertIs(relaxation_converged(Path(tmp)), False)
+
+    def test_nothing_to_judge_by_is_not_a_failure(self):
+        """An absent output file is the artefact check's business, not this
+        one's; returning False here would report the wrong cause."""
+        import tempfile
+
+        from tutorials.workdirs import relaxation_converged
+
+        with tempfile.TemporaryDirectory() as tmp:
+            self.assertIsNone(relaxation_converged(Path(tmp)))
+
+    def test_the_markers_match_the_ones_the_workflow_uses(self):
+        """Two copies of this string would drift; this pins them together."""
+        from tutorials.workdirs import CONVERGED_MARKERS
+
+        source = (ROOT / "htesp" / "workflow.py").read_text()
+        self.assertIn(CONVERGED_MARKERS["OUTCAR"], source)
+
+    # -- wiring ------------------------------------------------------------- #
+    def test_the_relaxation_steps_ask_for_the_check(self):
+        from tutorials.catalog import CATALOG
+
+        wanted = {"relax-submit", "resubmit", "relax-deformed", "relax-volumes"}
+        seen = set()
+        for tutorial in CATALOG.values():
+            for step in tutorial.steps:
+                if step.check_converged:
+                    seen.add(step.id)
+                    self.assertTrue(step.submits, step.id)
+                    self.assertTrue(step.job_dirs, step.id)
+        self.assertEqual(seen, wanted)
+
+    def test_the_check_only_runs_against_real_output(self):
+        """--dry-run and --no-dft never produce an OUTCAR, so applying it
+        there would fail every relaxation for the wrong reason."""
+        source = (ROOT / "tutorials" / "runner.py").read_text()
+        block = source.split("def _unconverged", 1)[1].split("\n    def ", 1)[0]
+        self.assertIn("self.options.mode != REAL", block)
+
+
+class PerFolderBatchHeader(unittest.TestCase):
+    """Each work directory gets a header this cluster will accept.
+
+    examples/<code>/batch.header says --partition=dense and loads no module.
+    It was written for one machine; everywhere else sbatch rejects it before
+    any calculation starts, so every submitting step of a real run fails for a
+    reason that has nothing to do with HTESP.
+    """
+
+    def test_the_shipped_header_is_the_one_that_needs_replacing(self):
+        for code in ("QE", "VASP"):
+            with self.subTest(code=code):
+                text = (ROOT / "examples" / code / "batch.header").read_text()
+                self.assertIn("dense", text)
+                self.assertNotIn("module load", text)
+
+    def test_nothing_is_generated_without_slurm(self):
+        """On a laptop the probes have nothing to say and a dry run submits
+        nothing, so the shipped header is the more useful thing to leave."""
+        import unittest.mock as mock
+
+        from tutorials import workdirs
+
+        source = (ROOT / "tutorials" / "workdirs.py").read_text()
+        block = source.split("def _ensure_batch_header", 1)[1].split("\ndef ", 1)[0]
+        self.assertIn('shutil.which("sinfo") is None', block)
+        self.assertIn("return", block)
+
+    def test_the_launcher_is_written_to_config_not_the_header(self):
+        """mainprogram jobscript builds the run line from
+        job_script.parallel_command; a command in the header would run first."""
+        source = (ROOT / "tutorials" / "workdirs.py").read_text()
+        block = source.split("def _match_launcher", 1)[1].split("\ndef ", 1)[0]
+        self.assertIn("parallel_command", block)
+        self.assertNotIn('job["nproc"]', block)
+
+    def test_nproc_is_left_to_the_tutorial(self):
+        """It is the study's choice, not the machine's."""
+        source = (ROOT / "tutorials" / "workdirs.py").read_text()
+        block = source.split("def _match_launcher", 1)[1].split("\ndef ", 1)[0]
+        self.assertNotIn('"nproc"', block)
+
+    def test_ibrun_is_never_hardcoded(self):
+        """ibrun exists at TACC and nowhere else; srun and mpirun are what the
+        rest of the world has."""
+        from htesp.batch_header import LAUNCHERS
+
+        self.assertEqual(LAUNCHERS[:3], ("ibrun", "srun", "mpirun"))
+        source = (ROOT / "tutorials" / "workdirs.py").read_text()
+        self.assertNotIn('"ibrun"', source)
+
+    def test_a_launcher_is_chosen_by_what_is_installed(self):
+        import unittest.mock as mock
+
+        from htesp import batch_header
+
+        for present, expected in (({"srun"}, "srun"),
+                                  ({"mpirun"}, "mpirun"),
+                                  ({"ibrun", "srun", "mpirun"}, "ibrun"),
+                                  (set(), None)):
+            with self.subTest(present=sorted(present)):
+                with mock.patch.object(
+                        batch_header.shutil, "which",
+                        side_effect=lambda n, p=present: n if n in p else None):
+                    self.assertEqual(batch_header.launcher(), expected)
+
+
 if __name__ == "__main__":
     unittest.main()
 

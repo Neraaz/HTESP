@@ -46,6 +46,9 @@ process = jobscript generates the job scripts for the calculations
 
       mainprogram jobscript --init-header qe      (or: vasp)
 
+  'qe', 'QE', 'QuantumEspresso' and 'quantum-espresso' all name the
+  same code.
+
   An existing batch.header is kept; add --force to replace it.  Read the
   result before submitting: the node count and wall time are placeholders.
 

@@ -218,3 +218,100 @@ cover catalogue integrity, the checkpoint round trip, ``input.in`` patching,
 artefact verification, job-id collection, the missing-``squeue`` path, the
 contents of a stop report, and a full end-to-end run against a stub
 ``mainprogram``.
+Running a real campaign in waves
+--------------------------------
+
+In ``--dry-run`` and ``--no-dft`` nothing is ever queued, so the whole
+selection runs in one pass and there is nothing to wait for.  A real run is
+different: wave 0 ends with the relaxations sitting in the scheduler's queue,
+and the tutorials that read the relaxed structure cannot honestly start until
+those have finished.  Running everything in one pass either blocks for days
+inside ``squeue`` polling or proceeds on a structure that is not relaxed yet --
+and the second is silently wrong, which is worse than failing.
+
+``--wave`` runs one dependency wave and stops:
+
+.. code-block:: bash
+
+    htesp-tutorials --list-waves            # the plan, and what is done so far
+    htesp-tutorials --wave next             # run the first unfinished wave
+    # ... wait for its jobs to drain ...
+    htesp-tutorials --resume --wave next    # the next one
+    htesp-tutorials --wave 1                # or name one exactly
+
+The waves are derived from ``depends_on`` alone, so they stay correct as the
+catalogue changes.  Wave 0 is every tutorial that depends on nothing: input
+generation, the database front ends and the relaxation hubs.  Wave 1 is
+everything that reads what wave 0 produced.
+
+Each wave's status is written to ``state.json`` under ``waves``, so days later
+the runner can still say which wave finished and which is next.  A wave counts
+as done only when every tutorial in it did; an interrupted or failed wave is
+offered again by ``--wave next`` rather than stepped over, because the wave
+after it would run on structures that were never produced.  ``--restart --only
+QE/9`` un-finishes any wave containing ``QE/9`` for the same reason.
+
+A selection that leaves a dependency out makes the dependent a root -- wave 0
+-- because :func:`~tutorials.catalog.topological_order` drops dependencies
+outside the selection.  ``--list-waves`` names those cases rather than letting
+the wave numbers imply an ordering that will not happen.
+What "the step finished" means in a real run
+--------------------------------------------
+
+Two things that look like success are not, and both used to be recorded DONE.
+
+**A job leaving the queue is not a job succeeding.**  ``COMPLETED``,
+``FAILED``, ``TIMEOUT``, ``CANCELLED`` and ``OUT_OF_MEMORY`` all make a job id
+disappear from ``squeue`` alike.  After the wait, the runner asks ``sacct -X -o
+JobID,State`` how each one ended and fails the step unless every job is
+``COMPLETED``, naming the state in words (``7 TIMEOUT (hit the wall time)``).
+Where accounting is not enabled ``sacct`` answers nothing, and that is treated
+as "cannot tell", not as failure.
+
+**A relaxation finishing is not a relaxation converging.**  Quantum ESPRESSO
+stops at ``nstep`` and VASP at ``NSW``, both exiting cleanly with a complete set
+of output files -- so the artefact globs match and the job is ``COMPLETED``.
+Steps marked ``check_converged`` therefore read the output for the same markers
+``htesp/workflow.py`` uses:
+
+.. list-table::
+   :header-rows: 1
+   :widths: 20 80
+
+   * - file
+     - what must be in it
+   * - ``OUTCAR``
+     - ``reached required accuracy - stopping structural energy minimisation``
+   * - ``relax.out``
+     - ``End of BFGS Geometry Optimization``
+   * - ``scf.out``
+     - ``JOB DONE.``
+
+``The maximum number of steps has been reached`` and ``convergence NOT
+achieved`` are proof of the opposite.  Four steps carry the flag:
+``relax-submit`` and ``resubmit`` in the relaxation hub, ``relax-deformed`` in
+the elastic tutorial and ``relax-volumes`` in the equation-of-state series.
+
+Both checks run only in real mode; ``--dry-run`` and ``--no-dft`` never produce
+an ``OUTCAR``, so applying them there would fail every relaxation for the wrong
+reason.  Together with the wave gate above, a relaxation that did not converge
+now fails its step, which fails its wave, which leaves every dependent tutorial
+BLOCKED -- instead of them quietly starting from an unrelaxed cell.
+
+The batch header each tutorial runs with
+-----------------------------------------
+
+``examples/<code>/batch.header`` says ``--partition=dense`` and loads no
+module.  It was written for one machine, so everywhere else ``sbatch`` rejects
+it before any calculation starts.  When ``sinfo`` is present, seeding therefore
+overwrites the copy in each work directory with one built by
+:mod:`htesp.batch_header` -- this cluster's partition, account, cores per node
+and ``qe``/``vasp`` module -- and points ``job_script.parallel_command`` at
+whichever of ``ibrun``, ``srun``, ``mpirun`` or ``mpiexec`` is on ``$PATH``.
+``ibrun`` exists only at TACC; elsewhere this lands on ``srun`` or ``mpirun``.
+
+``job_script.nproc`` is never touched: how many ranks a study wants is not
+something the machine can answer.
+
+On a machine with no ``sinfo`` nothing is generated -- the probes would have
+nothing to say, and a laptop ``--dry-run`` submits nothing anyway.

@@ -228,7 +228,8 @@ rejects before any calculation starts.
 
 ```bash
 mainprogram jobscript --init-header qe     # or: vasp
-mainprogram jobscript --init-header qe --force   # replace an existing header
+mainprogram jobscript --init-header QuantumEspresso   # the same thing
+mainprogram jobscript --init-header qe --force        # replace an existing header
 ```
 
 This writes a header from what *this* machine reports: the partitions and their
@@ -292,6 +293,26 @@ The runner checkpoints after every step, resumes with `--resume`, and when it
 stops writes a report naming the tutorial, the step, the command, the working
 directory, the exit code, the artifacts that were missing and the last lines of
 the failing log. See `tutorials/README.md`.
+
+### Running a real campaign in waves
+
+A real run submits jobs. Wave 0 ends with the relaxations queued, and the
+tutorials that read the relaxed structure cannot start until those finish, so
+the runner does one wave per invocation:
+
+```bash
+htesp-tutorials --list-waves          # the plan, and what is done so far
+htesp-tutorials --wave next           # run the first unfinished wave, then stop
+# ... wait for the queue to drain ...
+htesp-tutorials --resume --wave next  # the next one
+```
+
+Each wave's status is saved in `state.json`, so days later the runner still
+knows which wave finished. A wave counts as done only when every tutorial in it
+did; a failed wave is offered again rather than stepped over, because the wave
+after it would run on structures that were never produced. Without `--wave` the
+whole selection runs in one pass, which is what you want for `--dry-run` and
+`--no-dft`.
 
 ## Documentation
 

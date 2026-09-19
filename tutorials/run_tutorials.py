@@ -91,6 +91,16 @@ def build_parser() -> argparse.ArgumentParser:
                         help="leave out tutorials the example tree cannot run")
     parser.add_argument("--force", action="store_true",
                         help="run even when preflight reports errors")
+    parser.add_argument("--wave", default=None, metavar="N",
+                        help="run one dependency wave and stop: 'next' takes "
+                             "the lowest-numbered wave the checkpoint has not "
+                             "finished, an integer takes exactly that one.  "
+                             "Without it the whole selection runs in one pass, "
+                             "which is right for --dry-run and --no-dft but "
+                             "means a real run blocks on the queue for days")
+    parser.add_argument("--list-waves", action="store_true",
+                        help="print the wave plan for the current selection "
+                             "and exit")
     parser.add_argument("--list", action="store_true",
                         help="print the catalogue and exit")
     parser.add_argument("-v", "--verbose", action="store_true", help="debug logging")
@@ -139,11 +149,40 @@ def main(argv: list[str] | None = None) -> int:
                   args.code, args.only, args.skip)
         return 2
 
+    if args.list_waves:
+        from tutorials.catalog import waves as _waves
+        from tutorials.state import RunState as _RunState
+
+        plan = _waves(codes, catalog)
+        done = _RunState.load(Path(args.workdir).resolve() / "state.json").waves
+        for number, wave in enumerate(plan):
+            status = done.get(str(number))
+            mark = f"[{status.status}]" if status else "[pending]"
+            print(f"wave {number} {mark:<10} {len(wave):2d} tutorial(s)")
+            print(f"           {', '.join(wave)}")
+        # A selection that leaves a dependency out makes the dependent a root
+        # -- wave 0 -- and it then runs against a hub that was never built.
+        # topological_order drops unselected dependencies by design; say so
+        # here rather than letting the wave numbers imply otherwise.
+        chosen = set(codes)
+        orphans = [(c, [d for d in catalog[c].depends_on if d not in chosen])
+                   for c in codes]
+        orphans = [(c, missing) for c, missing in orphans if missing]
+        if orphans:
+            print("\nNot selected, but depended on -- these run against "
+                  "whatever is already in their work directory:")
+            for code, missing in orphans:
+                print(f"  {code} needs {', '.join(missing)}")
+        print("\nRun one wave at a time with --wave next; each stops when its "
+              "jobs are submitted.")
+        return 0
+
     # not created until preflight has passed: `--workdir examples/` should not
     # leave a directory behind in the reference tree before being rejected
     workdir = Path(args.workdir).resolve()
     options = RunOptions(
         workdir=workdir, mode=_mode(args), resume=not args.restart,
+        wave=args.wave,
         poll_interval=args.poll_interval, job_timeout=args.job_timeout,
         step_timeout=args.step_timeout, workers=args.workers,
         from_step=args.from_step, verbose=args.verbose, examples=examples,

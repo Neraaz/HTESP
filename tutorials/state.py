@@ -90,6 +90,29 @@ class TutorialState:
 
 
 @dataclass
+class WaveState:
+    """What happened to one dependency wave.
+
+    A real campaign is run wave by wave: wave 0 submits the relaxations and
+    stops, and wave 1 -- the tutorials that read the relaxed structure -- is a
+    separate invocation, once the queue has drained.  The runner therefore has
+    to be able to say, days later and from the checkpoint alone, which wave
+    finished and which is next.
+    """
+
+    number: int
+    status: str = PENDING
+    codes: list[str] = field(default_factory=list)
+    started: float | None = None
+    finished: float | None = None
+    reason: str = ""
+
+    @property
+    def ok(self) -> bool:
+        return self.status == DONE
+
+
+@dataclass
 class RunState:
     """The whole checkpoint: every tutorial, every step, plus run metadata."""
 
@@ -101,6 +124,10 @@ class RunState:
     updated: float = field(default_factory=time.time)
     interrupted: bool = False
     tutorials: dict[str, TutorialState] = field(default_factory=dict)
+    #: wave number (as a string, because JSON keys are strings) -> state.
+    #: Additive: a checkpoint written before waves existed loads with
+    #: this empty rather than being rejected as an older schema.
+    waves: dict[str, WaveState] = field(default_factory=dict)
 
     # -- construction ------------------------------------------------------- #
     @classmethod
@@ -122,6 +149,8 @@ class RunState:
         state.started = float(raw.get("started", state.started))
         state.updated = float(raw.get("updated", state.updated))
         state.interrupted = bool(raw.get("interrupted", False))
+        for number, blob in (raw.get("waves") or {}).items():
+            state.waves[str(number)] = WaveState(**blob)
         for code, blob in (raw.get("tutorials") or {}).items():
             steps = {key: StepState(**step)
                      for key, step in (blob.get("steps") or {}).items()}
@@ -138,6 +167,8 @@ class RunState:
             "started": self.started,
             "updated": self.updated,
             "interrupted": self.interrupted,
+            "waves": {number: asdict(wave)
+                      for number, wave in self.waves.items()},
             "tutorials": {
                 code: {**{k: v for k, v in asdict(tut).items() if k != "steps"},
                        "steps": {key: asdict(step) for key, step in tut.steps.items()}}
@@ -169,6 +200,29 @@ class RunState:
         step = tut.step(key) if tut else None
         return bool(step and step.ok)
 
+    def wave(self, number: int, codes: Iterable[str] = ()) -> WaveState:
+        """Get (creating if needed) the record for wave *number*."""
+        key = str(number)
+        state = self.waves.get(key)
+        if state is None:
+            state = WaveState(number=number, codes=list(codes))
+            self.waves[key] = state
+        elif codes and not state.codes:
+            state.codes = list(codes)
+        return state
+
+    def next_wave(self, plan: list[list[str]]) -> int | None:
+        """The lowest-numbered wave in *plan* that has not finished.
+
+        A wave counts as finished only when it is recorded DONE, so an
+        interrupted or failed wave is offered again rather than skipped -- the
+        wave after it would run on whatever the failure left behind.
+        """
+        for number in range(len(plan)):
+            if not self.waves.get(str(number), WaveState(number=number)).ok:
+                return number
+        return None
+
     def reset(self, codes: Iterable[str] | None = None) -> None:
         """Forget the recorded progress (``--restart``)."""
         if codes is None:
@@ -176,6 +230,12 @@ class RunState:
             return
         for code in codes:
             self.tutorials.pop(code, None)
+        # a wave is only as done as its tutorials: forgetting one un-finishes
+        # every wave that contained it, or the next run would step over it.
+        forgotten = set(codes)
+        for wave in self.waves.values():
+            if forgotten.intersection(wave.codes):
+                wave.status, wave.finished = PENDING, None
 
     def counts(self) -> dict[str, int]:
         """Tutorial-level status counts, for the summary line."""

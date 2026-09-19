@@ -315,6 +315,11 @@ Runs the worked examples and, when it stops, says exactly where.  See
                            QE/9,VASP/14
      --skip SKIP           comma-separated tutorial codes to leave out
      --from FROM_STEP      start each selected tutorial at this step id
+     --wave N              run one dependency wave and stop: 'next' takes the
+                           lowest-numbered wave the checkpoint has not finished,
+                           an integer takes exactly that one.  Without it the
+                           whole selection runs in one pass
+     --list-waves          print the wave plan for the current selection and exit
      --workers WORKERS     passed through to mainprogram --workers
      --poll-interval POLL_INTERVAL
                            seconds between squeue polls (default: 60)
@@ -582,11 +587,13 @@ These may be added to any ``mainprogram`` command:
    * - ``--config FILE``
      - Use ``FILE`` instead of searching for ``config.json``.  Same as
        ``$HTESP_CONFIG``.
-   * - ``--init-header qe|vasp``
+   * - ``--init-header CODE``
      - Only with ``jobscript``: write a starting ``batch.header`` for that
        code, filled in from what SLURM and Lmod report on this machine
-       (partition, account, cores per node, module, MPI launcher).  Refuses to
-       overwrite an existing header unless ``--force`` is given.
+       (partition, account, cores per node, module, MPI launcher).  ``CODE`` is
+       ``vasp``, or any spelling of Quantum ESPRESSO -- ``qe``, ``QE``,
+       ``QuantumEspresso``, ``quantum-espresso``.  Refuses to overwrite an
+       existing header unless ``--force`` is given.
    * - ``--force``
      - Let a command overwrite a file it would otherwise refuse to replace
        (``config-init``, ``jobscript --init-header``).

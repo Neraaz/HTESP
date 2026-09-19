@@ -74,6 +74,11 @@ from what *this* machine reports instead:
 
     mainprogram jobscript --init-header qe      # or: vasp
 
+``qe``, ``QE``, ``QuantumEspresso``, ``quantum-espresso`` and ``espresso`` all
+name the same code; the module search behind it looks for each of those
+spellings too, because a site that installs ``QuantumESPRESSO/7.1`` would
+otherwise get a ``TODO`` where the ``module load`` belongs.
+
 It asks SLURM for the partitions (``sinfo``), the accounts this user may
 charge (``sacctmgr``), the cores per node of the chosen partition, and whether
 any generic resource is configured at all (``scontrol show config``); it asks
