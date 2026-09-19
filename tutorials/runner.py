@@ -713,11 +713,21 @@ class TutorialRunner:
         if step.submits and self.options.mode == REAL:
             state.jobs = collect_job_ids(workdir, step.job_dirs, state.started or 0.0)
             if not state.jobs:
-                state.unverifiable = True
+                # FIX: this was "unverifiable", so a step that submitted
+                # nothing at all still counted as a pass.  Thirteen tutorials
+                # declared submitting steps without ever building run-*.sh;
+                # stage_and_submit then returned status="skipped" per material
+                # and the tutorial went green having run no calculation.  In
+                # real mode a submitting step that produced no job id has not
+                # submitted, which is a failure, not a gap in the evidence.
+                state.status = FAILED
                 state.reason = ("no job ids were recorded in "
                                 f"{', '.join(step.job_dirs) or '<no stage dirs>'}"
-                                "/.htesp_job.json -- nothing appears to have been "
-                                "submitted")
+                                "/.htesp_job.json -- nothing was submitted.  "
+                                "Check that run-*.sh exist in the work "
+                                "directory ('mainprogram jobscript' builds "
+                                "them from batch.header)")
+                return
             else:
                 ok, problem = wait_for_jobs(state.jobs, self.options.poll_interval,
                                             self.options.job_timeout)

@@ -89,6 +89,9 @@ POTCAR_HELP = (
     "  R<mpid>-<compound>/relax/ directories contain INCAR, KPOINTS and POSCAR\n"
     "  only.  To have HTESP build them from your own set:\n"
     "      htesp-check --config_vasp_pot /path/to/POT_GGA_PAW_PBE\n"
+    "  (a raw VASP distribution needs pymatgen's reorganisation first:\n"
+    "      pmg config -p /path/to/POT_GGA_PAW_PBE ~/PBE52\n"
+    "      pmg config --add PMG_VASP_PSP_DIR ~/PBE52)\n"
     "  (give either that directory or its parent).  Until then the inputs are\n"
     "  written without a POTCAR and VASP will not run on them."
 )

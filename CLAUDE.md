@@ -70,7 +70,12 @@ tutorials/        catalog.py builds the 42-tutorial catalogue and
                   with batch_header.build() when sinfo exists, and sets
                   job_script.parallel_command to the detected launcher --
                   ibrun is TACC-only, elsewhere srun/mpirun.  nproc is
-                  never touched: it is the study's choice.
+                  never touched: it is the study's choice.  The module
+                  line is UNVERSIONED (`module load qe`) so Lmod picks
+                  the site default.  Every submitting tutorial gets a
+                  `jobscript` step prepended: stage_and_submit only
+                  SKIPS when run-*.sh is missing, so 13 tutorials used
+                  to submit nothing in real mode and still pass.
 legacy/bash/      the 52 original bash scripts, unmodified, for reference
 tests/            240 unittest tests (run under pytest or unittest)
 tools/            check_names.py (undefined-name scan), gen_command_rst.py
@@ -352,6 +357,18 @@ makes `Ordering` a `StrEnum`.
   (Fr 150, Rn 120, Ra 90, At 80). Also Cu (ours 55, SSSP 90) and O (ours 60,
   SSSP 50, so ours is the safer side). These were **left alone deliberately**;
   changing them changes the cutoffs of existing studies.
+* **A VASP stage directory gets its POTCAR at submission time.** Only the
+  download path (`htesp/vasp_input.py`) used to build one, so a directory that
+  was *seeded* rather than downloaded -- every tutorial starting from a
+  prepared `R<mpid>-<compound>/relax/` -- went to the scheduler with INCAR,
+  KPOINTS and POSCAR only and VASP stopped on the first step.
+  `_submit_vasp()` and the VASP branch of `stage_and_submit()` now call
+  `write_potcar.stage_potcar()`, which never raises: with no POTCARs
+  configured it explains how and the other inputs are still written.
+  `htesp-check --config_vasp_pot` covers a tree already in
+  `<functional>/<symbol>/POTCAR` layout; a raw VASP distribution needs
+  `pmg config -p <src> <dst>` first, then
+  `pmg config --add PMG_VASP_PSP_DIR <dst>`.
 * **VASP POTCAR names** are `pseudo.pot`, used only by
   `write_potcar.poscar2potcar()`. All 96 elements through Cm are present and
   every name validates against the current `potpaw.64` PBE catalogue. The VASP

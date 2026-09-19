@@ -1066,6 +1066,10 @@ class HTESPWorkflow:
         """
         result = result or Result(material.index, material.mpid, material.compound)
         target = ensure_dir(material.sub(stage))
+        if self.is_vasp:                       # see _submit_vasp for why
+            from htesp.write_potcar import stage_potcar
+
+            stage_potcar(target)
         for destination, source in (files or {}).items():
             if not copy_file(self.root / source, target / destination):
                 result.say(f"  missing input {source} -- {destination} not staged")
@@ -1162,6 +1166,17 @@ class HTESPWorkflow:
                      script: str = "run-vasp.sh") -> Result:
         """``cp run-vasp.sh <stage>/run.sh; cd; vasprun; cd ../../``."""
         target = ensure_dir(material.sub(stage))
+        # FIX: build the POTCAR here if it is missing.  Only the *download*
+        # path (htesp/vasp_input.py) wrote one, so a stage directory that was
+        # seeded rather than downloaded -- which is every tutorial that starts
+        # from a prepared R<mpid>-<compound>/relax/, and any directory a user
+        # assembled by hand -- went to the scheduler with INCAR, KPOINTS and
+        # POSCAR but no POTCAR, and VASP stopped immediately.  stage_potcar
+        # never raises: with no POTCARs configured it explains how and the
+        # inputs are still written.
+        from htesp.write_potcar import stage_potcar
+
+        stage_potcar(target)
         if not copy_file(self.root / script, target / "run.sh"):
             res.status = "skipped"
             res.message = f"{script} not found in project root"

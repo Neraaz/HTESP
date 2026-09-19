@@ -313,5 +313,26 @@ whichever of ``ibrun``, ``srun``, ``mpirun`` or ``mpiexec`` is on ``$PATH``.
 ``job_script.nproc`` is never touched: how many ranks a study wants is not
 something the machine can answer.
 
+The ``module load`` line names the module **without a version** -- ``module
+load qe``, not ``module load qe/7.3`` -- so Lmod resolves it to whatever the
+site has marked default and the header keeps working after 7.3 is retired.
+The versions found are written underneath as a comment, so a study that needs
+one exact build can still pin it by writing the version out.
+
+Building the submission scripts
+--------------------------------
+
+``HTESPWorkflow.stage_and_submit`` copies ``run-<stage>.sh`` from the work
+directory into the stage directory and submits *that* -- ``run-scf.sh`` for
+Quantum ESPRESSO, ``run-vasp.sh`` for VASP, both built from ``batch.header``
+and ``job_script.command_list``.  When the script is missing it records the
+material as *skipped* and carries on, so a tutorial that never ran
+``mainprogram jobscript`` submitted nothing in real mode and still exited 0.
+
+Every tutorial with a submitting step therefore gets a ``jobscript`` step
+prepended (:func:`tutorials.catalog._with_job_scripts`), and a submitting step
+that records no job id is now a failure rather than an "unverifiable": whatever
+the cause, nothing was submitted.
+
 On a machine with no ``sinfo`` nothing is generated -- the probes would have
 nothing to say, and a laptop ``--dry-run`` submits nothing anyway.

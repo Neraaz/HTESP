@@ -901,6 +901,178 @@ class PerFolderBatchHeader(unittest.TestCase):
                     self.assertEqual(batch_header.launcher(), expected)
 
 
+class SubmittingTutorialsBuildTheirRunScripts(unittest.TestCase):
+    """Real mode submitted nothing, and looked fine doing it.
+
+    HTESPWorkflow.stage_and_submit copies run-<stage>.sh from the work
+    directory into the stage directory and submits that.  When the script is
+    absent it returns status="skipped" -- "run-scf.sh not found in project
+    root" -- and moves on.  Thirteen tutorials declared submitting steps
+    without ever running `mainprogram jobscript`, so every submission was
+    skipped, the steps exited 0, and the relaxation everything else depends on
+    was never run.
+    """
+
+    def test_every_submitting_tutorial_builds_its_scripts_first(self):
+        from tutorials.catalog import CATALOG
+
+        for code, tutorial in sorted(CATALOG.items()):
+            submitting = [s.id for s in tutorial.steps if s.submits]
+            if not submitting:
+                continue
+            with self.subTest(code=code):
+                ids = [s.id for s in tutorial.steps]
+                self.assertIn("jobscript", ids,
+                              f"{code} submits {submitting} but never builds run-*.sh")
+                self.assertLess(ids.index("jobscript"),
+                                min(ids.index(s) for s in submitting),
+                                f"{code} builds its scripts after using them")
+
+    def test_the_step_is_not_duplicated(self):
+        """The jobscript tutorial already has one."""
+        from tutorials.catalog import CATALOG
+
+        for code, tutorial in CATALOG.items():
+            ids = [s.id for s in tutorial.steps]
+            with self.subTest(code=code):
+                self.assertLessEqual(ids.count("jobscript"), 1)
+
+    def test_nothing_is_prepended_to_a_tutorial_that_never_submits(self):
+        """Building scripts nobody submits is noise in the report.
+
+        Tested against the helper rather than the catalogue: the Wannier
+        tutorials declare a jobscript step of their own without any
+        `submits=True` step, because the scripts it builds are submitted by
+        hand afterwards.
+        """
+        from tutorials.catalog import _with_job_scripts
+        from tutorials.steps import Step
+
+        steps = (Step("only", "reads a file", "22"),)
+        self.assertEqual(_with_job_scripts(steps), steps)
+
+    def test_a_tutorial_that_already_builds_them_is_left_alone(self):
+        from tutorials.catalog import _with_job_scripts
+        from tutorials.steps import JOBSCRIPT_STEP, Step
+
+        steps = (JOBSCRIPT_STEP, Step("go", "submit", "1", submits=True))
+        self.assertEqual(_with_job_scripts(steps), steps)
+
+    def test_the_step_goes_in_front(self):
+        from tutorials.catalog import _with_job_scripts
+        from tutorials.steps import Step
+
+        steps = (Step("prep", "write inputs", "4"),
+                 Step("go", "submit", "1", submits=True))
+        out = _with_job_scripts(steps)
+        self.assertEqual([s.id for s in out], ["jobscript", "prep", "go"])
+
+    def test_the_script_names_match_what_the_workflow_looks_for(self):
+        """QE submits run-scf.sh, VASP run-vasp.sh; both come from
+        job_script.command_list, so the two must agree."""
+        import json
+
+        source = (ROOT / "htesp" / "workflow.py").read_text()
+        self.assertIn('"relax", "run-scf.sh"', source)
+        self.assertIn('script: str = "run-vasp.sh"', source)
+        qe = json.loads((ROOT / "examples" / "QE" / "config.json").read_text())
+        vasp = json.loads((ROOT / "examples" / "VASP" / "config.json").read_text())
+        self.assertIn("scf", qe["job_script"]["command_list"])
+        self.assertIn("vasp", vasp["job_script"]["command_list"])
+
+    def test_submitting_nothing_is_a_failure_not_an_unverifiable(self):
+        """The safety net: whatever the cause, a submitting step that recorded
+        no job id has not submitted."""
+        source = (ROOT / "tutorials" / "runner.py").read_text()
+        block = source.split("if not state.jobs:", 1)[1].split("ok, problem", 1)[0]
+        self.assertIn("state.status = FAILED", block)
+        self.assertIn("nothing was submitted", block)
+
+
+class BareModuleName(unittest.TestCase):
+    """`module load qe`, not `module load qe/7.3`."""
+
+    def test_the_header_loads_the_unversioned_name(self):
+        from htesp import batch_header
+
+        for code in ("qe", "vasp"):
+            with self.subTest(code=code):
+                for line in batch_header.build(code).splitlines():
+                    if line.startswith("module load"):
+                        loaded = line.split(None, 2)[2]
+                        self.assertNotIn("/", loaded,
+                                         "a pinned version goes stale when the "
+                                         "site retires that build")
+
+    def test_the_versions_found_are_still_listed(self):
+        """Pinning must stay possible for a study that needs one build."""
+        import os
+
+        from htesp import batch_header
+
+        if not os.environ.get("LMOD_CMD"):
+            self.skipTest("no Lmod on this machine")
+        text = batch_header.build("qe")
+        if batch_header.modules("qe"):
+            self.assertIn("versions available now:", text)
+            self.assertIn("pin one by writing it out", text)
+
+
+class PotcarReachesTheStageDirectory(unittest.TestCase):
+    """VASP jobs were submitted with no POTCAR.
+
+    Only the *download* path (htesp/vasp_input.py) built one.  A stage
+    directory that was seeded rather than downloaded -- which is every tutorial
+    starting from a prepared R<mpid>-<compound>/relax/, and any directory
+    assembled by hand -- reached the scheduler with INCAR, KPOINTS and POSCAR
+    only, and VASP stopped on the first step.
+    """
+
+    def test_the_vasp_submit_path_stages_one(self):
+        source = (ROOT / "htesp" / "workflow.py").read_text()
+        block = source.split("def _submit_vasp", 1)[1].split("\n    def ", 1)[0]
+        self.assertIn("stage_potcar(target)", block)
+
+    def test_it_is_staged_before_the_job_script_check(self):
+        """A missing run-vasp.sh returns early; the POTCAR must be written
+        before that or the directory is left incomplete."""
+        source = (ROOT / "htesp" / "workflow.py").read_text()
+        block = source.split("def _submit_vasp", 1)[1].split("\n    def ", 1)[0]
+        self.assertLess(block.index("stage_potcar(target)"),
+                        block.index("not found in project root"))
+
+    def test_the_shared_helper_stages_one_for_vasp_only(self):
+        """stage_and_submit serves both codes; QE has no POTCAR."""
+        source = (ROOT / "htesp" / "workflow.py").read_text()
+        block = source.split("def stage_and_submit", 1)[1].split("\n    def ", 1)[0]
+        self.assertIn("if self.is_vasp:", block)
+        self.assertIn("stage_potcar(target)", block)
+
+    def test_staging_never_raises(self):
+        """A machine may have no VASP licence at all; the rest of the input
+        generation is still worth doing."""
+        import tempfile
+
+        from htesp.write_potcar import stage_potcar
+
+        with tempfile.TemporaryDirectory() as tmp:
+            self.assertIs(stage_potcar(Path(tmp)), False)   # no POSCAR, no crash
+
+    def test_the_help_names_the_pmg_reorganisation(self):
+        """`pmg config -p` is the step people miss; --config_vasp_pot alone
+        only covers a tree already in <functional>/<symbol>/POTCAR layout."""
+        from htesp.write_potcar import POTCAR_HELP
+
+        self.assertIn("pmg config -p", POTCAR_HELP)
+        self.assertIn("PMG_VASP_PSP_DIR", POTCAR_HELP)
+
+    def test_config_vasp_pot_explains_the_same_route_when_it_fails(self):
+        source = (ROOT / "htesp" / "check.py").read_text()
+        block = source.split("def configure_vasp_potcars", 1)[1].split("\ndef ", 1)[0]
+        self.assertIn("pmg config -p", block)
+        self.assertIn("pmg config --add PMG_VASP_PSP_DIR", block)
+
+
 if __name__ == "__main__":
     unittest.main()
 

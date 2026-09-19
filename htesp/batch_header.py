@@ -257,9 +257,17 @@ def build(code: str, partition: str | None = None, account: str | None = None,
         lines += ["# accounts you may charge: " + ", ".join(accts), ""]
 
     if module:
-        lines.append("module load {}".format(module))
-        if len(mods) > 1:
-            lines.append("#   also available: " + ", ".join(mods[1:]))
+        # Load the bare name, not "qe/7.3": Lmod then resolves it to whatever
+        # the site has marked default, so the header keeps working when 7.3 is
+        # retired -- which it will be, long before anyone edits this file
+        # again.  The versions found are listed below so the choice can still
+        # be pinned by hand when a study needs one exact build.
+        stem = module.split("/", 1)[0]
+        lines.append("module load {}".format(stem))
+        if mods:
+            lines.append("#   versions available now: " + ", ".join(mods))
+            lines.append("#   (pin one by writing it out: module load {})"
+                         .format(mods[0]))
     else:
         lines.append("# TODO: module load <your {} module>  "
                      "(none detected on this machine)".format(code.upper()))

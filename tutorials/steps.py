@@ -56,12 +56,17 @@ def _relax_artifacts(dft: str) -> tuple[str, ...]:
 # --------------------------------------------------------------------------- #
 #  topics 1-8: submission scripts and the database front ends
 # --------------------------------------------------------------------------- #
+#: Building the submission scripts is its own tutorial *and* a prerequisite of
+#: every tutorial that submits, so it is defined once here and prepended by
+#: `catalog._with_job_scripts`.
+JOBSCRIPT_STEP = Step(
+    "jobscript", "Build the run-*.sh submission scripts from batch.header",
+    "jobscript", artifacts=("run-*.sh",),
+    note="edit the job_script dictionary in config.json first")
+
+
 def t_jobscript(dft: str) -> TopicSpec:
-    return TopicSpec(steps=(
-        Step("jobscript", "Build the run-*.sh submission scripts from batch.header",
-             "jobscript", artifacts=("run-*.sh",),
-             note="edit the job_script dictionary in config.json first"),
-    ))
+    return TopicSpec(steps=(JOBSCRIPT_STEP,))
 
 
 def _search_download(dft: str, search: str, download: str, mode: str) -> tuple[Step, ...]:

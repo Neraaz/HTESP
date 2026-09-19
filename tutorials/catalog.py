@@ -393,8 +393,32 @@ def _build_one(topic: str, dft: str) -> Tutorial:
             "the tutorials this one depends on.")
     return Tutorial(code=code, dft=dft, number=number, topic=topic,
                     title=f"{TITLES[topic]} ({dft})", directory=directory,
-                    depends_on=depends, seeds=seeds, steps=spec.steps,
+                    depends_on=depends, seeds=seeds,
+                    steps=_with_job_scripts(spec.steps),
                     loop=spec.loop, stub=spec.stub, note=note)
+
+
+def _with_job_scripts(steps: tuple["Step", ...]) -> tuple["Step", ...]:
+    """Put a ``jobscript`` step in front of any tutorial that submits.
+
+    ``HTESPWorkflow.stage_and_submit`` copies ``run-<stage>.sh`` from the
+    project root into the stage directory and submits *that*; when the script
+    is not there it returns ``status="skipped"`` with "run-scf.sh not found in
+    project root" and carries on.  Thirteen tutorials declared submitting steps
+    without ever running ``mainprogram jobscript``, so in real mode they
+    skipped every submission, exited 0, and left the relaxation -- and
+    everything that depends on it -- undone while the run looked healthy.
+
+    The scripts are built from ``batch.header`` and ``job_script.command_list``,
+    so they are per-work-directory and cannot simply be seeded once.
+    """
+    from tutorials.steps import JOBSCRIPT_STEP
+
+    if not any(step.submits for step in steps):
+        return steps
+    if any(step.command == "jobscript" for step in steps):
+        return steps
+    return (JOBSCRIPT_STEP, *steps)
 
 
 def build_catalog() -> dict[str, Tutorial]:

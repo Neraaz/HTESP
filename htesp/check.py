@@ -506,8 +506,12 @@ def configure_vasp_potcars(path: str) -> int:
     flat = list(family.glob("POTCAR.*"))
     if not symbols and not flat:
         print("{} has neither <symbol>/POTCAR nor POTCAR.<symbol> entries.\n"
-              "If this is a raw VASP tarball, unpack it first with:\n"
-              "    pmg config -p {} <target>".format(family, family))
+              "If this is a raw VASP distribution, let pymatgen reorganise it "
+              "first:\n"
+              "    pmg config -p {} {}\n"
+              "    pmg config --add PMG_VASP_PSP_DIR {}\n"
+              "then point this option at that directory instead."
+              .format(family, family, root / "PBE52", root / "PBE52"))
         return 1
 
     try:
@@ -538,6 +542,17 @@ def configure_vasp_potcars(path: str) -> int:
     except Exception as exc:                       # noqa: BLE001 - report anything
         print("  WARNING: the setting was written but a POTCAR still could not "
               "be produced: {}: {}".format(type(exc).__name__, exc))
+        # Some distributions need pymatgen's own reorganisation first: it
+        # renames the functional directories to the names pymatgen looks for
+        # and decompresses POTCAR.Z.  Pointing PMG_VASP_PSP_DIR at a raw tree
+        # is enough for the common <functional>/<symbol>/POTCAR layout and not
+        # for the others, and nothing says which one you have.
+        print("  This tree may need pymatgen's reorganisation first:")
+        print("      pmg config -p {} {}".format(given, given.parent / "PBE52"))
+        print("      pmg config --add PMG_VASP_PSP_DIR {}"
+              .format(given.parent / "PBE52"))
+        print("  then re-run: htesp-check --config_vasp_pot {}"
+              .format(given.parent / "PBE52"))
         return 1
 
 
