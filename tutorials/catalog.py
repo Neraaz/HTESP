@@ -451,11 +451,25 @@ def use_examples(root) -> dict:
 # --------------------------------------------------------------------------- #
 #  selection and ordering
 # --------------------------------------------------------------------------- #
+#: the two example trees, as ``--only`` will accept them
+DFT_TREES = ("QE", "VASP")
+
+
 def normalise_code(text: str) -> str:
-    """Accept ``qe/9``, ``QE-9``, ``QE/tutorial9`` and return ``"QE/9"``."""
+    """Accept ``qe/9``, ``QE-9``, ``QE/tutorial9`` and return ``"QE/9"``.
+
+    A bare tree name -- ``QE`` or ``vasp`` -- comes back as ``"QE/*"``, which
+    :func:`select` expands to every tutorial in that tree.  It replaces the
+    old ``--code`` flag: two ways of narrowing the same selection was one more
+    than this needed, and ``--only QE`` reads the same as ``--only QE/9``.
+    """
     token = text.strip().replace("\\", "/").replace("-", "/")
     if "/" not in token:
-        raise ValueError(f"{text!r} is not a tutorial code such as 'QE/9'")
+        if token.upper() in DFT_TREES:
+            return f"{token.upper()}/*"
+        raise ValueError(
+            f"{text!r} is not a tutorial code such as 'QE/9', "
+            "nor a tree name ('QE' or 'VASP')")
     dft, number = token.split("/", 1)
     number = number.lower().removeprefix("tutorial")
     if not number.isdigit():
@@ -497,15 +511,15 @@ def topological_order(codes: Iterable[str],
     return out
 
 
-def waves(codes: Iterable[str],
+def iters(codes: Iterable[str],
           catalog: dict[str, Tutorial] | None = None) -> list[list[str]]:
-    """Group *codes* into dependency waves: wave *n* may start once *n-1* ends.
+    """Group *codes* into dependency iters: iteration *n* may start once *n-1* ends.
 
-    A real campaign cannot be one pass.  Wave 0 is everything that depends on
+    A real campaign cannot be one pass.  Iteration 0 is everything that depends on
     nothing -- input generation, the database front ends, and the relaxation
-    hubs -- and it ends with jobs sitting in the queue.  Nothing in wave 1 can
+    hubs -- and it ends with jobs sitting in the queue.  Nothing in iteration 1 can
     honestly start until those relaxations have finished and converged, because
-    wave 1 *is* the tutorials that read the relaxed structure.  Running the
+    iteration 1 *is* the tutorials that read the relaxed structure.  Running the
     whole catalogue in one pass either blocks for days inside `squeue` polling
     or, worse, proceeds on a structure that is not relaxed yet.
 
@@ -517,7 +531,7 @@ def waves(codes: Iterable[str],
     Returns
     -------
     list[list[str]]
-        Wave 0 first.  Each wave is in topological order, so it can be run as
+        Iteration 0 first.  Each iteration is in topological order, so it can be run as
         it stands.  An empty selection gives an empty list.
     """
     catalog = CATALOG if catalog is None else catalog
@@ -533,27 +547,39 @@ def waves(codes: Iterable[str],
     return out
 
 
-def select(catalog: dict[str, Tutorial] | None = None, *, code: str = "both",
-           only: Sequence[str] = (), skip: Sequence[str] = (),
-           include_stubs: bool = True) -> list[str]:
+def _expand(codes: Sequence[str], catalog: dict[str, Tutorial]) -> set[str]:
+    """Turn ``{"QE/*", "VASP/14"}`` into the concrete codes it names."""
+    out: set[str] = set()
+    for code in codes:
+        tree, _, number = code.partition("/")
+        if number == "*":
+            out.update(c for c, t in catalog.items() if t.dft == tree)
+        else:
+            out.add(code)
+    return out
+
+
+def select(catalog: dict[str, Tutorial] | None = None, *,
+           only: Sequence[str] = (), skip: Sequence[str] = ()) -> list[str]:
     """Return the ordered list of tutorial codes a run should cover.
 
     Parameters
     ----------
-    code
-        ``"QE"``, ``"VASP"`` or ``"both"``.
     only, skip
-        Normalised tutorial codes to keep / drop.
-    include_stubs
-        Keep tutorials the example tree cannot actually run.
+        Normalised tutorial codes to keep / drop.  ``"QE/*"`` -- what
+        :func:`normalise_code` returns for a bare ``QE`` -- means the whole
+        tree, which is how ``--only QE`` replaced the old ``--code`` flag.
+
+    Stub tutorials (ones the example tree cannot run as shipped) are always
+    included: preflight warns about them and the report names them, which is
+    more useful than a flag for hiding them.
     """
     catalog = CATALOG if catalog is None else catalog
-    chosen = [c for c, t in catalog.items()
-              if code in ("both", t.dft) and (include_stubs or not t.stub)]
+    chosen = list(catalog)
     if only:
-        chosen = [c for c in chosen if c in set(only)]
+        chosen = [c for c in chosen if c in _expand(only, catalog)]
     if skip:
-        chosen = [c for c in chosen if c not in set(skip)]
+        chosen = [c for c in chosen if c not in _expand(skip, catalog)]
     return topological_order(chosen, catalog)
 
 

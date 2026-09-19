@@ -30,7 +30,7 @@ from pathlib import Path
 from typing import Sequence
 
 from tutorials.catalog import (CATALOG, EXAMPLES, PACKAGE_ROOT, Step,
-                               Tutorial, searched_for_examples, waves)
+                               Tutorial, iters, searched_for_examples)
 from tutorials.state import (BLOCKED, DONE, FAILED, PENDING, RUNNING, SKIPPED,
                              RunState, StepState, TutorialState, step_key)
 from tutorials.workdirs import (collect_job_ids, missing_artifacts,
@@ -39,8 +39,10 @@ from tutorials.workdirs import (collect_job_ids, missing_artifacts,
 
 LOG = logging.getLogger("htesp.tutorials")
 
-#: the three ways to run a tutorial
-DRY_RUN, NO_DFT, REAL = "dry-run", "no-dft", "real"
+#: the two ways to run a tutorial.  There used to be a third, --no-dft
+#: (prepare everything, submit nothing); it sat between these two and was
+#: one mode more than the runner needed explaining.
+DRY_RUN, REAL = "dry-run", "real"
 
 #: default seconds a single ``mainprogram`` call may take
 DEFAULT_STEP_TIMEOUT = 6 * 3600
@@ -72,10 +74,10 @@ class RunOptions:
     step_timeout: float = DEFAULT_STEP_TIMEOUT
     workers: int | None = None
     from_step: str | None = None
-    #: which dependency wave to run: None runs the whole selection in one pass
-    #: (what every earlier version did), an int runs exactly that wave, and
-    #: "next" runs the lowest-numbered wave the checkpoint has not finished.
-    wave: int | str | None = None
+    #: which dependency iteration to run: None runs the whole selection in one pass
+    #: (what every earlier version did), an int runs exactly that iteration, and
+    #: "next" runs the lowest-numbered iteration the checkpoint has not finished.
+    iteration: int | str | None = None
     verbose: bool = False
     python: str = sys.executable
     examples: Path = EXAMPLES
@@ -234,16 +236,13 @@ def preflight(codes: Sequence[str], options: RunOptions,
         for tool, why in (("sbatch", "submitting jobs"), ("squeue", "waiting for jobs")):
             if shutil.which(tool) is None:
                 out.append(Problem("error", f"{tool} is not on PATH ({why})",
-                                   "run with --dry-run or --no-dft on a laptop"))
+                                   "run with --dry-run on a laptop"))
         wanted = {"QE": "pw.x", "VASP": "vasp_std"}
         for dft in sorted(codes_used):
             if shutil.which(wanted[dft]) is None:
                 out.append(Problem("error",
                                    f"{wanted[dft]} is not on PATH but {dft} "
                                    "tutorials were selected"))
-    elif options.mode == NO_DFT and shutil.which("squeue") is None:
-        out.append(Problem("warning", "squeue is not on PATH",
-                           "--no-dft never submits anything, so this is harmless"))
 
     probe = _probe_mainprogram(options)
     if probe:
@@ -319,15 +318,15 @@ class TutorialRunner:
         """Run every selected tutorial; always returns a saved checkpoint."""
         self.options.runs_root.mkdir(parents=True, exist_ok=True)
         self.options.logs_root.mkdir(parents=True, exist_ok=True)
-        plan = waves(self.codes, self.catalog)
-        number, codes = self._wave_to_run(plan)
+        plan = iters(self.codes, self.catalog)
+        number, codes = self._iter_to_run(plan)
         if codes is None:                      # nothing left to do
             self.state.save()
             return self.state
-        record = self.state.wave(number, codes) if number is not None else None
+        record = self.state.iteration(number, codes) if number is not None else None
         if record is not None:
             record.status, record.started = RUNNING, time.time()
-            LOG.info("wave %d of %d: %d tutorial(s) -- %s",
+            LOG.info("iteration %d of %d: %d tutorial(s) -- %s",
                      number, len(plan) - 1, len(codes), ", ".join(codes))
             self.state.save()
         try:
@@ -338,41 +337,41 @@ class TutorialRunner:
             self._mark_running_as_interrupted()
             LOG.error("interrupted -- the checkpoint is at %s", self.state.path)
         if record is not None:
-            self._close_wave(record, plan)
+            self._close_iter(record, plan)
         self.state.save()
         self._clean_work_dirs()
         return self.state
 
-    # -- waves -------------------------------------------------------------- #
-    def _wave_to_run(self, plan: list[list[str]]) -> tuple[int | None, list[str] | None]:
-        """Which wave this invocation covers, and the codes in it.
+    # -- iters -------------------------------------------------------------- #
+    def _iter_to_run(self, plan: list[list[str]]) -> tuple[int | None, list[str] | None]:
+        """Which iteration this invocation covers, and the codes in it.
 
         ``(None, every code)`` is the historical single-pass run; that is still
-        the default, because in --dry-run and --no-dft nothing is ever queued
-        and there is nothing to wait between waves *for*.
+        the default, because --dry-run never queues anything and there is
+        nothing to wait between iterations *for*.
         """
-        wanted = self.options.wave
+        wanted = self.options.iteration
         if wanted is None:
             return None, list(self.codes)
         if wanted == "next":
-            number = self.state.next_wave(plan)
+            number = self.state.next_iter(plan)
             if number is None:
-                LOG.info("every wave is done (%d of %d); nothing to run",
+                LOG.info("every iteration is done (%d of %d); nothing to run",
                          len(plan), len(plan))
                 return None, None
         else:
             number = int(wanted)
             if not 0 <= number < len(plan):
-                LOG.error("wave %d does not exist: this selection has waves 0-%d",
+                LOG.error("iteration %d does not exist: this selection has iters 0-%d",
                           number, len(plan) - 1)
                 return None, None
         return number, list(plan[number])
 
-    def _close_wave(self, record, plan: list[list[str]]) -> None:
-        """Record how the wave ended, and say what to run next.
+    def _close_iter(self, record, plan: list[list[str]]) -> None:
+        """Record how the iteration ended, and say what to run next.
 
-        A wave is DONE only when every tutorial in it is; anything else leaves
-        it FAILED, so ``--wave next`` offers it again rather than stepping over
+        A iteration is DONE only when every tutorial in it is; anything else leaves
+        it FAILED, so ``--iter next`` offers it again rather than stepping over
         it onto structures that were never produced.
         """
         record.finished = time.time()
@@ -388,14 +387,14 @@ class TutorialRunner:
             record.status = DONE
         following = record.number + 1
         if record.status != DONE:
-            LOG.error("wave %d did not finish (%s); fix those, then re-run "
-                      "--wave %d", record.number, record.reason, record.number)
+            LOG.error("iteration %d did not finish (%s); fix those, then re-run "
+                      "--iteration %d", record.number, record.reason, record.number)
         elif following < len(plan):
-            LOG.info("wave %d done.  Wait for its jobs to finish, then run "
-                     "'htesp-tutorials --resume --wave next' for wave %d (%s)",
+            LOG.info("iteration %d done.  Wait for its jobs to finish, then run "
+                     "'htesp-tutorials --resume --iter next' for iteration %d (%s)",
                      record.number, following, ", ".join(plan[following]))
         else:
-            LOG.info("wave %d done -- that was the last one.", record.number)
+            LOG.info("iteration %d done -- that was the last one.", record.number)
 
     def _clean_work_dirs(self) -> None:
         """Drop work directories the user asked not to keep.
@@ -547,7 +546,7 @@ class TutorialRunner:
         cmd = [self.options.python, "-m", "htesp", str(step.command), *step.args]
         if self.options.workers:
             cmd += ["--workers", str(self.options.workers)]
-        if self.options.mode == DRY_RUN or (self.options.mode == NO_DFT and step.submits):
+        if self.options.mode == DRY_RUN:
             cmd.append("--dry-run")
         if self.options.verbose:
             cmd.append("-v")
@@ -685,11 +684,6 @@ class TutorialRunner:
             state.status = FAILED
             state.reason = f"mainprogram {step.command} exited {proc.returncode}"
             return
-        if self.options.mode == NO_DFT and step.submits:
-            # mainprogram logs through the logging module, i.e. to stderr
-            merged = (proc.stdout + "\n" + proc.stderr).splitlines()
-            state.would_submit = [line.strip() for line in merged
-                                  if "[dry-run]" in line]
         state.status = DONE
 
     def _run_callable(self, step: Step, state: StepState, workdir: Path,

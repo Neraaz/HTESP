@@ -57,8 +57,6 @@ def retry_command(code: str, step: StepState | None, mode: str,
         parts += ["--from", step.step_id]
     if mode == "dry-run":
         parts.append("--dry-run")
-    elif mode == "no-dft":
-        parts.append("--no-dft")
     parts += ["--workdir", str(workdir)]
     return " ".join(parts)
 
@@ -202,15 +200,6 @@ def build_markdown(state: RunState, order: Sequence[str] | None = None,
                   "finish.", ""]
         for tut in sorted(blocked, key=lambda t: t.code):
             lines += blocked_block(tut)
-    submissions = [(t, s) for t in state.tutorials.values()
-                   for s in t.steps.values() if s.would_submit]
-    if submissions:
-        lines += ["## What would have been submitted", "",
-                  "`--no-dft` prepared these steps but submitted nothing:", ""]
-        for tut, step in submissions:
-            lines.append(f"* `{tut.code}` step {step.index} (`{step.step_id}`)")
-            lines += [f"    * {line}" for line in step.would_submit]
-        lines.append("")
     unverifiable = [(t, s) for t in state.tutorials.values()
                     for s in t.steps.values() if s.unverifiable]
     if unverifiable:

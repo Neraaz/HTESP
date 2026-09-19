@@ -59,9 +59,9 @@ htesp/            the package
   <the rest>      science modules, unchanged in purpose from 1.x
 bin/              52 POSIX-sh shims, one per former bash script
 tutorials/        catalog.py builds the 42-tutorial catalogue and
-                  groups it into dependency waves (`waves()`); the
-                  runner does ONE wave per invocation under --wave,
-                  and state.json records each wave's status so a
+                  groups it into dependency iterations (`iters()`); the
+                  runner does ONE iteration per invocation under --iter,
+                  and state.json records each iteration's status so a
                   campaign can pause for days while jobs run.
                   Real mode also asks `sacct` how each job ENDED (leaving
                   squeue != succeeding) and greps the output for the
@@ -433,6 +433,7 @@ python3 docs/check_docs.py
 python3 -m htesp.check                           # dependencies + architecture
 python3 -m tutorials.run_tutorials --list        # the 42 tutorials and steps
 python3 -m tutorials.run_tutorials --dry-run     # whole tree, no QE/VASP/SLURM
+python3 -m tutorials.run_tutorials --list-iters  # the dependency iteration plan
 python3 -m unittest tutorials.selftest           # 30 stdlib-only self-tests
 ```
 
@@ -445,8 +446,9 @@ Environment variables: `MP_API_KEY`, `HTESP_CONFIG`, `HTESP_WORKERS`,
 catalogue (`catalog.py`, `steps.py`) and executes it (`runner.py`), checkpointing
 to `state.json` after every step and writing `report.md`/`report.json` naming
 the tutorial, step, command, working directory, exit code, missing artifacts and
-the log tail wherever it stopped. Modes: `--dry-run` (laptop), `--no-dft`
-(prepare, report what would be submitted), default (real, polls `squeue`).
+the log tail wherever it stopped. Two modes only: `--dry-run` (laptop) and the
+default real one (polls `squeue`).  `--no-dft` was removed as one mode more
+than the runner needed explaining.
 A step is `done` only when the command exits 0 **and** its declared artifact
 globs match — "exited 0 and wrote nothing" is treated as failure. `examples/` is
 read-only input; a `--workdir` inside it is refused. QE/VASP tutorial numbering

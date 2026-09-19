@@ -26,7 +26,6 @@ tutorials/
 | mode | what it does | what it needs |
 |------|--------------|---------------|
 | `--dry-run` | runs every step as `mainprogram <cmd> --dry-run`: all input generation and file plumbing, nothing submitted | a laptop |
-| `--no-dft` | prepares everything and reports what *would* be submitted at each submission point, but submits nothing | a laptop |
 | *(default)* | the real campaign: submits jobs, polls `squeue`, waits, verifies | QE/VASP + SLURM |
 
 Steps that write VASP inputs are recorded as *skipped* when pymatgen has no
@@ -57,11 +56,10 @@ is refused.
 ```bash
 # on a laptop
 python -m tutorials.run_tutorials --dry-run
-python -m tutorials.run_tutorials --dry-run --code QE --only QE/9,QE/12
+python -m tutorials.run_tutorials --dry-run --only QE/9,QE/12
 
 # on a cluster
-sbatch tutorials/submit_tutorials.sh --code QE
-sbatch tutorials/submit_tutorials.sh --no-dft          # prepare, submit nothing
+sbatch tutorials/submit_tutorials.sh --only QE
 ```
 
 `htesp-tutorials` is the installed entry point (`pyproject.toml` registers
@@ -77,17 +75,13 @@ tutorials.run_tutorials` is the same thing from a checkout.
                      ones, so keep 'yes' while debugging.  Logs, the report
                      and the checkpoint are kept either way, and `--resume`
                      after a cleanup simply re-runs what was removed
---dry-run / --no-dft mode (default: the real thing)
+--dry-run mode (default: the real thing)
 --resume / --restart re-run only what is not done (default) / start over
---code QE|VASP|both  which example tree
 --only  QE/9,VASP/14 run just these
 --skip  QE/4,QE/5    leave these out
 --from  <step-id>    start each selected tutorial at this step
 --workers N          passed through to mainprogram --workers
---poll-interval S    seconds between squeue polls (default 60)
---job-timeout S      how long to wait for a step's jobs (default 24 h)
---step-timeout S     how long one mainprogram call may take (default 6 h)
---skip-stubs         leave out tutorials the example tree cannot run
+--timeout HOURS      how long to wait for a step's cluster jobs (default 24)
 --force              run even when preflight found errors
 --list               print the catalogue (every tutorial, every step) and exit
 -v/--verbose
@@ -135,7 +129,6 @@ summary and writes `<workdir>/report.md` and `<workdir>/report.json`:
 * the exact retry line, e.g.
   `htesp-tutorials --resume --only QE/12 --from band-scf --workdir ...`;
 * everything that was **blocked**, and by which dependency;
-* under `--no-dft`, everything that *would* have been submitted;
 * any step that finished but could not be **verified** (no `squeue` on PATH, or
   no job ids recorded) — those are called out rather than counted as success.
 
@@ -205,7 +198,8 @@ that exits 0 and writes nothing, the tutorial blocked behind it, `--resume`,
   pymatgen's `PMG_VASP_PSP_DIR` before running VASP tutorials for real.
 * `examples/VASP/tutorial21` (3D Fermi surface) ships only `ifermi.tar.gz` — no
   `config.json`, no `input.in`, no `vasprun.xml`. It is flagged as a stub in the
-  catalogue and cannot run as shipped; `--skip-stubs` leaves it out.
+  catalogue and cannot run as shipped; preflight warns about it, and
+  `--skip` leaves it out if it is in the way.
 * The relaxation loop (`2` → `3` → `e0` until `niteration < 3`) runs at most
   4 cycles by default; a system that has not converged by then is reported, not
   looped forever.

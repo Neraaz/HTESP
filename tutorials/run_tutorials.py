@@ -8,7 +8,6 @@ work directory, waits for the cluster jobs each step submits, checkpoints after
 every step -- and, when it stops, says exactly where.
 
     htesp-tutorials --dry-run                 # no QE/VASP/SLURM needed
-    htesp-tutorials --no-dft --code QE        # prepare inputs, submit nothing
     htesp-tutorials --only QE/9,QE/12         # the real thing
     htesp-tutorials --resume                  # carry on where it stopped
     htesp-tutorials --list                    # print the catalogue and exit
@@ -27,7 +26,7 @@ from tutorials import report as report_mod
 from tutorials import catalog as catalog_mod
 from tutorials.catalog import (CATALOG, format_catalog, parse_codes,
                                select)
-from tutorials.runner import (DRY_RUN, NO_DFT, REAL, RunOptions, TutorialRunner,
+from tutorials.runner import (DRY_RUN, REAL, RunOptions, TutorialRunner,
                               preflight)
 from tutorials.state import BLOCKED, FAILED, RunState
 
@@ -55,9 +54,6 @@ def build_parser() -> argparse.ArgumentParser:
     mode.add_argument("--dry-run", action="store_true",
                       help="run every step with 'mainprogram ... --dry-run': all "
                            "input generation, no QE/VASP/SLURM (works on a laptop)")
-    mode.add_argument("--no-dft", action="store_true",
-                      help="prepare everything and report what would be submitted, "
-                           "but submit nothing")
 
     resume = parser.add_mutually_exclusive_group()
     resume.add_argument("--resume", action="store_true", default=True,
@@ -71,35 +67,34 @@ def build_parser() -> argparse.ArgumentParser:
                              "them, including those of failed tutorials, so "
                              "keep 'yes' while debugging.  Logs, the report "
                              "and the checkpoint are kept either way")
-    parser.add_argument("--code", choices=("QE", "VASP", "both"), default="both",
-                        help="which example tree to run (default: both)")
     parser.add_argument("--only", default=None,
-                        help="comma-separated tutorial codes to run, e.g. QE/9,VASP/14")
+                        help="comma-separated tutorial codes to run, e.g. "
+                             "QE/9,VASP/14.  A bare tree name means all of it: "
+                             "--only QE")
     parser.add_argument("--skip", default=None,
-                        help="comma-separated tutorial codes to leave out")
+                        help="comma-separated tutorial codes to leave out; a "
+                             "bare tree name works here too")
     parser.add_argument("--from", dest="from_step", default=None,
-                        help="start each selected tutorial at this step id")
+                        help="start each selected tutorial at this step id "
+                             "(the retry line in the report uses this)")
     parser.add_argument("--workers", type=int, default=None,
                         help="passed through to mainprogram --workers")
-    parser.add_argument("--poll-interval", type=float, default=60.0,
-                        help="seconds between squeue polls (default: 60)")
-    parser.add_argument("--job-timeout", type=float, default=24 * 3600,
-                        help="seconds to wait for a step's cluster jobs (default: 24h)")
-    parser.add_argument("--step-timeout", type=float, default=6 * 3600,
-                        help="seconds a single mainprogram call may take (default: 6h)")
-    parser.add_argument("--skip-stubs", action="store_true",
-                        help="leave out tutorials the example tree cannot run")
+    parser.add_argument("--timeout", type=float, default=24.0, metavar="HOURS",
+                        help="hours to wait for a step's cluster jobs before "
+                             "giving up (default: 24).  The poll interval (60s) "
+                             "and the limit on a single mainprogram call (6h) "
+                             "are fixed: neither depends on the study")
     parser.add_argument("--force", action="store_true",
                         help="run even when preflight reports errors")
-    parser.add_argument("--wave", default=None, metavar="N",
-                        help="run one dependency wave and stop: 'next' takes "
-                             "the lowest-numbered wave the checkpoint has not "
+    parser.add_argument("--iter", dest="iteration", default=None, metavar="N",
+                        help="run one dependency iteration and stop: 'next' takes "
+                             "the lowest-numbered iteration the checkpoint has not "
                              "finished, an integer takes exactly that one.  "
                              "Without it the whole selection runs in one pass, "
-                             "which is right for --dry-run and --no-dft but "
+                             "which is right for --dry-run but "
                              "means a real run blocks on the queue for days")
-    parser.add_argument("--list-waves", action="store_true",
-                        help="print the wave plan for the current selection "
+    parser.add_argument("--list-iters", action="store_true",
+                        help="print the iteration plan for the current selection "
                              "and exit")
     parser.add_argument("--list", action="store_true",
                         help="print the catalogue and exit")
@@ -110,8 +105,6 @@ def build_parser() -> argparse.ArgumentParser:
 def _mode(args: argparse.Namespace) -> str:
     if args.dry_run:
         return DRY_RUN
-    if args.no_dft:
-        return NO_DFT
     return REAL
 
 
@@ -142,28 +135,27 @@ def main(argv: list[str] | None = None) -> int:
         LOG.error("%s", exc)
         return 2
 
-    codes = select(code=args.code, only=only, skip=skip,
-                   include_stubs=not args.skip_stubs, catalog=catalog)
+    codes = select(only=only, skip=skip, catalog=catalog)
     if not codes:
-        LOG.error("no tutorials selected (--code %s --only %s --skip %s)",
-                  args.code, args.only, args.skip)
+        LOG.error("no tutorials selected (--only %s --skip %s)",
+                  args.only, args.skip)
         return 2
 
-    if args.list_waves:
-        from tutorials.catalog import waves as _waves
+    if args.list_iters:
+        from tutorials.catalog import iters as _iters
         from tutorials.state import RunState as _RunState
 
-        plan = _waves(codes, catalog)
-        done = _RunState.load(Path(args.workdir).resolve() / "state.json").waves
-        for number, wave in enumerate(plan):
+        plan = _iters(codes, catalog)
+        done = _RunState.load(Path(args.workdir).resolve() / "state.json").iters
+        for number, iteration in enumerate(plan):
             status = done.get(str(number))
             mark = f"[{status.status}]" if status else "[pending]"
-            print(f"wave {number} {mark:<10} {len(wave):2d} tutorial(s)")
-            print(f"           {', '.join(wave)}")
+            print(f"iteration {number} {mark:<10} {len(iteration):2d} tutorial(s)")
+            print(f"           {', '.join(iteration)}")
         # A selection that leaves a dependency out makes the dependent a root
-        # -- wave 0 -- and it then runs against a hub that was never built.
+        # -- iteration 0 -- and it then runs against a hub that was never built.
         # topological_order drops unselected dependencies by design; say so
-        # here rather than letting the wave numbers imply otherwise.
+        # here rather than letting the iteration numbers imply otherwise.
         chosen = set(codes)
         orphans = [(c, [d for d in catalog[c].depends_on if d not in chosen])
                    for c in codes]
@@ -173,7 +165,7 @@ def main(argv: list[str] | None = None) -> int:
                   "whatever is already in their work directory:")
             for code, missing in orphans:
                 print(f"  {code} needs {', '.join(missing)}")
-        print("\nRun one wave at a time with --wave next; each stops when its "
+        print("\nRun one iteration at a time with --iter next; each stops when its "
               "jobs are submitted.")
         return 0
 
@@ -182,9 +174,8 @@ def main(argv: list[str] | None = None) -> int:
     workdir = Path(args.workdir).resolve()
     options = RunOptions(
         workdir=workdir, mode=_mode(args), resume=not args.restart,
-        wave=args.wave,
-        poll_interval=args.poll_interval, job_timeout=args.job_timeout,
-        step_timeout=args.step_timeout, workers=args.workers,
+        iteration=args.iteration,
+        job_timeout=args.timeout * 3600.0, workers=args.workers,
         from_step=args.from_step, verbose=args.verbose, examples=examples,
         keep="all" if args.keep_output == "yes" else "none",
     )

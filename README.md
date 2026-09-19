@@ -294,25 +294,28 @@ stops writes a report naming the tutorial, the step, the command, the working
 directory, the exit code, the artifacts that were missing and the last lines of
 the failing log. See `tutorials/README.md`.
 
-### Running a real campaign in waves
+### Running a real campaign in iterations
 
 A real run submits jobs. Wave 0 ends with the relaxations queued, and the
 tutorials that read the relaxed structure cannot start until those finish, so
-the runner does one wave per invocation:
+the runner does one iteration per invocation:
 
 ```bash
-htesp-tutorials --list-waves          # the plan, and what is done so far
-htesp-tutorials --wave next           # run the first unfinished wave, then stop
+htesp-tutorials --list-iters          # the plan, and what is done so far
+htesp-tutorials --iter next           # run the first unfinished iteration, then stop
 # ... wait for the queue to drain ...
-htesp-tutorials --resume --wave next  # the next one
+htesp-tutorials --resume --iter next  # the next one
 ```
 
-Each wave's status is saved in `state.json`, so days later the runner still
-knows which wave finished. A wave counts as done only when every tutorial in it
-did; a failed wave is offered again rather than stepped over, because the wave
-after it would run on structures that were never produced. Without `--wave` the
-whole selection runs in one pass, which is what you want for `--dry-run` and
-`--no-dft`.
+Each iteration's status is saved in `state.json`, so days later the runner
+still knows which one finished. An iteration counts as done only when every
+tutorial in it did; a failed iteration is offered again rather than stepped
+over, because the next one would run on structures that were never produced.
+Without `--iter` the whole selection runs in one pass, which is what you want
+for `--dry-run`.
+
+The runner has two modes: `--dry-run` (no QE/VASP/SLURM needed) and the real
+one, which is the default.
 
 ## Documentation
 
@@ -356,7 +359,8 @@ See `tests/README.md` for what each file pins.
 * **POTCARs are never shipped** — they are licensed. Every VASP input-writing
   step is skipped, with that reason, until `--config_vasp_pot` is run.
 * **`examples/VASP/tutorial21`** (3D Fermi surface) ships only `ifermi.tar.gz`
-  and cannot run as shipped; `htesp-tutorials --skip-stubs` leaves it out.
+  and cannot run as shipped; preflight warns about it, and
+  `htesp-tutorials --skip` leaves it out if it is in the way.
 * **`--dry-run` still uses the network** for the database tutorials: it
   suppresses job submission, not queries.
 * **enumlib and phonopy are not pip-installable**; see the table above.

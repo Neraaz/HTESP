@@ -19,7 +19,7 @@ Running it
 
     htesp-tutorials --dry-run                 # the installed entry point
     python -m tutorials.run_tutorials --dry-run   # the same thing from a checkout
-    sbatch tutorials/submit_tutorials.sh --code QE
+    sbatch tutorials/submit_tutorials.sh --only QE
 
 --------------------
 Where ``examples/`` is found
@@ -61,10 +61,6 @@ The three modes
      - Runs every step as ``mainprogram <cmd> --dry-run``: all input generation
        and file plumbing, nothing submitted.
      - A laptop.
-   * - ``--no-dft``
-     - Prepares everything and reports what *would* be submitted at each
-       submission point, but submits nothing.
-     - A laptop.
    * - *(default)*
      - The real campaign: submits jobs, polls ``squeue``, waits, verifies.
      - QE or VASP, and SLURM.
@@ -81,17 +77,16 @@ Selecting tutorials
 .. code-block:: bash
 
     htesp-tutorials --list                      # the catalogue, every step
-    htesp-tutorials --code QE                   # one example tree
+    htesp-tutorials --only QE                   # one whole example tree
     htesp-tutorials --only QE/9,QE/12           # just these
     htesp-tutorials --skip QE/4,QE/5            # all but these
     htesp-tutorials --from band-scf             # start each one at this step
-    htesp-tutorials --skip-stubs                # leave out what cannot run as shipped
 
 Other options: ``--workdir DIR`` (root for work directories, logs, checkpoint
 and report), ``--workers N`` (passed through to ``mainprogram --workers``),
-``--poll-interval S`` (seconds between ``squeue`` polls, default 60),
-``--job-timeout S`` (how long to wait for a step's jobs, default 24 h),
-``--step-timeout S`` (how long one ``mainprogram`` call may take, default 6 h),
+``--timeout HOURS`` (how long to wait for a step's cluster jobs, default 24).
+The poll interval (60 s) and the limit on one ``mainprogram`` call (6 h) are
+fixed, because neither depends on the study,
 ``--force`` (run even when preflight found errors) and ``-v``.
 
 Exit codes: ``0`` all finished, ``1`` something failed or was blocked, ``2`` a
@@ -146,7 +141,6 @@ containing:
 * the exact retry line, for example
   ``htesp-tutorials --resume --only QE/12 --from band-scf --workdir ...``;
 * everything that was **blocked**, and by which dependency;
-* under ``--no-dft``, everything that *would* have been submitted;
 * any step that finished but could not be **verified** -- no ``squeue`` on
   ``$PATH``, or no job ids recorded.  Those are called out, not counted as
   success.
@@ -198,8 +192,9 @@ Known limitations
   pymatgen's ``PMG_VASP_PSP_DIR`` before running the VASP tutorials for real.
 * ``examples/VASP/tutorial21`` (3D Fermi surface) ships only ``ifermi.tar.gz`` --
   no ``config.json``, no ``input.in``, no ``vasprun.xml``.  It is flagged as a
-  stub in the catalogue and cannot run as shipped; ``--skip-stubs`` leaves it
-  out.
+  stub in the catalogue and cannot run as shipped; preflight warns about it
+  and the report names it, so leave it out with ``--skip`` if it is in the
+  way.
 * The relaxation loop (``2`` → ``3`` → ``e0`` until ``niteration < 3``) runs at
   most four cycles by default.  A system that has not converged by then is
   reported, not looped forever.
@@ -218,43 +213,43 @@ cover catalogue integrity, the checkpoint round trip, ``input.in`` patching,
 artefact verification, job-id collection, the missing-``squeue`` path, the
 contents of a stop report, and a full end-to-end run against a stub
 ``mainprogram``.
-Running a real campaign in waves
---------------------------------
+Running a real campaign in iterations
+-------------------------------------
 
-In ``--dry-run`` and ``--no-dft`` nothing is ever queued, so the whole
+In ``--dry-run`` nothing is ever queued, so the whole
 selection runs in one pass and there is nothing to wait for.  A real run is
-different: wave 0 ends with the relaxations sitting in the scheduler's queue,
+different: iteration 0 ends with the relaxations sitting in the scheduler's queue,
 and the tutorials that read the relaxed structure cannot honestly start until
 those have finished.  Running everything in one pass either blocks for days
 inside ``squeue`` polling or proceeds on a structure that is not relaxed yet --
 and the second is silently wrong, which is worse than failing.
 
-``--wave`` runs one dependency wave and stops:
+``--iter`` runs one dependency iteration and stops:
 
 .. code-block:: bash
 
-    htesp-tutorials --list-waves            # the plan, and what is done so far
-    htesp-tutorials --wave next             # run the first unfinished wave
+    htesp-tutorials --list-iters            # the plan, and what is done so far
+    htesp-tutorials --iter next             # run the first unfinished iteration
     # ... wait for its jobs to drain ...
-    htesp-tutorials --resume --wave next    # the next one
-    htesp-tutorials --wave 1                # or name one exactly
+    htesp-tutorials --resume --iter next    # the next one
+    htesp-tutorials --iter 1                # or name one exactly
 
-The waves are derived from ``depends_on`` alone, so they stay correct as the
-catalogue changes.  Wave 0 is every tutorial that depends on nothing: input
-generation, the database front ends and the relaxation hubs.  Wave 1 is
-everything that reads what wave 0 produced.
+The iterations are derived from ``depends_on`` alone, so they stay correct as the
+catalogue changes.  Iteration 0 is every tutorial that depends on nothing: input
+generation, the database front ends and the relaxation hubs.  Iteration 1 is
+everything that reads what iteration 0 produced.
 
-Each wave's status is written to ``state.json`` under ``waves``, so days later
-the runner can still say which wave finished and which is next.  A wave counts
-as done only when every tutorial in it did; an interrupted or failed wave is
-offered again by ``--wave next`` rather than stepped over, because the wave
+Each iteration's status is written to ``state.json`` under ``iterations``, so days later
+the runner can still say which iteration finished and which is next.  A iteration counts
+as done only when every tutorial in it did; an interrupted or failed iteration is
+offered again by ``--iter next`` rather than stepped over, because the iteration
 after it would run on structures that were never produced.  ``--restart --only
-QE/9`` un-finishes any wave containing ``QE/9`` for the same reason.
+QE/9`` un-finishes any iteration containing ``QE/9`` for the same reason.
 
-A selection that leaves a dependency out makes the dependent a root -- wave 0
+A selection that leaves a dependency out makes the dependent a root -- iteration 0
 -- because :func:`~tutorials.catalog.topological_order` drops dependencies
-outside the selection.  ``--list-waves`` names those cases rather than letting
-the wave numbers imply an ordering that will not happen.
+outside the selection.  ``--list-iters`` names those cases rather than letting
+the iteration numbers imply an ordering that will not happen.
 What "the step finished" means in a real run
 --------------------------------------------
 
@@ -292,10 +287,10 @@ achieved`` are proof of the opposite.  Four steps carry the flag:
 ``relax-submit`` and ``resubmit`` in the relaxation hub, ``relax-deformed`` in
 the elastic tutorial and ``relax-volumes`` in the equation-of-state series.
 
-Both checks run only in real mode; ``--dry-run`` and ``--no-dft`` never produce
+Both checks run only in real mode; ``--dry-run`` never produces
 an ``OUTCAR``, so applying them there would fail every relaxation for the wrong
-reason.  Together with the wave gate above, a relaxation that did not converge
-now fails its step, which fails its wave, which leaves every dependent tutorial
+reason.  Together with the iteration gate above, a relaxation that did not converge
+now fails its step, which fails its iteration, which leaves every dependent tutorial
 BLOCKED -- instead of them quietly starting from an unrelaxed cell.
 
 The batch header each tutorial runs with

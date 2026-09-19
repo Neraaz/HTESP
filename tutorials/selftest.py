@@ -124,10 +124,22 @@ class CatalogTest(unittest.TestCase):
             normalise_code("nine")
 
     def test_selection(self):
-        self.assertEqual(len(select(code="QE")), 21)
+        # a bare tree name means the whole tree; it replaced the --code flag
+        self.assertEqual(len(select(only=["QE/*"])), 21)
+        self.assertEqual(len(select(only=["VASP/*"])), 21)
+        self.assertEqual(len(select()), 42)
         self.assertEqual(select(only=["QE/9"]), ["QE/9"])
         self.assertNotIn("QE/9", select(skip=["QE/9"]))
         self.assertEqual(select(only=["QE/12", "QE/9"]), ["QE/9", "QE/12"])
+        # trees and single codes mix, and skip understands a tree too
+        self.assertEqual(len(select(only=["QE/*", "VASP/14"])), 22)
+        self.assertEqual(len(select(skip=["VASP/*"])), 21)
+
+    def test_a_bare_tree_name_is_accepted(self):
+        self.assertEqual(normalise_code("QE"), "QE/*")
+        self.assertEqual(normalise_code("vasp"), "VASP/*")
+        with self.assertRaises(ValueError):
+            normalise_code("nonsense")
 
 
 # --------------------------------------------------------------------------- #

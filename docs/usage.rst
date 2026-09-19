@@ -299,8 +299,6 @@ Runs the worked examples and, when it stops, says exactly where.  See
                            report (default: ./tutorial_runs_root)
      --dry-run             run every step with 'mainprogram ... --dry-run': all
                            input generation, no QE/VASP/SLURM (works on a laptop)
-     --no-dft              prepare everything and report what would be submitted,
-                           but submit nothing
      --resume              re-run only what is not already done (the default)
      --restart             forget the checkpoint and run everything again
      --keep_output {yes,no}
@@ -309,27 +307,19 @@ Runs the worked examples and, when it stops, says exactly where.  See
                            those of failed tutorials, so keep 'yes' while
                            debugging. Logs, the report and the checkpoint are
                            kept either way
-     --code {QE,VASP,both}
-                           which example tree to run (default: both)
      --only ONLY           comma-separated tutorial codes to run, e.g.
-                           QE/9,VASP/14
-     --skip SKIP           comma-separated tutorial codes to leave out
-     --from FROM_STEP      start each selected tutorial at this step id
-     --wave N              run one dependency wave and stop: 'next' takes the
-                           lowest-numbered wave the checkpoint has not finished,
-                           an integer takes exactly that one.  Without it the
-                           whole selection runs in one pass
-     --list-waves          print the wave plan for the current selection and exit
+                           QE/9,VASP/14.  A bare tree name means all of it:
+                           --only QE
+     --skip SKIP           comma-separated tutorial codes to leave out; a bare
+                           tree name works here too
+     --from FROM_STEP      start each selected tutorial at this step id (the
+                           retry line in the report uses this)
      --workers WORKERS     passed through to mainprogram --workers
-     --poll-interval POLL_INTERVAL
-                           seconds between squeue polls (default: 60)
-     --job-timeout JOB_TIMEOUT
-                           seconds to wait for a step's cluster jobs (default:
-                           24h)
-     --step-timeout STEP_TIMEOUT
-                           seconds one `mainprogram` invocation may take (default:
-                           6h)
-     --skip-stubs          leave out tutorials the example tree cannot run
+     --timeout HOURS       hours to wait for a step's cluster jobs before
+                           giving up (default: 24).  The poll interval (60s)
+                           and the limit on a single 'mainprogram'
+                           invocation (6h) are fixed: neither depends on the
+                           study
      --force               run even when preflight reports errors
      --list                print the catalogue and exit
      -v, --verbose         debug logging

@@ -543,11 +543,11 @@ class PotcarlessStepsAreSkippedNotDone(unittest.TestCase):
         potcars_available.cache_clear()
 
 
-class DependencyWaves(unittest.TestCase):
-    """Running a real campaign in waves.
+class DependencyIterations(unittest.TestCase):
+    """Running a real campaign in iters.
 
-    Wave 0 ends with relaxations sitting in the queue.  Nothing in wave 1 can
-    honestly start until those have finished and converged, because wave 1 *is*
+    Iteration 0 ends with relaxations sitting in the queue.  Nothing in iteration 1 can
+    honestly start until those have finished and converged, because iteration 1 *is*
     the tutorials that read the relaxed structure.  One pass over the whole
     catalogue either blocks for days inside squeue polling or proceeds on a
     structure that is not relaxed yet -- and the second is silently wrong,
@@ -559,32 +559,32 @@ class DependencyWaves(unittest.TestCase):
 
         return CATALOG
 
-    def test_wave_zero_is_everything_that_depends_on_nothing(self):
-        from tutorials.catalog import select, waves
+    def test_iteration_zero_is_everything_that_depends_on_nothing(self):
+        from tutorials.catalog import select, iters
 
         catalog = self._catalog()
-        plan = waves(select(catalog=catalog), catalog)
+        plan = iters(select(catalog=catalog), catalog)
         self.assertTrue(plan)
         for code in plan[0]:
             with self.subTest(code=code):
                 self.assertEqual(catalog[code].depends_on, ())
 
     def test_every_tutorial_appears_exactly_once(self):
-        from tutorials.catalog import select, waves
+        from tutorials.catalog import select, iters
 
         catalog = self._catalog()
         codes = select(catalog=catalog)
-        flat = [code for wave in waves(codes, catalog) for code in wave]
+        flat = [code for iteration in iters(codes, catalog) for code in iteration]
         self.assertEqual(sorted(flat), sorted(codes))
 
-    def test_a_dependency_is_always_in_an_earlier_wave(self):
+    def test_a_dependency_is_always_in_an_earlier_iteration(self):
         """The whole point: nothing runs before what it reads."""
-        from tutorials.catalog import select, waves
+        from tutorials.catalog import select, iters
 
         catalog = self._catalog()
         codes = select(catalog=catalog)
-        plan = waves(codes, catalog)
-        number = {code: i for i, wave in enumerate(plan) for code in wave}
+        plan = iters(codes, catalog)
+        number = {code: i for i, iteration in enumerate(plan) for code in iteration}
         for code, index in number.items():
             for dep in catalog[code].depends_on:
                 if dep in number:
@@ -593,15 +593,15 @@ class DependencyWaves(unittest.TestCase):
 
     def test_an_unselected_dependency_makes_the_dependent_a_root(self):
         """topological_order drops dependencies outside the selection, so the
-        wave numbers must agree with it rather than inventing a wave for a
+        iteration numbers must agree with it rather than inventing a iteration for a
         tutorial that will not run."""
-        from tutorials.catalog import select, waves
+        from tutorials.catalog import select, iters
 
         catalog = self._catalog()
-        plan = waves(select(only=["QE/11"], catalog=catalog), catalog)
+        plan = iters(select(only=["QE/11"], catalog=catalog), catalog)
         self.assertEqual(plan, [["QE/11"]])
 
-    def test_the_wave_plan_survives_a_restart(self):
+    def test_the_iteration_plan_survives_a_restart(self):
         import tempfile
 
         from tutorials.state import DONE, RunState
@@ -609,17 +609,17 @@ class DependencyWaves(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "state.json"
             state = RunState(path=path)
-            state.wave(0, ["QE/9"]).status = DONE
-            state.wave(1, ["QE/11"])
+            state.iteration(0, ["QE/9"]).status = DONE
+            state.iteration(1, ["QE/11"])
             state.save()
 
             back = RunState.load(path)
-            self.assertEqual(back.waves["0"].status, DONE)
-            self.assertEqual(back.waves["1"].codes, ["QE/11"])
-            self.assertEqual(back.next_wave([["QE/9"], ["QE/11"]]), 1)
+            self.assertEqual(back.iters["0"].status, DONE)
+            self.assertEqual(back.iters["1"].codes, ["QE/11"])
+            self.assertEqual(back.next_iter([["QE/9"], ["QE/11"]]), 1)
 
-    def test_a_failed_wave_is_offered_again_not_stepped_over(self):
-        """Wave 1 reads what wave 0 produced; if wave 0 failed, there is
+    def test_a_failed_iteration_is_offered_again_not_stepped_over(self):
+        """Iteration 1 reads what iteration 0 produced; if iteration 0 failed, there is
         nothing to read."""
         import tempfile
 
@@ -627,11 +627,11 @@ class DependencyWaves(unittest.TestCase):
 
         with tempfile.TemporaryDirectory() as tmp:
             state = RunState(path=Path(tmp) / "state.json")
-            state.wave(0, ["QE/9"]).status = FAILED
-            self.assertEqual(state.next_wave([["QE/9"], ["QE/11"]]), 0)
+            state.iteration(0, ["QE/9"]).status = FAILED
+            self.assertEqual(state.next_iter([["QE/9"], ["QE/11"]]), 0)
 
-    def test_forgetting_a_tutorial_unfinishes_its_wave(self):
-        """--restart --only QE/9 must not leave wave 0 marked done, or the
+    def test_forgetting_a_tutorial_unfinishes_its_iteration(self):
+        """--restart --only QE/9 must not leave iteration 0 marked done, or the
         next run would step straight over the tutorial it just cleared."""
         import tempfile
 
@@ -639,14 +639,14 @@ class DependencyWaves(unittest.TestCase):
 
         with tempfile.TemporaryDirectory() as tmp:
             state = RunState(path=Path(tmp) / "state.json")
-            state.wave(0, ["QE/9", "QE/2"]).status = DONE
-            state.wave(1, ["QE/11"]).status = DONE
+            state.iteration(0, ["QE/9", "QE/2"]).status = DONE
+            state.iteration(1, ["QE/11"]).status = DONE
             state.reset(["QE/9"])
-            self.assertEqual(state.waves["0"].status, PENDING)
-            self.assertEqual(state.waves["1"].status, DONE)
+            self.assertEqual(state.iters["0"].status, PENDING)
+            self.assertEqual(state.iters["1"].status, DONE)
 
-    def test_an_old_checkpoint_loads_with_no_waves(self):
-        """The field is additive: a checkpoint written before waves existed is
+    def test_an_old_checkpoint_loads_with_no_iters(self):
+        """The field is additive: a checkpoint written before iters existed is
         still a valid checkpoint, not a schema mismatch that discards hours."""
         import json
         import tempfile
@@ -658,14 +658,14 @@ class DependencyWaves(unittest.TestCase):
             path.write_text(json.dumps({"version": SCHEMA_VERSION,
                                         "mode": "real", "tutorials": {}}))
             state = RunState.load(path)
-            self.assertEqual(state.waves, {})
+            self.assertEqual(state.iters, {})
             self.assertEqual(state.mode, "real")
 
     def test_without_the_flag_the_run_is_one_pass_as_before(self):
-        """--dry-run and --no-dft queue nothing, so there is nothing to wait
-        between waves for; every earlier invocation must keep working."""
+        """--dry-run queues nothing, so there is nothing to wait
+        between iters for; every earlier invocation must keep working."""
         source = (ROOT / "tutorials" / "runner.py").read_text()
-        block = source.split("def _wave_to_run", 1)[1].split("\n    def ", 1)[0]
+        block = source.split("def _iter_to_run", 1)[1].split("\n    def ", 1)[0]
         self.assertIn("if wanted is None:", block)
         self.assertIn("return None, list(self.codes)", block)
 
@@ -681,8 +681,8 @@ class DependencyWaves(unittest.TestCase):
             with self.assertRaises(SystemExit):
                 build_parser().parse_args(["--help"])
         text = buf.getvalue()
-        self.assertIn("--wave", text)
-        self.assertIn("--list-waves", text)
+        self.assertIn("--iter", text)
+        self.assertIn("--list-iters", text)
 
 
 class JobFinishedIsNotJobSucceeded(unittest.TestCase):
@@ -827,7 +827,7 @@ class JobFinishedIsNotJobSucceeded(unittest.TestCase):
         self.assertEqual(seen, wanted)
 
     def test_the_check_only_runs_against_real_output(self):
-        """--dry-run and --no-dft never produce an OUTCAR, so applying it
+        """--dry-run never produces an OUTCAR, so applying it
         there would fail every relaxation for the wrong reason."""
         source = (ROOT / "tutorials" / "runner.py").read_text()
         block = source.split("def _unconverged", 1)[1].split("\n    def ", 1)[0]
