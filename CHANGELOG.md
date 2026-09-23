@@ -310,26 +310,221 @@ A structural release. Every command keeps its name and its arguments —
   and `docs/usage.rst` contradicted each other about which file was which; both
   were rewritten.
 
+### Fixed — the database front ends
+
+* **Material ids came back in the wrong form.** Materials Project is migrating
+  `MPID` to `AlphaID` (`mp-763` becomes `mp-bdj`). Both address the same
+  material, but only the legacy spelling matches `R<mpid>-<compound>/`,
+  `scf-<mpid>.in` and the tracking files of an existing campaign, so a search
+  wrote ids no later command could find. Two traps, one inside the other:
+  `str(AlphaID)` gives the alphabetic form while `.string` gives the legacy
+  one, *and* `doc.dict()['material_id']` is already a plain alphabetic `str`
+  with no `.string` left to recover. `legacy_mpid()` reads the attribute and
+  decodes a bare `'mp-bdj'` through `AlphaID(...).string`, leaving OQMD and
+  AFLOW ids alone. This one was a regression the rewrite introduced.
+* **`ordering` matched nothing.** `Ordering` is a plain `Enum` in emmet-core,
+  so `str(Ordering.NM)` is `'Ordering.NM'` and `Ordering.NM == 'NM'` is
+  `False`. The filter `data['ordering'] == 'NM'` therefore matched no row: a
+  search returning 465 compounds wrote 0.
+* **`ordering` is now `Unknown` for much of the database.** Materials Project
+  reports it for any material with no magnetism calculation — 202 of 465 in a
+  boron-binary search, 158 of the 222 that survived the metal and
+  formation-energy filters. A bare `"NM"` discarded all of them: 465 hits, 2
+  rows written, which reads as a broken search. `filter_ordering()` now takes
+  `null` (no filter at all) and a list; the shipped default is
+  `["NM", "Unknown"]`.
+* **Requesting `bandstructure` or `dos` rejected the whole document.**
+  `MpConnect.setting()` asked for `available_fields[:-29]`, a slice that still
+  contained both. emmet-core validates every requested sub-document and the
+  API's payload no longer carries the fields the model declares, so one
+  unusable sub-document rejected the entire `SummaryDoc`: `mainprogram
+  download` raised `ValidationError` for every material that has band-structure
+  or DOS data, and 1 of 64 succeeded. Safe to drop, because HTESP *computes*
+  bands and DOS and never fetches them.
+* **The AFLUX range operator was changed on documentation alone, and was
+  wrong.** The docs describe `,` as OR and `:` as AND inside a property's
+  parentheses, which reads as though a bounded range needs `1*:*2`. Measured
+  against the live API, `nspecies(1*,*2)` returns binaries and `nspecies(1*:*2)`
+  returns *ternaries*; the reverted spelling is the comma. A test rejects
+  reintroducing `:`.
+* **OQMD prompted, and nobody was there.** `qmpy_rester.get_oqmd_phases()`
+  defaults to `verbose=True`, which does not merely print — it calls
+  `input('Proceed? [Y/n]:')`. HTESP is always run non-interactively, so that
+  either blocked forever or raised "EOF when reading a line". Its client also
+  passes no timeout to its `requests.Session`, so a stalled connection ran for
+  nineteen minutes with two open sockets and no output; the two calls now run
+  under a scoped socket timeout.
+
+### Fixed — submission
+
+* **Every run line spelled the process count `-np`, whatever the launcher.**
+  That is mpirun syntax. `srun` spells it `-n` and rejects `-np`; `ibrun` takes
+  no count at all and rejects both. On any site whose launcher is one of those
+  — most TACC and many Cray machines — every generated `run-*.sh` died on its
+  first line with a launcher usage message rather than anything from the DFT
+  code. `launch()` now picks the flag from the launcher, and a value that
+  already carries its own flags is used verbatim.
+* **Thirteen tutorials submitted nothing and still passed.**
+  `stage_and_submit()` copies `run-<stage>.sh` into the stage directory and
+  submits *that*; when the script is absent it records the material as
+  *skipped* and carries on. Thirteen tutorials declared submitting steps
+  without ever running `mainprogram jobscript`, so every submission was
+  skipped and the relaxation everything else depends on was never run.
+* **A VASP stage directory reached the scheduler with no POTCAR.** Only the
+  download path built one, so a directory that was *seeded* rather than
+  downloaded went to `sbatch` with INCAR, KPOINTS and POSCAR only.
+  `_submit_vasp()` now stages one, and never raises when POTCARs are not
+  configured: it explains how and the other inputs are still written.
+* **`phonopy -d` has not worked since phonopy 4.** The setup operations moved
+  to `phonopy-init`, and phonopy prints that to stderr and *exits 0* — so
+  `mainprogram phono1` reported "Number of supercells: 0" followed by "all
+  done" while writing no `phonopy_disp.yaml` and no displaced supercells.
+  Silent, and wrong on any current install. Displacement generation now goes
+  to `phonopy-init` where it exists; phonopy 3 is unaffected.
+* **`--dry-run` suppressed the displacement generation too.** That call is
+  input generation — a symmetry analysis of the relaxed cell, with no DFT in
+  it — and `--dry-run` promises to build every input file. Only the
+  result-consuming phonopy calls are suppressed now.
+
+### New — `htesp-check`
+
+`htesp-doctor` was renamed `htesp-check` (module and command), and it took on
+the one-off configuration steps, each of which had been prose in a README:
+
+* `--set_mp_api KEY` verifies the key against the API *before* writing it to
+  `~/.config/htesp/credentials` (mode 0600), so a typo never replaces a working
+  key. An exported `$MP_API_KEY` lives only in the shell that exported it, so a
+  batch job, a `nohup`-ed sweep or a new terminal silently loses it.
+* `--config_vasp_pot DIR` points pymatgen at a POTCAR tree, accepting either
+  `POT_GGA_PAW_PBE` or its parent — the setting wants the parent, and getting
+  it wrong costs a "POTCAR not found" for every material. It proves the
+  configuration by writing a POTCAR, and when that fails it spells out the
+  `pmg config -p` reorganisation a raw VASP distribution needs.
+* `--install-enumlib` builds enumlib from source: it is not on PyPI, has no
+  Python packaging, and its conda-forge build is linux-64/osx-64 only, so on
+  aarch64 a source build is the only route.
+* `--install-phonopy` installs phonopy from conda-forge, pinned to the
+  interpreter running `htesp-check` so it cannot land in `base`. It then runs
+  the executable, because an installer exiting 0 is not a working command.
+  phonopy has no `--version` flag — it exits 2 with a usage dump — so the
+  probe is `--help`.
+* `--clean` returns the checkout to its pre-build state. It refuses an
+  installed copy, leaves `_removed/` alone (a deliberate archive), and never
+  touches enumlib, an API key or `PMG_VASP_PSP_DIR`.
+* `--executables` lists enumlib's binaries too; without them a successful
+  `--install-enumlib` still looked like it had done nothing.
+
+### New — `mainprogram jobscript --init-header`
+
+The shipped `batch.header` says `--partition=dense` and loads no module. It was
+written for one machine, so copying it produces a job the scheduler rejects
+before any calculation starts. `--init-header qe|vasp` writes one from what
+*this* machine reports: partitions and their cores per node (`sinfo`), the
+accounts you may charge (`sacctmgr`), whether the cluster defines any generic
+resource at all (`scontrol`), and the code's module.
+
+* The module is loaded **unversioned** (`module load qe`), so Lmod resolves the
+  site default and the header survives that build being retired; the versions
+  found are listed in a comment for pinning by hand.
+* On a hierarchical Lmod site the module is invisible until its compiler and
+  MPI are loaded, so `module load qe` alone fails in a job script while working
+  interactively. The toolchain is read from `module help` first — that is the
+  module author speaking, and on Bridges-2 it names a runtime dependency Lmod
+  does not model at all — and from `module spider` when help names none.
+* `--gres` is emitted only where SLURM actually defines GRES types. A GPU
+  cluster that schedules whole nodes reports `GresTypes = (null)`, and a
+  `--gres` line there is rejected.
+* No run command is written into the header: `mainprogram jobscript` appends
+  that itself, and a command in the header would run first.
+* Every generated header prints a warning to read it before submitting, with a
+  one-line check (`source batch.header && which pw.x`).
+
+`qe`, `QE`, `QuantumEspresso`, `quantum-espresso` and `espresso` all name the
+same code.
+
+### Changed — the tutorial runner
+
+* **It never runs a DFT calculation.** Real mode and `--no-dft` were removed,
+  along with `--iter`, `--examples`, the `sacct` and convergence checks and the
+  `squeue` polling that existed to serve them. Every step is invoked as
+  `mainprogram <cmd> --dry-run`: all the input generation, nothing submitted,
+  nothing deleted. Driving a real campaign is `mainprogram`'s job.
+  `state.json` is at schema 2; older checkpoints are ignored rather than
+  repaired.
+* **Steps that need only a relaxation now run.** Their input — the finished
+  relaxation — is seeded from the QE/9 and VASP/9 references, a narrow
+  whitelist that deliberately excludes `econv.csv` and `scf_dir/scf-relax-*.in`
+  because those are the answers the steps must produce. Eleven steps that had
+  always been skipped now execute, and 42 of 42 tutorials complete where 18
+  did.
+* **`--output`** lists every file the run produced, grouped by the step that
+  wrote it, with a line saying what each file is for. It compares the work
+  directory before and after each step, so it reports what the step *did*
+  rather than what its artefact globs matched — which is how two wrong artefact
+  declarations were found (`pressure-input` claimed a directory that
+  `mainprogram 26` creates later; `update-input` claimed a file written only
+  when a structure is *not* relaxed) along with a tutorial whose declared
+  artefact is shipped inside `examples/` itself.
+* **`--jobs N`** runs a dependency level in a thread pool. Almost all of a
+  sweep is spent waiting on other people's servers — in one measured run seven
+  `search` steps accounted for six of eight minutes — and those tutorials are
+  independent, so the waiting overlaps: a full sweep went from roughly fourteen
+  minutes to three.
+* **`--timeout` is minutes per tutorial**, not hours per cluster job, and no
+  step is given more than the tutorial has left. A hung network call is now
+  reported instead of waited on.
+* **A skipped step says how to run it for real**, naming the tutorial's own
+  README, falling back to the QE/VASP counterpart where a tutorial ships none
+  (twelve do not; only VASP/21 has neither). Steps skipped for a missing
+  POTCAR, API key or enumlib keep their own message, which is more actionable.
+* **OQMD is treated as the unreliable service it is**: a longer budget, a
+  second attempt, and a timeout recorded as *skipped* rather than failing the
+  run. `data-combine` then falls back to that tutorial's reference rather than
+  being blocked by a database nobody can reach.
+* **The API key is resolved the way HTESP resolves it everywhere** —
+  `$MP_API_KEY`, then the credentials file, then `config.json`. The runner used
+  to read only the environment variable, so eight tutorials skipped on a
+  machine configured exactly as the README instructs.
+* `--only` accepts a bare tree name (`--only QE`), which replaced `--code`.
+
+### Packaging
+
+* `pyproject.toml` pins exact versions instead of floors. `pip install -e .` is
+  the documented way to install HTESP and it ignored both requirements files
+  entirely, which is how an environment ended up several releases ahead of
+  every pin with nothing to report the difference. `emmet-core` is now a
+  declared dependency rather than only a pinned transitive one: mp-api declares
+  it with no upper bound and imports a name that later versions removed, so an
+  unpinned resolve breaks `import mp_api.client`.
+* There is no OQMD extra, and there never was one — but four places named it,
+  so the `pip install` line a reader follows when `import qmpy_rester` fails
+  could not work. `qmpy-rester` is a required dependency: `oqmd-search` and
+  `oqmd-download` are ordinary commands, and `aflow_extract.py` imports
+  `oqmd_extract` too. (The literal spelling is left out here on purpose;
+  `tests/test_packaging.py` scans every document for an extra pyproject does
+  not declare, and would flag this line for quoting it.)
+* The QE pseudopotential table covers all 103 elements, filled out from SSSP
+  1.3.0 PBE efficiency. Fifteen cutoffs that predate it were left alone
+  deliberately: changing them changes the cutoffs of existing studies.
+
 ### New
 
-* **Tests.** 239 of them, as `unittest` classes so they run under `pytest tests/`
+* **Tests.** 447 of them, as `unittest` classes so they run under `pytest tests/`
   and `python -m unittest discover -s tests -t .` alike, with no scientific stack
   required for the core. Each test pinning a fix names the original symptom.
   `tools/check_names.py` is an undefined-name scan for machines where `ruff`
   cannot be installed.
-* **A tutorial runner.** `htesp-tutorials` finds `examples/` through
-  `$HTESP_EXAMPLES`, then `./examples`, then beside the package, with
-  `--examples DIR` overriding all three — `examples/` is 185 MB and is not in
-  the wheel, so after `pip install .` the package-relative path names nothing
-  and the only message was "the example tree .../site-packages/examples is
-  missing". The failure now says where it looked and how to point it at a tree.
-  `--workdir` inside the example tree is refused (`examples/` is read-only
-  input), and the work directory is no longer created until preflight passes.
-  It runs all 42 example tutorials end to
-  end under a batch script, checkpoints every step, resumes, and on any stop
-  reports the tutorial, the step, the command, the working directory, the exit
-  code, the missing artifacts and the tail of the failing log. `--dry-run`
-  exercises the whole thing with no QE, VASP or SLURM.
+* **A tutorial runner.** `htesp-tutorials` turns the prose `README` of each of
+  the 42 worked examples into a catalogue and executes it. It finds `examples/`
+  through `$HTESP_EXAMPLES`, then `./examples`, then beside the package —
+  `examples/` is 187 MB and is not in the wheel, so after `pip install .` the
+  package-relative path names nothing and the only message was "the example
+  tree .../site-packages/examples is missing". The failure now says where it
+  looked. `--workdir` inside the example tree is refused (`examples/` is
+  read-only input), and the work directory is not created until preflight
+  passes. It checkpoints every step, resumes, and on any stop reports the
+  tutorial, the step, the command, the working directory, the exit code, the
+  missing artifacts and the tail of the failing log.
 * **Documentation.** `docs/command.rst` is generated from `htesp/help_text.py`,
   which is what `mainprogram` prints, so the two can no longer drift — the old
   page told readers that partial DOS was `mainprogram 20`, which is `clean-scan`
