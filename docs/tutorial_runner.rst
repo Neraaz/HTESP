@@ -39,8 +39,8 @@ in that order:
 
 .. code-block:: bash
 
-    HTESP_EXAMPLES=~/HTESP_claude/examples htesp-tutorials --workdir ~/tutorial_runs
-    export HTESP_EXAMPLES=~/HTESP_claude/examples      # or set it once
+    HTESP_EXAMPLES=~/HTESP/examples htesp-tutorials --workdir ~/tutorial_runs
+    export HTESP_EXAMPLES=~/HTESP/examples             # or set it once
 
 ``examples/`` is read-only input: nothing is ever written there.  ``--workdir``
 is where runs, logs and the checkpoint go, and a ``--workdir`` inside the

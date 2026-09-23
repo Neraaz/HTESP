@@ -66,3 +66,7 @@ tutorial_runs/
 # macOS AppleDouble sidecars, written when the tree is copied to a
 # non-HFS filesystem (scp/rsync/tar to an HPC login node)
 ._*
+
+# Working notes for Claude Code: a description of *this* checkout and this
+# machine (paths, interpreter, what is installed), not part of the package.
+CLAUDE.md
