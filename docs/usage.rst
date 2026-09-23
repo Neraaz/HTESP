@@ -291,14 +291,8 @@ Runs the worked examples and, when it stops, says exactly where.  See
 .. code-block:: text
 
      -h, --help            show this help message and exit
-     --examples EXAMPLES   the read-only example tree to copy tutorials out of
-                           (default: $HTESP_EXAMPLES, then ./examples, then
-                           beside the installed package). It is never written to
-                           -- use --workdir for output.
      --workdir WORKDIR     root for the work directories, logs, checkpoint and
                            report (default: ./tutorial_runs_root)
-     --dry-run             run every step with 'mainprogram ... --dry-run': all
-                           input generation, no QE/VASP/SLURM (works on a laptop)
      --resume              re-run only what is not already done (the default)
      --restart             forget the checkpoint and run everything again
      --keep_output {yes,no}
@@ -308,19 +302,29 @@ Runs the worked examples and, when it stops, says exactly where.  See
                            debugging. Logs, the report and the checkpoint are
                            kept either way
      --only ONLY           comma-separated tutorial codes to run, e.g.
-                           QE/9,VASP/14.  A bare tree name means all of it:
-                           --only QE
+                           QE/9,VASP/14. A bare tree name means all of it: --only
+                           QE
      --skip SKIP           comma-separated tutorial codes to leave out; a bare
                            tree name works here too
      --from FROM_STEP      start each selected tutorial at this step id (the
                            retry line in the report uses this)
      --workers WORKERS     passed through to mainprogram --workers
-     --timeout HOURS       hours to wait for a step's cluster jobs before
-                           giving up (default: 24).  The poll interval (60s)
-                           and the limit on a single 'mainprogram'
-                           invocation (6h) are fixed: neither depends on the
-                           study
+     --jobs N              run N tutorials at once (default: 1). Most of a sweep
+                           is spent waiting on the Materials Project, OQMD and
+                           AFLOW servers, and those tutorials are independent, so
+                           the waiting overlaps. Keep it modest: the same APIs
+                           rate-limit
+     --timeout MINUTES     minutes a single tutorial may take before the runner
+                           gives up on it (default: 1). No step is given more
+                           time than the tutorial has left, so a hung network
+                           call is cut short and reported instead of waited on. A
+                           few tutorials ask for longer -- OQMD's take 100s --
+                           and that wins
      --force               run even when preflight reports errors
+     --output              after the run, list every file it produced and what
+                           that file is for, grouped by the step that wrote it. A
+                           step that wrote nothing is named as such -- which is
+                           how two wrong artefact declarations were found
      --list                print the catalogue and exit
      -v, --verbose         debug logging
 

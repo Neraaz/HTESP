@@ -42,8 +42,7 @@ from tutorials.catalog import (CATALOG, QE_TOPICS, VASP_TOPICS, Loop, Seed, Step
 from tutorials.runner import RunOptions, TutorialRunner, preflight
 from tutorials.state import (BLOCKED, DONE, FAILED, SKIPPED, RunState, StepState,
                              TutorialState, step_key)
-from tutorials.workdirs import (missing_artifacts, patch_input_in, wait_for_jobs,
-                                collect_job_ids)
+from tutorials.workdirs import missing_artifacts, patch_input_in
 
 
 # --------------------------------------------------------------------------- #
@@ -151,7 +150,7 @@ class StateTest(unittest.TestCase):
         self.addCleanup(shutil.rmtree, self.tmp, ignore_errors=True)
 
     def test_round_trip(self):
-        state = RunState(path=self.tmp / "state.json", mode="dry-run")
+        state = RunState(path=self.tmp / "state.json")
         tut = state.tutorial("QE/9", "relaxation")
         tut.status = FAILED
         tut.steps["relax-submit"] = StepState(
@@ -224,35 +223,6 @@ class WorkdirTest(unittest.TestCase):
 
 
 # --------------------------------------------------------------------------- #
-class JobWaitTest(unittest.TestCase):
-    """Job ids come from .htesp_job.json; the queue is polled, never grepped."""
-
-    def setUp(self):
-        self.tmp = Path(tempfile.mkdtemp())
-        self.addCleanup(shutil.rmtree, self.tmp, ignore_errors=True)
-
-    def test_collect_job_ids_respects_the_timestamp(self):
-        stage = self.tmp / "Rmp-763-Mg1B2" / "relax"
-        stage.mkdir(parents=True)
-        (stage / ".htesp_job.json").write_text(json.dumps(
-            {"scf": [{"job": "111", "time": 100.0}, {"job": "222", "time": 900.0}]}))
-        self.assertEqual(collect_job_ids(self.tmp, ["R*-*/relax"]), ["111", "222"])
-        self.assertEqual(collect_job_ids(self.tmp, ["R*-*/relax"], since=500.0), ["222"])
-        self.assertEqual(collect_job_ids(self.tmp, ["R*-*/bands"]), [])
-
-    def test_no_jobs_is_immediately_finished(self):
-        self.assertEqual(wait_for_jobs([], 1, 1), (True, ""))
-
-    def test_missing_squeue_is_reported_not_swallowed(self):
-        original = shutil.which
-        shutil.which = lambda name, *a, **k: None       # noqa: ARG005
-        self.addCleanup(setattr, shutil, "which", original)
-        finished, problem = wait_for_jobs(["123"], 1, 1)
-        self.assertFalse(finished)
-        self.assertIn("squeue is not on PATH", problem)
-
-
-# --------------------------------------------------------------------------- #
 class ReportTest(unittest.TestCase):
     """The stop report is the deliverable; check it says all of it."""
 
@@ -261,7 +231,7 @@ class ReportTest(unittest.TestCase):
         self.addCleanup(shutil.rmtree, self.tmp, ignore_errors=True)
         log = self.tmp / "step.log"
         log.write_text("\n".join(f"line {i}" for i in range(80)))
-        self.state = RunState(path=self.tmp / "state.json", mode="dry-run",
+        self.state = RunState(path=self.tmp / "state.json",
                               argv=["htesp-tutorials", "--dry-run"])
         tut = self.state.tutorial("QE/9", "Structural relaxation (QE)")
         tut.status, tut.started, tut.workdir = FAILED, 1.0, str(self.tmp)
@@ -391,7 +361,7 @@ class EndToEndTest(unittest.TestCase):
             seeds=base,
             steps=(Step("make", "write an artefact", "alpha", artifacts=("alpha.txt",)),
                    Step("submit", "submit something", "submit", submits=True,
-                        artifacts=("R*-*/relax/scf.in",), job_dirs=("R*-*/relax",))))
+                        artifacts=("R*-*/relax/scf.in",))))
         second = Tutorial(
             code="QE/2", dft="QE", number=2, topic="relax",
             title="the one that stops", directory=self.examples / "QE" / "tutorial2",
@@ -410,7 +380,7 @@ class EndToEndTest(unittest.TestCase):
         return {"QE/1": first, "QE/2": second, "QE/3": third}
 
     def _options(self, **kwargs) -> RunOptions:
-        return RunOptions(workdir=self.tmp / "run", mode="dry-run",
+        return RunOptions(workdir=self.tmp / "run",
                           examples=self.examples, step_timeout=120, **kwargs)
 
     def test_full_run_stops_where_it_should(self):

@@ -7,7 +7,7 @@ This is the driver a batch submission script launches (see
 work directory, waits for the cluster jobs each step submits, checkpoints after
 every step -- and, when it stops, says exactly where.
 
-    htesp-tutorials --dry-run                 # no QE/VASP/SLURM needed
+    htesp-tutorials                           # the whole tree
     htesp-tutorials --only QE/9,QE/12         # the real thing
     htesp-tutorials --resume                  # carry on where it stopped
     htesp-tutorials --list                    # print the catalogue and exit
@@ -26,7 +26,7 @@ from tutorials import report as report_mod
 from tutorials import catalog as catalog_mod
 from tutorials.catalog import (CATALOG, format_catalog, parse_codes,
                                select)
-from tutorials.runner import (DRY_RUN, REAL, RunOptions, TutorialRunner,
+from tutorials.runner import (RunOptions, TutorialRunner,
                               preflight)
 from tutorials.state import BLOCKED, FAILED, RunState
 
@@ -41,19 +41,9 @@ def build_parser() -> argparse.ArgumentParser:
         description="Run every worked example under examples/ and report where "
                     "the run stopped.",
         epilog="Tutorial codes look like QE/9 or VASP/14; run --list to see them.")
-    parser.add_argument("--examples", default=None, type=Path,
-                        help="the read-only example tree to copy tutorials out "
-                             "of (default: $HTESP_EXAMPLES, then ./examples, "
-                             "then beside the installed package). It is never "
-                             "written to -- use --workdir for output.")
     parser.add_argument("--workdir", default="tutorial_runs_root", type=Path,
                         help="root for the work directories, logs, checkpoint and "
                              "report (default: ./tutorial_runs_root)")
-
-    mode = parser.add_mutually_exclusive_group()
-    mode.add_argument("--dry-run", action="store_true",
-                      help="run every step with 'mainprogram ... --dry-run': all "
-                           "input generation, no QE/VASP/SLURM (works on a laptop)")
 
     resume = parser.add_mutually_exclusive_group()
     resume.add_argument("--resume", action="store_true", default=True,
@@ -79,33 +69,31 @@ def build_parser() -> argparse.ArgumentParser:
                              "(the retry line in the report uses this)")
     parser.add_argument("--workers", type=int, default=None,
                         help="passed through to mainprogram --workers")
-    parser.add_argument("--timeout", type=float, default=24.0, metavar="HOURS",
-                        help="hours to wait for a step's cluster jobs before "
-                             "giving up (default: 24).  The poll interval (60s) "
-                             "and the limit on a single mainprogram call (6h) "
-                             "are fixed: neither depends on the study")
+    parser.add_argument("--jobs", type=int, default=1, metavar="N",
+                        help="run N tutorials at once (default: 1).  Most of a "
+                             "sweep is spent waiting on the Materials Project, "
+                             "OQMD and AFLOW servers, and those tutorials are "
+                             "independent, so the waiting overlaps.  Keep it "
+                             "modest: the same APIs rate-limit")
+    parser.add_argument("--timeout", type=float, default=1.0, metavar="MINUTES",
+                        help="minutes a single tutorial may take before the "
+                             "runner gives up on it (default: 1).  No step is "
+                             "given more time than the tutorial has left, so a "
+                             "hung network call is cut short and reported "
+                             "instead of waited on.  A few tutorials ask for "
+                             "longer -- OQMD's take 100s -- and that wins")
     parser.add_argument("--force", action="store_true",
                         help="run even when preflight reports errors")
-    parser.add_argument("--iter", dest="iteration", default=None, metavar="N",
-                        help="run one dependency iteration and stop: 'next' takes "
-                             "the lowest-numbered iteration the checkpoint has not "
-                             "finished, an integer takes exactly that one.  "
-                             "Without it the whole selection runs in one pass, "
-                             "which is right for --dry-run but "
-                             "means a real run blocks on the queue for days")
-    parser.add_argument("--list-iters", action="store_true",
-                        help="print the iteration plan for the current selection "
-                             "and exit")
+    parser.add_argument("--output", action="store_true",
+                        help="after the run, list every file it produced and "
+                             "what that file is for, grouped by the step that "
+                             "wrote it.  A step that wrote nothing is named as "
+                             "such -- which is how two wrong artefact "
+                             "declarations were found")
     parser.add_argument("--list", action="store_true",
                         help="print the catalogue and exit")
     parser.add_argument("-v", "--verbose", action="store_true", help="debug logging")
     return parser
-
-
-def _mode(args: argparse.Namespace) -> str:
-    if args.dry_run:
-        return DRY_RUN
-    return REAL
 
 
 def _configure_logging(verbose: bool) -> None:
@@ -120,9 +108,10 @@ def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     _configure_logging(args.verbose)
 
+    # `examples/` is found, never given: $HTESP_EXAMPLES, then ./examples,
+    # then beside the installed package.  The flag is gone because the answer
+    # is the tree this package ships with -- see catalog.find_examples.
     catalog = CATALOG
-    if args.examples is not None:
-        catalog = catalog_mod.use_examples(args.examples)
     examples = catalog_mod.EXAMPLES
 
     if args.list:
@@ -141,41 +130,13 @@ def main(argv: list[str] | None = None) -> int:
                   args.only, args.skip)
         return 2
 
-    if args.list_iters:
-        from tutorials.catalog import iters as _iters
-        from tutorials.state import RunState as _RunState
-
-        plan = _iters(codes, catalog)
-        done = _RunState.load(Path(args.workdir).resolve() / "state.json").iters
-        for number, iteration in enumerate(plan):
-            status = done.get(str(number))
-            mark = f"[{status.status}]" if status else "[pending]"
-            print(f"iteration {number} {mark:<10} {len(iteration):2d} tutorial(s)")
-            print(f"           {', '.join(iteration)}")
-        # A selection that leaves a dependency out makes the dependent a root
-        # -- iteration 0 -- and it then runs against a hub that was never built.
-        # topological_order drops unselected dependencies by design; say so
-        # here rather than letting the iteration numbers imply otherwise.
-        chosen = set(codes)
-        orphans = [(c, [d for d in catalog[c].depends_on if d not in chosen])
-                   for c in codes]
-        orphans = [(c, missing) for c, missing in orphans if missing]
-        if orphans:
-            print("\nNot selected, but depended on -- these run against "
-                  "whatever is already in their work directory:")
-            for code, missing in orphans:
-                print(f"  {code} needs {', '.join(missing)}")
-        print("\nRun one iteration at a time with --iter next; each stops when its "
-              "jobs are submitted.")
-        return 0
-
     # not created until preflight has passed: `--workdir examples/` should not
     # leave a directory behind in the reference tree before being rejected
     workdir = Path(args.workdir).resolve()
     options = RunOptions(
-        workdir=workdir, mode=_mode(args), resume=not args.restart,
-        iteration=args.iteration,
-        job_timeout=args.timeout * 3600.0, workers=args.workers,
+        workdir=workdir, resume=not args.restart,
+        tutorial_timeout=args.timeout * 60.0, workers=args.workers,
+        jobs=args.jobs,
         from_step=args.from_step, verbose=args.verbose, examples=examples,
         keep="all" if args.keep_output == "yes" else "none",
     )
@@ -195,8 +156,7 @@ def main(argv: list[str] | None = None) -> int:
     if not options.resume:
         state.reset(codes)
 
-    LOG.info("running %d tutorial(s) in %s mode under %s",
-             len(codes), options.mode, workdir)
+    LOG.info("running %d tutorial(s) under %s", len(codes), workdir)
     runner = TutorialRunner(codes, options, state=state, catalog=catalog)
     try:
         state = runner.run()
@@ -207,6 +167,10 @@ def main(argv: list[str] | None = None) -> int:
     md_path, _json_path = report_mod.write_report(state, workdir, codes)
     print()
     print(report_mod.console_report(state, workdir, codes))
+    if args.output:
+        from tutorials import manifest
+
+        print(manifest.render(state))
     LOG.info("report written to %s", md_path)
 
     if state.interrupted:

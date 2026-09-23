@@ -2,9 +2,9 @@
 # -----------------------------------------------------------------------------
 # submit_tutorials.sh -- run every HTESP tutorial from a batch job.
 #
-#   sbatch tutorials/submit_tutorials.sh --dry-run --only QE
+#   bash   tutorials/submit_tutorials.sh --only QE
 #   sbatch tutorials/submit_tutorials.sh --only QE/9,QE/12
-#   bash   tutorials/submit_tutorials.sh --dry-run          # no scheduler needed
+#   bash   tutorials/submit_tutorials.sh                    # no scheduler needed
 #
 # Every argument is passed straight through to the driver
 # (htesp-tutorials / python -m tutorials.run_tutorials), so anything the driver
@@ -80,7 +80,7 @@ echo "   arguments       : $*"
 echo "=============================================================="
 
 if ! command -v squeue >/dev/null 2>&1; then
-    echo "note: squeue is not on PATH -- only --dry-run can be trusted"
+    echo "note: this runner never submits, so no scheduler is needed"
 fi
 
 # --- run ---------------------------------------------------------------------

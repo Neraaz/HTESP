@@ -120,9 +120,6 @@ class Step:
         one path for the step to count as done.  "Exited 0 and produced
         nothing" is this package's most common silent failure, so a step with
         no artifacts declared is the exception, not the rule.
-    job_dirs
-        Glob patterns for the stage directories in which the workflow layer
-        records job ids (``<stage dir>/.htesp_job.json``).
     timeout
         Seconds before the subprocess is killed.  ``None`` means the runner
         default.
@@ -132,8 +129,17 @@ class Step:
         The step talks to the Materials Project and needs ``MP_API_KEY``.
     needs_dft_output
         The step reads the *output* of a real Quantum ESPRESSO / VASP run.  In
-        ``--dry-run`` there is no such output, so the runner records the step as
-        skipped with that reason instead of pretending it failed.
+        This runner never performs one, so the step is recorded as skipped
+        with that reason -- and with the tutorial's own instructions for
+        running it for real -- instead of being pretended to have failed.
+    needs_relax_output
+        The step reads a finished *relaxation* and nothing else -- the total
+        energy, the relaxed structure, the cell to build its own inputs from.
+        It needs no DFT code, only that output, and the tutorial's reference
+        has it (:data:`REFERENCE_OUTPUT`), so it runs here.  This is the
+        narrow sibling of ``needs_dft_output``: a step needing a *later*
+        stage -- FORCE_SETS, ph.x output, computed bands -- keeps the wider
+        flag and is still skipped, because nothing here can produce those.
     needs_potcar
         The step writes VASP inputs, which are only usable with a POTCAR.  They
         are licensed, so they are never in ``examples/`` and a machine may have
@@ -146,14 +152,6 @@ class Step:
         enumlib.  Those are a separate C/Fortran package, not a Python
         dependency, so preflight warns when they are absent rather than letting
         the step die three minutes in with a RuntimeError.
-    check_converged
-        The step submits a *structural relaxation*, so finishing is not the
-        same as succeeding: QE stops at ``nstep`` and VASP at ``NSW``, both
-        leaving a complete set of output files that satisfy an artefact glob.
-        With this set, the runner reads those outputs for the same convergence
-        markers ``htesp/workflow.py`` uses and fails the step when the
-        structure did not relax -- otherwise every dependent tutorial starts
-        from an unrelaxed cell and returns plausible, wrong numbers.
     after
         Ids of earlier steps *in this tutorial* whose output this step consumes.
         When one of them was skipped there is nothing for this step to read, so
@@ -168,14 +166,13 @@ class Step:
     args: tuple[str, ...] = ()
     submits: bool = False
     artifacts: tuple[str, ...] = ()
-    job_dirs: tuple[str, ...] = ()
     timeout: int | None = None
     input_patch: InputPatch | None = None
     needs_api_key: bool = False
     needs_dft_output: bool = False
+    needs_relax_output: bool = False
     needs_enumlib: bool = False
     needs_potcar: bool = False
-    check_converged: bool = False
     after: tuple[str, ...] = ()
     note: str = ""
 
@@ -203,6 +200,9 @@ class Seed:
     ``"archive"``
         members of the tutorial's ``reference*.tar.gz``, flattened into the work
         directory (tutorial 8 keeps its ``.cif`` inputs there).
+    ``"reference-output"``
+        the *relaxation output* from the tutorial's reference, placed back into
+        ``R<mpid>-<compound>/relax/``.  See :data:`REFERENCE_OUTPUT`.
     anything else
         a tutorial code such as ``"QE/9"``; its *work* directory is the source,
         which is how the relaxation hub feeds everything downstream.
@@ -243,6 +243,16 @@ class Tutorial:
     seeds: tuple[Seed, ...] = ()
     steps: tuple[Step, ...] = ()
     loop: Loop | None = None
+    #: how many times to run this tutorial before calling it failed.  More
+    #: than one only where the failure is likely to be someone else's server
+    #: -- see :data:`ATTEMPTS`.
+    attempts: int = 1
+    #: seconds this tutorial may take, overriding the run-wide budget.  0
+    #: means "use the default" -- see :data:`TUTORIAL_TIMEOUTS`.
+    timeout: float = 0.0
+    #: True when a timeout here is the service's doing, not HTESP's, and
+    #: should be reported as skipped -- see :data:`FLAKY_SERVICE_TOPICS`.
+    flaky_service: bool = False
     stub: bool = False
     note: str = ""
 
@@ -301,6 +311,50 @@ VASP_TOPICS: tuple[str, ...] = (
 )
 
 
+#: the names a tutorial's written instructions go by
+README_NAMES = ("README", "README.txt")
+
+
+def readme_for(tutorial: "Tutorial",
+               catalog: dict | None = None) -> Path | None:
+    """The written instructions for running *tutorial* for real.
+
+    Twelve of the forty-two tutorials ship no ``README`` of their own --
+    QE/15 and eleven VASP ones.  The two trees cover the same topics in the
+    same order, though, so the counterpart's instructions are the right ones
+    to read: ``VASP/9`` has none, ``QE/9`` describes the same relaxation.
+    The QE/VASP numbering diverges from 11 onward, which
+    :func:`vasp_number_to_qe_number` already knows about.
+
+    Returns None only when neither the tutorial nor its counterpart has one
+    -- VASP/21 (IFermi), whose topic the QE tree does not cover at all.
+    Pointing at a path that does not exist would be worse than saying
+    nothing.
+    """
+    catalog = CATALOG if catalog is None else catalog
+
+    def own(candidate) -> Path | None:
+        for name in README_NAMES:
+            path = candidate.directory / name
+            if path.is_file():
+                return path
+        return None
+
+    found = own(tutorial)
+    if found is not None:
+        return found
+
+    if tutorial.dft == "VASP":
+        number = vasp_number_to_qe_number(tutorial.number)
+        other = catalog.get(f"QE/{number}") if number else None
+    else:
+        other = next((o for o in catalog.values()
+                      if o.dft == "VASP"
+                      and vasp_number_to_qe_number(o.number) == tutorial.number),
+                     None)
+    return own(other) if other is not None else None
+
+
 def vasp_number_to_qe_number(number: int) -> int | None:
     """Return the QE tutorial number covering the same topic as VASP *number*.
 
@@ -321,6 +375,65 @@ def vasp_number_to_qe_number(number: int) -> int | None:
 #: the tutorial itself ships is laid on top.
 BASE_SEED_FILES = ("batch.header", "config.json", "input.in", "vasp.in")
 
+#: The relaxation output the reference carries, per code -- and *only* that.
+#:
+#: Seventeen steps across the catalogue do nothing but read a finished
+#: relaxation: `e0` wants the total energy, `mainprogram 2` the relaxed
+#: structure, `mainprogram 4` and `pressure-input` and `phono1` the relaxed
+#: cell to build their own inputs from.  None of them needs a DFT code, only
+#: its output, and the references have it -- so with these files in place they
+#: run for real instead of being skipped.
+#:
+#: The whitelist is deliberately narrow.  The reference also contains
+#: ``econv.csv`` and ``scf_dir/scf-relax-*.in``, which are the *answers* those
+#: steps must produce; seeding them would let a step pass by finding an
+#: artefact it never wrote.  The numbered copies (``scf.out1``, ``OUTCAR1``,
+#: ``POSCAR1``) are left out for the same reason -- ``mainprogram 2`` makes
+#: them, counting the existing ones to pick the next number.  And
+#: ``NSW_0_DETECTED`` is a state marker saying the relaxation already
+#: finished, which would make the step skip its own work.
+REFERENCE_OUTPUT = {
+    "QE": ("scf.out",),
+    "VASP": ("OUTCAR", "CONTCAR", "OSZICAR"),
+}
+
+#: topics worth attempting more than once, and how many attempts in total.
+#:
+#: OQMD is the least reliable service the tutorials touch: in one session it
+#: was unresponsive long enough to fail a sweep outright, in another its
+#: `oqmd-download` hung for nineteen minutes with two open sockets (its
+#: client, `qmpy_rester`, builds a bare `requests.Session()` with no timeout,
+#: so a stalled connection blocks for ever).  A search that normally takes 35
+#: seconds is not broken because one call stalled, so the tutorial gets a
+#: second run at it before being called a failure.
+ATTEMPTS = {"oqmd": 2}
+
+#: topics that need longer than the default budget, in seconds.
+#:
+#: Measured over several runs, an OQMD `search` alone took 34.7s, 38.3s,
+#: 39.2s, 55.0s, 68.6s and 71.8s -- the service is slow as well as unreliable,
+#: and its two steps together do not fit the minute every other tutorial
+#: finishes well inside.  A budget that a healthy run cannot meet is not a
+#: hang detector, it is a source of false failures.
+TUTORIAL_TIMEOUTS = {"oqmd": 100}
+
+#: topics where running out of time says more about the service than about
+#: HTESP, so the run is not marked failed for it.
+#:
+#: OQMD alone qualifies.  Its searches have finished in 35 seconds and in 100;
+#: it has been unresponsive for an entire sweep; and its client has no request
+#: timeout, so a stalled connection once ran for nineteen minutes.  None of
+#: that is something a reader can act on, and turning a whole sweep red for it
+#: hides the failures that *are* actionable -- the same reasoning that already
+#: records an absent POTCAR or API key as skipped rather than failed.
+#:
+#: Only a *timeout* is forgiven.  An OQMD query that answers with the wrong
+#: data still fails, because that is a defect somebody can fix.
+FLAKY_SERVICE_TOPICS = ("oqmd",)
+
+#: the tutorial whose reference supplies that output, per code
+REFERENCE_SOURCE = {"QE": "QE/9", "VASP": "VASP/9"}
+
 #: what a downstream tutorial takes from the relaxation hub's work directory.
 HUB_OUTPUTS = ("R*-*", "scf_dir", "mpid.in", "econv.csv", "pp")
 
@@ -335,6 +448,11 @@ def _base_seeds(dft: str) -> tuple[Seed, ...]:
     if dft == "QE":
         seeds.append(Seed("code", ("pp",), overwrite=False, link=True))
     return tuple(seeds)
+
+
+def _reference_output_seed(dft: str) -> Seed:
+    """Put the reference relaxation output back into ``R*/relax/``."""
+    return Seed("reference-output", REFERENCE_OUTPUT[dft], overwrite=False)
 
 
 def _hub_seed(hub: str) -> Seed:
@@ -384,6 +502,17 @@ def _build_one(topic: str, dft: str) -> Tutorial:
              *(_resolve_seed(s, dft) for s in spec.seeds
                if not s.source.startswith("@") or s.source[1:] in _topics(dft)),
              _self_seed())
+    # The relaxation hub is where the reference output belongs; everything
+    # downstream inherits it through HUB_OUTPUTS' copy of R*-*.
+    #
+    # The hub's *own* steps are not unblocked by it.  QE/9 and VASP/9 exist to
+    # run a relaxation; feeding them the answer and calling it a pass would
+    # describe the wrong thing.  They stay skipped, pointed at their README
+    # like every other step that needs a real run -- while the relaxed
+    # structure they would have produced is made available to the eleven
+    # downstream steps that only need to *read* one.
+    if topic == "relax":
+        seeds = (*seeds, _reference_output_seed(dft))
     stub = spec.stub or not (directory / "config.json").is_file()
     note = spec.note
     if stub and not spec.stub:
@@ -395,7 +524,10 @@ def _build_one(topic: str, dft: str) -> Tutorial:
                     title=f"{TITLES[topic]} ({dft})", directory=directory,
                     depends_on=depends, seeds=seeds,
                     steps=_with_job_scripts(spec.steps),
-                    loop=spec.loop, stub=spec.stub, note=note)
+                    loop=spec.loop, stub=spec.stub, note=note,
+                    attempts=ATTEMPTS.get(topic, 1),
+                    timeout=TUTORIAL_TIMEOUTS.get(topic, 0.0),
+                    flaky_service=topic in FLAKY_SERVICE_TOPICS)
 
 
 def _with_job_scripts(steps: tuple["Step", ...]) -> tuple["Step", ...]:

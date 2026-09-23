@@ -84,6 +84,7 @@ import logging
 import multiprocessing as mp
 import os
 import re
+import functools
 import shutil
 import subprocess
 import sys
@@ -3455,12 +3456,53 @@ class HTESPWorkflow:
             return res
         return handler(material, res)
 
-    def _phonopy(self, *args: Any, cwd: Path) -> None:
-        if self.dry_run:
+    def _phonopy(self, *args: Any, cwd: Path, generates_input: bool = False) -> None:
+        """Run ``phonopy``; a no-op under ``--dry-run`` unless it writes inputs.
+
+        FIX: ``--dry-run`` suppressed *every* phonopy call, including
+        ``phonopy -d``.  But ``-d`` is input generation -- a symmetry analysis
+        of the relaxed cell that writes the displaced supercells and
+        ``phonopy_disp.yaml`` -- and no part of it is a DFT calculation.
+        Suppressing it made ``mainprogram phono1 --dry-run`` print "Number of
+        supercells: 0" and produce nothing, which contradicts what
+        ``--dry-run`` promises: build every input file, never call the
+        scheduler.  The submission that follows is still suppressed, by
+        :class:`Scheduler`.
+
+        Every other phonopy call *consumes* results -- ``-f`` reads the forces
+        of finished runs, ``-t``/``-p`` read FORCE_SETS -- so those stay
+        suppressed: there is nothing for them to read here, and phonopy's own
+        error would be less clear than saying so.
+        """
+        if self.dry_run and not generates_input:
             LOG.info("[dry-run] phonopy %s (in %s)", " ".join(str(a) for a in args), cwd)
             return
-        subprocess.run(["phonopy", *[str(a) for a in args]], cwd=os.fspath(cwd),
-                       check=False)
+        subprocess.run([self._phonopy_command(generates_input),
+                        *[str(a) for a in args]],
+                       cwd=os.fspath(cwd), check=False)
+
+    @staticmethod
+    @functools.lru_cache(maxsize=None)
+    def _phonopy_command(generates_input: bool = False) -> str:
+        """``phonopy`` or ``phonopy-init``, whichever this version wants.
+
+        FIX: phonopy 4 moved the setup operations out of the ``phonopy``
+        command::
+
+            phonopy: error: '--dim' is a setup operation that moved to
+            'phonopy-init' in v4.
+
+        so ``mainprogram phono1`` produced "Number of supercells: 0" and no
+        ``phonopy_disp.yaml`` against any phonopy >= 4 -- silently, because
+        phonopy exits 0 after printing that to stderr.  The displacement
+        generation goes to ``phonopy-init`` when that executable exists; every
+        other call (``-f``, ``-t``, ``-p``) still belongs to ``phonopy``, in
+        v4 as before.  On phonopy 3 and earlier there is no ``phonopy-init``
+        and the original command is used, so both versions work.
+        """
+        if generates_input and shutil.which("phonopy-init"):
+            return "phonopy-init"
+        return "phonopy"
 
     def _phonopy_energies(self, material: Material, res: Result) -> Result:
         ensure_dir(self.root / "cif")
@@ -3513,10 +3555,11 @@ class HTESPWorkflow:
             with pushd(phonopy_dir):
                 if setting.is_file():
                     self._phonopy("--qe", "-d", "setting.conf", "-c", "scf.in",
-                                  cwd=Path.cwd())
+                                  cwd=Path.cwd(), generates_input=True)
                 else:
                     self._phonopy("--qe", "-d", f"--dim={' '.join(map(str, dim))}",
-                                  "-c", "scf.in", cwd=Path.cwd())
+                                  "-c", "scf.in", cwd=Path.cwd(),
+                                  generates_input=True)
                 cells = sorted(Path(".").glob("supercell-*.in"))
                 base = read_text("scf.in")
                 supercell = read_text("supercell.in")
@@ -3564,9 +3607,11 @@ class HTESPWorkflow:
         with pushd(phonopy_dir):
             self.run_vasp_process("symmetrize")
             if setting.is_file():
-                self._phonopy("-d", "setting.conf", cwd=Path.cwd())
+                self._phonopy("-d", "setting.conf", cwd=Path.cwd(),
+                              generates_input=True)
             else:
-                self._phonopy("-d", f"--dim={' '.join(map(str, dim))}", cwd=Path.cwd())
+                self._phonopy("-d", f"--dim={' '.join(map(str, dim))}",
+                              cwd=Path.cwd(), generates_input=True)
             cells = sorted(Path(".").glob("POSCAR-[0-9]*"))
             res.say(f"Number of supercells: {len(cells)}")
             for number, cell_file in enumerate(cells, 1):

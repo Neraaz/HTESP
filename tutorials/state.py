@@ -20,8 +20,13 @@ from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any, Iterable
 
-#: bumped whenever the on-disk layout changes incompatibly
-SCHEMA_VERSION = 1
+#: bumped whenever the on-disk layout changes incompatibly.
+#:
+#: 2: real mode was removed, taking StepState.jobs and .unverifiable with it.
+#: `load` builds a StepState from the stored keys, so an older checkpoint
+#: would raise TypeError on those; a version bump makes it be ignored, which
+#: is what the field was for.
+SCHEMA_VERSION = 2
 
 PENDING, RUNNING, DONE, FAILED, SKIPPED, BLOCKED = (
     "pending", "running", "done", "failed", "skipped", "blocked")
@@ -47,11 +52,13 @@ class StepState:
     log: str | None = None
     expected: list[str] = field(default_factory=list)
     missing: list[str] = field(default_factory=list)
+    #: paths, relative to the work directory, that appeared or changed while
+    #: this step ran.  What the step actually did, as opposed to what its
+    #: artefact globs merely matched -- two wrong artefact declarations and a
+    #: file shipped by the tutorial itself were all found this way.
+    produced: list[str] = field(default_factory=list)
     reason: str = ""
     cycle: int = 1
-    unverifiable: bool = False
-    jobs: list[str] = field(default_factory=list)
-    would_submit: list[str] = field(default_factory=list)
 
     @property
     def ok(self) -> bool:

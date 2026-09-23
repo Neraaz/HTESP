@@ -699,5 +699,89 @@ class LauncherProcessCountFlag(unittest.TestCase):
         self.assertEqual(line, "ibrun epw.x -npools 4 -i epw.in > epw.out")
 
 
+class PhonopyFourMovedTheSetupCommands(unittest.TestCase):
+    """`mainprogram phono1` produced nothing against phonopy >= 4.
+
+    phonopy 4 moved the setup operations out of the `phonopy` command::
+
+        phonopy: error: '--dim' is a setup operation that moved to
+        'phonopy-init' in v4.
+
+    and phonopy prints that to stderr and still exits 0, so HTESP reported
+    "Number of supercells: 0" and "all done" while writing no
+    phonopy_disp.yaml and no displaced supercells.  Silent, and wrong on any
+    current install.
+    """
+
+    def test_displacement_generation_uses_phonopy_init_when_present(self):
+        import unittest.mock as mock
+
+        from htesp.workflow import HTESPWorkflow
+
+        HTESPWorkflow._phonopy_command.cache_clear()
+        with mock.patch("htesp.workflow.shutil.which", return_value="/usr/bin/phonopy-init"):
+            self.assertEqual(HTESPWorkflow._phonopy_command(True), "phonopy-init")
+        HTESPWorkflow._phonopy_command.cache_clear()
+
+    def test_everything_else_stays_on_phonopy(self):
+        """-f, -t and -p read results and belong to `phonopy` in v4 too."""
+        import unittest.mock as mock
+
+        from htesp.workflow import HTESPWorkflow
+
+        HTESPWorkflow._phonopy_command.cache_clear()
+        with mock.patch("htesp.workflow.shutil.which", return_value="/usr/bin/phonopy-init"):
+            self.assertEqual(HTESPWorkflow._phonopy_command(False), "phonopy")
+        HTESPWorkflow._phonopy_command.cache_clear()
+
+    def test_phonopy_three_still_works(self):
+        """No phonopy-init there, so the original command must be used."""
+        import unittest.mock as mock
+
+        from htesp.workflow import HTESPWorkflow
+
+        HTESPWorkflow._phonopy_command.cache_clear()
+        with mock.patch("htesp.workflow.shutil.which", return_value=None):
+            self.assertEqual(HTESPWorkflow._phonopy_command(True), "phonopy")
+        HTESPWorkflow._phonopy_command.cache_clear()
+
+    def test_generating_displacements_is_not_suppressed_by_dry_run(self):
+        """`--dry-run` promises "build every input file, never call the
+        scheduler".  phonopy -d builds inputs: it is a symmetry analysis of
+        the relaxed cell, with no DFT in it.  Suppressing it made phono1
+        produce nothing at all."""
+        source = (ROOT / "htesp" / "workflow.py").read_text()
+        block = source.split("def _phonopy(self", 1)[1].split("\n    @staticmethod", 1)[0]
+        self.assertIn("self.dry_run and not generates_input", block)
+
+    def test_every_minus_d_call_is_marked_as_input_generation(self):
+        """Parsed, not grepped: the argument lists contain f-strings and
+        nested calls, so a bracket-counting scan mis-reads them."""
+        import ast
+
+        source = (ROOT / "htesp" / "workflow.py").read_text()
+        found = 0
+        for node in ast.walk(ast.parse(source)):
+            if not isinstance(node, ast.Call):
+                continue
+            func = node.func
+            if not (isinstance(func, ast.Attribute) and func.attr == "_phonopy"):
+                continue
+            literals = [a.value for a in node.args
+                        if isinstance(a, ast.Constant) and isinstance(a.value, str)]
+            if "-d" not in literals:
+                continue
+            found += 1
+            marked = any(kw.arg == "generates_input"
+                         and isinstance(kw.value, ast.Constant)
+                         and kw.value.value is True
+                         for kw in node.keywords)
+            with self.subTest(line=node.lineno):
+                self.assertTrue(marked,
+                                f"phonopy -d at line {node.lineno} is not marked "
+                                "generates_input=True, so --dry-run suppresses it")
+        self.assertEqual(found, 4, "expected four phonopy -d call sites")
+
+
 if __name__ == "__main__":
     unittest.main()

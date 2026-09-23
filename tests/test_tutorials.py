@@ -9,6 +9,7 @@ rest of the package.
 """
 from __future__ import annotations
 
+import os
 import unittest
 from pathlib import Path
 
@@ -183,7 +184,9 @@ class EnumlibPreflight(unittest.TestCase):
         text = (ROOT / "tutorials" / "runner.py").read_text()
         self.assertIn("ENUMLIB_TOOLS", text)
         self.assertIn("needs_enumlib", text)
-        block = text.split("needs_enumlib = sorted", 1)[1].split("if options.mode", 1)[0]
+        # bounded by the next preflight check, not by a mode branch: real
+        # mode is gone, and "if options.mode" no longer appears anywhere
+        block = text.split("needs_enumlib = sorted", 1)[1].split("probe =", 1)[0]
         self.assertIn('"warning"', block)
         self.assertNotIn('"error"', block)
 
@@ -360,12 +363,22 @@ class KeepOutputOption(unittest.TestCase):
 
     def test_cleanup_runs_after_every_tutorial_not_during(self):
         """A work directory is the seed for its dependents; removing one
-        mid-run would starve them."""
+        mid-run would starve them.
+
+        Checked against `run()` alone: the tutorials are executed by
+        `_run_group` (which may run several at once), and that call has to
+        come before the cleanup.
+        """
         text = (ROOT / "tutorials" / "runner.py").read_text()
-        run_body = text.split("def run(self)", 1)[1].split("def _clean_work_dirs", 1)[0]
-        loop_at = run_body.index("self._run_tutorial(code)")
-        clean_at = run_body.index("self._clean_work_dirs()")
-        self.assertLess(loop_at, clean_at)
+        run_body = text.split("def run(self)", 1)[1].split("\n    def ", 1)[0]
+        self.assertLess(run_body.index("self._run_group(codes)"),
+                        run_body.index("self._clean_work_dirs()"))
+
+    def test_parallel_tutorials_still_clean_up_only_at_the_end(self):
+        """The same rule, now that several tutorials can be in flight."""
+        text = (ROOT / "tutorials" / "runner.py").read_text()
+        group = text.split("def _run_group", 1)[1].split("\n    def ", 1)[0]
+        self.assertNotIn("_clean_work_dirs", group)
 
 
 class ResumeDoesNotClobberOutputs(unittest.TestCase):
@@ -543,297 +556,6 @@ class PotcarlessStepsAreSkippedNotDone(unittest.TestCase):
         potcars_available.cache_clear()
 
 
-class DependencyIterations(unittest.TestCase):
-    """Running a real campaign in iters.
-
-    Iteration 0 ends with relaxations sitting in the queue.  Nothing in iteration 1 can
-    honestly start until those have finished and converged, because iteration 1 *is*
-    the tutorials that read the relaxed structure.  One pass over the whole
-    catalogue either blocks for days inside squeue polling or proceeds on a
-    structure that is not relaxed yet -- and the second is silently wrong,
-    which is worse than failing.
-    """
-
-    def _catalog(self):
-        from tutorials.catalog import CATALOG
-
-        return CATALOG
-
-    def test_iteration_zero_is_everything_that_depends_on_nothing(self):
-        from tutorials.catalog import select, iters
-
-        catalog = self._catalog()
-        plan = iters(select(catalog=catalog), catalog)
-        self.assertTrue(plan)
-        for code in plan[0]:
-            with self.subTest(code=code):
-                self.assertEqual(catalog[code].depends_on, ())
-
-    def test_every_tutorial_appears_exactly_once(self):
-        from tutorials.catalog import select, iters
-
-        catalog = self._catalog()
-        codes = select(catalog=catalog)
-        flat = [code for iteration in iters(codes, catalog) for code in iteration]
-        self.assertEqual(sorted(flat), sorted(codes))
-
-    def test_a_dependency_is_always_in_an_earlier_iteration(self):
-        """The whole point: nothing runs before what it reads."""
-        from tutorials.catalog import select, iters
-
-        catalog = self._catalog()
-        codes = select(catalog=catalog)
-        plan = iters(codes, catalog)
-        number = {code: i for i, iteration in enumerate(plan) for code in iteration}
-        for code, index in number.items():
-            for dep in catalog[code].depends_on:
-                if dep in number:
-                    with self.subTest(code=code, dep=dep):
-                        self.assertLess(number[dep], index)
-
-    def test_an_unselected_dependency_makes_the_dependent_a_root(self):
-        """topological_order drops dependencies outside the selection, so the
-        iteration numbers must agree with it rather than inventing a iteration for a
-        tutorial that will not run."""
-        from tutorials.catalog import select, iters
-
-        catalog = self._catalog()
-        plan = iters(select(only=["QE/11"], catalog=catalog), catalog)
-        self.assertEqual(plan, [["QE/11"]])
-
-    def test_the_iteration_plan_survives_a_restart(self):
-        import tempfile
-
-        from tutorials.state import DONE, RunState
-
-        with tempfile.TemporaryDirectory() as tmp:
-            path = Path(tmp) / "state.json"
-            state = RunState(path=path)
-            state.iteration(0, ["QE/9"]).status = DONE
-            state.iteration(1, ["QE/11"])
-            state.save()
-
-            back = RunState.load(path)
-            self.assertEqual(back.iters["0"].status, DONE)
-            self.assertEqual(back.iters["1"].codes, ["QE/11"])
-            self.assertEqual(back.next_iter([["QE/9"], ["QE/11"]]), 1)
-
-    def test_a_failed_iteration_is_offered_again_not_stepped_over(self):
-        """Iteration 1 reads what iteration 0 produced; if iteration 0 failed, there is
-        nothing to read."""
-        import tempfile
-
-        from tutorials.state import FAILED, RunState
-
-        with tempfile.TemporaryDirectory() as tmp:
-            state = RunState(path=Path(tmp) / "state.json")
-            state.iteration(0, ["QE/9"]).status = FAILED
-            self.assertEqual(state.next_iter([["QE/9"], ["QE/11"]]), 0)
-
-    def test_forgetting_a_tutorial_unfinishes_its_iteration(self):
-        """--restart --only QE/9 must not leave iteration 0 marked done, or the
-        next run would step straight over the tutorial it just cleared."""
-        import tempfile
-
-        from tutorials.state import DONE, PENDING, RunState
-
-        with tempfile.TemporaryDirectory() as tmp:
-            state = RunState(path=Path(tmp) / "state.json")
-            state.iteration(0, ["QE/9", "QE/2"]).status = DONE
-            state.iteration(1, ["QE/11"]).status = DONE
-            state.reset(["QE/9"])
-            self.assertEqual(state.iters["0"].status, PENDING)
-            self.assertEqual(state.iters["1"].status, DONE)
-
-    def test_an_old_checkpoint_loads_with_no_iters(self):
-        """The field is additive: a checkpoint written before iters existed is
-        still a valid checkpoint, not a schema mismatch that discards hours."""
-        import json
-        import tempfile
-
-        from tutorials.state import SCHEMA_VERSION, RunState
-
-        with tempfile.TemporaryDirectory() as tmp:
-            path = Path(tmp) / "state.json"
-            path.write_text(json.dumps({"version": SCHEMA_VERSION,
-                                        "mode": "real", "tutorials": {}}))
-            state = RunState.load(path)
-            self.assertEqual(state.iters, {})
-            self.assertEqual(state.mode, "real")
-
-    def test_without_the_flag_the_run_is_one_pass_as_before(self):
-        """--dry-run queues nothing, so there is nothing to wait
-        between iters for; every earlier invocation must keep working."""
-        source = (ROOT / "tutorials" / "runner.py").read_text()
-        block = source.split("def _iter_to_run", 1)[1].split("\n    def ", 1)[0]
-        self.assertIn("if wanted is None:", block)
-        self.assertIn("return None, list(self.codes)", block)
-
-    def test_the_cli_offers_the_flag(self):
-        import argparse
-        import contextlib
-        import io
-
-        from tutorials.run_tutorials import build_parser
-
-        buf = io.StringIO()
-        with contextlib.redirect_stdout(buf):
-            with self.assertRaises(SystemExit):
-                build_parser().parse_args(["--help"])
-        text = buf.getvalue()
-        self.assertIn("--iter", text)
-        self.assertIn("--list-iters", text)
-
-
-class JobFinishedIsNotJobSucceeded(unittest.TestCase):
-    """Two ways a step used to pass while having failed.
-
-    A job id leaves `squeue` whether it COMPLETED, FAILED, TIMED OUT, was
-    CANCELLED or ran out of memory; and both DFT codes stop at their ionic-step
-    limit and exit cleanly.  Either way a full set of output files is left
-    behind, the artefact globs match, the step is recorded DONE -- and every
-    dependent tutorial then runs on a structure that was never relaxed, which
-    is silently wrong rather than merely broken.
-    """
-
-    # -- sacct ------------------------------------------------------------- #
-    def test_a_completed_job_is_the_only_good_state(self):
-        import unittest.mock as mock
-
-        from tutorials import workdirs
-
-        with mock.patch.object(workdirs, "job_states",
-                               return_value={"1": "COMPLETED", "2": "COMPLETED"}):
-            self.assertEqual(workdirs.check_job_states(["1", "2"]), "")
-
-    def test_a_walltime_kill_is_reported_in_words(self):
-        import unittest.mock as mock
-
-        from tutorials import workdirs
-
-        with mock.patch.object(workdirs, "job_states", return_value={"7": "TIMEOUT"}):
-            problem = workdirs.check_job_states(["7"])
-        self.assertIn("TIMEOUT", problem)
-        self.assertIn("hit the wall time", problem)
-
-    def test_every_bad_state_is_caught(self):
-        import unittest.mock as mock
-
-        from tutorials import workdirs
-
-        for state in ("FAILED", "TIMEOUT", "OUT_OF_MEMORY", "CANCELLED",
-                      "NODE_FAIL", "PREEMPTED"):
-            with self.subTest(state=state):
-                with mock.patch.object(workdirs, "job_states",
-                                       return_value={"1": state}):
-                    self.assertTrue(workdirs.check_job_states(["1"]))
-
-    def test_cancelled_by_someone_keeps_only_the_state(self):
-        """sacct writes 'CANCELLED by 12345'; the uid is not part of it."""
-        import subprocess
-        import unittest.mock as mock
-
-        from tutorials import workdirs
-
-        done = subprocess.CompletedProcess(args=[], returncode=0,
-                                           stdout="55|CANCELLED by 1001\n", stderr="")
-        with mock.patch.object(workdirs.shutil, "which", return_value="/usr/bin/sacct"):
-            with mock.patch("subprocess.run", return_value=done):
-                self.assertEqual(workdirs.job_states(["55"]), {"55": "CANCELLED"})
-
-    def test_no_sacct_is_not_the_same_as_every_job_failed(self):
-        """Accounting is not enabled everywhere."""
-        import unittest.mock as mock
-
-        from tutorials import workdirs
-
-        with mock.patch.object(workdirs.shutil, "which", return_value=None):
-            self.assertEqual(workdirs.job_states(["1"]), {})
-            self.assertEqual(workdirs.check_job_states(["1"]), "")
-
-    # -- convergence -------------------------------------------------------- #
-    def test_a_converged_vasp_relaxation_is_recognised(self):
-        import tempfile
-
-        from tutorials.workdirs import relaxation_converged
-
-        with tempfile.TemporaryDirectory() as tmp:
-            (Path(tmp) / "OUTCAR").write_text(
-                "lots of output\n reached required accuracy - stopping "
-                "structural energy minimisation\n General timing\n")
-            self.assertIs(relaxation_converged(Path(tmp)), True)
-
-    def test_a_vasp_run_that_used_every_ionic_step_is_not_converged(self):
-        """NSW reached without EDIFFG: OUTCAR and CONTCAR both exist, so the
-        artefact check passes and only this catches it."""
-        import tempfile
-
-        from tutorials.workdirs import relaxation_converged
-
-        with tempfile.TemporaryDirectory() as tmp:
-            (Path(tmp) / "OUTCAR").write_text("ionic step 60\n General timing\n")
-            (Path(tmp) / "CONTCAR").write_text("Mg B2\n")
-            self.assertIs(relaxation_converged(Path(tmp)), False)
-
-    def test_a_converged_qe_relaxation_is_recognised(self):
-        import tempfile
-
-        from tutorials.workdirs import relaxation_converged
-
-        with tempfile.TemporaryDirectory() as tmp:
-            (Path(tmp) / "relax.out").write_text(
-                "End of BFGS Geometry Optimization\n JOB DONE.\n")
-            self.assertIs(relaxation_converged(Path(tmp)), True)
-
-    def test_a_qe_run_out_of_steps_is_not_converged(self):
-        import tempfile
-
-        from tutorials.workdirs import relaxation_converged
-
-        with tempfile.TemporaryDirectory() as tmp:
-            (Path(tmp) / "relax.out").write_text(
-                "The maximum number of steps has been reached\n JOB DONE.\n")
-            self.assertIs(relaxation_converged(Path(tmp)), False)
-
-    def test_nothing_to_judge_by_is_not_a_failure(self):
-        """An absent output file is the artefact check's business, not this
-        one's; returning False here would report the wrong cause."""
-        import tempfile
-
-        from tutorials.workdirs import relaxation_converged
-
-        with tempfile.TemporaryDirectory() as tmp:
-            self.assertIsNone(relaxation_converged(Path(tmp)))
-
-    def test_the_markers_match_the_ones_the_workflow_uses(self):
-        """Two copies of this string would drift; this pins them together."""
-        from tutorials.workdirs import CONVERGED_MARKERS
-
-        source = (ROOT / "htesp" / "workflow.py").read_text()
-        self.assertIn(CONVERGED_MARKERS["OUTCAR"], source)
-
-    # -- wiring ------------------------------------------------------------- #
-    def test_the_relaxation_steps_ask_for_the_check(self):
-        from tutorials.catalog import CATALOG
-
-        wanted = {"relax-submit", "resubmit", "relax-deformed", "relax-volumes"}
-        seen = set()
-        for tutorial in CATALOG.values():
-            for step in tutorial.steps:
-                if step.check_converged:
-                    seen.add(step.id)
-                    self.assertTrue(step.submits, step.id)
-                    self.assertTrue(step.job_dirs, step.id)
-        self.assertEqual(seen, wanted)
-
-    def test_the_check_only_runs_against_real_output(self):
-        """--dry-run never produces an OUTCAR, so applying it
-        there would fail every relaxation for the wrong reason."""
-        source = (ROOT / "tutorials" / "runner.py").read_text()
-        block = source.split("def _unconverged", 1)[1].split("\n    def ", 1)[0]
-        self.assertIn("self.options.mode != REAL", block)
-
-
 class PerFolderBatchHeader(unittest.TestCase):
     """Each work directory gets a header this cluster will accept.
 
@@ -980,13 +702,16 @@ class SubmittingTutorialsBuildTheirRunScripts(unittest.TestCase):
         self.assertIn("scf", qe["job_script"]["command_list"])
         self.assertIn("vasp", vasp["job_script"]["command_list"])
 
-    def test_submitting_nothing_is_a_failure_not_an_unverifiable(self):
-        """The safety net: whatever the cause, a submitting step that recorded
-        no job id has not submitted."""
+    def test_nothing_is_submitted_at_all_any_more(self):
+        """The safety net that checked job ids went with real mode: this
+        runner never calls the scheduler, so there are no jobs to count.
+        Every step is invoked with --dry-run instead."""
         source = (ROOT / "tutorials" / "runner.py").read_text()
-        block = source.split("if not state.jobs:", 1)[1].split("ok, problem", 1)[0]
-        self.assertIn("state.status = FAILED", block)
-        self.assertIn("nothing was submitted", block)
+        self.assertNotIn("collect_job_ids", source)
+        self.assertNotIn("wait_for_jobs", source)
+        block = source.split("def _command", 1)[1].split("\n    def ", 1)[0]
+        self.assertIn('cmd.append("--dry-run")', block)
+        self.assertNotIn("if self.options.mode", block)
 
 
 class BareModuleName(unittest.TestCase):
@@ -1071,6 +796,546 @@ class PotcarReachesTheStageDirectory(unittest.TestCase):
         block = source.split("def configure_vasp_potcars", 1)[1].split("\ndef ", 1)[0]
         self.assertIn("pmg config -p", block)
         self.assertIn("pmg config --add PMG_VASP_PSP_DIR", block)
+
+
+class ApiKeyIsResolvedTheWayHtespResolvesIt(unittest.TestCase):
+    """The runner asked only the environment, and nothing else did.
+
+    `htesp-check --set_mp_api` exists so nobody has to export the variable --
+    an exported key is lost by a batch job, a nohup-ed sweep or a new
+    terminal -- and it writes ~/.config/htesp/credentials.  A correctly
+    configured machine therefore had eight tutorials skip with "MP_API_KEY is
+    not set" while `mainprogram search`, run by hand in the same directory,
+    worked.
+    """
+
+    def test_the_credentials_file_is_enough(self):
+        import tempfile
+        import unittest.mock as mock
+        from pathlib import Path as _Path
+
+        from tutorials.runner import mp_api_key
+
+        with tempfile.TemporaryDirectory() as tmp:
+            creds = _Path(tmp) / "credentials"
+            creds.write_text("MP_API_KEY = " + "k" * 32 + "\n")
+            import htesp.config as cfg
+
+            with mock.patch.object(cfg, "CREDENTIALS_PATH", creds):
+                with mock.patch.dict(os.environ, {}, clear=True):
+                    self.assertEqual(mp_api_key(), "k" * 32)
+
+    def test_the_environment_still_wins(self):
+        import unittest.mock as mock
+
+        from tutorials.runner import mp_api_key
+
+        with mock.patch.dict(os.environ, {"MP_API_KEY": "from-the-shell"}):
+            self.assertEqual(mp_api_key(), "from-the-shell")
+
+    def test_no_key_anywhere_is_still_no_key(self):
+        import tempfile
+        import unittest.mock as mock
+        from pathlib import Path as _Path
+
+        from tutorials.runner import mp_api_key
+
+        with tempfile.TemporaryDirectory() as tmp:
+            import htesp.config as cfg
+
+            with mock.patch.object(cfg, "CREDENTIALS_PATH",
+                                   _Path(tmp) / "nothing-here"):
+                with mock.patch.dict(os.environ, {}, clear=True):
+                    cfg.clear_cache()
+                    self.assertIsNone(mp_api_key())
+
+    def test_the_shipped_placeholder_is_not_a_key(self):
+        """config.json ships use_your_API_KEY; sending that to MP is worse
+        than skipping."""
+        from htesp.config import API_KEY_PLACEHOLDER, api_key
+
+        self.assertEqual(API_KEY_PLACEHOLDER, "use_your_API_KEY")
+        # api_key() is what mp_api_key() delegates to
+        self.assertTrue(callable(api_key))
+
+    def test_the_runner_does_not_read_the_variable_directly(self):
+        """Two ways of answering the same question is how they diverged."""
+        source = (ROOT / "tutorials" / "runner.py").read_text()
+        body = source.split("def mp_api_key", 1)[1].split("\ndef child_env", 1)[0]
+        rest = source.replace(body, "")
+        self.assertNotIn('os.environ.get("MP_API_KEY")', rest)
+
+    def test_the_message_names_the_command_that_stores_it(self):
+        source = (ROOT / "tutorials" / "runner.py").read_text()
+        self.assertIn("htesp-check --set_mp_api", source)
+
+
+class TutorialTimeBudget(unittest.TestCase):
+    """A tutorial gets a minute; a hang is reported, not waited on.
+
+    The step limit used to be six hours, which is how an `oqmd-download`
+    stalled for nineteen minutes unnoticed -- alive, two open sockets, no
+    output, because `qmpy_rester` builds a bare `requests.Session()` with no
+    timeout.  Measured over a healthy sweep the slowest tutorial totalled
+    58.6s, so a minute fits real work and cuts a hang short.
+    """
+
+    def test_the_default_budget_is_one_minute(self):
+        from tutorials.runner import DEFAULT_TUTORIAL_TIMEOUT
+
+        self.assertEqual(DEFAULT_TUTORIAL_TIMEOUT, 60)
+
+    def test_the_flag_is_in_minutes(self):
+        """Checked with no argument too: the flag kept an hours-era default of
+        24 while its help had been rewritten, so every tutorial silently got a
+        1440-second budget."""
+        from tutorials.run_tutorials import build_parser
+
+        self.assertEqual(build_parser().parse_args([]).timeout, 1.0)
+        self.assertEqual(build_parser().parse_args(["--timeout", "2"]).timeout, 2.0)
+
+    def test_the_help_says_minutes_not_hours(self):
+        import contextlib
+        import io
+
+        from tutorials.run_tutorials import build_parser
+
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            with self.assertRaises(SystemExit):
+                build_parser().parse_args(["--help"])
+        text = buf.getvalue()
+        self.assertIn("--timeout MINUTES", text)
+        self.assertNotIn("--timeout HOURS", text)
+
+    def test_a_timeout_message_quotes_the_budget_that_applied(self):
+        """OQMD runs on 100s; reporting the run-wide default instead told the
+        reader a number that was never used."""
+        source = (ROOT / "tutorials" / "runner.py").read_text()
+        block = source.split("except subprocess.TimeoutExpired", 1)[1].split(
+            "except OSError", 1)[0]
+        self.assertIn('getattr(self._deadline, "budget"', block)
+        self.assertNotIn("self.options.tutorial_timeout", block)
+
+    def test_no_step_outlives_the_tutorial(self):
+        """Otherwise a single hung call spends the whole run."""
+        source = (ROOT / "tutorials" / "runner.py").read_text()
+        block = source.split("def _run_subprocess", 1)[1].split("\n    def ", 1)[0]
+        self.assertIn("self._time_left()", block)
+        self.assertIn("min(timeout", block)
+
+    def test_the_deadline_is_per_thread(self):
+        """Tutorials run in parallel under --jobs; a shared attribute would
+        give one tutorial another's clock."""
+        source = (ROOT / "tutorials" / "runner.py").read_text()
+        self.assertIn("self._deadline = threading.local()", source)
+
+    def test_timeout_output_is_decoded_before_it_is_written(self):
+        """subprocess.run(text=True) still hands TimeoutExpired *bytes*, so
+        concatenating them raised TypeError and the timeout escaped as a
+        traceback -- leaving the tutorial RUNNING and skipping the retry."""
+        from tutorials.runner import _as_text
+
+        self.assertEqual(_as_text(b"hello"), "hello")
+        self.assertEqual(_as_text("hello"), "hello")
+        self.assertEqual(_as_text(None), "")
+        self.assertEqual(_as_text(b"\xff"), "\ufffd")
+
+    def test_the_handler_uses_it(self):
+        source = (ROOT / "tutorials" / "runner.py").read_text()
+        block = source.split("except subprocess.TimeoutExpired", 1)[1].split(
+            "except OSError", 1)[0]
+        self.assertIn("_as_text(exc.stdout)", block)
+        self.assertNotIn('(exc.stdout or "")', block)
+
+
+class OqmdGetsASecondAttempt(unittest.TestCase):
+    """OQMD is the least reliable service the tutorials touch.
+
+    It has been unresponsive enough to fail a sweep outright, and its
+    download has hung for nineteen minutes.  A search that normally takes 35
+    seconds is not broken because one call stalled, so the tutorial runs
+    again before being called a failure.
+    """
+
+    def test_oqmd_gets_a_longer_budget_than_the_rest(self):
+        """Its searches alone have taken 34.7s to 71.8s across runs; a budget
+        a healthy run cannot meet is a source of false failures, not a hang
+        detector."""
+        from tutorials.catalog import CATALOG
+        from tutorials.runner import DEFAULT_TUTORIAL_TIMEOUT
+
+        for code in ("QE/4", "VASP/4"):
+            with self.subTest(code=code):
+                self.assertEqual(CATALOG[code].timeout, 100)
+                self.assertGreater(CATALOG[code].timeout,
+                                   DEFAULT_TUTORIAL_TIMEOUT)
+
+    def test_every_other_tutorial_uses_the_default(self):
+        from tutorials.catalog import CATALOG
+
+        for code, tutorial in CATALOG.items():
+            if code in ("QE/4", "VASP/4"):
+                continue
+            with self.subTest(code=code):
+                self.assertEqual(tutorial.timeout, 0.0)
+
+    def test_the_per_tutorial_budget_wins_over_the_run_wide_one(self):
+        source = (ROOT / "tutorials" / "runner.py").read_text()
+        block = source.split("def _run_tutorial", 1)[1].split("\n    def ", 1)[0]
+        self.assertIn("tutorial.timeout", block)
+
+    def test_only_the_oqmd_tutorials_retry(self):
+        from tutorials.catalog import CATALOG
+
+        retried = sorted(c for c, t in CATALOG.items() if t.attempts > 1)
+        self.assertEqual(retried, ["QE/4", "VASP/4"])
+
+    def test_everything_else_runs_once(self):
+        from tutorials.catalog import CATALOG
+
+        for code, tutorial in CATALOG.items():
+            if code in ("QE/4", "VASP/4"):
+                continue
+            with self.subTest(code=code):
+                self.assertEqual(tutorial.attempts, 1)
+
+    def test_only_a_clock_failure_is_retried(self):
+        """A wrong answer is still wrong the second time; only running out of
+        time is worth another go."""
+        from tutorials.runner import TutorialRunner
+        from tutorials.state import StepState
+
+        ran_out = StepState(step_id="s", key="s",
+                            reason="killed after 60s: the tutorial's 60s budget ran out")
+        timed = StepState(step_id="s", key="s", reason="timed out after 60s")
+        wrong = StepState(step_id="s", key="s",
+                          reason="mainprogram 4 exited 2")
+        self.assertTrue(TutorialRunner._out_of_time(ran_out))
+        self.assertTrue(TutorialRunner._out_of_time(timed))
+        self.assertFalse(TutorialRunner._out_of_time(wrong))
+
+    def test_a_retry_does_not_repeat_work_already_done(self):
+        """Re-running a 39-second search to retry the download after it would
+        spend the new budget on work that already passed."""
+        source = (ROOT / "tutorials" / "runner.py").read_text()
+        block = source.split("def _run_step", 1)[1].split("\n    def ", 1)[0]
+        self.assertIn("self.options.resume or force_resume", block)
+
+
+class AFlakyServiceDoesNotFailTheRun(unittest.TestCase):
+    """OQMD not answering is not a defect anyone reading the report can act on.
+
+    Its searches have finished in 35 seconds and in 100; it has been
+    unresponsive for a whole sweep; and its client, `qmpy_rester`, passes no
+    timeout to its `requests.Session`, so a stalled connection once ran for
+    nineteen minutes.  Turning a sweep red for that hides the failures that
+    *are* actionable -- the same reasoning that already records an absent
+    POTCAR or API key as skipped.
+    """
+
+    def test_a_timeout_there_is_recorded_as_skipped(self):
+        source = (ROOT / "tutorials" / "runner.py").read_text()
+        block = source.split("def _run_tutorial", 1)[1].split("\n    def ", 1)[0]
+        self.assertIn("tutorial.flaky_service", block)
+        self.assertIn("record.status = SKIPPED", block)
+
+    def test_only_a_timeout_is_forgiven(self):
+        """A wrong answer from OQMD is still a failure."""
+        source = (ROOT / "tutorials" / "runner.py").read_text()
+        block = source.split("def _run_tutorial", 1)[1].split("\n    def ", 1)[0]
+        self.assertIn("self._out_of_time(failed)", block)
+
+    def test_a_skipped_flaky_dependency_does_not_block(self):
+        import tempfile
+        from pathlib import Path as _Path
+
+        from tutorials.catalog import CATALOG
+        from tutorials.runner import RunOptions, TutorialRunner
+        from tutorials.state import DONE, FAILED, SKIPPED
+
+        with tempfile.TemporaryDirectory() as tmp:
+            opts = RunOptions(workdir=_Path(tmp), examples=ROOT / "examples")
+            runner = TutorialRunner(["QE/2", "QE/4", "QE/5", "QE/7"], opts)
+            for dep in ("QE/2", "QE/5"):
+                runner.state.tutorial(dep).status = DONE
+            runner.state.tutorial("QE/4").status = SKIPPED
+            self.assertEqual(runner._blocked_by(CATALOG["QE/7"]), "")
+
+            # the same status on a dependency that is *not* a flaky service
+            runner.state.tutorial("QE/5").status = SKIPPED
+            self.assertEqual(runner._blocked_by(CATALOG["QE/7"]), "QE/5")
+
+            # and a real failure still blocks
+            runner.state.tutorial("QE/5").status = DONE
+            runner.state.tutorial("QE/4").status = FAILED
+            self.assertEqual(runner._blocked_by(CATALOG["QE/7"]), "QE/4")
+
+    def test_the_dependency_reference_supplies_what_it_did_not_produce(self):
+        """data-combine merges what the three database tutorials downloaded.
+        When OQMD is skipped its work directory is bare, so the same files
+        come from its reference instead."""
+        import tempfile
+        from pathlib import Path as _Path
+
+        from tutorials.catalog import CATALOG, Seed
+        from tutorials.workdirs import _seed_from_dependency_reference
+
+        seed = Seed("QE/4", ("scf_dir", "R*-*", "mpid.in"))
+        with tempfile.TemporaryDirectory() as tmp:
+            workdir = _Path(tmp)
+            placed = _seed_from_dependency_reference(seed, workdir)
+        self.assertTrue(placed, "nothing came out of QE/4's reference")
+        self.assertIn("mpid.in", placed)
+        self.assertTrue(any(p.startswith("scf_dir/") for p in placed), placed)
+
+    def test_it_takes_only_what_the_seed_asked_for(self):
+        """The reference also holds `log` and `input.in`; copying those would
+        hand the tutorial the author's run instead of its own."""
+        import tempfile
+        from pathlib import Path as _Path
+
+        from tutorials.catalog import Seed
+        from tutorials.workdirs import _seed_from_dependency_reference
+
+        seed = Seed("QE/4", ("mpid.in",))
+        with tempfile.TemporaryDirectory() as tmp:
+            placed = _seed_from_dependency_reference(seed, _Path(tmp))
+        self.assertEqual(placed, ["mpid.in"])
+
+    def test_a_real_run_beats_the_reference(self):
+        """The fallback fires only when the work directory yielded nothing."""
+        source = (ROOT / "tutorials" / "workdirs.py").read_text()
+        block = source.split("def seed_workdir", 1)[1].split("\ndef ", 1)[0]
+        self.assertIn("if not placed", block)
+
+
+class OqmdSocketTimeout(unittest.TestCase):
+    """`qmpy_rester` passes no timeout to its `requests.Session`.
+
+    A wall-clock budget cannot tell a stalled connection from a slow one; a
+    socket timeout can, which is why this sits at the socket layer and the
+    budget stays as an outer backstop.
+    """
+
+    def test_the_timeout_applies_only_inside_the_block(self):
+        import socket
+
+        from htesp.oqmd_extract import OQMD_SOCKET_TIMEOUT, socket_timeout
+
+        before = socket.getdefaulttimeout()
+        with socket_timeout():
+            self.assertEqual(socket.getdefaulttimeout(), OQMD_SOCKET_TIMEOUT)
+        self.assertEqual(socket.getdefaulttimeout(), before)
+
+    def test_it_is_restored_when_the_query_raises(self):
+        import socket
+
+        from htesp.oqmd_extract import socket_timeout
+
+        before = socket.getdefaulttimeout()
+        with self.assertRaises(RuntimeError):
+            with socket_timeout():
+                raise RuntimeError("OQMD said no")
+        self.assertEqual(socket.getdefaulttimeout(), before)
+
+    def test_it_is_not_set_at_import_time(self):
+        """aflow_extract imports this module, and data-combine runs all three
+        front ends in one process: an import-time setting would put a timeout
+        on AFLOW's queries too."""
+        import socket
+
+        self.assertIsNone(socket.getdefaulttimeout())
+
+    def test_both_oqmd_calls_are_wrapped(self):
+        import ast
+
+        source = (ROOT / "htesp" / "oqmd_extract.py").read_text()
+        calls = [n for n in ast.walk(ast.parse(source))
+                 if isinstance(n, ast.Call) and isinstance(n.func, ast.Attribute)
+                 and n.func.attr in ("get_oqmd_phases", "get_entry_by_id")]
+        self.assertEqual(len(calls), 2)
+        withs = [n for n in ast.walk(ast.parse(source)) if isinstance(n, ast.With)]
+        guarded = [w for w in withs
+                   if any(isinstance(i.context_expr, ast.Call)
+                          and getattr(i.context_expr.func, "id", "") == "socket_timeout"
+                          for i in w.items)]
+        self.assertEqual(len(guarded), 2)
+
+
+class WhatTheRunProduced(unittest.TestCase):
+    """The runner could say "did it work?" but not "what did it give me?".
+
+    That gap hid three defects: `pressure-input` declared an artefact that
+    `mainprogram 26` creates later, `update-input` declared one written only
+    when a structure is *not* relaxed, and QE/9's declared artefact is
+    shipped inside examples/ itself so the glob matched whether or not the
+    step ran.  Each would have shown here as a step that passed having
+    written nothing.
+    """
+
+    def test_the_flag_exists(self):
+        from tutorials.run_tutorials import build_parser
+
+        self.assertTrue(build_parser().parse_args(["--output"]).output)
+
+    def test_a_step_records_what_it_wrote(self):
+        from tutorials.state import StepState
+
+        self.assertEqual(StepState(step_id="s", key="s").produced, [])
+
+    def test_the_log_does_not_count_as_output(self):
+        """Every mainprogram call appends to it, so counting it means no step
+        ever looks empty -- and that emptiness is the whole signal."""
+        from tutorials.manifest import is_ambient, real_output
+        from tutorials.state import StepState
+
+        self.assertTrue(is_ambient("log"))
+        step = StepState(step_id="s", key="s", produced=["log"])
+        self.assertEqual(real_output(step), [])
+        step = StepState(step_id="s", key="s", produced=["log", "run-scf.sh"])
+        self.assertEqual(real_output(step), ["run-scf.sh"])
+
+    def test_nested_copies_are_described_too(self):
+        """fnmatch's * crosses /, so matching the whole path alone would miss
+        every file below the top level."""
+        from tutorials.manifest import describe
+
+        self.assertIn("submission script", describe("R1-x/phonopy/R1/run-scf.sh"))
+        self.assertIn("submission script", describe("run-scf.sh"))
+        self.assertIn("relaxation input", describe("Rmp-763-Mg1B2/relax/scf.in"))
+        self.assertEqual(describe("something-unknown.xyz"), "")
+
+    def test_snapshot_skips_symlinked_trees(self):
+        """QE work directories link pp/ at the shared pseudopotential tree;
+        walking it would add hundreds of files no step writes."""
+        import tempfile
+        from pathlib import Path as _Path
+
+        from tutorials.workdirs import snapshot
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = _Path(tmp)
+            (root / "real").mkdir()
+            (root / "real" / "a.txt").write_text("a")
+            target = root / "elsewhere"
+            target.mkdir()
+            (target / "b.txt").write_text("b")
+            (root / "linked").symlink_to(target)
+            seen = snapshot(root)
+        self.assertIn("real/a.txt", seen)
+        self.assertNotIn("linked/b.txt", seen)
+
+    def test_changed_since_reports_new_and_modified(self):
+        import tempfile
+        import time
+        from pathlib import Path as _Path
+
+        from tutorials.workdirs import changed_since, snapshot
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = _Path(tmp)
+            (root / "kept.txt").write_text("same")
+            (root / "grows.txt").write_text("x")
+            before = snapshot(root)
+            time.sleep(0.01)
+            (root / "new.txt").write_text("new")
+            (root / "grows.txt").write_text("xx")
+            changed = changed_since(before, snapshot(root))
+        self.assertIn("new.txt", changed)
+        self.assertIn("grows.txt", changed)
+        self.assertNotIn("kept.txt", changed)
+
+    def test_the_report_names_steps_that_wrote_nothing(self):
+        source = (ROOT / "tutorials" / "report.py").read_text()
+        self.assertIn("passed without writing anything", source)
+        self.assertIn("manifest.real_output", source)
+
+
+class SkippedStepsSayWhereToReadOn(unittest.TestCase):
+    """A step this runner can never perform should say how to perform it.
+
+    Forty-one steps read the output of a real DFT run.  Telling the reader
+    only that they were skipped leaves them nowhere to go; the tutorial's own
+    written instructions are where they should go.
+    """
+
+    def test_every_tutorial_but_one_resolves_to_a_readme(self):
+        """Twelve ship none of their own, so the counterpart's are used -- the
+        two trees cover the same topics in the same order."""
+        from tutorials.catalog import CATALOG, readme_for
+
+        missing = sorted(c for c, t in CATALOG.items() if readme_for(t) is None)
+        self.assertEqual(missing, ["VASP/21"])
+
+    def test_the_counterpart_is_found_in_both_directions(self):
+        from tutorials.catalog import CATALOG, readme_for
+
+        # VASP/9 ships none; QE/9 covers the same relaxation
+        self.assertEqual(readme_for(CATALOG["VASP/9"]).parent.name, "tutorial9")
+        self.assertEqual(readme_for(CATALOG["VASP/9"]).parent.parent.name, "QE")
+        # QE/15 ships none; its VASP counterpart is 14, not 15
+        self.assertEqual(readme_for(CATALOG["QE/15"]).parent.name, "tutorial14")
+
+    def test_the_offset_after_tutorial_eleven_is_respected(self):
+        """VASP n is QE n+1 from 11 on, so VASP/19 is QE/20."""
+        from tutorials.catalog import CATALOG, readme_for
+
+        self.assertEqual(readme_for(CATALOG["VASP/19"]).parent.name, "tutorial20")
+
+    def test_readme_txt_is_accepted_too(self):
+        from tutorials.catalog import README_NAMES
+
+        self.assertIn("README", README_NAMES)
+        self.assertIn("README.txt", README_NAMES)
+
+    def test_every_resolved_path_exists(self):
+        """A pointer to a file that is not there is worse than none."""
+        from tutorials.catalog import CATALOG, readme_for
+
+        for code, tutorial in sorted(CATALOG.items()):
+            found = readme_for(tutorial)
+            if found is None:
+                continue
+            with self.subTest(code=code):
+                self.assertTrue(found.is_file(), found)
+
+    def test_the_pointer_is_only_for_dft_output_skips(self):
+        """A machine missing a POTCAR, an API key or enumlib already gets a
+        message saying what to install; replacing it would be a downgrade.
+        A cascade skip names the step that caused it, which is the real
+        reason."""
+        source = (ROOT / "tutorials" / "runner.py").read_text()
+        block = source.split("def _run_step", 1)[1].split("\n    def ", 1)[0]
+        self.assertEqual(block.count("self._how_to_run_it("), 1)
+        dft = block.split("needs_dft_output", 1)[1][:400]
+        self.assertIn("_how_to_run_it", dft)
+        for other in ("POTCARs are not configured", "htesp-check --set_mp_api",
+                      "whose output it reads, was skipped"):
+            with self.subTest(message=other):
+                segment = block.split(other, 1)
+                self.assertEqual(len(segment), 2, other)
+                self.assertNotIn("_how_to_run_it", segment[1][:200])
+
+    def test_a_tutorial_with_no_instructions_gets_no_pointer(self):
+        import tempfile
+        from pathlib import Path as _Path
+
+        from tutorials.catalog import CATALOG
+        from tutorials.runner import RunOptions, TutorialRunner
+
+        with tempfile.TemporaryDirectory() as tmp:
+            runner = TutorialRunner(["VASP/21"],
+                                    RunOptions(workdir=_Path(tmp),
+                                               examples=ROOT / "examples"))
+            self.assertEqual(runner._how_to_run_it(CATALOG["VASP/21"]), "")
+            self.assertIn("tutorial9",
+                          runner._how_to_run_it(CATALOG["VASP/9"]))
+
+    def test_the_report_names_tutorials_nothing_ran_for(self):
+        source = (ROOT / "tutorials" / "report.py").read_text()
+        self.assertIn("Nothing ran for these", source)
+        self.assertIn("readme_for", source)
 
 
 if __name__ == "__main__":

@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import functools
 import logging
+import threading
 import os
 import shutil
 import subprocess
@@ -30,22 +31,77 @@ from pathlib import Path
 from typing import Sequence
 
 from tutorials.catalog import (CATALOG, EXAMPLES, PACKAGE_ROOT, Step,
-                               Tutorial, iters, searched_for_examples)
+                               Tutorial, iters, readme_for,
+                               searched_for_examples)
 from tutorials.state import (BLOCKED, DONE, FAILED, PENDING, RUNNING, SKIPPED,
                              RunState, StepState, TutorialState, step_key)
-from tutorials.workdirs import (collect_job_ids, missing_artifacts,
-                                patch_input_in, relaxation_converged,
-                                seed_workdir, wait_for_jobs)
+from tutorials.workdirs import (changed_since, missing_artifacts,
+                                patch_input_in, relax_output_present,
+                                seed_workdir, snapshot)
 
 LOG = logging.getLogger("htesp.tutorials")
 
-#: the two ways to run a tutorial.  There used to be a third, --no-dft
-#: (prepare everything, submit nothing); it sat between these two and was
-#: one mode more than the runner needed explaining.
-DRY_RUN, REAL = "dry-run", "real"
+#: There are no modes left.  The runner prepares inputs and never runs a DFT
+#: calculation: every step is invoked as ``mainprogram ... --dry-run``, so
+#: nothing is submitted and nothing is deleted.  ``--no-dft`` went first (one
+#: mode more than the runner needed explaining), then real mode, which existed
+#: to drive a campaign -- that is ``mainprogram``'s job, not this driver's.
+#: The name survives only as the label written into ``state.json``.
+DRY_RUN = "dry-run"
 
 #: default seconds a single ``mainprogram`` call may take
-DEFAULT_STEP_TIMEOUT = 6 * 3600
+#: how long a whole tutorial may take before the runner gives up on it.
+#:
+#: Measured over a healthy sweep, the slowest tutorial (QE/4, two live OQMD
+#: calls) totalled 58.6 seconds and no tutorial exceeded a minute, so this is
+#: tight but real work fits inside it.
+DEFAULT_TUTORIAL_TIMEOUT = 60
+
+#: how long one `mainprogram` call may take before the runner kills it.
+#:
+#: This was six hours, which is how a hung step went unnoticed: OQMD stalled
+#: an `oqmd-download` for nineteen minutes and counting, alive with two open
+#: sockets and no output, because `qmpy_rester` builds a bare
+#: `requests.Session()` with no timeout and a stalled connection blocks for
+#: ever.  With no DFT run here, no step does real work for minutes, so a
+#: short limit turns a hang into a reported failure instead of a wait.
+DEFAULT_STEP_TIMEOUT = 60
+
+
+def _as_text(blob) -> str:
+    """Decode whatever a subprocess handed back; None becomes ``""``."""
+    if blob is None:
+        return ""
+    if isinstance(blob, bytes):
+        return blob.decode("utf-8", "replace")
+    return str(blob)
+
+
+def mp_api_key() -> str | None:
+    """The Materials Project key, resolved the way HTESP itself resolves it.
+
+    FIX: this used to be ``os.environ.get("MP_API_KEY")`` and nothing else,
+    which contradicted the rest of the package.  ``htesp-check --set_mp_api``
+    exists precisely so nobody has to export the variable -- an exported key
+    is lost by a batch job, a nohup-ed sweep or a new terminal -- and it
+    writes ``~/.config/htesp/credentials``.  A correctly configured machine
+    therefore had eight tutorials skip with "MP_API_KEY is not set" while
+    ``mainprogram search`` run by hand in the same directory worked.
+
+    ``htesp.config.api_key()`` is the one resolver: environment, then the
+    credentials file, then ``config.json`` -- returning None for the shipped
+    ``use_your_API_KEY`` placeholder.  It is imported lazily because
+    ``tutorials/`` is meant to stay importable on a machine with no
+    scientific stack, and falls back to the environment if it cannot be.
+    """
+    try:
+        from htesp.config import api_key
+    except Exception:                          # noqa: BLE001 - no htesp here
+        return os.environ.get("MP_API_KEY", "").strip() or None
+    try:
+        return api_key()
+    except Exception:                          # noqa: BLE001 - unreadable config
+        return os.environ.get("MP_API_KEY", "").strip() or None
 
 
 def child_env(root: Path = PACKAGE_ROOT) -> dict[str, str]:
@@ -67,13 +123,20 @@ class RunOptions:
     """Everything the runner needs that is not the catalogue."""
 
     workdir: Path
-    mode: str = DRY_RUN
     resume: bool = True
     poll_interval: float = 60.0
     job_timeout: float = 24 * 3600
     step_timeout: float = DEFAULT_STEP_TIMEOUT
+    #: seconds a whole tutorial may take.  A step is never given more than
+    #: what is left of it, so an unbounded network call is cut short by the
+    #: tutorial's own budget rather than running until the step limit.
+    tutorial_timeout: float = DEFAULT_TUTORIAL_TIMEOUT
     workers: int | None = None
     from_step: str | None = None
+    #: how many tutorials to run at once.  1 is sequential, as it has always
+    #: been.  See TutorialRunner._run_group for why this is safe and where the
+    #: time actually goes.
+    jobs: int = 1
     #: which dependency iteration to run: None runs the whole selection in one pass
     #: (what every earlier version did), an int runs exactly that iteration, and
     #: "next" runs the lowest-numbered iteration the checkpoint has not finished.
@@ -207,13 +270,17 @@ def preflight(codes: Sequence[str], options: RunOptions,
 
     needs_key = sorted({t.code for t in tutorials
                         if any(s.needs_api_key for s in t.steps)})
-    if needs_key and not os.environ.get("MP_API_KEY"):
-        level = "warning" if options.mode == DRY_RUN else "error"
+    if needs_key and not mp_api_key():
+        # A warning, not an error: the run is still useful without a key --
+        # the four tutorials that need one are skipped and the rest proceed.
         out.append(Problem(
-            level,
-            "MP_API_KEY is not set, and these tutorials query the Materials "
+            "warning",
+            "no Materials Project API key is configured, and these "
+            "tutorials query the Materials "
             f"Project: {', '.join(needs_key)}",
-            "export MP_API_KEY=... (the key was removed from every config.json)"))
+            "htesp-check --set_mp_api <your key>  (it is verified and stored "
+            "in ~/.config/htesp/credentials, which survives batch jobs; "
+            "$MP_API_KEY still wins when set)"))
 
     # enumlib is a separate C/Fortran package that pymatgen's EnumlibAdaptor
     # shells out to; nothing pip-installs it.  This is a warning in every mode,
@@ -231,18 +298,6 @@ def preflight(codes: Sequence[str], options: RunOptions,
             "Build them from https://github.com/msg-byu/enumlib and put them "
             "on PATH, or leave these tutorials out with "
             f"--skip {','.join(needs_enumlib)}"))
-
-    if options.mode == REAL:
-        for tool, why in (("sbatch", "submitting jobs"), ("squeue", "waiting for jobs")):
-            if shutil.which(tool) is None:
-                out.append(Problem("error", f"{tool} is not on PATH ({why})",
-                                   "run with --dry-run on a laptop"))
-        wanted = {"QE": "pw.x", "VASP": "vasp_std"}
-        for dft in sorted(codes_used):
-            if shutil.which(wanted[dft]) is None:
-                out.append(Problem("error",
-                                   f"{wanted[dft]} is not on PATH but {dft} "
-                                   "tutorials were selected"))
 
     probe = _probe_mainprogram(options)
     if probe:
@@ -311,44 +366,200 @@ class TutorialRunner:
         self.catalog = CATALOG if catalog is None else catalog
         self.state = state if state is not None else RunState(
             path=options.workdir / "state.json")
-        self.state.mode = options.mode
+        self.state.mode = DRY_RUN
+        # One checkpoint file, one writer at a time.  save() is already atomic
+        # (temp file + replace), so this only stops two threads serialising the
+        # same dict at once and racing to replace.
+        self._lock = threading.Lock()
+        # Per-tutorial deadline.  Thread-local because several tutorials can
+        # be in flight at once under --jobs.
+        self._deadline = threading.local()
 
     # -- entry point -------------------------------------------------------- #
     def run(self) -> RunState:
         """Run every selected tutorial; always returns a saved checkpoint."""
         self.options.runs_root.mkdir(parents=True, exist_ok=True)
         self.options.logs_root.mkdir(parents=True, exist_ok=True)
-        plan = iters(self.codes, self.catalog)
-        number, codes = self._iter_to_run(plan)
-        if codes is None:                      # nothing left to do
-            self.state.save()
-            return self.state
-        record = self.state.iteration(number, codes) if number is not None else None
-        if record is not None:
-            record.status, record.started = RUNNING, time.time()
-            LOG.info("iteration %d of %d: %d tutorial(s) -- %s",
-                     number, len(plan) - 1, len(codes), ", ".join(codes))
-            self.state.save()
+        codes = list(self.codes)
         try:
-            for code in codes:
-                self._run_tutorial(code)
+            self._run_group(codes)
         except KeyboardInterrupt:
             self.state.interrupted = True
             self._mark_running_as_interrupted()
             LOG.error("interrupted -- the checkpoint is at %s", self.state.path)
-        if record is not None:
-            self._close_iter(record, plan)
-        self.state.save()
+        self._save()
         self._clean_work_dirs()
         return self.state
+
+    def _how_to_run_it(self, tutorial: Tutorial) -> str:
+        """``"; to run it for real, follow <path>"`` -- or nothing.
+
+        Only for steps that genuinely need a DFT run.  A step skipped because
+        the machine lacks a POTCAR, an API key or enumlib already says what to
+        install, and replacing that with "read the README" would be a
+        downgrade; a step skipped because the one before it was skipped names
+        that step, which is the actual cause.
+
+        VASP/21 has no instructions anywhere -- neither its own directory nor
+        a QE counterpart, since the QE tree has no IFermi tutorial -- so it
+        gets no pointer rather than a path that does not exist.
+        """
+        readme = readme_for(tutorial, self.catalog)
+        if readme is None:
+            return ""
+        try:
+            where = readme.relative_to(PACKAGE_ROOT)
+        except ValueError:                           # pragma: no cover
+            where = readme
+        return f"; to run it for real, follow {where}"
+
+    def _time_left(self) -> float | None:
+        """Seconds left in this tutorial's budget, or None when unbounded."""
+        at = getattr(self._deadline, "at", None)
+        return None if at is None else at - time.time()
+
+    def _tag(self, code: str) -> str:
+        """``"QE/9  "`` when tutorials run in parallel, ``""`` when they do not.
+
+        The step lines carry no tutorial code, because sequentially the
+        heading above them says which tutorial it is.  Interleaved, that
+        heading is meaningless and the output becomes unreadable.
+        """
+        if max(1, int(getattr(self.options, "jobs", 1) or 1)) == 1:
+            return ""
+        return f"{code:<9s} "
+
+    def _save(self) -> None:
+        """Write the checkpoint under the lock (threads share one file)."""
+        with self._lock:
+            self.state.save()
+
+    def _run_group(self, codes: Sequence[str]) -> None:
+        """Run *codes*, in parallel when asked, respecting dependencies.
+
+        Nearly all of a sweep's wall time is spent waiting on other people's
+        servers: the database front ends query Materials Project, OQMD and
+        AFLOW over the network, and in one measured run seven `search` steps
+        accounted for over six of the eight minutes elapsed -- the slowest a
+        single 163-second call -- while every local step finished in under two
+        seconds.  Those tutorials are independent of each other, so the waiting
+        can overlap.
+
+        Threads, not processes: every step is a `subprocess.run` of
+        `mainprogram`, and the interpreter releases the GIL for the duration,
+        so threads give full overlap while keeping one shared checkpoint.
+
+        Dependencies are honoured by running one dependency level at a time --
+        a tutorial that seeds from another's *work directory* cannot start
+        before it finishes.  The graph is two levels deep, and the slow
+        database tutorials are all in the first, so a level barrier costs
+        almost nothing next to a full dependency-aware scheduler.
+        """
+        jobs = max(1, int(getattr(self.options, "jobs", 1) or 1))
+        if jobs == 1 or len(codes) < 2:
+            for code in codes:
+                self._run_tutorial(code)
+            return
+
+        from concurrent.futures import ThreadPoolExecutor
+
+        for level in iters(codes, self.catalog):
+            if len(level) == 1:
+                self._run_tutorial(level[0])
+                continue
+            width = min(jobs, len(level))
+            LOG.info("running %d tutorial(s) %d at a time", len(level), width)
+            with ThreadPoolExecutor(max_workers=width) as pool:
+                list(pool.map(self._run_tutorial, level))
+
+    def _how_to_run_it(self, tutorial: Tutorial) -> str:
+        """``"; to run it for real, follow <path>"`` -- or nothing.
+
+        Only for steps that genuinely need a DFT run.  A step skipped because
+        the machine lacks a POTCAR, an API key or enumlib already says what to
+        install, and replacing that with "read the README" would be a
+        downgrade; a step skipped because the one before it was skipped names
+        that step, which is the actual cause.
+
+        VASP/21 has no instructions anywhere -- neither its own directory nor
+        a QE counterpart, since the QE tree has no IFermi tutorial -- so it
+        gets no pointer rather than a path that does not exist.
+        """
+        readme = readme_for(tutorial, self.catalog)
+        if readme is None:
+            return ""
+        try:
+            where = readme.relative_to(PACKAGE_ROOT)
+        except ValueError:                           # pragma: no cover
+            where = readme
+        return f"; to run it for real, follow {where}"
+
+    def _time_left(self) -> float | None:
+        """Seconds left in this tutorial's budget, or None when unbounded."""
+        at = getattr(self._deadline, "at", None)
+        return None if at is None else at - time.time()
+
+    def _tag(self, code: str) -> str:
+        """``"QE/9  "`` when tutorials run in parallel, ``""`` when they do not.
+
+        The step lines carry no tutorial code, because sequentially the
+        heading above them says which tutorial it is.  Interleaved, that
+        heading is meaningless and the output becomes unreadable.
+        """
+        if max(1, int(getattr(self.options, "jobs", 1) or 1)) == 1:
+            return ""
+        return f"{code:<9s} "
+
+    def _save(self) -> None:
+        """Write the checkpoint under the lock (threads share one file)."""
+        with self._lock:
+            self.state.save()
+
+    def _run_group(self, codes: Sequence[str]) -> None:
+        """Run *codes*, in parallel when asked, respecting dependencies.
+
+        Nearly all of a sweep's wall time is spent waiting on other people's
+        servers: the database front ends query Materials Project, OQMD and
+        AFLOW over the network, and in one measured run seven `search` steps
+        accounted for over six of the eight minutes elapsed -- the slowest a
+        single 163-second call -- while every local step finished in under two
+        seconds.  Those tutorials are independent of each other, so the waiting
+        can overlap.
+
+        Threads, not processes: every step is a `subprocess.run` of
+        `mainprogram`, and the interpreter releases the GIL for the duration,
+        so threads give full overlap while keeping one shared checkpoint.
+
+        Dependencies are honoured by running one dependency level at a time --
+        a tutorial that seeds from another's *work directory* cannot start
+        before it finishes.  The graph is two levels deep, and the slow
+        database tutorials are all in the first, so a level barrier costs
+        almost nothing next to a full dependency-aware scheduler.
+        """
+        jobs = max(1, int(getattr(self.options, "jobs", 1) or 1))
+        if jobs == 1 or len(codes) < 2:
+            for code in codes:
+                self._run_tutorial(code)
+            return
+
+        from concurrent.futures import ThreadPoolExecutor
+
+        for level in iters(codes, self.catalog):
+            if len(level) == 1:
+                self._run_tutorial(level[0])
+                continue
+            width = min(jobs, len(level))
+            LOG.info("running %d tutorial(s) %d at a time", len(level), width)
+            with ThreadPoolExecutor(max_workers=width) as pool:
+                list(pool.map(self._run_tutorial, level))
 
     # -- iters -------------------------------------------------------------- #
     def _iter_to_run(self, plan: list[list[str]]) -> tuple[int | None, list[str] | None]:
         """Which iteration this invocation covers, and the codes in it.
 
         ``(None, every code)`` is the historical single-pass run; that is still
-        the default, because --dry-run never queues anything and there is
-        nothing to wait between iterations *for*.
+        the default: nothing is ever queued, so there is nothing to wait
+        between iterations *for*.
         """
         wanted = self.options.iteration
         if wanted is None:
@@ -453,17 +664,23 @@ class TutorialRunner:
             record.reason = (f"{blocker} did not finish, and {code} starts from "
                              "what it produces")
             LOG.warning("%-9s BLOCKED by %s", code, blocker)
-            self.state.save()
+            self._save()
             return
 
         record.status, record.started = RUNNING, time.time()
+        # A tutorial may ask for longer than the run-wide budget; OQMD does,
+        # because its own searches take most of a minute on a good day.
+        budget = float(tutorial.timeout
+                       or getattr(self.options, "tutorial_timeout", 0) or 0)
+        self._deadline.at = (time.time() + budget) if budget > 0 else None
+        self._deadline.budget = budget
         try:
             workdir = seed_workdir(tutorial, self.options)
         except (OSError, FileNotFoundError) as exc:
             record.status, record.reason = FAILED, f"could not seed the work directory: {exc}"
             record.finished = time.time()
             LOG.error("%-9s FAILED while seeding: %s", code, exc)
-            self.state.save()
+            self._save()
             return
         record.workdir = str(workdir)
         if tutorial.stub:
@@ -471,26 +688,78 @@ class TutorialRunner:
         LOG.info("%-9s %s", code, tutorial.title)
 
         failed = self._execute_steps(tutorial, record, workdir)
+        # A tutorial whose failure is most likely someone else's server gets
+        # another run at it, with a fresh budget.  Steps that already passed
+        # are not repeated: the checkpoint says they are done, so a retry
+        # picks up at the step that ran out of time.
+        for attempt in range(2, max(1, tutorial.attempts) + 1):
+            if failed is None or not self._out_of_time(failed):
+                break
+            LOG.warning("%-9s attempt %d of %d: %s", code, attempt,
+                        tutorial.attempts, failed.reason)
+            record.steps.pop(failed.key, None)
+            self._deadline.at = (time.time() + budget) if budget > 0 else None
+            self._deadline.budget = budget
+            failed = self._execute_steps(tutorial, record, workdir, resume=True)
         record.finished = time.time()
-        record.status = FAILED if failed else DONE
+        # A service that did not answer is not a defect anyone reading this
+        # report can act on.  After every attempt has been spent waiting on
+        # it, record the tutorial as skipped rather than failed -- the same
+        # treatment an absent POTCAR or API key already gets -- so a red run
+        # still means something is actually wrong.  Only a timeout is
+        # forgiven: a wrong answer from OQMD is still a failure.
+        gave_up_on_service = (failed is not None and tutorial.flaky_service
+                              and self._out_of_time(failed))
+        if gave_up_on_service:
+            record.status = SKIPPED
+            record.reason = (
+                "{} did not respond within {:.0f}s, on {} attempt(s) -- "
+                "skipped, not failed: the service is outside HTESP's control "
+                "and its client has no request timeout".format(
+                    tutorial.topic.upper(), budget, tutorial.attempts))
+            LOG.warning("%-9s SKIPPED -- %s", code, record.reason)
+        else:
+            record.status = FAILED if failed else DONE
         if not failed and not tutorial.stub:
             record.reason = ""
-        if failed:
+        if failed and not gave_up_on_service:
             record.reason = f"stopped at step {failed.index}/{len(tutorial.steps)} " \
                             f"({failed.step_id}): {failed.reason}"
-        self.state.save()
+        self._save()
+
+    @staticmethod
+    def _out_of_time(step: StepState) -> bool:
+        """Did this step fail because the clock ran out, not the command?"""
+        reason = (step.reason or "").lower()
+        return "budget" in reason or "timed out" in reason
 
     def _blocked_by(self, tutorial: Tutorial) -> str:
+        """The dependency that stops this tutorial running, or ``""``.
+
+        A dependency SKIPPED because its service did not answer is not a
+        blocker.  `data-combine` merges what the three database tutorials
+        downloaded, and OQMD being unreachable should not stop it: seeding
+        falls back to that tutorial's reference, which holds the same files.
+        Blocking there would fail a tutorial for a reason that is neither its
+        own nor HTESP's.
+        """
         for dep in tutorial.depends_on:
             if dep not in self.codes:
                 continue
             record = self.state.tutorials.get(dep)
-            if record is None or record.status not in (DONE,):
-                return dep
+            if record is not None and record.status == DONE:
+                continue
+            if (record is not None and record.status == SKIPPED
+                    and self.catalog[dep].flaky_service):
+                LOG.info("%-9s %s was skipped (%s did not answer); its "
+                         "reference will be used instead",
+                         tutorial.code, dep, self.catalog[dep].topic.upper())
+                continue
+            return dep
         return ""
 
     def _execute_steps(self, tutorial: Tutorial, record: TutorialState,
-                       workdir: Path) -> StepState | None:
+                       workdir: Path, resume: bool = False) -> StepState | None:
         """Run the step list, honouring the convergence loop.  Returns the failure."""
         steps = tutorial.steps
         loop = tutorial.loop
@@ -510,7 +779,8 @@ class TutorialRunner:
                                       f"before --from {self.options.from_step}")
                     index += 1
                     continue
-            state = self._run_step(tutorial, record, step, index + 1, cycle, workdir)
+            state = self._run_step(tutorial, record, step, index + 1, cycle,
+                                   workdir, force_resume=resume)
             if state.status == FAILED:
                 return state
             if loop and index == loop_last and cycle < loop.max_cycles:
@@ -532,8 +802,9 @@ class TutorialRunner:
                           status=SKIPPED, reason=reason, workdir=str(workdir),
                           expected=list(step.artifacts))
         record.steps[key] = state
-        self.state.save()
-        LOG.info("    %2d. %-18s SKIPPED (%s)", index, step.id, reason)
+        self._save()
+        LOG.info("    %s%2d. %-18s SKIPPED (%s)",
+                 self._tag(record.code), index, step.id, reason)
         return state
 
     def _log_path(self, tutorial: Tutorial, step: Step, index: int, cycle: int) -> Path:
@@ -546,26 +817,48 @@ class TutorialRunner:
         cmd = [self.options.python, "-m", "htesp", str(step.command), *step.args]
         if self.options.workers:
             cmd += ["--workers", str(self.options.workers)]
-        if self.options.mode == DRY_RUN:
-            cmd.append("--dry-run")
+        # Always: this runner prepares inputs and never submits.
+        cmd.append("--dry-run")
         if self.options.verbose:
             cmd.append("-v")
         return cmd
 
     def _run_step(self, tutorial: Tutorial, record: TutorialState, step: Step,
-                  index: int, cycle: int, workdir: Path) -> StepState:
+                  index: int, cycle: int, workdir: Path,
+                  force_resume: bool = False) -> StepState:
         key = step_key(step.id, cycle)
-        if self.options.resume and self.state.is_done(tutorial.code, key):
+        # force_resume: a retry must not repeat the steps that already passed,
+        # even under --restart -- re-running a 39-second search to retry the
+        # download after it would spend the new budget on work already done.
+        if (self.options.resume or force_resume) and self.state.is_done(
+                tutorial.code, key):
             existing = record.steps[key]
-            LOG.info("    %2d. %-18s %s (resumed)", index, step.id, existing.status)
+            LOG.info("    %s%2d. %-18s %s (resumed)",
+                     self._tag(tutorial.code), index, step.id, existing.status)
             return existing
-        if step.needs_dft_output and self.options.mode == DRY_RUN:
-            return self._record_skip(record, step, index, cycle, workdir,
-                                     "reads the output of a real DFT run, which "
-                                     "--dry-run never produces")
-        if step.needs_api_key and not os.environ.get("MP_API_KEY"):
-            return self._record_skip(record, step, index, cycle, workdir,
-                                     "MP_API_KEY is not set")
+        left = self._time_left()
+        if left is not None and left <= 0:
+            state = self._record_skip(
+                record, step, index, cycle, workdir,
+                "the tutorial ran out of its {:.0f}s budget before this step"
+                .format(getattr(self._deadline, "budget", 0) or 0))
+            state.status = FAILED
+            return state
+        if step.needs_relax_output and not relax_output_present(workdir,
+                                                                tutorial.dft):
+            return self._record_skip(
+                record, step, index, cycle, workdir,
+                "needs a finished relaxation, and none is present")
+        if step.needs_dft_output:
+            return self._record_skip(
+                record, step, index, cycle, workdir,
+                "reads the output of a real DFT run, which this runner never "
+                "performs" + self._how_to_run_it(tutorial))
+        if step.needs_api_key and not mp_api_key():
+            return self._record_skip(
+                record, step, index, cycle, workdir,
+                "no Materials Project API key is configured -- set one with "
+                "'htesp-check --set_mp_api <your key>', or export MP_API_KEY")
         if step.needs_potcar and not potcars_available():
             return self._record_skip(
                 record, step, index, cycle, workdir,
@@ -579,13 +872,14 @@ class TutorialRunner:
                 f"step '{upstream}', whose output it reads, was skipped")
 
         patch_input_in(workdir, step.input_patch, tutorial.dft)
+        before = snapshot(workdir)
         log_path = self._log_path(tutorial, step, index, cycle)
         state = StepState(step_id=step.id, key=key, index=index, cycle=cycle,
                           status=RUNNING, workdir=str(workdir),
                           expected=list(step.artifacts), log=str(log_path),
                           started=time.time())
         record.steps[key] = state
-        self.state.save()
+        self._save()
 
         if step.is_callable:
             self._run_callable(step, state, workdir, log_path)
@@ -594,13 +888,13 @@ class TutorialRunner:
             self._run_subprocess(step, state, workdir, log_path)
 
         if state.status != FAILED:
-            self._after_step(step, state, workdir)
+            self._after_step(step, state, workdir, before)
         state.finished = time.time()
         state.duration = state.finished - (state.started or state.finished)
-        self.state.save()
-        mark = "!" if state.unverifiable else " "
-        LOG.info("    %2d. %-18s %s%s %5.1fs", index, step.id,
-                 state.status.upper(), mark, state.duration)
+        self._save()
+        mark = " "
+        LOG.info("    %s%2d. %-18s %s%s %5.1fs", self._tag(tutorial.code),
+                 index, step.id, state.status.upper(), mark, state.duration)
         return state
 
     @staticmethod
@@ -612,36 +906,12 @@ class TutorialRunner:
                 return other
         return ""
 
-    def _unconverged(self, step: Step, workdir: Path) -> str:
-        """``""`` when *step*'s relaxations converged, else what is wrong.
-
-        A DFT code can exit 0, and its job can be COMPLETED, without the
-        structure having relaxed: QE stops at ``nstep`` and VASP at ``NSW``,
-        both leaving a full set of output files that satisfy an artefact glob.
-        Everything downstream then runs on a structure that is not relaxed, and
-        produces numbers that look entirely reasonable.  The strings checked
-        here are the same ones htesp/workflow.py uses to decide whether a
-        relaxation is finished.
-        """
-        if not step.check_converged or self.options.mode != REAL:
-            return ""
-        problems = []
-        for pattern in step.job_dirs or ():
-            for directory in sorted(workdir.glob(pattern)):
-                verdict = relaxation_converged(directory)
-                if verdict is False:
-                    problems.append(directory.relative_to(workdir).as_posix())
-        if not problems:
-            return ""
-        return ("the run finished but did not converge in "
-                + ", ".join(problems[:5])
-                + (f" (and {len(problems) - 5} more)" if len(problems) > 5 else "")
-                + " -- everything downstream would start from an unrelaxed "
-                  "structure")
-
     def _run_subprocess(self, step: Step, state: StepState, workdir: Path,
                         log_path: Path) -> None:
         timeout = step.timeout or self.options.step_timeout
+        remaining = self._time_left()
+        if remaining is not None:
+            timeout = min(timeout, max(remaining, 1.0))
         header = [f"# command : {' '.join(state.command)}",
                   f"# cwd     : {workdir}", f"# started : {time.ctime()}", ""]
         # FIX: write the header *before* running, not after.  Every branch
@@ -668,9 +938,23 @@ class TutorialRunner:
             raise
         except subprocess.TimeoutExpired as exc:
             state.status, state.exit_code = FAILED, None
-            state.reason = f"timed out after {timeout:.0f}s"
-            body = (exc.stdout or "") + (exc.stderr or "")
-            log_path.write_text("\n".join(header) + str(body) + f"\n# {state.reason}\n")
+            # the tutorial's own budget, not the run-wide default: OQMD asks
+            # for 100s and quoting 1440s here was simply wrong
+            budget = float(getattr(self._deadline, "budget", 0) or 0)
+            if budget and timeout < (step.timeout or self.options.step_timeout):
+                state.reason = ("killed after {:.0f}s: the tutorial's {:.0f}s "
+                                "budget ran out while this step was running"
+                                .format(timeout, budget))
+            else:
+                state.reason = f"timed out after {timeout:.0f}s"
+            # FIX: `subprocess.run(text=True)` still hands TimeoutExpired
+            # *bytes*, so this concatenation raised
+            # "TypeError: can only concatenate str (not "bytes") to str"
+            # and the timeout escaped as a traceback, leaving the tutorial
+            # RUNNING and skipping the retry.  It never showed up while the
+            # step limit was six hours, because nothing ever timed out.
+            body = _as_text(exc.stdout) + _as_text(exc.stderr)
+            log_path.write_text("\n".join(header) + body + f"\n# {state.reason}\n")
             return
         except OSError as exc:
             state.status, state.reason = FAILED, f"could not start the command: {exc}"
@@ -702,44 +986,17 @@ class TutorialRunner:
         if code:
             state.reason = f"{step.describe()} returned {code}"
 
-    def _after_step(self, step: Step, state: StepState, workdir: Path) -> None:
-        """Wait for the cluster, then verify the declared artefacts."""
-        if step.submits and self.options.mode == REAL:
-            state.jobs = collect_job_ids(workdir, step.job_dirs, state.started or 0.0)
-            if not state.jobs:
-                # FIX: this was "unverifiable", so a step that submitted
-                # nothing at all still counted as a pass.  Thirteen tutorials
-                # declared submitting steps without ever building run-*.sh;
-                # stage_and_submit then returned status="skipped" per material
-                # and the tutorial went green having run no calculation.  In
-                # real mode a submitting step that produced no job id has not
-                # submitted, which is a failure, not a gap in the evidence.
-                state.status = FAILED
-                state.reason = ("no job ids were recorded in "
-                                f"{', '.join(step.job_dirs) or '<no stage dirs>'}"
-                                "/.htesp_job.json -- nothing was submitted.  "
-                                "Check that run-*.sh exist in the work "
-                                "directory ('mainprogram jobscript' builds "
-                                "them from batch.header)")
-                return
-            else:
-                ok, problem = wait_for_jobs(state.jobs, self.options.poll_interval,
-                                            self.options.job_timeout)
-                if not ok and "timed out" in problem:
-                    state.status, state.reason = FAILED, problem
-                    return
-                if not ok:
-                    state.unverifiable, state.reason = True, problem
-                elif problem:
-                    # the jobs finished, and sacct says at least one did not
-                    # finish *well*.  That is a failure, not an unverifiable:
-                    # the scheduler said so plainly.
-                    state.status, state.reason = FAILED, problem
-                    return
-            unconverged = self._unconverged(step, workdir)
-            if unconverged:
-                state.status, state.reason = FAILED, unconverged
-                return
+    def _after_step(self, step: Step, state: StepState, workdir: Path,
+                    before: dict | None = None) -> None:
+        """Verify what the step left behind.
+
+        This used to wait on the cluster first -- poll ``squeue`` until the
+        step's jobs left the queue, ask ``sacct`` how each one ended, then
+        read the output for convergence markers.  None of that has anything to
+        do with a runner that never submits, and it went with real mode.
+        """
+        if before is not None:
+            state.produced = changed_since(before, snapshot(workdir))
         state.missing = missing_artifacts(workdir, step.artifacts)
         if state.missing:
             state.status = FAILED

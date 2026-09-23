@@ -24,6 +24,7 @@ from dataclasses import asdict
 from pathlib import Path
 from typing import Sequence
 
+from tutorials.catalog import CATALOG, PACKAGE_ROOT, readme_for
 from tutorials.state import (BLOCKED, DONE, FAILED, PENDING, RUNNING, SKIPPED,
                              RunState, StepState, TutorialState)
 
@@ -55,8 +56,6 @@ def retry_command(code: str, step: StepState | None, mode: str,
     parts = ["htesp-tutorials", "--resume", "--only", code]
     if step is not None and step.step_id:
         parts += ["--from", step.step_id]
-    if mode == "dry-run":
-        parts.append("--dry-run")
     parts += ["--workdir", str(workdir)]
     return " ".join(parts)
 
@@ -132,10 +131,6 @@ def stop_block(tut: TutorialState, step: StepState) -> list[str]:
         f"* **expected artefacts**: {expected}",
         f"* **missing artefacts**: {missing}",
     ]
-    if step.jobs:
-        out.append(f"* **cluster jobs**: {', '.join(step.jobs)}")
-    if step.unverifiable:
-        out.append("* **note**: this step could not be verified against the queue")
     out += ["", f"Last {LOG_TAIL_LINES} lines of the log:", "", "```"]
     out += log_tail(step.log)
     out += ["```", ""]
@@ -200,15 +195,54 @@ def build_markdown(state: RunState, order: Sequence[str] | None = None,
                   "finish.", ""]
         for tut in sorted(blocked, key=lambda t: t.code):
             lines += blocked_block(tut)
-    unverifiable = [(t, s) for t in state.tutorials.values()
-                    for s in t.steps.values() if s.unverifiable]
-    if unverifiable:
-        lines += ["## Unverified steps", "",
-                  "These finished, but the driver could not confirm it:", ""]
-        for tut, step in unverifiable:
-            lines += [f"* `{tut.code}` step {step.index} (`{step.step_id}`): "
-                      f"{step.reason}"]
+    # Tutorials nothing ran for.  These are not failures and not the
+    # machine's fault: every step reads the output of a real DFT run, which
+    # this runner never performs.  Naming them, with the instructions for
+    # doing it properly, is more use than letting them sit in the table as
+    # rows of "skipped".
+    nothing_ran = []
+    for tut in sorted(state.tutorials.values(), key=lambda t: t.code):
+        steps = list(tut.steps.values())
+        if steps and all(s.status == SKIPPED for s in steps):
+            nothing_ran.append(tut)
+    if nothing_ran:
+        lines += ["## Nothing ran for these", "",
+                  "Every step reads the output of a real DFT run:", ""]
+        for tut in nothing_ran:
+            entry = CATALOG.get(tut.code)
+            readme = readme_for(entry) if entry is not None else None
+            where = ""
+            if readme is not None:
+                try:
+                    where = f" -- see `{readme.relative_to(PACKAGE_ROOT)}`"
+                except ValueError:                   # pragma: no cover
+                    where = f" -- see `{readme}`"
+            lines.append(f"* `{tut.code}` {tut.title}{where}")
         lines.append("")
+
+    # What the run produced.  The status table says whether each step passed;
+    # this says what it wrote, which is the question a reader of the work
+    # directory actually has -- and it is how two wrong artefact declarations
+    # were found, because the step that "passed" had written nothing.
+    from tutorials import manifest
+
+    produced = manifest.rows(state)
+    if produced:
+        lines += ["## What this run produced", "",
+                  "| tutorial | step | file | what it is |",
+                  "|---|---|---|---|"]
+        for code, step_id, path, text in produced:
+            lines.append(f"| `{code}` | `{step_id}` | `{path}` | {text or ''} |")
+        lines.append("")
+        empty = [(t.code, s.step_id) for t in state.tutorials.values()
+                 for s in t.steps.values()
+                 if s.status == DONE and not manifest.real_output(s)]
+        if empty:
+            lines += ["Steps that passed without writing anything "
+                      "(the log aside):", ""]
+            for code, step_id in sorted(empty):
+                lines.append(f"* `{code}` `{step_id}`")
+            lines.append("")
     return "\n".join(lines) + "\n"
 
 
@@ -230,11 +264,6 @@ def build_json(state: RunState, order: Sequence[str] | None = None,
         "stopped_at": None,
         "failures": [],
         "blocked": [],
-        "would_submit": [
-            {"tutorial": t.code, "step": s.index, "step_id": s.step_id,
-             "lines": s.would_submit}
-            for t in state.tutorials.values() for s in t.steps.values()
-            if s.would_submit],
     }
     if stopped is not None:
         tut, step = stopped

@@ -63,7 +63,7 @@ def _seed_source(seed: Seed, tutorial: Tutorial, options: "RunOptions") -> Path 
         return options.examples / tutorial.dft
     if seed.source == "self":
         return tutorial.directory
-    if seed.source == "archive":
+    if seed.source in ("archive", "reference-output"):
         return None
     return options.runs_root / seed.source.replace("/", "-")
 
@@ -147,12 +147,16 @@ def seed_workdir(tutorial: Tutorial, options: "RunOptions") -> Path:
         if seed.source == "archive":
             _seed_from_archive(seed, tutorial, workdir, overwrite=not resuming)
             continue
+        if seed.source == "reference-output":
+            _seed_reference_output(seed, tutorial, workdir)
+            continue
         source = _seed_source(seed, tutorial, options)
         if source is None or not source.is_dir():
             if seed.required:
                 raise FileNotFoundError(
                     f"{tutorial.code}: required seed source {source} is missing")
             continue
+        placed = 0
         for pattern in seed.patterns:
             for path in sorted(source.glob(pattern)):
                 if seed.source == "self" and _excluded(path.name):
@@ -160,9 +164,207 @@ def seed_workdir(tutorial: Tutorial, options: "RunOptions") -> Path:
                 name = dict(seed.rename).get(path.name, path.name)
                 overwrite = seed.overwrite and not resuming
                 _place(path, workdir / name, overwrite, seed.link)
+                placed += 1
+        if not placed and "/" in seed.source:
+            # The tutorial this one seeds from produced nothing -- OQMD was
+            # skipped because the service did not answer, say.  Its reference
+            # holds the same files, so use those rather than blocking a
+            # tutorial whose own subject is combining the three databases.
+            _seed_from_dependency_reference(seed, workdir,
+                                            overwrite=not resuming)
     _ensure_config(tutorial, workdir, options)
     _ensure_batch_header(tutorial, workdir, options)
     return workdir
+
+
+def _seed_from_dependency_reference(seed: Seed, workdir: Path,
+                                    overwrite: bool = True) -> list[str]:
+    """Seed from another tutorial's *reference* when its work directory is bare.
+
+    ``data-combine`` merges what the Materials Project, OQMD and AFLOW
+    tutorials each downloaded, so it seeds from all three work directories.
+    When one of them did not run -- OQMD is skipped when the service does not
+    answer -- that directory is empty and the combine tutorial would be
+    blocked by a failure that is not its own and not HTESP's.
+
+    The missing tutorial's ``reference*.tar.gz`` contains the same files it
+    would have written (``mpid-list.in``, ``mpid.in``, ``scf_dir/``, the
+    ``R<id>-<compound>/`` directories), so they are used instead.  This runs
+    *only* when the work directory yielded nothing: a tutorial that really
+    ran always wins over its reference.
+    """
+    from tutorials.catalog import CATALOG
+
+    tutorial = CATALOG.get(seed.source)
+    if tutorial is None:
+        return []
+    placed: list[str] = []
+
+    def wanted(parts: tuple) -> Path | None:
+        """Map ``reference/scf_dir/x.in`` to ``<workdir>/scf_dir/x.in``."""
+        if len(parts) < 2 or not parts[0].startswith("reference"):
+            return None
+        rest = parts[1:]
+        if not any(fnmatch.fnmatch(rest[0], pattern)
+                   for pattern in seed.patterns):
+            return None
+        return workdir.joinpath(*rest)
+
+    for archive in sorted(tutorial.directory.glob("reference*.tar.gz")):
+        try:
+            with tarfile.open(archive) as tar:
+                for member in tar.getmembers():
+                    if not member.isfile():
+                        continue
+                    target = wanted(Path(member.name).parts)
+                    if target is None or (target.exists() and not overwrite):
+                        continue
+                    handle = tar.extractfile(member)
+                    if handle is None:
+                        continue
+                    target.parent.mkdir(parents=True, exist_ok=True)
+                    target.write_bytes(handle.read())
+                    placed.append(target.relative_to(workdir).as_posix())
+        except (OSError, tarfile.TarError) as exc:      # pragma: no cover
+            LOG.warning("could not read %s (%s)", archive.name, exc)
+
+    for folder in sorted(tutorial.directory.glob("reference*")):
+        if not folder.is_dir():
+            continue
+        for path in sorted(folder.rglob("*")):
+            if not path.is_file():
+                continue
+            target = wanted(path.relative_to(folder.parent).parts)
+            if target is None or (target.exists() and not overwrite):
+                continue
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(path.read_bytes())
+            placed.append(target.relative_to(workdir).as_posix())
+
+    if placed:
+        LOG.info("%s produced nothing; seeded %d file(s) from its reference "
+                 "instead", seed.source, len(placed))
+    return placed
+
+
+def _seed_reference_output(seed: Seed, tutorial: Tutorial,
+                           workdir: Path) -> list[str]:
+    """Place the reference relaxation output into ``R<mpid>-<compound>/relax/``.
+
+    Seventeen steps read a finished relaxation and nothing else -- the total
+    energy, the relaxed structure, the cell to build the next input from.
+    They have always been skipped because no DFT runs here, yet the answer is
+    sitting in the tutorial's own reference.  Putting just that output back
+    lets them run for real.
+
+    Only the files in :data:`~tutorials.catalog.REFERENCE_OUTPUT` are taken,
+    and only from a ``relax/`` directory.  ``econv.csv`` and
+    ``scf_dir/scf-relax-*.in`` -- the things those steps must *produce* --
+    stay out, or a step would pass by finding an artefact it never wrote.
+
+    Never overwrites: a resumed run, or one where a step has already written
+    its own output, keeps what is there.
+    """
+    wanted = set(seed.patterns)
+    placed: list[str] = []
+
+    def take(parts: tuple, read) -> None:
+        """*parts* is the reference path; place it under the same R*/relax/.
+
+        The destination directory cannot be found by globbing the work
+        directory: VASP/9 ships an ``R<mpid>-<compound>/`` but QE/9 does not
+        -- there the directory is created by ``mainprogram 1``, which runs
+        after seeding.  The reference path carries the name, so use it.
+        """
+        name = parts[-1]
+        if name not in wanted or "relax" not in parts:
+            return
+        index = len(parts) - 1 - parts[::-1].index("relax")
+        if index == 0:
+            return                                 # no R* component to anchor to
+        target = workdir / parts[index - 1] / "relax" / name
+        if target.exists():
+            return
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(read())
+        placed.append(target.relative_to(workdir).as_posix())
+
+    for archive in sorted(tutorial.directory.glob("reference*.tar.gz")):
+        try:
+            with tarfile.open(archive) as tar:
+                for member in tar.getmembers():
+                    if not member.isfile():
+                        continue
+                    handle = tar.extractfile(member)
+                    if handle is None:
+                        continue
+                    data = handle.read()
+                    take(Path(member.name).parts, lambda d=data: d)
+        except (OSError, tarfile.TarError) as exc:      # pragma: no cover
+            LOG.warning("%s: could not read %s (%s)",
+                        tutorial.code, archive.name, exc)
+
+    for folder in sorted(tutorial.directory.glob("reference*")):
+        if not folder.is_dir():
+            continue
+        for path in sorted(folder.rglob("*")):
+            if path.is_file():
+                take(path.relative_to(folder.parent).parts,
+                     lambda p=path: p.read_bytes())
+
+    if placed:
+        LOG.info("%s: seeded reference relaxation output (%s)",
+                 tutorial.code, ", ".join(sorted({Path(p).name for p in placed})))
+    return placed
+
+
+def snapshot(workdir: Path) -> dict:
+    """``{relative path: (size, mtime)}`` for every file under *workdir*.
+
+    Symlinked directories are not followed: QE work directories link
+    ``pp/`` at the shared pseudopotential tree, and walking it would add
+    hundreds of files that no step ever writes.
+    """
+    found: dict = {}
+    stack = [workdir]
+    while stack:
+        current = stack.pop()
+        try:
+            entries = list(os.scandir(current))
+        except OSError:                              # pragma: no cover
+            continue
+        for entry in entries:
+            if entry.is_symlink():
+                continue
+            if entry.is_dir():
+                stack.append(Path(entry.path))
+                continue
+            try:
+                stat = entry.stat()
+            except OSError:                          # pragma: no cover
+                continue
+            key = Path(entry.path).relative_to(workdir).as_posix()
+            found[key] = (stat.st_size, stat.st_mtime_ns)
+    return found
+
+
+def changed_since(before: dict, after: dict) -> list[str]:
+    """Paths that appeared, or whose size or mtime moved."""
+    return sorted(name for name, stamp in after.items()
+                  if before.get(name) != stamp)
+
+
+def relax_output_present(workdir: Path, dft: str) -> bool:
+    """Is there a finished relaxation under ``workdir`` to read?
+
+    What the seeded reference provides, and what a real run would leave
+    behind, are the same files -- so a step that needs only a relaxation can
+    ask this instead of asking which mode it is running in.
+    """
+    from tutorials.catalog import REFERENCE_OUTPUT
+
+    names = REFERENCE_OUTPUT.get(dft.upper(), ())
+    return any(list(workdir.glob(f"R*-*/relax/{name}")) for name in names)
 
 
 def _ensure_config(tutorial: Tutorial, workdir: Path, options: "RunOptions") -> None:
@@ -173,6 +375,30 @@ def _ensure_config(tutorial: Tutorial, workdir: Path, options: "RunOptions") -> 
         shutil.copy2(candidate, workdir / "config.json")
         LOG.info("%s: used %s as config.json", tutorial.code, candidate.name)
         return
+
+
+#: built headers, keyed by code.  The header depends on the *cluster* and the
+#: code, never on the tutorial, but seeding calls this once per work directory
+#: -- 42 times in a full sweep, at ~0.75 s each, because every call shells out
+#: to sinfo, sacctmgr, scontrol and Lmod avail/help/spider.  Building once per
+#: code turns 30 seconds of probing into 1.5.
+_HEADER_CACHE: dict = {}
+
+
+def _header_for(dft: str, code: str = "") -> str | None:
+    """``batch.header`` text for this code, built at most once per run."""
+    if dft in _HEADER_CACHE:
+        return _HEADER_CACHE[dft]
+    from htesp import batch_header
+
+    try:
+        text = batch_header.build(dft)
+    except (ValueError, OSError) as exc:            # pragma: no cover
+        LOG.warning("%s: could not build batch.header (%s); keeping the "
+                    "shipped one", code or dft, exc)
+        text = None
+    _HEADER_CACHE[dft] = text
+    return text
 
 
 def _ensure_batch_header(tutorial: Tutorial, workdir: Path,
@@ -188,7 +414,7 @@ def _ensure_batch_header(tutorial: Tutorial, workdir: Path,
 
     Nothing is generated on a machine without ``sinfo``: there the probes have
     nothing to say, the generated header would be all ``TODO``, and a laptop
-    ``--dry-run`` submits nothing anyway, so the shipped header is the more
+    this runner submits nothing anyway, so the shipped header is the more
     useful thing to leave in place.
 
     The launcher is written into ``config.json`` rather than the header,
@@ -197,14 +423,9 @@ def _ensure_batch_header(tutorial: Tutorial, workdir: Path,
     """
     if shutil.which("sinfo") is None:
         return
-    from htesp import batch_header
-
     target = workdir / "batch.header"
-    try:
-        text = batch_header.build(tutorial.dft)
-    except (ValueError, OSError) as exc:            # pragma: no cover
-        LOG.warning("%s: could not build batch.header (%s); keeping the "
-                    "shipped one", tutorial.code, exc)
+    text = _header_for(tutorial.dft, tutorial.code)
+    if text is None:
         return
     if target.is_file() and target.read_text() == text:
         return
@@ -303,179 +524,8 @@ def patch_input_in(workdir: Path, patch, dft: str = "QE") -> list[str]:
 
 
 # --------------------------------------------------------------------------- #
-#  cluster jobs
-# --------------------------------------------------------------------------- #
-def collect_job_ids(workdir: Path, patterns: Iterable[str],
-                    since: float = 0.0) -> list[str]:
-    """Job ids the workflow layer recorded in ``<stage dir>/.htesp_job.json``.
-
-    The format is ``{tag: [{"job": "<id>", "time": <epoch>}, ...]}``; only ids
-    recorded at or after *since* count, so a rerun does not wait for the jobs of
-    the previous attempt.
-    """
-    import json
-
-    found: list[str] = []
-    seen: set[str] = set()
-    for pattern in patterns:
-        for stage in sorted(workdir.glob(pattern)):
-            store = stage / ".htesp_job.json"
-            try:
-                data = json.loads(store.read_text())
-            except (OSError, ValueError):
-                continue
-            for runs in data.values():
-                for entry in runs:
-                    job = str(entry.get("job", "")).strip()
-                    if job and job not in seen and float(entry.get("time", 0)) >= since:
-                        seen.add(job)
-                        found.append(job)
-    return found
-
-
-#: `sacct` states that mean the job ran to the end.  COMPLETED is the only
-#: unambiguous success; the rest are ways of not finishing, and each has been
-#: seen to leave partial output that satisfies an artefact glob.
-JOB_STATE_OK = ("COMPLETED",)
-
-#: what each failure state means, in the words the report should use
-JOB_STATE_MEANING = {
-    "TIMEOUT": "hit the wall time",
-    "OUT_OF_MEMORY": "ran out of memory",
-    "CANCELLED": "was cancelled",
-    "NODE_FAIL": "lost its node",
-    "PREEMPTED": "was preempted",
-    "FAILED": "exited non-zero",
-}
-
-
-def job_states(jobs: Sequence[str]) -> dict[str, str]:
-    """``sacct`` state per job id, or ``{}`` when sacct cannot answer.
-
-    Leaving the queue is not succeeding: COMPLETED, FAILED, TIMEOUT, CANCELLED
-    and OUT_OF_MEMORY all make a job id disappear from ``squeue`` alike.  A
-    relaxation killed at the wall time still leaves an OUTCAR and a CONTCAR
-    behind, so the artefact check passes and everything downstream then runs on
-    a structure that was never relaxed.
-    """
-    if not jobs or shutil.which("sacct") is None:
-        return {}
-    proc = subprocess.run(
-        ["sacct", "-n", "-X", "-P", "-o", "JobID,State", "-j", ",".join(jobs)],
-        capture_output=True, text=True, check=False)
-    out = {}
-    for line in proc.stdout.splitlines():
-        parts = line.split("|")
-        if len(parts) < 2:
-            continue
-        # "CANCELLED by 12345" -- the reason is not part of the state
-        out[parts[0].strip()] = parts[1].strip().split()[0] if parts[1].strip() else ""
-    return out
-
-
-def check_job_states(jobs: Sequence[str]) -> str:
-    """``""`` when every job completed, else what went wrong.
-
-    An empty result also covers "sacct could not tell us": accounting is not
-    enabled everywhere, and a machine without it is not a machine where every
-    job failed.  :func:`wait_for_jobs` reports that case as unverifiable.
-    """
-    states = job_states(jobs)
-    if not states:
-        return ""
-    bad = []
-    for job in jobs:
-        state = states.get(str(job))
-        if state is None or state in JOB_STATE_OK:
-            continue
-        meaning = JOB_STATE_MEANING.get(state)
-        bad.append(f"{job} {state}" + (f" ({meaning})" if meaning else ""))
-    if not bad:
-        return ""
-    return "the scheduler reports " + ", ".join(bad)
-
-
-def wait_for_jobs(jobs: Sequence[str], poll: float, timeout: float,
-                  sleep=time.sleep) -> tuple[bool, str]:
-    """Poll ``squeue`` until none of *jobs* is queued or running, then ask
-    ``sacct`` how each one ended.
-
-    Returns ``(finished, problem)``.  ``problem`` is non-empty when the wait
-    could not be carried out -- no ``squeue`` on PATH, or the timeout expired --
-    in which case the caller must treat the step as *unverifiable* rather than
-    quietly successful.  A job that finished badly is a failure, not an
-    unverifiable: the scheduler said so plainly.
-    """
-    if not jobs:
-        return True, ""
-    if shutil.which("squeue") is None:
-        return False, ("squeue is not on PATH, so the driver cannot tell whether "
-                       f"jobs {', '.join(jobs)} finished")
-    deadline = time.time() + timeout
-    while True:
-        proc = subprocess.run(["squeue", "-h", "-o", "%i", "-j", ",".join(jobs)],
-                              capture_output=True, text=True, check=False)
-        if not proc.stdout.strip():
-            return True, check_job_states(jobs)
-        if time.time() > deadline:
-            still = " ".join(proc.stdout.split())
-            return False, (f"timed out after {timeout:.0f}s waiting for jobs "
-                           f"{still or ', '.join(jobs)}")
-        sleep(poll)
-
-
-# --------------------------------------------------------------------------- #
 #  verification
 # --------------------------------------------------------------------------- #
-#: what "this relaxation finished" looks like in each code's output.  These are
-#: the same markers htesp/workflow.py greps for (see `_further_relax_input_one`
-#: and `_phonopy_energies`), kept here as one table rather than a second copy of
-#: the logic that could drift from it.
-CONVERGED_MARKERS = {
-    # VASP prints this once the ionic loop has met EDIFFG
-    "OUTCAR": "reached required accuracy - stopping structural energy minimisation",
-    # QE prints "JOB DONE." on any clean exit and the BFGS line only on success
-    "relax.out": "End of BFGS Geometry Optimization",
-    "scf.out": "JOB DONE.",
-}
-
-#: a relaxation that stopped because it ran out of steps, per code.  Finding one
-#: of these is proof of non-convergence even when a success marker is absent for
-#: an unrelated reason.
-EXHAUSTED_MARKERS = (
-    "The maximum number of steps has been reached",     # QE
-    "convergence NOT achieved",                         # QE scf
-)
-
-
-def relaxation_converged(directory: Path) -> bool | None:
-    """Did the relaxation in *directory* converge?
-
-    Returns ``True``, ``False``, or ``None`` when there is nothing to judge by
-    -- no recognised output file, which is not the same as a failure and is
-    left to the artefact check to report.
-
-    A job that COMPLETED is not a relaxation that converged: both codes stop
-    at their ionic-step limit and exit cleanly, leaving CONTCAR/OUTCAR or a
-    full ``relax.out`` behind.  The artefact globs match either way, so without
-    this every dependent tutorial would start from an unrelaxed cell.
-    """
-    verdict = None
-    for name, marker in CONVERGED_MARKERS.items():
-        for path in sorted(directory.glob(name)):
-            try:
-                text = path.read_text(errors="replace")
-            except OSError:                             # pragma: no cover
-                continue
-            if marker in text:
-                return True
-            verdict = False
-            if any(bad in text for bad in EXHAUSTED_MARKERS):
-                return False
-    return verdict
-
-
-
 def missing_artifacts(workdir: Path, patterns: Sequence[str]) -> list[str]:
     """Which of *patterns* match nothing under *workdir*."""
     return [pattern for pattern in patterns if not list(workdir.glob(pattern))]

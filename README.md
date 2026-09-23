@@ -289,44 +289,33 @@ Full option-by-option reference, environment variables and exit codes:
 
 ```bash
 htesp-tutorials --list                    # the 42 tutorials and their steps
-htesp-tutorials --dry-run                 # every step, no QE/VASP/SLURM needed
+htesp-tutorials                           # every step, no QE/VASP/SLURM needed
 htesp-tutorials --only QE/9,QE/11         # just these, with their dependencies
+htesp-tutorials --only QE                 # one whole example tree
+htesp-tutorials --jobs 4                  # four tutorials at once
+htesp-tutorials --output                  # ... and list what it produced
 htesp-tutorials --keep_output no          # drop the work dirs, keep logs+report
-sbatch tutorials/submit_tutorials.sh      # the whole set, on the cluster
 ```
 
-Steps that cannot run are *skipped with a reason* rather than failed: reading the
-output of a real DFT run under `--dry-run`, a missing `MP_API_KEY`, VASP inputs
-with no POTCARs configured, or enumlib not being on `PATH`. Preflight reports all
-of those before the first step runs.
+**It never runs a DFT calculation.** Every step is invoked as `mainprogram
+<cmd> --dry-run`: all the input generation and file plumbing, nothing
+submitted, nothing deleted. Driving a real campaign is `mainprogram`'s job.
+
+Steps that cannot run here are *skipped with a reason* rather than failed —
+reading the output of a real DFT run, a missing Materials Project key, VASP
+inputs with no POTCARs configured, enumlib not on `PATH`. The first of those
+also names the tutorial's own README, so you can run it for real. Steps that
+need only a *relaxation* do run: its output is seeded from the tutorial
+reference.
 
 The runner checkpoints after every step, resumes with `--resume`, and when it
 stops writes a report naming the tutorial, the step, the command, the working
 directory, the exit code, the artifacts that were missing and the last lines of
-the failing log. See `tutorials/README.md`.
+the failing log. `--output` adds what each step wrote and what each file is
+for. See `tutorials/README.md`.
 
-### Running a real campaign in iterations
-
-A real run submits jobs. Wave 0 ends with the relaxations queued, and the
-tutorials that read the relaxed structure cannot start until those finish, so
-the runner does one iteration per invocation:
-
-```bash
-htesp-tutorials --list-iters          # the plan, and what is done so far
-htesp-tutorials --iter next           # run the first unfinished iteration, then stop
-# ... wait for the queue to drain ...
-htesp-tutorials --resume --iter next  # the next one
-```
-
-Each iteration's status is saved in `state.json`, so days later the runner
-still knows which one finished. An iteration counts as done only when every
-tutorial in it did; a failed iteration is offered again rather than stepped
-over, because the next one would run on structures that were never produced.
-Without `--iter` the whole selection runs in one pass, which is what you want
-for `--dry-run`.
-
-The runner has two modes: `--dry-run` (no QE/VASP/SLURM needed) and the real
-one, which is the default.
+`examples/` is found, not given: `$HTESP_EXAMPLES`, then `./examples`, then
+beside the installed package.
 
 ## Documentation
 
@@ -372,8 +361,10 @@ See `tests/README.md` for what each file pins.
 * **`examples/VASP/tutorial21`** (3D Fermi surface) ships only `ifermi.tar.gz`
   and cannot run as shipped; preflight warns about it, and
   `htesp-tutorials --skip` leaves it out if it is in the way.
-* **`--dry-run` still uses the network** for the database tutorials: it
-  suppresses job submission, not queries.
+* **`htesp-tutorials` still uses the network** for the database tutorials: it
+  runs no DFT, but it does query the Materials Project, OQMD and AFLOW. OQMD
+  is the unreliable one — it gets a longer budget and a second attempt, and a
+  timeout there is reported as skipped rather than failing the run.
 * **enumlib and phonopy are not pip-installable**; see the table above.
 
 ### Contributors

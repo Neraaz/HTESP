@@ -25,7 +25,6 @@ tutorials/
 
 | mode | what it does | what it needs |
 |------|--------------|---------------|
-| `--dry-run` | runs every step as `mainprogram <cmd> --dry-run`: all input generation and file plumbing, nothing submitted | a laptop |
 | *(default)* | the real campaign: submits jobs, polls `squeue`, waits, verifies | QE/VASP + SLURM |
 
 Steps that write VASP inputs are recorded as *skipped* when pymatgen has no
@@ -36,7 +35,7 @@ green. POTCARs are licensed, so they are never in `examples/`.
 
 Steps that read the **output** of a real DFT run (`e0`, `2`, `4`, `phono2..4`,
 `ev-collect`, `compute-elastic`, plotting…) are recorded as *skipped* with that
-reason under `--dry-run`, instead of failing for a reason that is not their own.
+reason, instead of failing for a reason that is not their own.
 
 
 ## Where `examples/` is found
@@ -56,7 +55,7 @@ is refused.
 ```bash
 # on a laptop
 python -m tutorials.run_tutorials --dry-run
-python -m tutorials.run_tutorials --dry-run --only QE/9,QE/12
+python -m tutorials.run_tutorials --only QE/9,QE/12
 
 # on a cluster
 sbatch tutorials/submit_tutorials.sh --only QE

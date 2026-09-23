@@ -86,7 +86,8 @@ def _search_download(dft: str, search: str, download: str, mode: str) -> tuple[S
 def t_mp_element(dft: str) -> TopicSpec:
     return TopicSpec(steps=_search_download(dft, "search", "download",
                                             "Materials Project (element mode)"),
-                     note="needs MP_API_KEY in the environment")
+                     note="needs a Materials Project API key: $MP_API_KEY or "
+                          "~/.config/htesp/credentials")
 
 
 def t_mp_chemsys(dft: str) -> TopicSpec:
@@ -137,19 +138,29 @@ def t_fromcif(dft: str) -> TopicSpec:
 # --------------------------------------------------------------------------- #
 def t_relax(dft: str) -> TopicSpec:
     relax = _relax_artifacts(dft)
-    updated = ("scf_dir/scf-relax-*.in",) if dft == "QE" else ("mpid-list-not-relaxed.in",)
     return TopicSpec(
         steps=(
             Step("relax-submit", "Submit the first structural relaxation", "1",
-                 submits=True, artifacts=relax, job_dirs=(f"{MAT}/relax",),
-                 check_converged=True),
+                 submits=True, artifacts=relax),
             Step("energy", "Collect total energies into econv.csv", "e0",
                  artifacts=("econv.csv",), needs_dft_output=True),
+            # No required artefact, deliberately.  `mainprogram 2` harvests a
+            # relaxed structure only when there is one to harvest: against a
+            # finished relaxation QE reports "Structure already relaxed" and
+            # returns, and VASP rewrites POSCAR from CONTCAR in place.  Both
+            # are the correct outcome and neither creates a file, so demanding
+            # one turns a right answer into a failure.  `updated` -- the
+            # QE `scf_dir/scf-relax-*.in` -- is also shipped by the tutorial
+            # itself, so it would have matched without the step running.
             Step("update-input", "Harvest the relaxed structure into a new input", "2",
-                 artifacts=updated, needs_dft_output=True),
+                 needs_dft_output=True,
+                 note="no artefact is required: against an already-relaxed "
+                      "structure the correct result is 'nothing to do' -- QE "
+                      "reports 'Structure already relaxed' and returns, VASP "
+                      "rewrites POSCAR from CONTCAR in place, and neither "
+                      "creates a file"),
             Step("resubmit", "Resubmit the relaxation with the updated input", "3",
-                 submits=True, artifacts=relax, job_dirs=(f"{MAT}/relax",),
-                 check_converged=True),
+                 submits=True, artifacts=relax),
             Step("energy-2", "Re-collect energies and check niteration", "e0",
                  artifacts=("econv.csv",), needs_dft_output=True),
         ),
@@ -161,7 +172,7 @@ def t_convergence(dft: str) -> TopicSpec:
     return TopicSpec(steps=(
         Step("convtest", "Submit the cutoff / k-point convergence series", "convtest",
              needs_potcar=(dft != "QE"),
-             submits=True, artifacts=(f"{MAT}/*/R*",), job_dirs=(f"{MAT}/*/R*",)),
+             submits=True, artifacts=(f"{MAT}/*/R*",)),
         Step("extract", "Extract the convergence curve", "22",
              artifacts=("convergence_result",), needs_dft_output=True),
     ), note="config.json conv_test.param selects 'ecut' or 'kpoint'")
@@ -178,14 +189,14 @@ def t_elph(dft: str) -> TopicSpec:
                  "change_k", artifacts=("kpoint.in",)),
             Step("create-inputs", "Build every downstream scf / el-ph input", "4",
                  artifacts=("elph_dir/elph-*.in", "kpath/kpath-*.dat"),
-                 needs_dft_output=True),
+                 needs_relax_output=True),
             Step("fine-scf", "scf on the fine (doubled) k-mesh", "5", submits=True, after=("create-inputs",),
-                 artifacts=(f"{calc}/scf.in",), job_dirs=(calc,)),
+                 artifacts=(f"{calc}/scf.in",)),
             Step("coarse-scf", "scf on the coarse mesh", "6", submits=True, after=("create-inputs",),
-                 artifacts=(f"{calc}/scf.in",), job_dirs=(calc,)),
+                 artifacts=(f"{calc}/scf.in",)),
             Step("elph", "Electron-phonon coupling (ph.x)", "7", submits=True,
                  after=("create-inputs",),
-                 artifacts=(f"{calc}/*.in",), job_dirs=(calc,), timeout=None),
+                 artifacts=(f"{calc}/*.in",), timeout=None),
             Step("q2r", "Force constants in real space (q2r.x)", "8",
                  artifacts=("q2r_dir/q2r-*.in",), needs_dft_output=True),
             Step("matdyn", "Phonon dispersion (matdyn.x)", "9",
@@ -212,19 +223,19 @@ def t_bands(dft: str) -> TopicSpec:
         bands = f"{MAT}/bands"
         steps = (
             Step("create-inputs", "Build the band / DOS inputs from the relaxed cell",
-                 "4", artifacts=("kpath/kpath-*.dat",), needs_dft_output=True),
+                 "4", artifacts=("kpath/kpath-*.dat",), needs_relax_output=True),
             Step("band-scf", "scf for the band structure", "13", submits=True, after=("create-inputs",),
-                 artifacts=(f"{bands}/scf.in",), job_dirs=(bands,)),
+                 artifacts=(f"{bands}/scf.in",)),
             Step("band-nscf", "nscf along the high-symmetry path", "14", submits=True, after=("create-inputs",),
-                 artifacts=(f"{bands}/band.in",), job_dirs=(bands,)),
+                 artifacts=(f"{bands}/band.in",)),
             Step("band-post", "bands.x post-processing", "15", submits=True, after=("create-inputs",),
-                 artifacts=(f"{bands}/*",), job_dirs=(bands,)),
+                 artifacts=(f"{bands}/*",)),
             Step("dos-scf", "nscf on a dense mesh for the DOS", "16", submits=True, after=("create-inputs",),
-                 artifacts=(f"{MAT}/dos/*",), job_dirs=(f"{MAT}/dos",)),
+                 artifacts=(f"{MAT}/dos/*",)),
             Step("dos-post", "dos.x post-processing", "17", submits=True, after=("create-inputs",),
-                 artifacts=(f"{MAT}/dos/*",), job_dirs=(f"{MAT}/dos",)),
+                 artifacts=(f"{MAT}/dos/*",)),
             Step("pdos", "projwfc.x projected DOS", "18", submits=True, after=("create-inputs",),
-                 artifacts=(f"{MAT}/dos/*",), job_dirs=(f"{MAT}/dos",)),
+                 artifacts=(f"{MAT}/dos/*",)),
             Step("plot-bands", "Plot the band structure", "19",
                  artifacts=("plots/*",), needs_dft_output=True,
                  input_patch=InputPatch(plot="eband")),
@@ -237,16 +248,16 @@ def t_bands(dft: str) -> TopicSpec:
             Step("update-incar", "Rewrite INCAR with NSW = 0 and LCHARG = .TRUE.",
                  "download", artifacts=(f"{MAT}/relax/INCAR",)),
             Step("charge-density", "Charge-density run", "3", submits=True,
-                 artifacts=(f"{MAT}/relax/INCAR",), job_dirs=(f"{MAT}/relax",)),
+                 artifacts=(f"{MAT}/relax/INCAR",)),
             Step("band-scf", "Band-structure run", "13", submits=True,
-                 artifacts=(f"{MAT}/bands/*",), job_dirs=(f"{MAT}/bands",)),
+                 artifacts=(f"{MAT}/bands/*",)),
             # FIX: vasp_process writes KPOINTS_band only when EIGENVAL exists,
             # i.e. only after a real VASP run, and `eigen` then moves it.  This
-            # step therefore reads DFT output and cannot run under --dry-run;
+            # step therefore reads DFT output and cannot run here;
             # it was failing with "No such file or directory: 'KPOINTS_band'"
             # instead of being skipped for the reason that is actually its own.
             Step("band-post", "Band post-processing", "15", submits=True,
-                 artifacts=(f"{MAT}/bands/*",), job_dirs=(f"{MAT}/bands",),
+                 artifacts=(f"{MAT}/bands/*",),
                  needs_dft_output=True),
             Step("plot-bands", "Plot the band structure", "19",
                  artifacts=("plots/*",), needs_dft_output=True,
@@ -269,8 +280,13 @@ def t_pressure(dft: str) -> TopicSpec:
     return TopicSpec(
         steps=(Step("pressure-input", "Build inputs for each pressure / volume point",
                     "pressure-input",
-                    artifacts=("mpid-pressure-*.in", f"{MAT}/pressure"),
-                    needs_dft_output=True),),
+                    # R*/pressure/ is NOT this step's output: `pressure-input`
+                    # writes the tracking lists and the command itself says
+                    # "for energy-volume calculations use 'mainprogram 26'",
+                    # which is what creates the directory.  The wrong
+                    # declaration was invisible while the step always skipped.
+                    artifacts=("mpid-pressure-*.in",),
+                    needs_relax_output=True),),
         depends_topics=("relax",), seeds=_from_relax(),
         note="the scale factors or pressures come from pressure.in")
 
@@ -293,13 +309,13 @@ def t_elastic(dft: str) -> TopicSpec:
                  artifacts=("mpid-deformed.in",),
                  input_patch=InputPatch(start=1, end=2, track="mpid.in")),
             Step("relax-deformed", "Relax every deformed cell", "1", submits=True,
-                 artifacts=relax, job_dirs=(f"{MAT}/relax",), check_converged=True,
+                 artifacts=relax,
                  input_patch=InputPatch(start=1, end=25, track="mpid-deformed.in")),
             Step("update-deformed", "Harvest the relaxed deformed cells", "2",
                  artifacts=("mpid-list-not-relaxed.in",), needs_dft_output=True,
                  input_patch=InputPatch(start=1, end=25, track="mpid-deformed.in")),
             Step("resubmit-deformed", "Resubmit the deformed relaxations", "3",
-                 submits=True, artifacts=relax, job_dirs=(f"{MAT}/relax",),
+                 submits=True, artifacts=relax,
                  input_patch=InputPatch(start=1, end=25, track="mpid-deformed.in")),
             Step("compute-elastic", "Fit the elastic tensor", "compute-elastic",
                  artifacts=("elastic.csv",), needs_dft_output=True,
@@ -327,8 +343,8 @@ def t_phonopy(dft: str) -> TopicSpec:
     return TopicSpec(
         steps=(
             Step("displacements", "Build the displaced supercells and submit them",
-                 "phono1", submits=True, needs_dft_output=True,
-                 artifacts=(f"{ph}/phonopy_disp.yaml",), job_dirs=(f"{ph}/R*",)),
+                 "phono1", submits=True, needs_relax_output=True,
+                 artifacts=(f"{ph}/phonopy_disp.yaml",)),
             Step("force-constants", "Compute the force constants", "phono2",
                  artifacts=(f"{ph}/FORCE_SETS",), needs_dft_output=True),
             Step("thermal", "Thermodynamic properties", "phono3",
@@ -344,11 +360,10 @@ def t_eos(dft: str) -> TopicSpec:
     return TopicSpec(
         steps=(
             Step("pressure-input", "Build the isotropically scaled cells",
-                 "pressure-input", artifacts=(f"{MAT}/pressure",),
-                 needs_dft_output=True),
+                 "pressure-input", artifacts=("mpid-pressure-*.in",),
+                 needs_relax_output=True),
             Step("relax-volumes", "Relax at fixed volume", "26", submits=True,
-                 artifacts=(f"{MAT}/pressure/*",),
-                 job_dirs=(f"{MAT}/pressure/R*/relax",), check_converged=True),
+                 artifacts=(f"{MAT}/pressure/*",)),
             Step("ev-collect", "Collect the energy-volume curve", "ev-collect",
                  artifacts=(f"{MAT}/pressure/e-v.dat",), needs_dft_output=True),
             Step("eos-bm", "Birch-Murnaghan fit", "eos-bm",
@@ -363,7 +378,7 @@ def t_eos(dft: str) -> TopicSpec:
 def t_wannier(dft: str) -> TopicSpec:
     if dft == "QE":
         prepare = (Step("create-inputs", "Build the scf / nscf inputs", "4",
-                        artifacts=("kpath/kpath-*.dat",), needs_dft_output=True),)
+                        artifacts=("kpath/kpath-*.dat",), needs_relax_output=True),)
         epw_art = ("scf_dir/*-nscf.in",)
     else:
         prepare = ()
@@ -371,7 +386,7 @@ def t_wannier(dft: str) -> TopicSpec:
     return TopicSpec(
         steps=prepare + (
             Step("epw1", "Build the Wannier90 / EPW inputs", "epw1",
-                 artifacts=epw_art, needs_dft_output=True),
+                 artifacts=epw_art, needs_relax_output=True),
             Step("jobscript", "Build the Wannier submission script", "jobscript",
                  artifacts=("run-*.sh",)),
             Step("wann-file", "Wannierise with the projections from projection.in",

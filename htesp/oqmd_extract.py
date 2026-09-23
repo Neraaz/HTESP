@@ -11,12 +11,49 @@ from ase.io.vasp import read_vasp
 from pymatgen.io.vasp.sets import MPRelaxSet
 from pymatgen.core import structure
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
+import contextlib
+import socket
+
 import qmpy_rester as qr
 from htesp.cif_to_gsinput import pos_to_kpt
 from htesp.write_potcar import poscar2potcar
 from htesp.htepc import MpConnect
 from htesp.check_json import config
 from htesp.inputin import InputIn
+
+#: seconds a single OQMD socket operation may block before it is abandoned.
+#:
+#: FIX: ``qmpy_rester`` builds a bare ``requests.Session()`` and passes no
+#: timeout to it, so a connection that stalls blocks for ever.  It did:
+#: ``mainprogram oqmd-download`` was found nineteen minutes in, alive, with
+#: two open sockets and not a line of output, and nothing short of a kill
+#: would have ended it.  A socket timeout is the right instrument here
+#: because it distinguishes the two cases a wall-clock budget cannot -- a
+#: *stalled* connection is abandoned, while a query that is merely slow (OQMD
+#: searches have taken anywhere from 35 to 100 seconds) keeps going as long
+#: as data is still arriving.
+OQMD_SOCKET_TIMEOUT = 30.0
+
+
+@contextlib.contextmanager
+def socket_timeout(seconds: float = OQMD_SOCKET_TIMEOUT):
+    """Apply a default socket timeout for the duration of the block.
+
+    Scoped rather than set at import, deliberately.
+    ``socket.setdefaulttimeout`` is process-global and
+    ``htesp/aflow_extract.py`` imports this module, so setting it on import
+    would quietly put a timeout on AFLOW's queries too -- and on everything
+    ``mainprogram data-combine`` does, which runs all three front ends in one
+    process.  Only sockets opened inside the block are affected, and the
+    previous value is restored even when the query raises.
+    """
+    previous = socket.getdefaulttimeout()
+    socket.setdefaulttimeout(seconds)
+    try:
+        yield
+    finally:
+        socket.setdefaulttimeout(previous)
+
 
 #: how many times search() retries an OQMD query with a smaller limit
 MAX_SEARCH_RETRIES = 8
@@ -212,7 +249,8 @@ def search(kwargs,properties):
             # line" when stdin is closed, which the retry loop below then
             # burned all its attempts on.  It also returns None for any answer
             # that is not Y/y/Yes/yes, so the next line would raise TypeError.
-            response = obj.get_oqmd_phases(verbose=False, **kwargs)
+            with socket_timeout():
+                response = obj.get_oqmd_phases(verbose=False, **kwargs)
             if response is None:
                 raise RuntimeError(
                     "OQMD returned no response for limit={}".format(limit))
@@ -305,7 +343,8 @@ def download(calc_type,start,end):
     # Loop through the specified range of compounds
     for mpid in mpid_data:
         oqmd_id = int(mpid.split(" ")[1].split("-")[1])
-        subd = obj.get_entry_by_id(oqmd_id)
+        with socket_timeout():
+            subd = obj.get_entry_by_id(oqmd_id)
         try:
             # Extract necessary data from the OQMD entry
             oqmd_id = subd['id']

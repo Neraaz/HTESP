@@ -73,24 +73,28 @@ htesp/            the package
   data/config.json  packaged default config (every key, placeholder API key)
   <the rest>      science modules, unchanged in purpose from 1.x
 bin/              52 POSIX-sh shims, one per former bash script
-tutorials/        catalog.py builds the 42-tutorial catalogue and
-                  groups it into dependency iterations (`iters()`); the
-                  runner does ONE iteration per invocation under --iter,
-                  and state.json records each iteration's status so a
-                  campaign can pause for days while jobs run.
-                  Real mode also asks `sacct` how each job ENDED (leaving
-                  squeue != succeeding) and greps the output for the
-                  convergence markers workflow.py uses (finishing !=
-                  converging).  Seeding overwrites batch.header per folder
-                  with batch_header.build() when sinfo exists, and sets
-                  job_script.parallel_command to the detected launcher --
-                  ibrun is TACC-only, elsewhere srun/mpirun.  nproc is
-                  never touched: it is the study's choice.  The module
-                  line is UNVERSIONED (`module load qe`) so Lmod picks
-                  the site default.  Every submitting tutorial gets a
-                  `jobscript` step prepended: stage_and_submit only
-                  SKIPS when run-*.sh is missing, so 13 tutorials used
-                  to submit nothing in real mode and still pass.
+tutorials/        htesp-tutorials.  It NEVER runs a DFT calculation:
+                  every step is `mainprogram <cmd> --dry-run`, so nothing
+                  is submitted and nothing deleted.  Real mode was deleted
+                  along with --dry-run/--no-dft/--iter/--examples, the
+                  sacct + convergence checks, squeue polling and
+                  Step.job_dirs/check_converged (state.json SCHEMA_VERSION
+                  2 -- older checkpoints are ignored, not repaired).
+                  Steps needing only a RELAXATION do run: its output is
+                  seeded from the QE/9 and VASP/9 references
+                  (REFERENCE_OUTPUT -- a whitelist, deliberately excluding
+                  econv.csv and scf-relax-*.in, which are the answers those
+                  steps must produce).  Steps needing a real DFT run are
+                  skipped naming the tutorial's README, falling back to the
+                  QE<->VASP counterpart (12 ship none; only VASP/21 has
+                  neither).  --jobs N runs a dependency level in a thread
+                  pool; --timeout is MINUTES per tutorial (OQMD gets 100s
+                  and 2 attempts, and a timeout there is SKIPPED, not
+                  failed -- its client has no request timeout, so a socket
+                  timeout is applied around the two qmpy_rester calls).
+                  --output lists what each step wrote, from a before/after
+                  file diff: that is how two wrong artefact declarations
+                  and a pre-shipped "artefact" were found.
 legacy/bash/      the 52 original bash scripts, unmodified, for reference
 tests/            240 unittest tests (run under pytest or unittest)
 tools/            check_names.py (undefined-name scan), gen_command_rst.py
@@ -188,7 +192,10 @@ labels, `PSEUDO` = QE cutoffs), `substitute`, `pwscf_in`, `strain`,
 `wanniertools_input`, `kptden`, `chull_cutoff`, `kpt_opt`, `elph_mode`, `plot`.
 
 **API key** — never from `config.json` in practice: `$MP_API_KEY`, then
-`~/.config/htesp/credentials`, then the file; the shipped value is the
+`~/.config/htesp/credentials`, then the file. `htesp/config.py::api_key()` is
+the ONE resolver; anything asking `os.environ["MP_API_KEY"]` directly is a bug
+(the tutorial runner did, so eight tutorials skipped on a machine configured
+with `htesp-check --set_mp_api`). the shipped value is the
 placeholder `use_your_API_KEY`, and `api_key()` returns `None` for it.
 `require_api_key()` raises with instructions.
 
