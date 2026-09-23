@@ -870,83 +870,58 @@ class ApiKeyIsResolvedTheWayHtespResolvesIt(unittest.TestCase):
         self.assertIn("htesp-check --set_mp_api", source)
 
 
-class TutorialTimeBudget(unittest.TestCase):
-    """A tutorial gets a minute; a hang is reported, not waited on.
+class StepTimeouts(unittest.TestCase):
+    """Only the steps that name a limit are capped.
 
-    The step limit used to be six hours, which is how an `oqmd-download`
-    stalled for nineteen minutes unnoticed -- alive, two open sockets, no
-    output, because `qmpy_rester` builds a bare `requests.Session()` with no
-    timeout.  Measured over a healthy sweep the slowest tutorial totalled
-    58.6s, so a minute fits real work and cuts a hang short.
+    Every attempt to pick one number failed.  Six hours let an OQMD download
+    hang for nineteen minutes unnoticed.  Sixty seconds failed healthy
+    searches.  A wall-clock budget per *tutorial* was worse still: it is
+    contention-blind, so the same OQMD search measured 34.7s alone and 100.1s
+    at --jobs 4, and the run "failed" for being busy.  OQMD is the only
+    service that has ever hung -- its client passes no timeout to its
+    requests.Session -- so it is the only one capped.
     """
 
-    def test_the_default_budget_is_one_minute(self):
-        from tutorials.runner import DEFAULT_TUTORIAL_TIMEOUT
+    def test_there_is_no_default_cap(self):
+        from tutorials.runner import DEFAULT_STEP_TIMEOUT, RunOptions
 
-        self.assertEqual(DEFAULT_TUTORIAL_TIMEOUT, 60)
+        self.assertIsNone(DEFAULT_STEP_TIMEOUT)
+        self.assertIsNone(RunOptions(workdir=Path(".")).step_timeout)
 
-    def test_the_flag_is_in_minutes(self):
-        """Checked with no argument too: the flag kept an hours-era default of
-        24 while its help had been rewritten, so every tutorial silently got a
-        1440-second budget."""
-        from tutorials.run_tutorials import build_parser
+    def test_only_oqmd_steps_are_capped(self):
+        from tutorials.catalog import CATALOG
 
-        self.assertEqual(build_parser().parse_args([]).timeout, 1.0)
-        self.assertEqual(build_parser().parse_args(["--timeout", "2"]).timeout, 2.0)
+        capped = sorted((c, s.id) for c, tut in CATALOG.items()
+                        for s in tut.steps if s.timeout)
+        self.assertEqual(capped, [("QE/4", "download"), ("QE/4", "search"),
+                                  ("VASP/4", "download"), ("VASP/4", "search")])
 
-    def test_the_help_says_minutes_not_hours(self):
-        import contextlib
-        import io
+    def test_the_oqmd_limits_are_six_and_three_minutes(self):
+        from tutorials.catalog import CATALOG
 
-        from tutorials.run_tutorials import build_parser
+        for code in ("QE/4", "VASP/4"):
+            caps = {s.id: s.timeout for s in CATALOG[code].steps}
+            with self.subTest(code=code):
+                self.assertEqual(caps["search"], 6 * 60)
+                self.assertEqual(caps["download"], 3 * 60)
 
-        buf = io.StringIO()
-        with contextlib.redirect_stdout(buf):
-            with self.assertRaises(SystemExit):
-                build_parser().parse_args(["--help"])
-        text = buf.getvalue()
-        self.assertIn("--timeout MINUTES", text)
-        self.assertNotIn("--timeout HOURS", text)
-
-    def test_a_timeout_message_quotes_the_budget_that_applied(self):
-        """OQMD runs on 100s; reporting the run-wide default instead told the
-        reader a number that was never used."""
-        source = (ROOT / "tutorials" / "runner.py").read_text()
-        block = source.split("except subprocess.TimeoutExpired", 1)[1].split(
-            "except OSError", 1)[0]
-        self.assertIn('getattr(self._deadline, "budget"', block)
-        self.assertNotIn("self.options.tutorial_timeout", block)
-
-    def test_no_step_outlives_the_tutorial(self):
-        """Otherwise a single hung call spends the whole run."""
+    def test_an_uncapped_step_waits(self):
+        """subprocess.run(timeout=None) has no deadline, which is the point."""
         source = (ROOT / "tutorials" / "runner.py").read_text()
         block = source.split("def _run_subprocess", 1)[1].split("\n    def ", 1)[0]
-        self.assertIn("self._time_left()", block)
-        self.assertIn("min(timeout", block)
+        self.assertIn("timeout = step.timeout or self.options.step_timeout", block)
 
-    def test_the_deadline_is_per_thread(self):
-        """Tutorials run in parallel under --jobs; a shared attribute would
-        give one tutorial another's clock."""
+    def test_no_tutorial_wide_budget_remains(self):
         source = (ROOT / "tutorials" / "runner.py").read_text()
-        self.assertIn("self._deadline = threading.local()", source)
+        for gone in ("_time_left", "_deadline", "tutorial_timeout"):
+            with self.subTest(name=gone):
+                self.assertNotIn(gone, source)
 
-    def test_timeout_output_is_decoded_before_it_is_written(self):
-        """subprocess.run(text=True) still hands TimeoutExpired *bytes*, so
-        concatenating them raised TypeError and the timeout escaped as a
-        traceback -- leaving the tutorial RUNNING and skipping the retry."""
-        from tutorials.runner import _as_text
+    def test_the_flag_is_gone_too(self):
+        from tutorials.run_tutorials import build_parser
 
-        self.assertEqual(_as_text(b"hello"), "hello")
-        self.assertEqual(_as_text("hello"), "hello")
-        self.assertEqual(_as_text(None), "")
-        self.assertEqual(_as_text(b"\xff"), "\ufffd")
-
-    def test_the_handler_uses_it(self):
-        source = (ROOT / "tutorials" / "runner.py").read_text()
-        block = source.split("except subprocess.TimeoutExpired", 1)[1].split(
-            "except OSError", 1)[0]
-        self.assertIn("_as_text(exc.stdout)", block)
-        self.assertNotIn('(exc.stdout or "")', block)
+        flags = {o for a in build_parser()._actions for o in a.option_strings}
+        self.assertNotIn("--timeout", flags)
 
 
 class OqmdGetsASecondAttempt(unittest.TestCase):
@@ -957,33 +932,6 @@ class OqmdGetsASecondAttempt(unittest.TestCase):
     seconds is not broken because one call stalled, so the tutorial runs
     again before being called a failure.
     """
-
-    def test_oqmd_gets_a_longer_budget_than_the_rest(self):
-        """Its searches alone have taken 34.7s to 71.8s across runs; a budget
-        a healthy run cannot meet is a source of false failures, not a hang
-        detector."""
-        from tutorials.catalog import CATALOG
-        from tutorials.runner import DEFAULT_TUTORIAL_TIMEOUT
-
-        for code in ("QE/4", "VASP/4"):
-            with self.subTest(code=code):
-                self.assertEqual(CATALOG[code].timeout, 100)
-                self.assertGreater(CATALOG[code].timeout,
-                                   DEFAULT_TUTORIAL_TIMEOUT)
-
-    def test_every_other_tutorial_uses_the_default(self):
-        from tutorials.catalog import CATALOG
-
-        for code, tutorial in CATALOG.items():
-            if code in ("QE/4", "VASP/4"):
-                continue
-            with self.subTest(code=code):
-                self.assertEqual(tutorial.timeout, 0.0)
-
-    def test_the_per_tutorial_budget_wins_over_the_run_wide_one(self):
-        source = (ROOT / "tutorials" / "runner.py").read_text()
-        block = source.split("def _run_tutorial", 1)[1].split("\n    def ", 1)[0]
-        self.assertIn("tutorial.timeout", block)
 
     def test_only_the_oqmd_tutorials_retry(self):
         from tutorials.catalog import CATALOG
@@ -1336,6 +1284,95 @@ class SkippedStepsSayWhereToReadOn(unittest.TestCase):
         source = (ROOT / "tutorials" / "report.py").read_text()
         self.assertIn("Nothing ran for these", source)
         self.assertIn("readme_for", source)
+
+
+class ProcessLimits(unittest.TestCase):
+    """`--jobs` and `--workers` multiply, and the multiplication is invisible.
+
+    A full sweep at `--jobs 4` failed six tutorials on a login node.  The
+    cause was process exhaustion, arriving as `BlockingIOError: [Errno 11]`
+    from inside joblib and `ThreadPoolBuildError { ... WouldBlock }` from
+    inside phonopy's rayon -- three libraries deep, with nothing naming the
+    real limit.  `ulimit -u` is 100 on a TACC login node and 16384 on a
+    compute node, so the same command works on one and fails on the other.
+    """
+
+    def test_workers_is_one_by_default(self):
+        """A tutorial works on one or two materials; a pool of eight opens
+        eight processes to do two things."""
+        from tutorials.run_tutorials import build_parser
+        from tutorials.runner import RunOptions
+
+        self.assertEqual(RunOptions(workdir=Path(".")).workers, 1)
+        self.assertEqual(build_parser().parse_args([]).workers, 1)
+
+    def test_the_limit_is_read_at_run_time(self):
+        """It differs by machine, so it cannot be assumed."""
+        import resource
+
+        from tutorials.runner import process_limit
+
+        soft, _hard = resource.getrlimit(resource.RLIMIT_NPROC)
+        expected = None if soft == resource.RLIM_INFINITY else soft
+        self.assertEqual(process_limit(), expected)
+
+    def test_threads_are_counted_not_processes(self):
+        """RLIMIT_NPROC counts both, and one phonopy-init is one process and,
+        left alone, 144 threads."""
+        source = (ROOT / "tutorials" / "runner.py").read_text()
+        block = source.split("def processes_in_use", 1)[1].split("\ndef ", 1)[0]
+        self.assertIn('"-L"', block)
+
+    def test_library_pools_are_capped_when_the_limit_is_tight(self):
+        """`--workers` reaches the pool mainprogram opens and nothing below
+        it; these variables are the only handle on the rest.
+
+        The environment is cleared first: TACC already exports
+        OMP_NUM_THREADS=1, and honouring that is the *next* test.
+        """
+        import unittest.mock as mock
+
+        from tutorials.runner import LIBRARY_THREAD_VARS, child_env
+
+        clean = {k: v for k, v in os.environ.items()
+                 if k not in LIBRARY_THREAD_VARS}
+        with mock.patch.dict(os.environ, clean, clear=True):
+            env = child_env(cap_threads=True, threads=2)
+        for name in LIBRARY_THREAD_VARS:
+            with self.subTest(var=name):
+                self.assertEqual(env[name], "2")
+
+    def test_a_variable_the_caller_set_is_respected(self):
+        import unittest.mock as mock
+
+        from tutorials.runner import child_env
+
+        with mock.patch.dict(os.environ, {"OMP_NUM_THREADS": "7"}):
+            self.assertEqual(child_env(cap_threads=True)["OMP_NUM_THREADS"], "7")
+
+    def test_nothing_is_capped_when_not_asked(self):
+        from tutorials.runner import LIBRARY_THREAD_VARS, child_env
+
+        env = child_env()
+        for name in LIBRARY_THREAD_VARS:
+            if name in os.environ:
+                continue
+            with self.subTest(var=name):
+                self.assertNotIn(name, env)
+
+    def test_preflight_warns_before_the_fork_fails(self):
+        """The warning has to name the real limit; a BlockingIOError three
+        libraries down names nothing."""
+        source = (ROOT / "tutorials" / "runner.py").read_text()
+        self.assertIn("ulimit -u", source)
+        self.assertIn("BlockingIOError", source)
+
+    def test_the_warning_is_not_an_error(self):
+        """It is a judgement about headroom, and the user may know better."""
+        source = (ROOT / "tutorials" / "runner.py").read_text()
+        block = source.split("if limit and jobs > 1:", 1)[1].split("probe =", 1)[0]
+        self.assertIn('"warning"', block)
+        self.assertNotIn('"error"', block)
 
 
 if __name__ == "__main__":

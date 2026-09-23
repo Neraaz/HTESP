@@ -308,18 +308,16 @@ Runs the worked examples and, when it stops, says exactly where.  See
                            tree name works here too
      --from FROM_STEP      start each selected tutorial at this step id (the
                            retry line in the report uses this)
-     --workers WORKERS     passed through to mainprogram --workers
+     --workers WORKERS     passed through to mainprogram --workers (default: 1).
+                           A tutorial works on one or two materials, so a bigger
+                           pool buys nothing and multiplies with --jobs: four
+                           tutorials at mainprogram's own default of 8 is 36
+                           processes, and a login node allows 100
      --jobs N              run N tutorials at once (default: 1). Most of a sweep
                            is spent waiting on the Materials Project, OQMD and
                            AFLOW servers, and those tutorials are independent, so
                            the waiting overlaps. Keep it modest: the same APIs
                            rate-limit
-     --timeout MINUTES     minutes a single tutorial may take before the runner
-                           gives up on it (default: 1). No step is given more
-                           time than the tutorial has left, so a hung network
-                           call is cut short and reported instead of waited on. A
-                           few tutorials ask for longer -- OQMD's take 100s --
-                           and that wins
      --force               run even when preflight reports errors
      --output              after the run, list every file it produced and what
                            that file is for, grouped by the step that wrote it. A

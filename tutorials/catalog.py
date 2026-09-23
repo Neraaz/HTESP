@@ -247,9 +247,6 @@ class Tutorial:
     #: than one only where the failure is likely to be someone else's server
     #: -- see :data:`ATTEMPTS`.
     attempts: int = 1
-    #: seconds this tutorial may take, overriding the run-wide budget.  0
-    #: means "use the default" -- see :data:`TUTORIAL_TIMEOUTS`.
-    timeout: float = 0.0
     #: True when a timeout here is the service's doing, not HTESP's, and
     #: should be reported as skipped -- see :data:`FLAKY_SERVICE_TOPICS`.
     flaky_service: bool = False
@@ -408,15 +405,6 @@ REFERENCE_OUTPUT = {
 #: second run at it before being called a failure.
 ATTEMPTS = {"oqmd": 2}
 
-#: topics that need longer than the default budget, in seconds.
-#:
-#: Measured over several runs, an OQMD `search` alone took 34.7s, 38.3s,
-#: 39.2s, 55.0s, 68.6s and 71.8s -- the service is slow as well as unreliable,
-#: and its two steps together do not fit the minute every other tutorial
-#: finishes well inside.  A budget that a healthy run cannot meet is not a
-#: hang detector, it is a source of false failures.
-TUTORIAL_TIMEOUTS = {"oqmd": 100}
-
 #: topics where running out of time says more about the service than about
 #: HTESP, so the run is not marked failed for it.
 #:
@@ -526,7 +514,7 @@ def _build_one(topic: str, dft: str) -> Tutorial:
                     steps=_with_job_scripts(spec.steps),
                     loop=spec.loop, stub=spec.stub, note=note,
                     attempts=ATTEMPTS.get(topic, 1),
-                    timeout=TUTORIAL_TIMEOUTS.get(topic, 0.0),
+
                     flaky_service=topic in FLAKY_SERVICE_TOPICS)
 
 

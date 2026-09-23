@@ -67,21 +67,19 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--from", dest="from_step", default=None,
                         help="start each selected tutorial at this step id "
                              "(the retry line in the report uses this)")
-    parser.add_argument("--workers", type=int, default=None,
-                        help="passed through to mainprogram --workers")
+    parser.add_argument("--workers", type=int, default=1,
+                        help="passed through to mainprogram --workers "
+                             "(default: 1).  A tutorial works on one or two "
+                             "materials, so a bigger pool buys nothing and "
+                             "multiplies with --jobs: four tutorials at "
+                             "mainprogram's own default of 8 is 36 processes, "
+                             "and a login node allows 100")
     parser.add_argument("--jobs", type=int, default=1, metavar="N",
                         help="run N tutorials at once (default: 1).  Most of a "
                              "sweep is spent waiting on the Materials Project, "
                              "OQMD and AFLOW servers, and those tutorials are "
                              "independent, so the waiting overlaps.  Keep it "
                              "modest: the same APIs rate-limit")
-    parser.add_argument("--timeout", type=float, default=1.0, metavar="MINUTES",
-                        help="minutes a single tutorial may take before the "
-                             "runner gives up on it (default: 1).  No step is "
-                             "given more time than the tutorial has left, so a "
-                             "hung network call is cut short and reported "
-                             "instead of waited on.  A few tutorials ask for "
-                             "longer -- OQMD's take 100s -- and that wins")
     parser.add_argument("--force", action="store_true",
                         help="run even when preflight reports errors")
     parser.add_argument("--output", action="store_true",
@@ -135,7 +133,7 @@ def main(argv: list[str] | None = None) -> int:
     workdir = Path(args.workdir).resolve()
     options = RunOptions(
         workdir=workdir, resume=not args.restart,
-        tutorial_timeout=args.timeout * 60.0, workers=args.workers,
+        workers=args.workers,
         jobs=args.jobs,
         from_step=args.from_step, verbose=args.verbose, examples=examples,
         keep="all" if args.keep_output == "yes" else "none",

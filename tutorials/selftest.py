@@ -332,7 +332,7 @@ class EndToEndTest(unittest.TestCase):
 
         import tutorials.runner as runner_mod
         original = runner_mod.child_env
-        runner_mod.child_env = lambda root=None: {           # noqa: ARG005
+        runner_mod.child_env = lambda root=None, **kw: {     # noqa: ARG005
             **os.environ, "PYTHONPATH": str(self.fakeroot)}
         self.addCleanup(setattr, runner_mod, "child_env", original)
 

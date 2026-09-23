@@ -69,15 +69,31 @@ def t_jobscript(dft: str) -> TopicSpec:
     return TopicSpec(steps=(JOBSCRIPT_STEP,))
 
 
-def _search_download(dft: str, search: str, download: str, mode: str) -> tuple[Step, ...]:
+#: how long one OQMD step may block, in seconds.
+#:
+#: The database topics are exempt from the *tutorial* budget, because that is
+#: wall-clock and does not know how many other tutorials `--jobs` has pulling
+#: on the same link: an OQMD search measured 34.7s alone and 100.1s at
+#: ``--jobs 4``.  A per-step cap is the right shape for the thing the budget
+#: was protecting against -- a request that has produced nothing for minutes
+#: is stuck however busy the machine is.  OQMD is the only service that has
+#: ever hung (its client passes no timeout to its ``requests.Session``, and one
+#: download ran for nineteen minutes), so it is the only one capped.
+DATABASE_STEP_TIMEOUTS = {"search": 6 * 60, "download": 3 * 60}
+
+
+def _search_download(dft: str, search: str, download: str, mode: str,
+                     timeouts: dict | None = None) -> tuple[Step, ...]:
+    timeouts = timeouts or {}
     return (
         Step("search", f"Search the {mode} database", search,
              artifacts=("mpid-list.in",), needs_api_key=(search == "search"),
-             timeout=3600),
+             timeout=timeouts.get("search")),
         Step("download", f"Build {dft} inputs for the search hits", download,
              needs_potcar=(dft != "QE"),
              artifacts=_inputs_artifacts(dft) + ("mpid.in",),
-             needs_api_key=(download == "download"), timeout=7200,
+             needs_api_key=(download == "download"),
+             timeout=timeouts.get("download"),
              input_patch=InputPatch(start=1, end=3, track="mpid-list.in"),
              note="only the first two hits are built, to keep the run short"),
     )
@@ -97,8 +113,11 @@ def t_mp_chemsys(dft: str) -> TopicSpec:
 
 
 def t_oqmd(dft: str) -> TopicSpec:
-    return TopicSpec(steps=_search_download(dft, "oqmd-search", "oqmd-download", "OQMD"),
-                     note="needs the optional qmpy-rester package")
+    return TopicSpec(steps=_search_download(dft, "oqmd-search", "oqmd-download",
+                                            "OQMD", DATABASE_STEP_TIMEOUTS),
+                     note="needs the optional qmpy-rester package; its steps "
+                          "are capped at 6 and 3 minutes because OQMD is the "
+                          "one service that has hung")
 
 
 def t_aflow(dft: str) -> TopicSpec:
@@ -127,7 +146,7 @@ def t_fromcif(dft: str) -> TopicSpec:
     return TopicSpec(
         steps=(Step("download", f"Build {dft} inputs from the .cif files", "download",
                     needs_potcar=(dft != "QE"),
-                    artifacts=_inputs_artifacts(dft), timeout=3600),),
+                    artifacts=_inputs_artifacts(dft)),),
         seeds=(Seed("archive", ("*.cif",)),),
         note="config.json sets download.mode = 'fromcif'; the .cif files are "
              "unpacked from the tutorial's reference archive")

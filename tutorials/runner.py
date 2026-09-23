@@ -20,9 +20,9 @@ from __future__ import annotations
 
 import functools
 import logging
-import threading
 import os
 import shutil
+import threading
 import subprocess
 import sys
 import time
@@ -49,23 +49,20 @@ LOG = logging.getLogger("htesp.tutorials")
 #: The name survives only as the label written into ``state.json``.
 DRY_RUN = "dry-run"
 
-#: default seconds a single ``mainprogram`` call may take
-#: how long a whole tutorial may take before the runner gives up on it.
+#: No default limit.  Only the steps that name one are capped.
 #:
-#: Measured over a healthy sweep, the slowest tutorial (QE/4, two live OQMD
-#: calls) totalled 58.6 seconds and no tutorial exceeded a minute, so this is
-#: tight but real work fits inside it.
-DEFAULT_TUTORIAL_TIMEOUT = 60
-
-#: how long one `mainprogram` call may take before the runner kills it.
+#: A limit here has to hold for the slowest legitimate run on the busiest
+#: machine, and every attempt to pick that number failed: six hours let an
+#: OQMD download hang for nineteen minutes unnoticed, sixty seconds failed
+#: healthy searches, and a wall-clock budget per tutorial was worse still --
+#: contention-blind, so the same OQMD search measured 34.7s alone and 100.1s
+#: at ``--jobs 4`` and the run "failed" for being busy.
 #:
-#: This was six hours, which is how a hung step went unnoticed: OQMD stalled
-#: an `oqmd-download` for nineteen minutes and counting, alive with two open
-#: sockets and no output, because `qmpy_rester` builds a bare
-#: `requests.Session()` with no timeout and a stalled connection blocks for
-#: ever.  With no DFT run here, no step does real work for minutes, so a
-#: short limit turns a hang into a reported failure instead of a wait.
-DEFAULT_STEP_TIMEOUT = 60
+#: OQMD is the only service that has ever hung, because its client passes no
+#: timeout to its ``requests.Session``; its two steps carry their own limits
+#: (:data:`~tutorials.steps.DATABASE_STEP_TIMEOUTS`) and everything else runs
+#: to completion.
+DEFAULT_STEP_TIMEOUT = None
 
 
 def _as_text(blob) -> str:
@@ -104,17 +101,87 @@ def mp_api_key() -> str | None:
         return os.environ.get("MP_API_KEY", "").strip() or None
 
 
-def child_env(root: Path = PACKAGE_ROOT) -> dict[str, str]:
+#: Leave this fraction of the process limit for everything else the user is
+#: running -- their shell, an editor, whatever a previous command left behind.
+PROCESS_HEADROOM = 0.5
+
+#: Threads each child may give its own libraries.
+#:
+#: `--workers` sizes the pool `mainprogram` opens and reaches nothing below
+#: it.  The libraries size themselves by `cpu_count`, which is 144 here:
+#: phonopy's `phonopy-init` builds a rayon pool that wide, and pymatgen's
+#: magnetic enumeration forks through joblib/loky.  On a login node capped at
+#: 100 that fails on its own, whatever `--workers` says -- which is exactly
+#: what happened: `--workers 1` still left
+#: `ThreadPoolBuildError { ... WouldBlock }` from rayon and
+#: `BlockingIOError: [Errno 11]` from loky.  These variables are the only
+#: handle on it.
+LIBRARY_THREAD_VARS = ("RAYON_NUM_THREADS", "OMP_NUM_THREADS",
+                       "MKL_NUM_THREADS", "OPENBLAS_NUM_THREADS",
+                       "NUMEXPR_NUM_THREADS", "LOKY_MAX_CPU_COUNT")
+
+#: threads a child's libraries may use when the process limit is tight
+LIBRARY_POOL_ALLOWANCE = 2
+
+
+def process_limit() -> int | None:
+    """The per-user cap on processes *and* threads, or None when unlimited.
+
+    ``RLIMIT_NPROC`` is what ``ulimit -u`` reports, and it differs sharply by
+    where you are: a TACC **login** node caps it at 100 to protect a host
+    shared by a hundred people, while a **compute** node allows 16384.  The
+    same ``--jobs 4`` that is comfortable on one fails on the other, so the
+    limit has to be read at run time rather than assumed.
+    """
+    try:
+        import resource
+
+        soft, _hard = resource.getrlimit(resource.RLIMIT_NPROC)
+    except (ImportError, OSError, ValueError):       # pragma: no cover
+        return None
+    if soft in (-1, getattr(__import__("resource"), "RLIM_INFINITY", -1)):
+        return None
+    return int(soft)
+
+
+def processes_in_use() -> int:
+    """How many *threads* this user already has.
+
+    Threads, not processes: ``RLIMIT_NPROC`` counts both, and counting
+    processes alone undercounts badly -- a single ``phonopy-init`` is one
+    process and, left to itself, 144 threads.
+    """
+    try:
+        import subprocess as _sp
+
+        out = _sp.run(["ps", "-u", str(os.getuid()), "-L", "--no-headers"],
+                      capture_output=True, text=True, timeout=30)
+        return len([line for line in out.stdout.splitlines() if line.strip()])
+    except (OSError, _sp.SubprocessError, ValueError):   # pragma: no cover
+        return 0
+
+
+def child_env(root: Path = PACKAGE_ROOT, cap_threads: bool = False,
+              threads: int = LIBRARY_POOL_ALLOWANCE) -> dict[str, str]:
     """Environment for a ``mainprogram`` subprocess.
 
     The repository root is prepended to ``PYTHONPATH`` so that the driver works
     in a checkout that has not been ``pip install``-ed -- and so that, when it
     has been, the tutorials are run against *this* tree rather than whatever
     else is on the path.
+
+    With *cap_threads*, the libraries the child calls are told how many
+    threads they may have (:data:`LIBRARY_THREAD_VARS`).  Left alone they size
+    themselves by ``cpu_count`` -- 144 on this machine -- and a single
+    ``phonopy-init`` then asks for 144 threads against a login node's limit of
+    100.  A variable the caller already set is respected.
     """
     env = dict(os.environ)
     existing = env.get("PYTHONPATH", "")
     env["PYTHONPATH"] = (f"{root}{os.pathsep}{existing}" if existing else str(root))
+    if cap_threads:
+        for name in LIBRARY_THREAD_VARS:
+            env.setdefault(name, str(max(1, threads)))
     return env
 
 
@@ -126,12 +193,17 @@ class RunOptions:
     resume: bool = True
     poll_interval: float = 60.0
     job_timeout: float = 24 * 3600
-    step_timeout: float = DEFAULT_STEP_TIMEOUT
-    #: seconds a whole tutorial may take.  A step is never given more than
-    #: what is left of it, so an unbounded network call is cut short by the
-    #: tutorial's own budget rather than running until the step limit.
-    tutorial_timeout: float = DEFAULT_TUTORIAL_TIMEOUT
-    workers: int | None = None
+    step_timeout: float | None = DEFAULT_STEP_TIMEOUT
+    #: `mainprogram --workers`, fixed at 1.
+    #:
+    #: A tutorial works on one or two materials -- `input.in` runs 1..3 at
+    #: most, and only the elastic one goes wider -- so a pool of
+    #: `min(cpu_count, 8)` opens eight processes to do two things.  It also
+    #: multiplies with `--jobs` invisibly: four tutorials at the default was
+    #: 36 processes, which a login node capped at 100 could not take, and the
+    #: failure arrived as `BlockingIOError: [Errno 11]` from inside joblib.
+    #: The parallelism worth having here is `--jobs`, where the waiting is.
+    workers: int | None = 1
     from_step: str | None = None
     #: how many tutorials to run at once.  1 is sequential, as it has always
     #: been.  See TutorialRunner._run_group for why this is safe and where the
@@ -299,6 +371,24 @@ def preflight(codes: Sequence[str], options: RunOptions,
             "on PATH, or leave these tutorials out with "
             f"--skip {','.join(needs_enumlib)}"))
 
+    # --jobs and --workers multiply, and the multiplication is invisible from
+    # the command line.  Say so before the fork fails three libraries deep.
+    limit = process_limit()
+    jobs = max(1, int(getattr(options, "jobs", 1) or 1))
+    if limit and jobs > 1:
+        workers = options.workers or 1
+        want = jobs * (1 + workers + LIBRARY_POOL_ALLOWANCE)
+        room = int(limit * PROCESS_HEADROOM) - processes_in_use()
+        if want > room:
+            out.append(Problem(
+                "warning",
+                f"--jobs {jobs} with --workers {workers} asks for roughly "
+                f"{want} processes and threads; this machine allows {limit} "
+                f"(ulimit -u), of which about {room} is free",
+                "lower --jobs.  A login node caps this at 100 and a compute "
+                "node at 16384, so the same command can work on one and fail "
+                "on the other with BlockingIOError: [Errno 11]"))
+
     probe = _probe_mainprogram(options)
     if probe:
         out.append(probe)
@@ -371,9 +461,11 @@ class TutorialRunner:
         # (temp file + replace), so this only stops two threads serialising the
         # same dict at once and racing to replace.
         self._lock = threading.Lock()
-        # Per-tutorial deadline.  Thread-local because several tutorials can
-        # be in flight at once under --jobs.
-        self._deadline = threading.local()
+        # Whether this machine's process limit is tight enough that the child
+        # must be told how many threads its libraries may have.  A login node
+        # caps RLIMIT_NPROC at 100; a compute node allows 16384.
+        limit = process_limit()
+        self._tight = bool(limit and limit < 1024)
 
     # -- entry point -------------------------------------------------------- #
     def run(self) -> RunState:
@@ -412,11 +504,6 @@ class TutorialRunner:
         except ValueError:                           # pragma: no cover
             where = readme
         return f"; to run it for real, follow {where}"
-
-    def _time_left(self) -> float | None:
-        """Seconds left in this tutorial's budget, or None when unbounded."""
-        at = getattr(self._deadline, "at", None)
-        return None if at is None else at - time.time()
 
     def _tag(self, code: str) -> str:
         """``"QE/9  "`` when tutorials run in parallel, ``""`` when they do not.
@@ -493,11 +580,6 @@ class TutorialRunner:
         except ValueError:                           # pragma: no cover
             where = readme
         return f"; to run it for real, follow {where}"
-
-    def _time_left(self) -> float | None:
-        """Seconds left in this tutorial's budget, or None when unbounded."""
-        at = getattr(self._deadline, "at", None)
-        return None if at is None else at - time.time()
 
     def _tag(self, code: str) -> str:
         """``"QE/9  "`` when tutorials run in parallel, ``""`` when they do not.
@@ -670,10 +752,6 @@ class TutorialRunner:
         record.status, record.started = RUNNING, time.time()
         # A tutorial may ask for longer than the run-wide budget; OQMD does,
         # because its own searches take most of a minute on a good day.
-        budget = float(tutorial.timeout
-                       or getattr(self.options, "tutorial_timeout", 0) or 0)
-        self._deadline.at = (time.time() + budget) if budget > 0 else None
-        self._deadline.budget = budget
         try:
             workdir = seed_workdir(tutorial, self.options)
         except (OSError, FileNotFoundError) as exc:
@@ -698,8 +776,6 @@ class TutorialRunner:
             LOG.warning("%-9s attempt %d of %d: %s", code, attempt,
                         tutorial.attempts, failed.reason)
             record.steps.pop(failed.key, None)
-            self._deadline.at = (time.time() + budget) if budget > 0 else None
-            self._deadline.budget = budget
             failed = self._execute_steps(tutorial, record, workdir, resume=True)
         record.finished = time.time()
         # A service that did not answer is not a defect anyone reading this
@@ -713,10 +789,10 @@ class TutorialRunner:
         if gave_up_on_service:
             record.status = SKIPPED
             record.reason = (
-                "{} did not respond within {:.0f}s, on {} attempt(s) -- "
-                "skipped, not failed: the service is outside HTESP's control "
-                "and its client has no request timeout".format(
-                    tutorial.topic.upper(), budget, tutorial.attempts))
+                "{} did not respond, on {} attempt(s) -- skipped, not failed: "
+                "the service is outside HTESP's control and its client has no "
+                "request timeout".format(tutorial.topic.upper(),
+                                         tutorial.attempts))
             LOG.warning("%-9s SKIPPED -- %s", code, record.reason)
         else:
             record.status = FAILED if failed else DONE
@@ -836,14 +912,6 @@ class TutorialRunner:
             LOG.info("    %s%2d. %-18s %s (resumed)",
                      self._tag(tutorial.code), index, step.id, existing.status)
             return existing
-        left = self._time_left()
-        if left is not None and left <= 0:
-            state = self._record_skip(
-                record, step, index, cycle, workdir,
-                "the tutorial ran out of its {:.0f}s budget before this step"
-                .format(getattr(self._deadline, "budget", 0) or 0))
-            state.status = FAILED
-            return state
         if step.needs_relax_output and not relax_output_present(workdir,
                                                                 tutorial.dft):
             return self._record_skip(
@@ -908,10 +976,9 @@ class TutorialRunner:
 
     def _run_subprocess(self, step: Step, state: StepState, workdir: Path,
                         log_path: Path) -> None:
+        # None means "no limit", and that is the default: only the steps that
+        # name a timeout are capped.  subprocess.run(timeout=None) waits.
         timeout = step.timeout or self.options.step_timeout
-        remaining = self._time_left()
-        if remaining is not None:
-            timeout = min(timeout, max(remaining, 1.0))
         header = [f"# command : {' '.join(state.command)}",
                   f"# cwd     : {workdir}", f"# started : {time.ctime()}", ""]
         # FIX: write the header *before* running, not after.  Every branch
@@ -930,7 +997,8 @@ class TutorialRunner:
             # With no stdin such a prompt fails immediately and is reported.
             proc = subprocess.run(state.command, cwd=os.fspath(workdir),
                                   capture_output=True, text=True, timeout=timeout,
-                                  stdin=subprocess.DEVNULL, env=child_env())
+                                  stdin=subprocess.DEVNULL,
+                                  env=child_env(cap_threads=self._tight))
         except KeyboardInterrupt:
             state.status, state.exit_code = FAILED, None
             state.reason = "interrupted with Ctrl-C while this step was running"
@@ -940,13 +1008,7 @@ class TutorialRunner:
             state.status, state.exit_code = FAILED, None
             # the tutorial's own budget, not the run-wide default: OQMD asks
             # for 100s and quoting 1440s here was simply wrong
-            budget = float(getattr(self._deadline, "budget", 0) or 0)
-            if budget and timeout < (step.timeout or self.options.step_timeout):
-                state.reason = ("killed after {:.0f}s: the tutorial's {:.0f}s "
-                                "budget ran out while this step was running"
-                                .format(timeout, budget))
-            else:
-                state.reason = f"timed out after {timeout:.0f}s"
+            state.reason = "timed out after {:.0f}s".format(timeout or 0)
             # FIX: `subprocess.run(text=True)` still hands TimeoutExpired
             # *bytes*, so this concatenation raised
             # "TypeError: can only concatenate str (not "bytes") to str"

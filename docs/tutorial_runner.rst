@@ -313,3 +313,55 @@ before it was skipped names *that* step, which is the actual cause.
 convex-hull tutorials, which need relaxations for a whole material set rather
 than the single reference material, and VASP/21 -- each with the same
 pointer.
+Timeouts
+--------
+
+Only the steps that name a limit are capped, and only OQMD's do: six minutes
+for its ``search``, three for its ``download``.  Everything else runs to
+completion.
+
+Picking one number for everything failed three times.  Six hours let an OQMD
+download hang for nineteen minutes unnoticed -- its client, ``qmpy_rester``,
+passes no timeout to its ``requests.Session``, so a stalled connection blocks
+for ever.  Sixty seconds then failed healthy searches.  A wall-clock budget per
+*tutorial* was worse still: it is contention-blind, and ``--jobs`` makes every
+tutorial slower without moving its deadline -- the same OQMD search measured
+34.7s alone and 100.1s at ``--jobs 4``, so a busy run "failed" for being busy.
+
+A per-step cap on the one service that has ever hung is the shape that fits:
+a request which has produced nothing for six minutes is stuck however many
+tutorials are running, while a search that is merely slow is left alone.
+Processes: --jobs multiplies with --workers
+--------------------------------------------
+
+``--jobs N`` runs N tutorials at once, and each one is a ``mainprogram``
+subprocess that opens a pool of its own.  Left at ``mainprogram``'s default of
+``min(cpu_count, 8)`` -- eight, on a machine reporting 144 CPUs -- ``--jobs 4``
+means 36 processes before any library opens a pool of its own.  That
+multiplication is invisible from the command line, and it is enough to exhaust
+a login node.
+
+``--workers`` therefore defaults to **1** here.  A tutorial works on one or two
+materials, so a larger pool opens eight processes to do two things and buys
+nothing; the parallelism worth having is ``--jobs``, where the waiting is.
+
+``ulimit -u`` caps processes **and threads** per user, and it differs sharply
+by where you are: **100** on a TACC login node, **16384** on a compute node.
+The same ``htesp-tutorials --jobs 4`` therefore succeeds on one and fails on
+the other.  It fails badly, too -- as ``BlockingIOError: [Errno 11]`` from
+inside joblib, or ``ThreadPoolBuildError { ... WouldBlock }`` from inside
+phonopy's rayon, three libraries deep with nothing naming the real limit.  A
+measured sweep lost six tutorials that way.
+
+Two things guard against it:
+
+* Preflight reads the live limit and warns when ``--jobs`` asks for more than
+  a safe share of it, naming ``ulimit -u`` so the message is actionable.  It is
+  a warning, not an error: it is a judgement about headroom, and you may know
+  better.
+* Where the limit is tight, each child is told how many threads its libraries
+  may have (``RAYON_NUM_THREADS``, ``OMP_NUM_THREADS``, ``LOKY_MAX_CPU_COUNT``
+  and the rest).  Left alone they size themselves by ``cpu_count``, so a single
+  ``phonopy-init`` asks for 144 threads against a limit of 100 -- which
+  ``--workers`` cannot prevent, because it reaches the pool ``mainprogram``
+  opens and nothing below it.  A variable you set yourself is respected.

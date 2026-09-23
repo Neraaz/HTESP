@@ -450,7 +450,7 @@ same code.
   `mainprogram <cmd> --dry-run`: all the input generation, nothing submitted,
   nothing deleted. Driving a real campaign is `mainprogram`'s job.
   `state.json` is at schema 2; older checkpoints are ignored rather than
-  repaired.
+  repaired. `--timeout` went with them — see the step limits below.
 * **Steps that need only a relaxation now run.** Their input — the finished
   relaxation — is seeded from the QE/9 and VASP/9 references, a narrow
   whitelist that deliberately excludes `econv.csv` and `scf_dir/scf-relax-*.in`
@@ -470,17 +470,47 @@ same code.
   `search` steps accounted for six of eight minutes — and those tutorials are
   independent, so the waiting overlaps: a full sweep went from roughly fourteen
   minutes to three.
-* **`--timeout` is minutes per tutorial**, not hours per cluster job, and no
-  step is given more than the tutorial has left. A hung network call is now
-  reported instead of waited on.
+* **`--workers` defaults to 1, because it multiplies with `--jobs`.** A
+  tutorial works on one or two materials, so `mainprogram`'s own default of
+  `min(cpu_count, 8)` opened eight processes to do two things — and `--jobs 4`
+  made that 36 processes before any library opened a pool of its own. `ulimit
+  -u` caps processes *and threads* per user, and it is **100 on a TACC login
+  node** against **16384 on a compute node**, so the same command succeeds on
+  one and fails on the other. It failed badly: a measured sweep lost six
+  tutorials to `BlockingIOError: [Errno 11]` from inside joblib and
+  `ThreadPoolBuildError { ... WouldBlock }` from inside phonopy's rayon —
+  three libraries deep, with nothing naming the real limit. Preflight now
+  reads that limit at run time and warns, naming `ulimit -u`.
+* **A child's libraries are told how many threads they may have** when the
+  limit is tight (`RAYON_NUM_THREADS`, `OMP_NUM_THREADS`, `LOKY_MAX_CPU_COUNT`
+  and the rest; a variable you set yourself is respected). Left alone they
+  size themselves by `cpu_count` — 144 on this machine — so a single
+  `phonopy-init` asks for 144 threads to displace a two-atom cell, which
+  `--workers` cannot prevent because it reaches the pool `mainprogram` opens
+  and nothing below it. Together with the default above, a full sweep went
+  from 35 tutorials passing in 11m18s to **42 in 2m55s**: the fix is faster as
+  well as more reliable, because the pools were never doing useful work.
+* **Only the steps that name a limit are capped**, and only OQMD's do: six
+  minutes for its `search`, three for its `download`. Everything else runs to
+  completion. Picking one number for everything was tried three times and
+  failed three times — six hours let the OQMD hang below go unnoticed for
+  nineteen minutes, sixty seconds failed healthy searches, and a wall-clock
+  budget per *tutorial* was worse still: it is contention-blind, so `--jobs`
+  made every tutorial slower without moving its deadline and the same OQMD
+  search measured 34.7s alone and 100.1s at `--jobs 4`. A cap on the one
+  service that has ever hung is the shape that fits: a request which has
+  produced nothing for six minutes is stuck however many tutorials are
+  running, while one that is merely slow is left alone.
 * **A skipped step says how to run it for real**, naming the tutorial's own
   README, falling back to the QE/VASP counterpart where a tutorial ships none
   (twelve do not; only VASP/21 has neither). Steps skipped for a missing
   POTCAR, API key or enumlib keep their own message, which is more actionable.
-* **OQMD is treated as the unreliable service it is**: a longer budget, a
-  second attempt, and a timeout recorded as *skipped* rather than failing the
-  run. `data-combine` then falls back to that tutorial's reference rather than
-  being blocked by a database nobody can reach.
+* **OQMD is treated as the unreliable service it is**: its own step limits, a
+  second attempt when one runs out, and a timeout recorded as *skipped* rather
+  than failing the run — the service is outside HTESP's control and a red
+  sweep should mean something is actually wrong. `data-combine` then falls
+  back to that tutorial's reference rather than being blocked by a database
+  nobody can reach. Only a timeout is forgiven; a wrong answer still fails.
 * **The API key is resolved the way HTESP resolves it everywhere** —
   `$MP_API_KEY`, then the credentials file, then `config.json`. The runner used
   to read only the environment variable, so eight tutorials skipped on a
@@ -509,7 +539,7 @@ same code.
 
 ### New
 
-* **Tests.** 447 of them, as `unittest` classes so they run under `pytest tests/`
+* **Tests.** 450 of them, as `unittest` classes so they run under `pytest tests/`
   and `python -m unittest discover -s tests -t .` alike, with no scientific stack
   required for the core. Each test pinning a fix names the original symptom.
   `tools/check_names.py` is an undefined-name scan for machines where `ruff`
