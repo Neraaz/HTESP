@@ -50,10 +50,10 @@ mkdir -p "$HTESP_OUT"
 # --- python environment ------------------------------------------------------
 if [ -n "${HTESP_VENV:-}" ]; then
     if [ -f "$HTESP_VENV/bin/activate" ]; then
-        # shellcheck disable=SC1091
+        # shellcheck source=/dev/null
         . "$HTESP_VENV/bin/activate"
     elif [ -f "$HTESP_VENV" ]; then
-        # shellcheck disable=SC1091
+        # shellcheck source=/dev/null
         . "$HTESP_VENV"
     else
         echo "HTESP_VENV=$HTESP_VENV has no bin/activate -- ignoring it" >&2
