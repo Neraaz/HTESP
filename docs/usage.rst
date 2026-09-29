@@ -27,7 +27,7 @@ scripts; see :doc:`workflow`.
 Requirements
 ----------------------------
 
-Linux and macOS, Python 3.10 or newer.  Quantum ESPRESSO and/or VASP and a SLURM
+Linux and macOS, Python 3.11 or newer.  Quantum ESPRESSO and/or VASP and a SLURM
 scheduler are needed to run calculations, but not to prepare inputs or to read
 results.
 
@@ -118,8 +118,9 @@ Make sure conda is available, either via
     conda create --name htesp python=3.11
     conda activate htesp
 
-Any Python from 3.10 onwards works; 3.11 is what the package is developed
-against.
+Any Python from 3.11 onwards works; 3.11 is what the package is developed
+against.  The pinned numpy, scipy, pandas, pymatgen, mp-api and emmet-core
+releases all require 3.11, so 3.10 cannot resolve.
 
 ----------------------------
 Install HTESP

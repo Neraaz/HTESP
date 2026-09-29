@@ -89,7 +89,7 @@ Optional features live in extras — see [Installation](#installation) below.
 git clone https://github.com/Neraaz/HTESP.git
 cd HTESP
 
-conda create --name htesp python=3.11        # 3.10 or newer
+conda create --name htesp python=3.11        # 3.11 or newer
 conda activate htesp
 
 pip install .                                 # or: pip install -e ".[test,docs]"

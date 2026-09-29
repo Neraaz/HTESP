@@ -8,7 +8,7 @@ root pins the required set, and requirements1.txt here is that same set plus the
 htesp[fermisurface] extra, with the reasoning behind the pins written above them.
 A test keeps the versions in the two files identical.
 
-Python 3.10 or newer. phonopy is installed separately, because it is a binary
+Python 3.11 or newer. phonopy is installed separately, because it is a binary
 tool rather than a library:
 
     htesp-check --install-phonopy

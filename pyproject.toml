@@ -8,7 +8,10 @@ version = "2.0.0"
 description = "High Throughput Electronic Structure Package: automated Quantum ESPRESSO and VASP campaigns"
 readme = "README.md"
 license = { file = "LICENSE" }
-requires-python = ">=3.10"
+# 3.11, not 3.10: six of the exact pins below -- numpy, scipy, pandas,
+# pymatgen, mp-api and emmet-core -- declare Requires-Python >=3.11, so
+# `pip install .` cannot resolve on 3.10.
+requires-python = ">=3.11"
 keywords = [
     "superconductivity", "electron-phonon", "quantum-espresso", "vasp",
     "wannier90", "wanniertools", "phonopy", "epw", "high-throughput",
@@ -24,7 +27,6 @@ classifiers = [
     "Operating System :: POSIX",
     "Operating System :: MacOS",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Topic :: Scientific/Engineering :: Chemistry",
