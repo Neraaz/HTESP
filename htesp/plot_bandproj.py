@@ -6,7 +6,6 @@ import os
 import sys
 import glob
 import shutil
-from collections import Counter
 import numpy as np
 from pymatgen.io.pwscf import PWInput
 from pymatgen.io.vasp.sets import Incar
@@ -19,6 +18,7 @@ class PROCARProcessor:
     A class to process PROCAR file and extract band information.
 
     Parameters:
+
     - procar_file (str): Path to the PROCAR file.
     - band_file (str): Path to the band file.
 
@@ -34,6 +34,7 @@ class PROCARProcessor:
     - nkpoint_extra (int): Additional k-points in PROCAR file not in band file.
 
     Methods:
+
     - write_band_orbital(orb): Writes band orbital data to the specified file.
     - write_band_element(elm): Writes band element data to the specified file.
     - extract_data(elm, orb): Extracts data for a specific element and orbital.
@@ -42,25 +43,13 @@ class PROCARProcessor:
     - clean(): Cleans up temporary files created during processing.
 
     Example:
-    ```python
-    # Instantiate PROCARProcessor
+
     >>> procar_processor = PROCARProcessor("PROCAR", "BANDS")
-
-    # Print available options
-    >>> procar_processor.print_info()
-
-    # Extract data for a specific element and orbital
+    >>> procar_processor.print_info()              # elements and orbitals
     >>> procar_processor.extract_data('Fe', 's')
-
-    # Write band orbital data to a file
     >>> procar_processor.write_band_orbital('s')
-
-    # Write band element data to a file
     >>> procar_processor.write_band_element('Fe')
-
-    # Clean up temporary files
-    >>> procar_processor.clean()
-    ```
+    >>> procar_processor.clean()                   # temporary files
     """
     def __init__(self, procar_file, band_file):
         """
@@ -584,12 +573,11 @@ class DataProcessor:
         for key in self.dict_.keys():
             value = self.dict_[key]
             nameval = self.dict_1[key]
-            namecount = Counter(nameval)
-            lenv = len(value)
             dict_value = {}
             # Iterate over each index and value pair
             for i, idx in enumerate(value):
-                ncount = namecount[nameval[i]]
+                # The per-name occurrence count that used to be taken here
+                # is read only by the commented-out averaging below.
                 subname = nameval[i].split()
                 # Define the orbital name
                 if "S" in nameval[i]:

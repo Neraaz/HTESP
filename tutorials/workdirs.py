@@ -18,11 +18,9 @@ import fnmatch
 import logging
 import os
 import shutil
-import subprocess
 import tarfile
-import time
 from pathlib import Path
-from typing import TYPE_CHECKING, Iterable, Sequence
+from typing import TYPE_CHECKING, Sequence
 
 from tutorials.catalog import SEED_EXCLUDE, Seed, Tutorial
 

@@ -1022,7 +1022,7 @@ Magnetic force theorem
 ---------------------------
 
 The magnetic anisotropy energy is the difference in total energy between two
-magnetisation directions.  Those differences are of the order of :math:`\mu`eV
+magnetisation directions.  Those differences are of the order of :math:`\mu`\ eV
 per atom, so subtracting two independently converged self-consistent runs is
 rarely accurate enough.  The force theorem takes the difference from a single
 converged charge density instead: converge the collinear, spin-orbit-free

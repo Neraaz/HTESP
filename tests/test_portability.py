@@ -586,7 +586,6 @@ class InstallPhonopy(unittest.TestCase):
     """
 
     def test_the_flag_and_its_options_exist(self):
-        import argparse
         import contextlib
         import io
 
@@ -616,7 +615,6 @@ class InstallPhonopy(unittest.TestCase):
         self.assertIn('"-p", sys.prefix', block)
 
     def test_an_existing_phonopy_is_not_reinstalled_over(self):
-        import shutil
         import unittest.mock as mock
 
         from htesp import check

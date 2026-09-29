@@ -21,9 +21,9 @@ Running it
     python -m tutorials.run_tutorials         # the same thing from a checkout
     sbatch tutorials/submit_tutorials.sh --only QE
 
---------------------
+----------------------------
 Where ``examples/`` is found
---------------------
+----------------------------
 
 ``examples/`` is 185 MB of reference data and is **not** shipped inside the
 wheel, so after an ordinary ``pip install .`` there is no ``examples/`` beside
@@ -236,7 +236,7 @@ directory into the stage directory and submits *that* -- ``run-scf.sh`` for
 Quantum ESPRESSO, ``run-vasp.sh`` for VASP, both built from ``batch.header``
 and ``job_script.command_list``.  When the script is missing it records the
 material as *skipped* and carries on, so a tutorial that never ran
-``mainprogram jobscript`` wrote no run-*.sh and the step still exited 0.
+``mainprogram jobscript`` wrote no ``run-*.sh`` and the step still exited 0.
 
 Every tutorial with a submitting step therefore gets a ``jobscript`` step
 prepended (:func:`tutorials.catalog._with_job_scripts`), and a submitting step
@@ -245,6 +245,7 @@ the cause, nothing was submitted.
 
 On a machine with no ``sinfo`` nothing is generated -- the probes would have
 nothing to say, and this runner submits nothing anyway.
+
 What the run produced
 ---------------------
 

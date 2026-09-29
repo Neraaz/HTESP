@@ -33,7 +33,7 @@ New, additive options (every existing invocation still works):
     --dry-run       build every input file but never call the scheduler
     --root DIR      run against DIR instead of the working directory
     --config FILE   use FILE instead of searching for config.json
-    -v/--verbose    debug logging
+    -v, --verbose   debug logging
     --list          list every command with a one-line description
 """
 from __future__ import annotations
@@ -427,7 +427,7 @@ def cmd_config_init(ctx: Context, rest: list[str]) -> int:
     print(f"wrote {target}")
     print("  the Materials Project key is NOT read from this file: "
           "set $MP_API_KEY or ~/.config/htesp/credentials")
-    print(f"  check it with: mainprogram config-validate")
+    print("  check it with: mainprogram config-validate")
     return 0
 
 

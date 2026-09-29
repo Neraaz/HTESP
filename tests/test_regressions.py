@@ -61,7 +61,6 @@ class ElasticConstants(unittest.TestCase):
 
     def test_the_qe_path_reads_the_kbar_columns(self):
         """It took the Ry/bohr^3 columns and applied the Ry/angstrom^3 factor."""
-        text = source("elastic")
         self.assertNotIn("21798.7", code_only("elastic"))
 
     def test_deformed_cells_are_not_restandardised(self):

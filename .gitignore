@@ -70,3 +70,8 @@ tutorial_runs/
 # Working notes for Claude Code: a description of *this* checkout and this
 # machine (paths, interpreter, what is installed), not part of the package.
 CLAUDE.md
+
+# Sphinx: the build tree and the per-module stubs autosummary_generate writes
+# into docs/ (check_docs.py reports them as "not in any toctree" otherwise).
+docs/_build/
+docs/htesp.*.rst

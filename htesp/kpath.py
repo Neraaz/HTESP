@@ -89,6 +89,7 @@ def kpath(filename,npoint,kcutoff,plot_bz=False,bz_file="BZ.pdf"):
     Function to write k-point mesh along the high-symmetry path of the Brillouin zone (BZ).
 
     Parameters:
+
     - filename (str): Input file to read, which contains the structure or VASP 'POSCAR' file.
     - npoint (int): Size of k-point mesh.
     - kcutoff (int): Cutoff to use for k-point path in ASE.
@@ -99,13 +100,16 @@ def kpath(filename,npoint,kcutoff,plot_bz=False,bz_file="BZ.pdf"):
     - bz_file (str): Output file for the BZ sketch. Default: 'BZ.pdf'.
 
     Returns:
+
     - kpoints (numpy.ndarray): K-mesh of size (npoint, 3).
     - sympoint (list): K-point in linear axis ready for plotting after processing.
     - symname (list): Naming for sympoint.
     - kpt (list): K-point in linear axis without processing.
     - spt (list): K-point in linear axis without processing at high-symmetry points.
     - sym (list): Naming for spt.
+
     Example:
+
     >>> kpoints, sympoint, symname, kpt, sym, spt = kpath("POSCAR", 100, 0)
     """
     input_data = config()
@@ -173,6 +177,7 @@ def printk(out_dir="scf_dir", plot_bz=True):
     calculations, focusing on the Brillouin zone (BZ) and high-symmetry points.
 
     Parameters:
+
     - out_dir (str): Directory the two .dat files are written to.
       Default: 'scf_dir'. FIX(13): this used to be hard-coded, so a caller
       could not direct the output at a per-material directory.
@@ -180,19 +185,24 @@ def printk(out_dir="scf_dir", plot_bz=True):
       because the workflow harvests BZ.pdf from this call (see FIX(12)).
 
     Returns:
+
     None
 
     Usage:
+
     The function expects command-line arguments in the following order:
+
     - sys.argv[2]: Filename containing the structure or VASP 'POSCAR' file.
     - sys.argv[3]: Number of k-points.
     - sys.argv[4]: Cutoff for the k-point path in ASE.
-     '0' for the full Brillouin zone, 'n' to keep only the first n labels.
+      '0' for the full Brillouin zone, 'n' to keep only the first n labels.
     - sys.argv[5]: Weight of the k-point.
     - sys.argv[6]: Output directory (optional, defaults to 'scf_dir').
 
     Output:
-    The function generates two files in `out_dir`:
+
+    The function generates two files in ``out_dir``:
+
     - 'kpathlines.dat': Contains the k-point mesh within high-symmetry points and between them.
     - 'kspecial-points.dat': Lists the high-symmetry points.
 

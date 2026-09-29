@@ -78,6 +78,11 @@ try:
 except ImportError:                      # pragma: no cover - build convenience
     html_theme = 'alabaster'
 
+# sphinx_material puts its own callables into ``html_context``, which Sphinx
+# then cannot pickle into the build cache.  The warning is the theme's, not
+# ours, and it is fatal under the ``-W`` the docs workflow builds with.
+suppress_warnings = ['config.cache']
+
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".

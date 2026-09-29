@@ -174,7 +174,6 @@ class CommandLineReferenceIsComplete(unittest.TestCase):
                 self.assertIn(name, text)
 
     def test_every_htesp_check_option_is_documented(self):
-        import argparse
         import io
         import contextlib
         import sys
@@ -198,7 +197,6 @@ class CommandLineReferenceIsComplete(unittest.TestCase):
 
     def test_every_mainprogram_global_option_is_documented(self):
         """`mainprogram`'s own flags drift the same way `htesp-check`'s do."""
-        import re
         import sys
 
         sys.path.insert(0, str(ROOT))

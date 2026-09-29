@@ -676,7 +676,6 @@ class TheHeaderComesWithAWarning(unittest.TestCase):
 
     def test_the_tutorial_runner_warns_once_not_once_per_tutorial(self):
         """A 42-tutorial sweep writes 42 headers."""
-        import logging
         import unittest.mock as mock
 
         from tutorials import workdirs

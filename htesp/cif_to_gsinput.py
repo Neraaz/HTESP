@@ -41,14 +41,18 @@ def pos_to_kpt(structure_filename,kpoint_density,evenkpt=False):
        that one has no ``evenkpt`` argument and does not write ``KPOINTS``.
 
     Parameters:
+
     - structure_filename (str): Path to the structure file (QE scf.in or VASP POSCAR).
     - kpoint_density (float): Desired k-point density.
     - evenkpt (bool): Flag indicating whether to enforce an even number of k-points along each axis.
       Default is False.
 
     Returns:
+
     - kmesh (list): K-point mesh according to the k-point density.
+
     Example:
+
         >>> # Generating a k-point mesh for a VASP POSCAR with a k-point density of 0.05
         >>> pos_to_kpt("POSCAR", 0.05, evenkpt=True)
     """
@@ -130,7 +134,7 @@ def register_mpid(mpid, compound, path="mpid.in"):
       index returned,
     * renumbers ``v<N>`` densely from 1 on every write, and
     * is atomic -- the whole file is written to a temporary file in the same
-      directory and ``os.replace``d into place.
+      directory and moved into place with ``os.replace``.
 
     Returns the 1-based index of ``mpid`` in the file.
     """
@@ -361,6 +365,7 @@ def main(calc_type=None, argv=None):
     - Iterates over CIF files, converts them to QE input files, and writes data to 'mpid.in'.
 
     Parameters:
+
     - calc_type (str): Calculation type ('VASP' or 'QE').  FIX(20): this is now
       a real argument; it used to be read from ``sys.argv[1]`` in the middle of
       the function, so the module could not be driven from Python.  When it is

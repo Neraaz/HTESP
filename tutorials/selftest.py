@@ -31,17 +31,16 @@ import os
 import shutil
 import sys
 import tempfile
-import textwrap
 import unittest
 from pathlib import Path
 
 from tutorials import report as report_mod
-from tutorials.catalog import (CATALOG, QE_TOPICS, VASP_TOPICS, Loop, Seed, Step,
+from tutorials.catalog import (CATALOG, QE_TOPICS, VASP_TOPICS, Seed, Step,
                                Tutorial, normalise_code, parse_codes, select,
                                topological_order, vasp_number_to_qe_number)
 from tutorials.runner import RunOptions, TutorialRunner, preflight
 from tutorials.state import (BLOCKED, DONE, FAILED, SKIPPED, RunState, StepState,
-                             TutorialState, step_key)
+                             step_key)
 from tutorials.workdirs import missing_artifacts, patch_input_in
 
 

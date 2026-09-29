@@ -101,7 +101,6 @@ class DisplacePhonopy:
         None
         """
         energy = self.data['phonon'][iqpt]['band']
-        nmode = len(energy)
         for i,en in enumerate(energy):
             print(i+1,en['frequency'])
 

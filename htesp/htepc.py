@@ -9,8 +9,7 @@ from collections import OrderedDict
 from pathlib import Path
 import numpy as np
 import scipy.linalg as alg
-from ase.io import espresso,cif
-from ase.cell import Cell
+from ase.io import espresso
 from pymatgen.io.cif import CifWriter
 from pymatgen.io.vasp.sets import MPRelaxSet
 from pymatgen.io import pwscf
@@ -478,18 +477,16 @@ class MpConnect:
     def getkpt(self,primitive=True):
         """
         Compute k-points based on k-point density.
+
         Parameters:
-        --------------------
-        primitive: logical
-                 Use primitive standard structure
+
+        - primitive (bool): use the primitive standard structure.
+
         Returns:
-        ---------------------
-        kpt : list
-            The k-point grid.
-        kptype : str
-            The type of k-point grid.
-        kptshift : list
-            The shifts in the k-point grid, returns [0,0,0].
+
+        - kpt (list): the k-point grid.
+        - kptype (str): the type of k-point grid.
+        - kptshift (list): the shifts in the k-point grid, returns [0,0,0].
 
         Notes:
         ---------------------

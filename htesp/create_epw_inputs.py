@@ -351,12 +351,14 @@ def epw_sc_from_json(json_file, out="epw.in"):
     Write input file for EPW calculations based on JSON configuration.
 
     Parameters:
-    ----------------
+
     json_file : str
         Path to the JSON configuration file.
     out : str, optional
         EPW input file name. Default is 'epw.in'.
+
     Example:
+
     >>> epw_sc_from_json("epw.json", out="epw.in")
     """
     # Load JSON data.  NB: the local name used to be `config`, shadowing the

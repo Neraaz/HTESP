@@ -220,7 +220,7 @@ In JSON, boolean values are written ``true`` and ``false``, where Python writes
 Lists use square brackets ``[]`` in both, with comma-separated values.
 
 Where the file is read from
----------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ``config.json`` is looked for in the working directory and in up to five parent
 directories, so a helper running in ``R<id>-<name>/pressure/R.../relax`` finds
@@ -246,7 +246,7 @@ accepted values, and whether a Materials Project API key is available.  It exits
 non-zero when something is wrong.
 
 The full shipped configuration
-------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 This is ``htesp/data/config.json`` verbatim -- the default every user file is
 merged over, and a working starting point to copy into the working directory.
@@ -903,6 +903,47 @@ job_script
 
     - **Note**: Please checkout original documentation of the `ifermi package <https://fermisurfaces.github.io/IFermi/cli.html>`_. Use ``true`` or ``false`` for keys that don't have values. When set to ``true,`` the key will be included as a flag in the command.
 
+  - **WANNIER commands**:
+
+    - Work with ``"which_calc":"wannier"`` or ``"WANNIER"``
+
+    - **scf**: QE scf command, ``pw.x < scf.in > scf.out``
+
+    - **nscf**: QE nonscf command, ``pw.x < scf.in > nscf.out``
+
+    - **wannier_prepare**: Preparing for wannier calculations, ``wannier90.x -pp ex``
+
+    - **pw2wannier90**: Generating input files for WANNIER90 from QE output, ``pw2wannier90.x -in pw2wan.in > pw2wan.out``
+
+    - **wannier_band**: Performing wannierization, ``wannier90.x ex``
+
+  - **EPW commands**:
+
+    - Work with ``"which_calc":"epw"`` or ``"EPW"``
+
+    - **scf**: QE scf command, ``pw.x < scf.in > scf.out``
+
+    - **ph**: QE phonon calculations, ``ph.x < elph.in > elph.out``
+
+    - **proj**: QE nonscf calculations to run with projwfc.x, ``pw.x < nscf-proj.in > nscf-proj.out``
+
+    - **epw_nscf**: QE nonscf calculations for EPW calculations, ``pw.x < nscf_epw.in > nscf_epw.out``
+
+    - **epw**: EPW calculations, ``epw.x -npools -nproc -i epw.in > epw.out``
+
+- **command_combine**: When set to true, commands will be consolidated into one file named run-{last_command}.sh, following the order specified in the command_list. Otherwise, each command will be written to separate files named :ref:`run-{command}.sh <pwd-label>`.
+
+- **calc_visible_with**: It determines the naming convention for the job submission scripts after submission. Available options include ``"id"``, ``"name"``, or ``"id-name"``. If not provided, the scripts will be named simply as run-{command}.sh files for QE, and run.sh for VASP calculations.
+
+  - **id**: Materials_id, ``CALC_VISIBLE_WITH_ID`` file created.
+
+  - **name**: Compound_name, ``CALC_VISIBLE_WITH_NAME`` file created.
+
+  - **id-name**: Materials_id-Compound_name, ``CALC_VISIBLE_WITH_ID-NAME`` file created.
+
+  - If you prefer not to display the compounds information, please provide an empty string ``""``.
+
+
 .. _ifermi:
 
 ifermi.json
@@ -955,50 +996,6 @@ ifermi.json
                     "--scale": 4
                 }
             }
-
-      
-
-
-  - **WANNIER commands**:
-
-    - Work with ``"which_calc":"wannier"`` or ``"WANNIER"``
-
-    - **scf**: QE scf command, ``pw.x < scf.in > scf.out``
-
-    - **nscf**: QE nonscf command, ``pw.x < scf.in > nscf.out``
-
-    - **wannier_prepare**: Preparing for wannier calculations, ``wannier90.x -pp ex``
-
-    - **pw2wannier90**: Generating input files for WANNIER90 from QE output, ``pw2wannier90.x -in pw2wan.in > pw2wan.out``
-
-    - **wannier_band**: Performing wannierization, ``wannier90.x ex``
-
-  - **EPW commands**:
-
-    - Work with ``"which_calc":"epw"`` or ``"EPW"``
-
-    - **scf**: QE scf command, ``pw.x < scf.in > scf.out``
-
-    - **ph**: QE phonon calculations, ``ph.x < elph.in > elph.out``
-
-    - **proj**: QE nonscf calculations to run with projwfc.x, ``pw.x < nscf-proj.in > nscf-proj.out``
-
-    - **epw_nscf**: QE nonscf calculations for EPW calculations, ``pw.x < nscf_epw.in > nscf_epw.out``
-
-    - **epw**: EPW calculations, ``epw.x -npools -nproc -i epw.in > epw.out``
-
-- **command_combine**: When set to true, commands will be consolidated into one file named run-{last_command}.sh, following the order specified in the command_list. Otherwise, each command will be written to separate files named :ref:`run-{command}.sh <pwd-label>`.
-
-- **calc_visible_with**: It determines the naming convention for the job submission scripts after submission. Available options include ``"id"``, ``"name"``, or ``"id-name"``. If not provided, the scripts will be named simply as run-{command}.sh files for QE, and run.sh for VASP calculations.
-
-  - **id**: Materials_id, ``CALC_VISIBLE_WITH_ID`` file created.
-
-  - **name**: Compound_name, ``CALC_VISIBLE_WITH_NAME`` file created.
-
-  - **id-name**: Materials_id-Compound_name, ``CALC_VISIBLE_WITH_ID-NAME`` file created.
-
-  - If you prefer not to display the compounds information, please provide an empty string ``""``.
-
 
 .. _mpikey-label:
 

@@ -20,7 +20,7 @@ that ship next to each tutorial and off the writers in
 """
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 from tutorials.catalog import InputPatch, Loop, Seed, Step
 

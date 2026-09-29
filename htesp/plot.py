@@ -643,7 +643,7 @@ def plot_gamma(xdata,ydata,color,min_):
         y-axis data.
     color : array-like
         Projection data.
-    min_ : float
+    ``min_`` : float
         Minimum threshold for binary classification.
 
     Returns:

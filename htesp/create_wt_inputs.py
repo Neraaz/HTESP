@@ -322,7 +322,7 @@ def main():
     # Extract command-line arguments
     mpid = sys.argv[1]
     compound = sys.argv[2]
-    prefix = sys.argv[3]
+    # sys.argv[3] is the prefix; this branch does not need it.
     condition = sys.argv[4]
     if condition == "kpathwan":
         # Check if scf file exists for the specified material and compound

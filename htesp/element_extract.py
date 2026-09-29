@@ -124,7 +124,7 @@ def download(elm,num_el,exclude_el,properties,input_data=None):
     Extracts various properties for compounds that satisfy certain criteria from the Materials Project database.
 
     Parameters:
-    -----------
+
     elm : str or list of str
         Element(s) always to include in the compounds. For example, for hydrogen, elm = 'H'.
         If multiple elements are desired, provide a list with up to size 2. For example, elm = ['B', 'C'] for boron and carbon.
@@ -143,11 +143,12 @@ def download(elm,num_el,exclude_el,properties,input_data=None):
         when omitted.
 
     Returns:
-    --------
+
     data : pandas DataFrame
         DataFrame containing the extracted data.
+
     Example:
-    --------
+
     >>> download('H', 2, ['O', 'F'], ['material_id', 'formation_energy_per_atom'])
     """
     # FIX(1): ``input_data`` used to be a module-level name bound only inside
@@ -700,8 +701,8 @@ chemsys={'entries':['B'],'size_constraint':20,'ntype_constraint':5,'must_include
         # Perform actions based on mode
         if mode == 'element':
             # Extract data and create input files
-            data = extract(ntype,properties,elm_list,exclude_el,
-                           nelm=nelm,
+            extract(ntype,properties,elm_list,exclude_el,
+                    nelm=nelm,
                            metal=metal,
                            neg_fe=neg_fe,
                            thermo_stable=thermo_stable,

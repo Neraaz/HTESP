@@ -575,10 +575,6 @@ class PerFolderBatchHeader(unittest.TestCase):
     def test_nothing_is_generated_without_slurm(self):
         """On a laptop the probes have nothing to say and a dry run submits
         nothing, so the shipped header is the more useful thing to leave."""
-        import unittest.mock as mock
-
-        from tutorials import workdirs
-
         source = (ROOT / "tutorials" / "workdirs.py").read_text()
         block = source.split("def _ensure_batch_header", 1)[1].split("\ndef ", 1)[0]
         self.assertIn('shutil.which("sinfo") is None', block)
@@ -1026,7 +1022,7 @@ class AFlakyServiceDoesNotFailTheRun(unittest.TestCase):
         import tempfile
         from pathlib import Path as _Path
 
-        from tutorials.catalog import CATALOG, Seed
+        from tutorials.catalog import Seed
         from tutorials.workdirs import _seed_from_dependency_reference
 
         seed = Seed("QE/4", ("scf_dir", "R*-*", "mpid.in"))

@@ -11,6 +11,7 @@ def check_freq(filename, flag_file=DEFAULT_FLAG_FILE):
     It runs within the 'checkfreq-scan' bash script.
 
     Parameters:
+
     - filename (str): Phonon frequency filename in 'name.freq.gp' format created in QE calculations.
     - flag_file (str): FIX(22) -- name of the marker file to write.  It used to
       be the hard-coded 'freq.dat' in the current directory, so two materials
@@ -18,6 +19,7 @@ def check_freq(filename, flag_file=DEFAULT_FLAG_FILE):
       default is unchanged.
 
     Returns:
+
     None
     """
     # Load the frequency data from the provided filename

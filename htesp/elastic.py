@@ -8,13 +8,12 @@ import sys
 import warnings
 import numpy as np
 from pymatgen.io.vasp.inputs import Poscar
-from pymatgen.io.vasp.sets import MPRelaxSet
 from pymatgen.io import pwscf
 from pymatgen.io.vasp.sets import Vasprun
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 from pymatgen.core import structure
 from pymatgen.analysis.elasticity import diff_fit,ElasticTensor,Stress
-from pymatgen.analysis.elasticity import DeformedStructureSet,find_eq_stress
+from pymatgen.analysis.elasticity import DeformedStructureSet
 from htesp.cif_to_gsinput import pos_to_kpt
 from htesp.write_potcar import poscar2potcar
 from htesp.htepc import MpConnect
@@ -170,9 +169,8 @@ def deformation(mpid,obj,dft,orig_prefix,deformed_struc):
             else:
                 pos_to_kpt("{}/POSCAR".format(relax_dir),kptden)
             shutil.move("KPOINTS", "{}/KPOINTS".format(relax_dir))
-            structure_file = structure.Structure.from_file("{}/POSCAR".format(relax_dir))
-            relax_set = MPRelaxSet(structure=structure_file)
-            #relax_set.potcar.write_file("{}/POTCAR".format(relax_dir))
+            # The POTCAR is written by poscar2potcar() below; the MPRelaxSet
+            # round-trip that used to stand here built a set nothing read.
             if os.path.isfile("vasp.in"):
                 shutil.copy("vasp.in", relax_dir)
             if os.path.isfile("config.json"):

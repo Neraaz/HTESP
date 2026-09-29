@@ -8,7 +8,6 @@ from pymatgen.core import structure
 from pymatgen.entries.computed_entries import ComputedStructureEntry as PDEntry
 from pymatgen.analysis.phase_diagram import PhaseDiagram
 from pymatgen.analysis.phase_diagram import PDPlotter
-from htesp.htepc import MpConnect
 from htesp.check_json import config
 
 def plot_phase(data):
@@ -20,13 +19,16 @@ def plot_phase(data):
     information.
 
     Parameters:
-    - data : pandas DataFrame
-        Dataframe containing energies and compositions. Columns should include 'ID', 'comp', and 'energy'.
+
+    - data (pandas DataFrame): energies and compositions.  Columns should
+      include 'ID', 'comp' and 'energy'.
 
     Returns:
+
     None
 
     Generates:
+
     - convexhull.csv : CSV file with thermodynamic stability information.
     - convexhull.pdf : PDF file containing the convex hull phase diagram.
 

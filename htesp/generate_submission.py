@@ -99,7 +99,9 @@ def generate_submission_files(which_calc, parallel_command, nproc, command_list)
     """
     Generate submission files based on the calculation type, parallel command, number of processors,
     and a dictionary of commands.
+
     Parameters:
+
     - which_calc (str): The type of calculation.
       Valid options include 'qe', 'epw', 'wannier', and 'vasp'.
     - parallel_command (str): The parallel command to be used for execution, e.g., 'mpirun'.
@@ -109,13 +111,16 @@ def generate_submission_files(which_calc, parallel_command, nproc, command_list)
       input file, and output file.
 
     Returns:
+
     - submission_files (dict): A dictionary containing generated submission files.
       Keys are command names, and values are formatted submission commands ready for execution.
 
     Raises:
+
     - ValueError: If an invalid calculation type is provided.
 
     Example:
+
     >>> command_list = {
     ...     'scf': ('pw.x', 'scf.in', 'scf.out'),
     ...     'nscf': ('pw.x', 'nscf.in', 'nscf.out')

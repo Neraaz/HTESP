@@ -33,7 +33,7 @@ from typing import Sequence
 from tutorials.catalog import (CATALOG, EXAMPLES, PACKAGE_ROOT, Step,
                                Tutorial, iters, readme_for,
                                searched_for_examples)
-from tutorials.state import (BLOCKED, DONE, FAILED, PENDING, RUNNING, SKIPPED,
+from tutorials.state import (BLOCKED, DONE, FAILED, RUNNING, SKIPPED,
                              RunState, StepState, TutorialState, step_key)
 from tutorials.workdirs import (changed_since, missing_artifacts,
                                 patch_input_in, relax_output_present,

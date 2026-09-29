@@ -383,7 +383,7 @@ def read_track_file(path, start: int, end: int, root: Path) -> list[Material]:
 
 
 def write_track_file(path, rows: Sequence[tuple[str, str]]) -> None:
-    """Write ``v1 ... vN`` with deterministic numbering, once, after the loop."""
+    """Write the ``v<N>`` rows with deterministic numbering, after the loop."""
     if not rows:
         remove(path)
         return

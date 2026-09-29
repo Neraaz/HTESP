@@ -7,7 +7,6 @@ import re
 import shutil
 import subprocess
 import time
-from ase.io.vasp import read_vasp
 from pymatgen.io.vasp.sets import MPRelaxSet
 from pymatgen.core import structure
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
@@ -103,9 +102,6 @@ def poscar_to_input(calc_type,mpid,compound,keven):
     d = input_data['download']
     evenkpt = d['inp']['evenkpt']
     kptden = input_data['kptden']
-    # Read POSCAR with ASE
-    data = read_vasp("POSCAR")
-    symbol = list(data.symbols)
     relax_dir = os.path.join("R{}-{}".format(mpid, compound), "relax")
     # Creates input for VASP
     if calc_type in ('VASP','vasp'):

@@ -20,9 +20,6 @@ from pymatgen.core.composition import Composition
 from pymatgen.analysis.structure_matcher import StructureMatcher
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 from htesp.oqmd_extract import poscar_to_input
-from htesp.cif_to_gsinput import pos_to_kpt
-from htesp.write_potcar import poscar2potcar
-from htesp.htepc import INPUTscf
 from htesp.check_json import config
 from htesp.cif_to_gsinput import register_mpid
 from htesp.inputin import InputIn

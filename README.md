@@ -95,6 +95,12 @@ conda activate htesp
 pip install .                                 # or: pip install -e ".[test,docs]"
 ```
 
+`main` is HTESP 2.0.  The previous version is tagged `v1.0`:
+
+```bash
+git clone -b v1.0 https://github.com/Neraaz/HTESP.git
+```
+
 Optional extras, each pulling in only what that feature needs:
 
 | extra | enables |

@@ -65,14 +65,17 @@ def kpoint_vasp(kpoint,kconv=False):
     Function to write kpoint.
 
     Parameters:
+
     - kpoint (list): List containing the k-point coordinates.
     - kconv (bool): True writes into R<kx>-<ky>-<kz>/KPOINTS, False rewrites
       KPOINTS in the current directory.
 
     Returns:
+
     - None
 
     Example:
+
     To write kpoints for a convergence calculation:
     >>> kpoint_vasp([2, 2, 2], kconv=True)
 
@@ -98,17 +101,20 @@ def submission(param,jobscript,A,B,jj,cwd=None):
     Submit a jobscript for computation based on parameters.
 
     Parameters:
+
     - param (str): Parameter type, 'ecut' or 'kpoint'.
     - jobscript (str): Name of the jobscript to be submitted.
     - A (str): Materials Id.
     - B (str): Name for the compound.
-    - jj (str or tuple): The value of the parameter. If param is 'ecut', it's a string;
-                          if param is 'kpoint', it's a list (e.g., (kx, ky, kz)).
+    - jj (str or tuple): The value of the parameter. If param is 'ecut', it's a
+      string; if param is 'kpoint', it's a list (e.g., (kx, ky, kz)).
     - cwd (str, optional): directory holding the jobscript. Defaults to the
       current one, which is what the callers used to arrange with os.chdir.
 
     Returns:
+
     None
+
     Example:
 
     To submit a jobscript named 'myjob.sh' for computation with parameter type 'ecut',
@@ -314,12 +320,14 @@ def main_qe(file_name,parameter,start,end):
     Execute convergence test calculations for kinetic energy cutoff.
 
     Parameters:
+
     - file_name (str): File holding materials id and name information.
     - parameter (str): Parameter to control the type of calculation.
     - start (int) : Starting index
     - end (int) : Ending index (not included)
 
     Returns:
+
     - list: the temporary files this run created, so the caller can remove
       exactly those.
 
@@ -327,6 +335,7 @@ def main_qe(file_name,parameter,start,end):
     It modifies input files, creates directories, and submits jobs based on the provided parameter.
 
     Example:
+
     >>> main_qe("mpid.in", "ecut", 1, 5)
     """
     input_data = config()
@@ -458,13 +467,16 @@ def extract(file_name,parameter,start,end,calc):
 
 def main(argv=None):
     """
-    Entry point: ``convergence_test.py calculate`` or ``... extract``.
+    Entry point for ``convergence_test.py``, in either the ``calculate`` or
+    the ``extract`` mode.
 
     Parameters:
+
     - argv (list, optional): command-line arguments without the program name.
       Defaults to ``sys.argv[1:]``; the first token is the mode.
 
     Returns:
+
     - None
     """
     # FIX(22): the driver used to live in ``if __name__ == "__main__":`` with

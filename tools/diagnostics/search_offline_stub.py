@@ -22,7 +22,6 @@ import os
 import warnings
 
 warnings.filterwarnings("ignore")
-import _path  # noqa: E402
 from _path import REPO_ROOT  # noqa: E402
 
 from pymatgen.core import Structure, Lattice  # noqa: E402

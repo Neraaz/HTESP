@@ -76,9 +76,9 @@ building input files rather than running DFT: a 300-compound ``mainprogram 4``
 is bounded by ``pymatgen`` and file writing, and a pool cuts it by close to the
 number of workers.
 
--------------------------------
+--------------------------------
 Per-material scratch directories
--------------------------------
+--------------------------------
 
 The old bash layer wrote fixed-name scratch files into the project root:
 ``mass.dat``, ``qpoint.dat``, ``kpoint.dat``, ``BZ.pdf``,

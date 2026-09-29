@@ -8,7 +8,6 @@ import sys
 import warnings
 from bsym.interface.pymatgen import unique_structure_substitutions as us
 from pymatgen.io.vasp.inputs import Poscar
-from pymatgen.io.vasp.sets import MPRelaxSet
 from pymatgen.io import pwscf
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 from pymatgen.core import structure
@@ -131,8 +130,8 @@ def substitution(mpid,obj):
                 else:
                     pos_to_kpt("{}/POSCAR".format(relax_dir),kptden)
                 shutil.move("KPOINTS", "{}/KPOINTS".format(relax_dir))
-                structure_file = structure.Structure.from_file("{}/POSCAR".format(relax_dir))
-                relax_set = MPRelaxSet(structure=structure_file)
+                # The POTCAR is written by poscar2potcar() below; the
+                # MPRelaxSet round-trip here built a set nothing read.
                 if os.path.isfile("vasp.in"):
                     shutil.copy("vasp.in", relax_dir)
                 if os.path.isfile("config.json"):
