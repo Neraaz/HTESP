@@ -17,9 +17,15 @@ the tests in ``tests/test_inputin.py``:
   four-line file raised ``IndexError``;
 * a shorter file left ``start``/``end``/``element``/``nkpt`` unbound, so the
   next statement raised ``NameError`` instead of reporting the real problem;
-* on the first run it wrote ``plot_type`` as the string ``'phband'`` and then
-  iterated over it, launching six plot jobs named ``p``, ``h``, ``b``, ``a``,
-  ``n``, ``d``.
+* the two branches disagreed about the *type* of line 5.  Reading an existing
+  file gave ``lines[4].split(" ")`` -- a list, which ``mainprogram 19``
+  iterates to plot one type per entry, as intended.  Creating a missing file
+  assigned the bare string ``'phband'``.  A string iterates too, so the same
+  correct loop walked its characters and ran ``plot-scan`` six times with
+  ``p``, ``h``, ``b``, ``a``, ``n``, ``d`` -- none of which it recognises.
+  Only on the run that created ``input.in``; afterwards the file was read
+  back as a list and the loop behaved.  ``plot_types`` is a ``list[str]``
+  everywhere now, so both paths agree.
 
 The sixth line is written unconditionally here.  The bash layer tested
 ``[ $dft == 'vasp' ]`` at 31 sites, which aborts with "unary operator expected"
@@ -32,9 +38,6 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 DEFAULT_FILENAME = "input.in"
-
-#: plot types understood by ``plot-scan``
-PLOT_TYPES = ("phband", "band", "dos", "pdos", "a2f", "phdos", "bandproj", "phononproj")
 
 
 class InputInError(ValueError):

@@ -20,7 +20,8 @@ still read ``input.in``, still write the banner to ``log`` and still act on
   or leaving ``start``/``end`` unbound;
 * ``mainprogram 19`` iterates over the *list* of plot types.  The old code
   created ``input.in`` with the string ``'phband'`` and then iterated over it,
-  launching six plot jobs named ``p``, ``h``, ``b``, ``a``, ``n``, ``d``;
+  running ``plot-scan`` six times with ``p``, ``h``, ``b``, ``a``, ``n``,
+  ``d`` -- the characters of the string, not the list the reader produced;
 * the four long help blocks live in :mod:`htesp.help_text`, which
   ``docs/command.rst`` is generated from;
 * ``mainprogram`` with no argument prints the usage instead of raising

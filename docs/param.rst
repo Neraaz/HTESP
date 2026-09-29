@@ -1546,10 +1546,26 @@ It has following keys and values.
 - **a2f_smearing**: One-based index of the electron-phonon smearing whose
   Eliashberg function :math:`\alpha^2F(\omega)` is plotted.  QE writes one
   ``a2F`` file per value of ``degauss`` in the el-ph calculation; ``1`` is the
-  first (smallest) smearing, ``2`` the second, and so on.  Optional; when it is
-  ``null`` the previous behaviour is kept and the last smearing found is used.
-  Check the ``lambda.out`` file for the list of smearings and pick the one in
-  the converged plateau.
+  first (smallest) smearing, ``2`` the second, and so on.  In the usual
+  ten-smearing run ``degauss`` goes 0.005, 0.010, ... 0.050, so ``1`` is
+  ``degauss = 0.005``, ``2`` is ``0.010`` and ``10`` is ``0.050``.  The index
+  drives both files: row *n* of the table in ``lambda.out`` for
+  :math:`\lambda`, :math:`\omega_{\log}` and :math:`T_c`, and column *n* of
+  ``alpha2F.dat`` for the curve.  Out of range is refused with a message
+  saying how many smearings the file holds.
+
+  Left unset (the shipped default, ``null``) the original behaviour is kept:
+  :math:`\lambda` from line 12 of ``lambda.out`` and column 2 of
+  ``alpha2F.dat``.  In a ten-smearing run both are the second smearing, so
+  plots made before this key existed do not change -- but the line number is
+  a position in the file rather than an index into the table, so it follows
+  the number of smearings QE wrote while the column does not.  Set the key
+  explicitly to be sure which one you are looking at.
+
+  Check ``lambda.out`` for the list and pick the one in the converged
+  plateau: for MgB2 the ten values run from :math:`\lambda = 0.84` at
+  ``degauss = 0.005`` down to :math:`0.51` at ``0.050``, so the choice is not
+  cosmetic.
 
 - **atomproj**: Cutoff for plotting atomic projection on phonon dispersion.
 
